@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import { RoundedCheckbox } from "../ui/checkbox";
 import { NextButton } from "../ui/buttons/next";
+import { useState } from "react";
 
 const RightArrow = () => {
   return (
@@ -14,10 +17,18 @@ const RightArrow = () => {
   );
 };
 
-const PolicyRow = ({ opt, txt }: { opt: string; txt: string }) => {
+const PolicyRow = ({
+  opt,
+  txt,
+  checkboxState,
+}: {
+  opt: string;
+  txt: string;
+  checkboxState: boolean;
+}) => {
   return (
     <div className="flex flex-row items-center gap-1">
-      <RoundedCheckbox />
+      <RoundedCheckbox state={checkboxState} />
       <p
         style={{
           fontFamily: "SUIT-Body",
@@ -32,6 +43,21 @@ const PolicyRow = ({ opt, txt }: { opt: string; txt: string }) => {
 };
 
 export default function SignUp() {
+  const [acceptAllTermCon, setAcceptAllTermCon] = useState(false);
+  const [acceptTermList, setAcceptAllTermList] = useState(
+    new Array(5).fill(false)
+  );
+
+  const handleAllTerms = () => {
+    setAcceptAllTermCon(!acceptAllTermCon);
+    console.log(acceptAllTermCon);
+
+    if (acceptAllTermCon) setAcceptAllTermList(new Array(5).fill(true));
+    else setAcceptAllTermList(new Array(5).fill(false));
+
+    console.log(acceptTermList);
+  };
+
   return (
     <div className="grid grid-rows-[36px_1fr_52px] min-h-screen min-w-full">
       <div></div> {/* 빈칸 */}
@@ -85,7 +111,7 @@ export default function SignUp() {
           >
             약관 전체동의
           </p>
-          <RoundedCheckbox />
+          <RoundedCheckbox state={acceptAllTermCon} onClick={handleAllTerms} />
         </div>
         <div className="mx-3 mb-8">
           <p
@@ -112,9 +138,18 @@ export default function SignUp() {
             "개인정보 수집/이용 동의",
             "본인확인서비스 이용약관",
           ].map((txt, idx) => (
-            <PolicyRow key={idx} opt={"필수"} txt={txt} />
+            <PolicyRow
+              key={idx}
+              opt={"필수"}
+              txt={txt}
+              checkboxState={acceptTermList[idx]}
+            />
           ))}
-          <PolicyRow opt={"선택"} txt={"마케팅 수신 이용 동의"} />
+          <PolicyRow
+            opt={"선택"}
+            txt={"마케팅 수신 이용 동의"}
+            checkboxState={acceptTermList[acceptTermList.length - 1]}
+          />
         </div>
       </div>
       <div className="flex py-2 justify-center items-center">
