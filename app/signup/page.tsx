@@ -3,32 +3,23 @@
 import Image from "next/image";
 import { RoundedCheckbox } from "../ui/checkbox";
 import { NextButton } from "../ui/buttons/next";
-import { useState } from "react";
-
-const RightArrow = () => {
-  return (
-    <Image
-      className="ml-auto"
-      src="/arrow-right.svg"
-      alt="arrow-right"
-      width={20}
-      height={20}
-    />
-  );
-};
+import { useEffect, useRef, useState } from "react";
+import { RightArrow } from "../ui/images/arrows";
 
 const PolicyRow = ({
   opt,
   txt,
-  checkboxState,
+  onClick,
+  thisState,
 }: {
   opt: string;
   txt: string;
-  checkboxState: boolean;
+  onClick: (() => void) | ((newVal: boolean) => void);
+  thisState: boolean;
 }) => {
   return (
     <div className="flex flex-row items-center gap-1">
-      <RoundedCheckbox state={checkboxState} />
+      <RoundedCheckbox onClick={onClick} thisState={thisState} />
       <p
         style={{
           fontFamily: "SUIT-Body",
@@ -43,19 +34,27 @@ const PolicyRow = ({
 };
 
 export default function SignUp() {
+  const isInited = useRef(false);
+
   const [acceptAllTermCon, setAcceptAllTermCon] = useState(false);
-  const [acceptTermList, setAcceptAllTermList] = useState(
-    new Array(5).fill(false)
-  );
+  const [termCons, setTermCons] = useState(Array(5).fill(false));
 
-  const handleAllTerms = () => {
-    setAcceptAllTermCon(!acceptAllTermCon);
-    console.log(acceptAllTermCon);
+  useEffect(() => {
+    if (!isInited.current) isInited.current = true;
+    else setTermCons(Array(5).fill(acceptAllTermCon));
+  }, [acceptAllTermCon]);
 
-    if (acceptAllTermCon) setAcceptAllTermList(new Array(5).fill(true));
-    else setAcceptAllTermList(new Array(5).fill(false));
-
-    console.log(acceptTermList);
+  const handleAllTermCon = () => {
+    return () => {
+      setAcceptAllTermCon(!acceptAllTermCon);
+    };
+  };
+  const handleTermConAction = (idx: number) => {
+    return (newVal: boolean) => {
+      const newState = [...termCons];
+      newState[idx] = newVal;
+      setTermCons(newState);
+    };
   };
 
   return (
@@ -111,7 +110,10 @@ export default function SignUp() {
           >
             약관 전체동의
           </p>
-          <RoundedCheckbox state={acceptAllTermCon} onClick={handleAllTerms} />
+          <RoundedCheckbox
+            onClick={handleAllTermCon()}
+            thisState={acceptAllTermCon}
+          />
         </div>
         <div className="mx-3 mb-8">
           <p
@@ -142,13 +144,15 @@ export default function SignUp() {
               key={idx}
               opt={"필수"}
               txt={txt}
-              checkboxState={acceptTermList[idx]}
+              onClick={handleTermConAction(idx)}
+              thisState={termCons[idx]}
             />
           ))}
           <PolicyRow
             opt={"선택"}
             txt={"마케팅 수신 이용 동의"}
-            checkboxState={acceptTermList[acceptTermList.length - 1]}
+            onClick={handleTermConAction(termCons.length - 1)}
+            thisState={termCons[termCons.length - 1]}
           />
         </div>
       </div>

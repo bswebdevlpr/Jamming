@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties } from "react";
 
 const style_checkbox_round_unchecked: CSSProperties = {
   appearance: "none",
@@ -13,38 +13,26 @@ const style_checkbox_round_unchecked: CSSProperties = {
 };
 
 export const RoundedCheckbox = ({
-  className,
-  state,
   onClick,
+  thisState,
+  className,
 }: {
+  onClick: (() => void) | ((newVal: boolean) => void);
+  thisState: boolean;
   className?: string;
-  state: boolean;
-  onClick?: () => void;
 }) => {
-  const [isChecked, setIsChecked] = useState(state);
-
   const handler = () => {
-    console.log("handler called");
-    setIsChecked(!isChecked);
-    if (onClick) {
-      console.log("onclick called");
-      onClick();
-    }
+    onClick(!thisState);
   };
-
-  useEffect(() => {
-    console.log("useEffect called");
-    setIsChecked(state);
-  }, [state]);
 
   return (
     <>
-      {!isChecked ? (
+      {!thisState ? (
         <input
           type="checkbox"
           className={className}
           style={style_checkbox_round_unchecked}
-          checked={isChecked}
+          checked={thisState}
           onChange={handler}
         />
       ) : (
