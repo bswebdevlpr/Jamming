@@ -1,6 +1,6 @@
 import { CSSProperties } from "react";
 
-const style_button_next: CSSProperties = {
+const common: CSSProperties = {
   display: "flex",
   width: "343px",
   height: "44px",
@@ -8,6 +8,10 @@ const style_button_next: CSSProperties = {
   justifyContent: "center",
   alignItems: "center",
   flexShrink: 0,
+};
+
+const style_inactivated: CSSProperties = {
+  ...common,
 
   background: "#242426",
   border: "1px solid #333335",
@@ -18,9 +22,31 @@ const style_button_next: CSSProperties = {
   color: "#767678",
 };
 
-export const NextButton = ({ className }: { className?: string }) => {
+const style_activated: CSSProperties = {
+  ...common,
+
+  background: "#304313",
+  border: "1px solid #A3FF0C",
+  borderRadius: "8px",
+
+  fontFamily: "SUIT-Title",
+  fontSize: "16px",
+  color: "#A3FF0C",
+};
+
+export const NextButton = ({
+  className,
+  isActive,
+}: {
+  className?: string;
+  isActive?: boolean;
+}) => {
   return (
-    <button type="button" className={className} style={style_button_next}>
+    <button
+      type="button"
+      className={className}
+      style={!isActive ? style_inactivated : style_activated}
+    >
       다음
     </button>
   );
