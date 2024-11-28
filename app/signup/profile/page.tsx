@@ -1,7 +1,48 @@
+"use client";
+
 import { Camera } from "@/app/ui/images/camera";
 import { BandType } from "@/app/ui/images/signup/band-type";
 import { Genre } from "@/app/ui/images/signup/genre";
 import { Position } from "@/app/ui/images/signup/position";
+
+const TextBox = ({
+  upTxt,
+  downTxt,
+  moveTo,
+}: {
+  upTxt: string;
+  downTxt: string;
+  moveTo: string;
+}) => {
+  return (
+    <div
+      className="w-full h-20 absolute z-10 flex flex-col justify-between"
+      style={{
+        padding: "14px 16px 16px",
+        transform: `translate(0px, ${moveTo})`,
+      }}
+    >
+      <p
+        style={{
+          fontFamily: "SUIT-Body",
+          fontSize: "14px",
+          color: "#E5E5E9",
+        }}
+      >
+        {upTxt}
+      </p>
+      <p
+        style={{
+          fontFamily: "SUIT-Body",
+          fontSize: "14px",
+          color: "#E5E5E9",
+        }}
+      >
+        {downTxt}
+      </p>
+    </div>
+  );
+};
 
 export default function SignUp_Profile() {
   return (
@@ -142,34 +183,11 @@ export default function SignUp_Profile() {
         </div>
         <div className="flex flex-col">
           <div className="relative">
-            <div
-              className="absolute z-10 w-full flex flex-col justify-between"
-              style={{
-                padding: "14px 16px 16px",
-              }}
-            >
-              <p
-                style={{
-                  fontFamily: "SUIT-Body",
-                  fontSize: "14px",
-                  color: "#E5E5E9",
-                }}
-              >
-                하위
-              </p>
-              <p
-                style={{
-                  fontFamily: "SUIT-Body",
-                  fontSize: "14px",
-                  color: "#E5E5E9",
-                }}
-              >
-                선택
-              </p>
-            </div>
+            <TextBox upTxt="포지션" downTxt="선택" moveTo="16.32px" />
             <Position />
           </div>
           <div className="relative">
+            <TextBox upTxt="선호장르" downTxt="선택" moveTo="0px" />
             <Genre
               style={{
                 transform: "translate(0px, -19px)",
@@ -177,6 +195,7 @@ export default function SignUp_Profile() {
             />
           </div>
           <div className="relative">
+            <TextBox upTxt="밴드 유형" downTxt="선택" moveTo="-17px" />
             <BandType
               style={{
                 transform: "translate(0px, -41px)",
