@@ -2,9 +2,6 @@
 
 import { ReactNode } from "react";
 
-// const MIN_Y = 60;
-// const MAX_X = window.innerHeight - 80;
-
 const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div
@@ -23,10 +20,10 @@ const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
 const Handle: React.FC = () => {
   return (
     <div
-      className="w-8 h-1 m-auto"
+      className="w-10 h-1 m-auto"
       style={{
         borderRadius: "2px",
-        backgroundColor: "#d0d0d0",
+        backgroundColor: "#535355",
       }}
     />
   );

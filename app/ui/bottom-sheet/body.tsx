@@ -1,35 +1,94 @@
-import { ReactNode } from "react";
-import { BottomSheetHeader } from "./header";
+import { ReactNode, RefObject, useEffect, useState } from "react";
+import BottomSheetHeader from "./header";
+import { useBottomSheet } from "@/app/hooks/useBottomSheet";
+import { motion } from "framer-motion";
 
-const MIN_Y = 60;
-const BOTTOM_SHEET_HEIGHT = window.innerHeight - MIN_Y;
+export const MIN_Y = 10;
 
-const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
+interface Props {
+  children: ReactNode;
+  ref: RefObject<HTMLDivElement>;
+}
+
+const Wrapper = ({
+  children,
+  ref,
+  pullUp,
+}: Props & {
+  pullUp: boolean;
+}) => {
+  const [sheetHeight, setSheetHeight] = useState(0);
+
+  useEffect(() => {
+    setSheetHeight(window.innerHeight - 43);
+  }, []);
+
+  useEffect(() => {
+    if (pullUp) {
+      const MAX_Y = window.innerHeight;
+
+      ref.current?.style.setProperty("transition", `transform 1s ease-out`);
+      requestAnimationFrame(() => {
+        ref.current?.style.setProperty("display", "flex");
+        ref.current?.style.setProperty("transform", `translateY(-${MAX_Y}px)`);
+      });
+    } else {
+      ref.current?.style.setProperty("display", "none");
+    }
+  }, [pullUp]);
+
   return (
-    <div
-      className="flex flex-col fixed"
+    <motion.div
+      ref={ref}
+      className="flex flex-col absolute z-20"
       style={{
-        zIndex: 1,
-        top: 0,
-        left: 0,
-        right: 0,
+        top: `${sheetHeight}px`,
+
+        width: "100%",
 
         borderTopLeftRadius: "8px",
         borderTopRightRadius: "8px",
-        backgroundColor: "#fff",
+        backgroundColor: "#242426",
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
-        height: `${BOTTOM_SHEET_HEIGHT}px`,
+        height: `${sheetHeight}px`,
+
+        transition: "transform 150ms ease-out",
+
+        display: "none",
       }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 };
+Wrapper.displayName = "BottomSheetWrapper";
 
-const BottomSheet = () => {
+const BottomSheetContent = ({ ref, children }: Props) => (
+  <div
+    style={{
+      overflow: "auto",
+      WebkitOverflowScrolling: "touch",
+      height: "100%",
+    }}
+    ref={ref}
+  >
+    {children}
+  </div>
+);
+
+const BottomSheet = ({
+  children,
+  pullUp,
+}: {
+  children: ReactNode;
+  pullUp: boolean;
+}) => {
+  const { sheet, content } = useBottomSheet();
+
   return (
-    <Wrapper>
+    <Wrapper ref={sheet} pullUp={pullUp}>
       <BottomSheetHeader />
+      <BottomSheetContent ref={content}>{children}</BottomSheetContent>
     </Wrapper>
   );
 };

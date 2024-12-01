@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const splitedPath = usePathname().split("/");
 
   return (
-    <div className="flex flex-col justify-between pt-9 pb-2 min-w-full min-h-screen">
+    <div className="flex flex-col justify-between pt-9 pb-2 min-w-full min-h-screen overflow-hidden">
       <div className="mb-5">
         <span className="inline-block">
           <span className="flex flex-row basis-auto grow-0 shrink-0 gap-2.5 ">
