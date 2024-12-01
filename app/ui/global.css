@@ -65,7 +65,8 @@
 
 html,
 body {
-  min-height: 812px;
+  /* min-height: 812px; statusbar, footer 포함*/
+  min-height: 753px; /* 제외 */
   min-width: 360px;
   padding-left: 8px;
   padding-right: 8px;
