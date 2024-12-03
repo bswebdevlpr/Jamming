@@ -27,10 +27,20 @@ const Wrapper = ({
     if (pullUp) {
       const MAX_Y = window.innerHeight;
 
-      ref.current?.style.setProperty("transition", `transform 1s ease-out`);
       requestAnimationFrame(() => {
         ref.current?.style.setProperty("display", "flex");
-        ref.current?.style.setProperty("transform", `translateY(-${MAX_Y}px)`);
+        ref.current?.style.setProperty("transition", "transform 1s ease-out");
+
+        requestAnimationFrame(() => {
+          ref.current?.style.setProperty(
+            "transform",
+            `translateY(-${MAX_Y}px)`
+          );
+          ref.current?.style.setProperty(
+            "transition",
+            "transform 150ms ease-out"
+          );
+        });
       });
     } else {
       ref.current?.style.setProperty("display", "none");
