@@ -1,4 +1,4 @@
-import { ReactNode, RefObject, useEffect, useState } from "react";
+import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
 import BottomSheetHeader from "./header";
 import { useBottomSheet } from "@/app/hooks/useBottomSheet";
 import { motion } from "framer-motion";
@@ -7,44 +7,27 @@ export const MIN_Y = 10;
 
 interface Props {
   children: ReactNode;
-  ref: RefObject<HTMLDivElement>;
+  // ref: RefObject<HTMLDivElement>;
 }
 
 const Wrapper = ({
   children,
-  ref,
   pullUp,
 }: Props & {
   pullUp: boolean;
 }) => {
   const [sheetHeight, setSheetHeight] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setSheetHeight(window.innerHeight - 43);
   }, []);
 
   useEffect(() => {
-    if (pullUp) {
-      const MAX_Y = window.innerHeight;
-
-      requestAnimationFrame(() => {
-        ref.current?.style.setProperty("display", "flex");
-        ref.current?.style.setProperty("transition", "transform 1s ease-out");
-
-        requestAnimationFrame(() => {
-          ref.current?.style.setProperty(
-            "transform",
-            `translateY(-${MAX_Y}px)`
-          );
-          ref.current?.style.setProperty(
-            "transition",
-            "transform 150ms ease-out"
-          );
-        });
-      });
-    } else {
-      ref.current?.style.setProperty("display", "none");
-    }
+    const MAX_Y = window.innerHeight;
+    if (pullUp)
+      ref.current?.style.setProperty("transform", `translateY(-${MAX_Y}px)`);
+    else ref.current?.style.setProperty("transform", `translateY(${MAX_Y}px)`);
   }, [pullUp]);
 
   return (
@@ -62,9 +45,7 @@ const Wrapper = ({
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
         height: `${sheetHeight}px`,
 
-        transition: "transform 150ms ease-out",
-
-        display: "none",
+        transition: "transform 0.75s ease-out",
       }}
     >
       {children}
@@ -73,14 +54,13 @@ const Wrapper = ({
 };
 Wrapper.displayName = "BottomSheetWrapper";
 
-const BottomSheetContent = ({ ref, children }: Props) => (
+const BottomSheetContent = ({ children }: Props) => (
   <div
     style={{
       overflow: "auto",
       WebkitOverflowScrolling: "touch",
       height: "100%",
     }}
-    ref={ref}
   >
     {children}
   </div>
@@ -93,12 +73,12 @@ const BottomSheet = ({
   children: ReactNode;
   pullUp: boolean;
 }) => {
-  const { sheet, content } = useBottomSheet();
+  // const { sheet, content } = useBottomSheet();
 
   return (
-    <Wrapper ref={sheet} pullUp={pullUp}>
+    <Wrapper pullUp={pullUp}>
       <BottomSheetHeader />
-      <BottomSheetContent ref={content}>{children}</BottomSheetContent>
+      <BottomSheetContent>{children}</BottomSheetContent>
     </Wrapper>
   );
 };

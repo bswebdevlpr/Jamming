@@ -8,8 +8,14 @@ import { Camera } from "@/app/ui/images/camera";
 import { BandType } from "@/app/ui/images/signup/band-type";
 import { Genre } from "@/app/ui/images/signup/genre";
 import { Position } from "@/app/ui/images/signup/position";
-import { SelectItem } from "@/app/ui/items/select-item";
+import SelectItem from "@/app/ui/grids/item";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import BottomSheetContent, {
+  BottomSheetContentType,
+} from "./(bottom-sheet)/content";
 
 const TextBox = ({
   upTxt,
@@ -54,12 +60,31 @@ const TextBox = ({
 };
 
 export default function SignUp_Profile() {
+  // STATE
   const [isPulledUp, setIsPulledUp] = useState(false);
+  const [bottomSheetType, setBottomSheetType] =
+    useState<BottomSheetContentType>(null);
 
-  const handleIsPulledUp = () => {
+  const handleIsPulledUp = (type?: BottomSheetContentType) => {
     setIsPulledUp(!isPulledUp);
-    console.log("handler is triggered. and isPulledUp:", isPulledUp);
+    if (type) setBottomSheetType(type);
   };
+  //
+
+  // FORM
+  // const formSchema = z.object({
+  //   position: z.string().min(1, { message: "닉네임을 입력해주세요." }),
+  //   genre: z.string().min(1, { message: "닉네임을 입력해주세요." }),
+  //   bandType: z.string().min(1, { message: "닉네임을 입력해주세요." }),
+  // });
+
+  // const form = useForm<z.infer<typeof formSchema>>({
+  //   resolver: zodResolver(formSchema),
+  //   defaultValues: {
+  //     nickname: "",
+  //   },
+  // });
+  //
 
   return (
     <div className="flex flex-col relative">
@@ -203,7 +228,7 @@ export default function SignUp_Profile() {
               upTxt="포지션"
               downTxt="선택"
               moveTo="16.32px"
-              onClick={handleIsPulledUp}
+              onClick={() => handleIsPulledUp("position")}
             />
             <Position />
           </div>
@@ -212,7 +237,7 @@ export default function SignUp_Profile() {
               upTxt="선호장르"
               downTxt="선택"
               moveTo="0px"
-              onClick={handleIsPulledUp}
+              onClick={() => handleIsPulledUp("genre")}
             />
             <Genre
               style={{
@@ -225,7 +250,7 @@ export default function SignUp_Profile() {
               upTxt="밴드 유형"
               downTxt="선택"
               moveTo="-17px"
-              onClick={handleIsPulledUp}
+              onClick={() => handleIsPulledUp("bandType")}
             />
             <BandType
               style={{
@@ -235,43 +260,13 @@ export default function SignUp_Profile() {
           </div>
         </div>
       </div>
+      {/* 바텀 시트 */}
       <BottomSheet pullUp={isPulledUp}>
-        <div className="h-full flex flex-col justify-between">
-          <div className="flex flex-col items-center gap-2">
-            <p
-              style={{
-                fontFamily: "SUIT-Body",
-                fontSize: "20px",
-                color: "#C0C0C5",
-              }}
-            >
-              밴드 유형 선택
-            </p>
-            <p
-              style={{
-                fontFamily: "SUIT-Body",
-                fontSize: "12px",
-                color: "#9F9FA2",
-              }}
-            >
-              (최대 3개)
-            </p>
-          </div>
-          <div className="grow flex flex-col justify-end mb-7">
-            {/* 선택사항들 */}
-            <div className="grid grid-cols-3 gap-1">
-              <SelectItem content="프로" />
-              <SelectItem content="아마추어" />
-              <SelectItem content="스터디" />
-              <SelectItem content="직장인 밴드" />
-            </div>
-          </div>
-          {/* 취소/완료 버튼 */}
-          <div className="flex justify-center gap-2 mb-2">
-            <CancelButton onClick={handleIsPulledUp} />
-            <CompleteButton onClick={handleIsPulledUp} />
-          </div>
-        </div>
+        <BottomSheetContent
+          type={bottomSheetType}
+          handleCancel={() => handleIsPulledUp()}
+          handleComplete={() => handleIsPulledUp()}
+        />
       </BottomSheet>
     </div>
   );

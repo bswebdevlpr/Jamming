@@ -1,8 +1,8 @@
 "use client";
 
-import { RoundedCheckbox } from "../../ui/checkbox";
+import { RoundedCheckbox } from "@/app/ui/checkbox";
 import { useEffect, useRef, useState } from "react";
-import { RightArrow } from "../../ui/images/arrows";
+import { RightArrow } from "@/app/ui/images/arrows";
 
 const PolicyRow = ({
   opt,
