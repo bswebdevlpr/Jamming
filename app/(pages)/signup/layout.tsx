@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { BlueNote, GrayNote, GreenNote, PinkNote } from "../ui/images/note";
-import { NextButton } from "../ui/buttons/next";
+import { BlueNote, GrayNote, GreenNote, PinkNote } from "@/app/ui/images/note";
+import { NextButton } from "@/app/ui/buttons/next";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const splitedPath = usePathname().split("/");

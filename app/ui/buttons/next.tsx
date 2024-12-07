@@ -2,9 +2,11 @@ import { CSSProperties } from "react";
 
 const common: CSSProperties = {
   display: "flex",
-  width: "343px",
+  width: "100%",
   height: "44px",
+
   padding: "10px 12px",
+
   justifyContent: "center",
   alignItems: "center",
   flexShrink: 0,
