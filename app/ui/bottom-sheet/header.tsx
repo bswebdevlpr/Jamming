@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <div
-      className="h-12 pt-4 pb-1"
+      className="pt-4 pb-1"
       style={{
         borderTopLeftRadius: "8px",
         borderTopRightRadius: "8px",

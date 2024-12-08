@@ -102,8 +102,8 @@ export default function SignUp_Profile() {
         <div className="flex flex-row justify-between min-w-full">
           <div
             style={{
-              width: "175.765px",
-              height: "184.92px",
+              width: "51.24%", //"175.765px",
+              height: "24.55vh", // "184.92px",
               backgroundColor: "#242426",
               clipPath: "polygon(0% 0%, 0% 100%, 85% 85%, 100% 0%)",
             }}
@@ -111,8 +111,8 @@ export default function SignUp_Profile() {
             <span
               className="inline-block"
               style={{
-                marginTop: "66px",
-                marginLeft: "54px",
+                marginTop: "35.69%", // "66px",
+                marginLeft: "30.72%", // "54px",
               }}
             >
               <div className="flex flex-col items-center">
@@ -128,23 +128,25 @@ export default function SignUp_Profile() {
               </div>
             </span>
           </div>
-          <div className="flex flex-col items-end relative">
+          <div className="grow flex flex-col items-end relative">
             <div
               className="absolute z-10"
               style={{
-                width: "16px",
-                height: "76px",
+                width: "9.46%", // "16px",
+                height: "43%", //"76px",
                 backgroundColor: "#242426",
-                clipPath: "polygon(16px 0px, 16px 76px, 0px 76px)",
-                transform: "translate(-160px)",
+                clipPath: "polygon(100% 0%, 100% 100%, 0% 100%)",
+                transform: "translate(-962%)", //"translate(-160px)",
               }}
             />
             <div
               style={{
-                width: "160px",
-                height: "76px",
+                width: "91.22%",
+                height: "43%", // "76px",
                 backgroundColor: "#242426",
-                clipPath: "polygon(0px 0px, 0px 76px, 160px 76px, 160px 0px)",
+                // clipPath:
+                //   "polygon(0% 0%, 0% 10.09vh, 42.66vw 10.09vh, 42.66vw 0vh)",
+                // "polygon(0px 0px, 0px 76px, 160px 76px, 160px 0px)",
               }}
             >
               <div
@@ -188,8 +190,8 @@ export default function SignUp_Profile() {
             <div
               className="flex flex-col justify-between"
               style={{
-                width: "171px",
-                height: "100px",
+                width: "102%", //"171px",
+                height: "57%", //"100px",
                 padding: "14px 8px",
               }}
             >
@@ -222,17 +224,17 @@ export default function SignUp_Profile() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col">
-          <div className="relative">
+        <div className="flex flex-col justify-center items-center">
+          <div className="relative w-full h-auto">
             <TextBox
               upTxt="포지션"
               downTxt="선택"
-              moveTo="16.32px"
+              moveTo="2.16vh"
               onClick={() => handleIsPulledUp("position")}
             />
             <Position />
           </div>
-          <div className="relative">
+          <div className="relative w-full h-auto">
             <TextBox
               upTxt="선호장르"
               downTxt="선택"
@@ -241,20 +243,20 @@ export default function SignUp_Profile() {
             />
             <Genre
               style={{
-                transform: "translate(0px, -19px)",
+                transform: "translate(0vw, -2.52vh)",
               }}
             />
           </div>
-          <div className="relative">
+          <div className="relative w-full h-auto">
             <TextBox
               upTxt="밴드 유형"
               downTxt="선택"
-              moveTo="-17px"
+              moveTo="-2.25vh" //"-17px"
               onClick={() => handleIsPulledUp("bandType")}
             />
             <BandType
               style={{
-                transform: "translate(0px, -41px)",
+                transform: "translate(0vw, -5.44vh)",
               }}
             />
           </div>

@@ -61,23 +61,44 @@
 :root {
   --background: #111113;
   --foreground: #ededed;
+
+  --min-width: 375px;
+  /* min-height: 812px; statusbar, footer 포함*/
+  --min-height: 753px;
+  --max-width: 600px;
+  --max-height: 1080px;
+
+  --font-size: 14px;
 }
 
 html,
 body {
-  /* min-height: 812px; statusbar, footer 포함*/
-  min-width: 360px;
-  min-height: 753px; /* 제외 */
-  max-width: 600px;
-  max-height: 1080px;
-
-  margin: 0 auto;
-  padding-left: 8px;
-  padding-right: 8px;
+  min-width: var(--min-width);
+  min-height: var(--min-height);
+  max-width: var(--max-width);
+  max-height: var(--max-height);
 
   color: var(--foreground);
   background: var(--background);
+
   font-family: Arial, Helvetica, sans-serif;
+}
+
+html {
+  margin: 0 auto;
+  padding: 0 16px;
+
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: calc(var(--min-width) - 32px);
+  min-height: var(--min-height);
+  max-width: calc(var(--max-width) - 32px);
+  max-height: var(--max-height);
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #__next {

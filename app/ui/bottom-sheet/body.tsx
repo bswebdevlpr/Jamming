@@ -21,6 +21,7 @@ const Wrapper = ({
 
   useEffect(() => {
     setSheetHeight(window.innerHeight - 43);
+    ref.current?.style.setProperty("display", "flex");
   }, []);
 
   useEffect(() => {
@@ -46,6 +47,8 @@ const Wrapper = ({
         height: `${sheetHeight}px`,
 
         transition: "transform 0.75s ease-out",
+
+        display: "none",
       }}
     >
       {children}
