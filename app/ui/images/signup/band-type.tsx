@@ -5,11 +5,13 @@ export const BandType = ({ style }: { style: CSSProperties }) => {
   return (
     <Image
       style={style}
-      className="ml-auto"
+      className="ml-auto w-full h-auto"
       src="/signup/profile/band-type.svg"
       alt="band type"
-      width={347}
-      height={123.41}
+      width={0}
+      height={0}
+      // width={347}
+      // height={123.41}
     />
   );
 };

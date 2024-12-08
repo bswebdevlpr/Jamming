@@ -5,11 +5,13 @@ export const Genre = ({ style }: { style: CSSProperties }) => {
   return (
     <Image
       style={style}
-      className="ml-auto"
+      className="ml-auto w-full h-auto"
       src="/signup/profile/genre.svg"
       alt="genre"
-      width={347}
-      height={119.871}
+      width={0}
+      height={0}
+      // width={347}
+      // height={119.871}
     />
   );
 };
