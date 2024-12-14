@@ -19,7 +19,7 @@ const style_inactivated: CSSProperties = {
   border: "1px solid #333335",
   borderRadius: "8px",
 
-  fontFamily: "SUIT-Title",
+  fontFamily: "SUIT-TITLE",
   fontSize: "16px",
   color: "#767678",
 };
@@ -31,7 +31,7 @@ const style_activated: CSSProperties = {
   border: "1px solid #A3FF0C",
   borderRadius: "8px",
 
-  fontFamily: "SUIT-Title",
+  fontFamily: "SUIT-TITLE",
   fontSize: "16px",
   color: "#A3FF0C",
 };

@@ -10,7 +10,7 @@ const CancelButton = ({ onClick }: { onClick: () => void }) => {
 
         padding: "10px 12px",
 
-        fontFamily: "SUIT-Body",
+        fontFamily: "SUIT-BODY",
         fontSize: "16px",
         color: "#C0C0C5",
       }}

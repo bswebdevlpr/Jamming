@@ -39,7 +39,7 @@ const TextBox = ({
     >
       <p
         style={{
-          fontFamily: "SUIT-Body",
+          fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
         }}
@@ -48,7 +48,7 @@ const TextBox = ({
       </p>
       <p
         style={{
-          fontFamily: "SUIT-Body",
+          fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
         }}
@@ -119,7 +119,7 @@ export default function SignUp_Profile() {
                 <Camera style={{ marginBottom: "6px" }} />
                 <p
                   style={{
-                    fontFamily: "SUIT-Body",
+                    fontFamily: "SUIT-BODY",
                     fontSize: "12px",
                   }}
                 >
@@ -159,7 +159,7 @@ export default function SignUp_Profile() {
               >
                 <p
                   style={{
-                    fontFamily: "SUIT-Body",
+                    fontFamily: "SUIT-BODY",
                     fontSize: "12px",
                   }}
                 >
@@ -168,7 +168,7 @@ export default function SignUp_Profile() {
                 <div className="flex flex-row justify-between">
                   <p
                     style={{
-                      fontFamily: "SUIT-Body",
+                      fontFamily: "SUIT-BODY",
                       fontSize: "12px",
                       color: "#9F9FA2",
                     }}
@@ -177,7 +177,7 @@ export default function SignUp_Profile() {
                   </p>
                   <p
                     style={{
-                      fontFamily: "SUIT-Body",
+                      fontFamily: "SUIT-BODY",
                       fontSize: "12px",
                       color: "#767678",
                     }}
@@ -197,7 +197,7 @@ export default function SignUp_Profile() {
             >
               <p
                 style={{
-                  fontFamily: "SUIT-Body",
+                  fontFamily: "SUIT-BODY",
                   fontSize: "14px",
                   color: "#E5E5E9",
                 }}
@@ -214,7 +214,7 @@ export default function SignUp_Profile() {
               </p>
               <p
                 style={{
-                  fontFamily: "SUIT-Body",
+                  fontFamily: "SUIT-BODY",
                   fontSize: "12px",
                   color: "#9F9FA2",
                 }}

@@ -20,7 +20,7 @@ const PolicyRow = ({
       <RoundedCheckbox onClick={onClick} thisState={thisState} />
       <p
         style={{
-          fontFamily: "SUIT-Body",
+          fontFamily: "SUIT-BODY",
           fontSize: "14px",
         }}
       >
@@ -94,7 +94,7 @@ export default function SignUp_Policy() {
       >
         <p
           style={{
-            fontFamily: "SUIT-Body",
+            fontFamily: "SUIT-BODY",
             fontSize: "16px",
             color: "#E5E5E9",
           }}
@@ -109,7 +109,7 @@ export default function SignUp_Policy() {
       <div className="mx-3 mb-8">
         <p
           style={{
-            fontFamily: "SUIT-Body",
+            fontFamily: "SUIT-BODY",
             fontSize: "13px",
           }}
         >
@@ -117,7 +117,7 @@ export default function SignUp_Policy() {
         </p>
         <p
           style={{
-            fontFamily: "SUIT-Body",
+            fontFamily: "SUIT-BODY",
             fontSize: "13px",
           }}
         >

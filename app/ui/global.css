@@ -38,7 +38,7 @@
 
 /* 국문 */
 @font-face {
-  font-family: "SUIT-Title";
+  font-family: "SUIT-TITLE";
   src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-SemiBold.woff2")
     format("woff2");
   font-weight: normal;
@@ -48,7 +48,7 @@
   line-height: 140%;
 }
 @font-face {
-  font-family: "SUIT-Body";
+  font-family: "SUIT-BODY";
   src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2")
     format("woff2");
   font-weight: normal;
@@ -86,7 +86,6 @@ body {
 
 html {
   margin: 0 auto;
-  padding: 0 16px;
 
   scroll-behavior: smooth;
 }
