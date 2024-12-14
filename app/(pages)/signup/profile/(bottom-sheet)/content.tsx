@@ -62,7 +62,7 @@ const BottomSheetContent = ({
       <div className="flex flex-col items-center gap-2">
         <p
           style={{
-            fontFamily: "SUIT-Body",
+            fontFamily: "SUIT-BODY",
             fontSize: "20px",
             color: "#C0C0C5",
           }}
@@ -72,7 +72,7 @@ const BottomSheetContent = ({
         {/* {
             <p
           style={{
-            fontFamily: "SUIT-Body",
+            fontFamily: "SUIT-BODY",
             fontSize: "12px",
             color: "#9F9FA2",
           }}

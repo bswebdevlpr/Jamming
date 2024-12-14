@@ -55,7 +55,7 @@ export default function SignIn() {
         </p>
         <p
           style={{
-            fontFamily: "SUIT-Body",
+            fontFamily: "SUIT-BODY",
             fontSize: "14px",
             color: "#C0C0C5",
           }}

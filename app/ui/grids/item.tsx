@@ -6,7 +6,7 @@ const commonStyle: CSSProperties = {
 
   background: "#323234",
 
-  fontFamily: "SUIT-Body",
+  fontFamily: "SUIT-BODY",
   fontSize: "14px",
 
   textAlign: "center",
