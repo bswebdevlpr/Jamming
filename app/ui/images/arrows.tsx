@@ -11,3 +11,9 @@ export const RightArrow = () => {
     />
   );
 };
+
+export const DownArrow = () => {
+  return (
+    <Image src="/arrow-down.svg" alt="arrow-down" width={20} height={20} />
+  );
+};

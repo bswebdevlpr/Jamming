@@ -9,9 +9,9 @@ export default function JamNow() {
         border: "1px solid #A3FF0C",
         borderRadius: "6.25rem",
 
-        bottom: "9.06vh",
-        right: "4.26vw",
-        position: "fixed",
+        position: "absolute",
+        bottom: "9.6%",
+        right: "5.33%",
       }}
     >
       <Plus />
