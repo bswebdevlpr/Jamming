@@ -1,5 +1,3 @@
-"use client";
-
 import JamNow from "@/app/ui/buttons/jam-now";
 import ContentArea from "@/app/ui/layouts/content-area";
 import WorkSpace from "@/app/ui/layouts/workspace";

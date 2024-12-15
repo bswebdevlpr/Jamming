@@ -3,32 +3,61 @@ import BottomSheetHeader from "./header";
 import { useBottomSheet } from "@/app/hooks/useBottomSheet";
 import { motion } from "framer-motion";
 
-export const MIN_Y = 10;
+export type BottomSheetLocation = null | "high" | "middle" | "low" | "hidden";
 
 interface Props {
   children: ReactNode;
   // ref: RefObject<HTMLDivElement>;
 }
 
+const HIGH_Y = 97.77;
+const MIDDLE_Y = 59.95;
+const LOW_Y = 0;
+
 const Wrapper = ({
   children,
   pullUp,
 }: Props & {
-  pullUp: boolean;
+  pullUp: BottomSheetLocation;
 }) => {
-  const [sheetHeight, setSheetHeight] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
 
+  const [sheetWidth, setSheetWidth] = useState(0);
+  const [sheetHeight, setSheetHeight] = useState(0);
+
+  const [prevDist, setPrevDist] = useState(0);
+
   useEffect(() => {
-    setSheetHeight(window.innerHeight - 43);
+    setSheetWidth(document.body.offsetWidth);
+    setSheetHeight(window.innerHeight);
     ref.current?.style.setProperty("display", "flex");
   }, []);
 
   useEffect(() => {
-    const MAX_Y = window.innerHeight;
-    if (pullUp)
-      ref.current?.style.setProperty("transform", `translateY(-${MAX_Y}px)`);
-    else ref.current?.style.setProperty("transform", `translateY(${MAX_Y}px)`);
+    switch (pullUp) {
+      case "high":
+        ref.current?.style.setProperty("transform", `translateY(-${HIGH_Y}vh)`);
+        setPrevDist(HIGH_Y);
+        break;
+      case "middle":
+        ref.current?.style.setProperty(
+          "transform",
+          `translateY(-${MIDDLE_Y}vh)`
+        );
+        setPrevDist(MIDDLE_Y);
+        break;
+      case "low":
+        ref.current?.style.setProperty("transform", `translateY(-${LOW_Y}vh)`);
+        setPrevDist(LOW_Y);
+        break;
+      case "hidden":
+        ref.current?.style.setProperty(
+          "transform",
+          `translateY(${prevDist}vh)`
+        );
+        setPrevDist(0);
+        break;
+    }
   }, [pullUp]);
 
   return (
@@ -36,15 +65,13 @@ const Wrapper = ({
       ref={ref}
       className="flex flex-col absolute z-20"
       style={{
-        top: `${sheetHeight}px`,
-
-        width: "100%",
+        width: `${sheetWidth}px`,
+        height: `${sheetHeight}px`,
 
         borderTopLeftRadius: "8px",
         borderTopRightRadius: "8px",
         backgroundColor: "#242426",
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
-        height: `${sheetHeight}px`,
 
         transition: "transform 0.75s ease-out",
 
@@ -74,7 +101,7 @@ const BottomSheet = ({
   pullUp,
 }: {
   children: ReactNode;
-  pullUp: boolean;
+  pullUp: BottomSheetLocation;
 }) => {
   // const { sheet, content } = useBottomSheet();
 
