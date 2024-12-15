@@ -252,7 +252,7 @@ export default function SignUp_Profile() {
               upTxt="밴드 유형"
               downTxt="선택"
               moveTo="-2.25vh" //"-17px"
-              onClick={() => handleIsPulledUp("bandType")}
+              onClick={() => handleIsPulledUp("level")}
             />
             <BandType
               style={{

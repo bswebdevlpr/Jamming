@@ -75,6 +75,7 @@ html,
 body {
   min-width: var(--min-width);
   min-height: var(--min-height);
+
   max-width: var(--max-width);
   max-height: var(--max-height);
 
@@ -91,10 +92,7 @@ html {
 }
 
 body {
-  min-width: calc(var(--min-width) - 32px);
-  min-height: var(--min-height);
-  max-width: calc(var(--max-width) - 32px);
-  max-height: var(--max-height);
+  overflow: hidden;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

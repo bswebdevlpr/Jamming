@@ -1,8 +1,13 @@
 import CancelButton from "@/app/ui/buttons/cancel";
 import CompleteButton from "@/app/ui/buttons/complete";
+import Grid from "@/app/ui/grids/grid";
 import GridItem from "@/app/ui/grids/item";
 
-export type BottomSheetContentType = null | "position" | "genre" | "bandType";
+const positions = ["기타", "베이스", "드럼", "보컬", "키보드"];
+const genres = ["종합", "락", "팝", "인디", "재즈", "펑크", "메탈"];
+const level = ["프로", "아마추어", "스터디", "직장인 밴드"];
+
+export type BottomSheetContentType = null | "position" | "genre" | "level";
 
 const BottomSheetContent = ({
   type,
@@ -18,42 +23,14 @@ const BottomSheetContent = ({
       ? "포지션 선택"
       : type === "genre"
       ? "장르 선택"
-      : type === "bandType"
+      : type === "level"
       ? "밴드 유형 선택"
       : null;
 
   const body = () => {
-    if (type === "position")
-      return (
-        <>
-          <GridItem content="기타" />
-          <GridItem content="베이스" />
-          <GridItem content="드럼" />
-          <GridItem content="보컬" />
-          <GridItem content="키보드" />
-        </>
-      );
-    else if (type === "genre")
-      return (
-        <>
-          <GridItem content="종합" />
-          <GridItem content="락" />
-          <GridItem content="팝" />
-          <GridItem content="인디" />
-          <GridItem content="재즈" />
-          <GridItem content="펑크" />
-          <GridItem content="메탈" />
-        </>
-      );
-    else if (type === "bandType")
-      return (
-        <>
-          <GridItem content="프로" />
-          <GridItem content="아마추어" />
-          <GridItem content="스터디" />
-          <GridItem content="직장인 밴드" />
-        </>
-      );
+    if (type === "position") return <Grid items={positions} />;
+    else if (type === "genre") return <Grid items={genres} />;
+    else if (type === "level") return <Grid items={level} />;
     else return null;
   };
 
