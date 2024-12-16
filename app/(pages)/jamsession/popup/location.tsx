@@ -1,7 +1,24 @@
 "use client";
 
+import {
+  Location,
+  LocationBackgroundURL,
+} from "@/app/lib/constants/location.enum";
 import X from "@/app/ui/images/common/x";
+import { ListItemProp } from "@/app/ui/lists/item";
+import VerticalList from "@/app/ui/lists/list";
 import { useEffect, useRef, useState } from "react";
+
+const locations: Partial<ListItemProp>[] = Object.keys(Location).map((key) => {
+  const typeForcedKey: keyof typeof Location = key as keyof typeof Location;
+
+  return {
+    text: Location[typeForcedKey],
+    style: {
+      background: `linear-gradient(90deg, rgba(0, 0, 0, 0.80) 0%, rgba(0, 0, 0, 0.00) 50%), url(${LocationBackgroundURL[typeForcedKey]}) lightgray 50% / cover no-repeat`,
+    },
+  };
+});
 
 export default function LocationPopup({
   turnOn,
@@ -33,13 +50,17 @@ export default function LocationPopup({
       style={{
         width: `${width}px`,
         height: `${height}px`,
-        backgroundColor: "#111113",
+
         top: 0,
         left: 0,
+
+        overflow: "scroll",
+
+        backgroundColor: "#111113",
       }}
     >
       <div
-        className="flex flex-row justify-between w-full px-5 py-3"
+        className="flex flex-row justify-between w-full px-5 py-3 mb-3"
         style={{
           borderBottom: "1px solid #323234",
         }}
@@ -55,6 +76,7 @@ export default function LocationPopup({
         </p>
         <X onClick={invertLocation} />
       </div>
+      <VerticalList props={locations} className="px-5" />
     </div>
   );
 }

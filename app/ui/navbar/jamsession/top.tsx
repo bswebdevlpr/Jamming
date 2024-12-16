@@ -9,6 +9,7 @@ import { useState } from "react";
 export default function TopNavBar() {
   const [isLocationClicked, setIsLocationClicked] = useState(false);
   const handleLocationClick = () => {
+    console.log("handler clicked!");
     setIsLocationClicked(!isLocationClicked);
   };
 
@@ -32,7 +33,7 @@ export default function TopNavBar() {
       </div>
       <LocationPopup
         turnOn={isLocationClicked}
-        invertLocation={setIsLocationClicked}
+        invertLocation={handleLocationClick}
       />
     </div>
   );
