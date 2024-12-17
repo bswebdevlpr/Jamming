@@ -15,8 +15,7 @@ export default function CategoryFilter() {
     <div className="flex flex-row gap-4">
       <div
         onClick={() => {
-          if (bottomSheet.handler)
-            bottomSheet.handler({ location: "middle", content: null });
+          bottomSheet.setter({ location: "middle", children: null });
         }}
       >
         <Location />

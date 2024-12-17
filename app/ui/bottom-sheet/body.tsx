@@ -3,7 +3,7 @@ import BottomSheetHeader from "./header";
 import { useBottomSheet } from "@/app/hooks/useBottomSheet";
 import { motion } from "framer-motion";
 
-export type BottomSheetLocation = null | "high" | "middle" | "low" | "hidden";
+export type BottomSheetHeight = null | "high" | "middle" | "low" | "hidden";
 
 interface Props {
   children: ReactNode;
@@ -18,7 +18,7 @@ const Wrapper = ({
   children,
   pullUp,
 }: Props & {
-  pullUp: BottomSheetLocation;
+  pullUp: BottomSheetHeight;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -101,7 +101,7 @@ const BottomSheet = ({
   pullUp,
 }: {
   children: ReactNode;
-  pullUp: BottomSheetLocation;
+  pullUp: BottomSheetHeight;
 }) => {
   // const { sheet, content } = useBottomSheet();
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { CSSProperties, useState } from "react";
 import GridItem from "./item";
 
 const gridCols: { [key: number]: string } = {
@@ -17,7 +17,15 @@ const gridCols: { [key: number]: string } = {
  * @param colNum
  * - default: 3
  */
-const Grid = ({ items, colNum }: { items: string[]; colNum?: number }) => {
+const Grid = ({
+  items,
+  colNum,
+  itemStyle,
+}: {
+  items: string[];
+  colNum?: number;
+  itemStyle?: CSSProperties;
+}) => {
   const [itemStateList, setItemStateList] = useState<boolean[]>(
     Array(items.length).fill(false)
   );
@@ -29,16 +37,17 @@ const Grid = ({ items, colNum }: { items: string[]; colNum?: number }) => {
     });
   };
 
-  const createItems = (contents: string[]) => {
+  const createItems = (texts: string[]) => {
     return (
       <>
-        {contents.map((content, idx) => (
+        {texts.map((text, idx) => (
           <GridItem
             key={idx}
             idx={idx}
-            content={content}
-            state={itemStateList[idx]}
+            text={text}
+            isFocused={itemStateList[idx]}
             onClick={handleItemClick}
+            style={itemStyle}
           />
         ))}
       </>

@@ -1,11 +1,14 @@
+import { GenreEnum } from "@/app/lib/constants/genre.enum";
+import { LevelEnum } from "@/app/lib/constants/level.enum";
+import { PositionEnum } from "@/app/lib/constants/position.enum";
 import CancelButton from "@/app/ui/buttons/cancel";
 import CompleteButton from "@/app/ui/buttons/complete";
 import Grid from "@/app/ui/grids/grid";
 import GridItem from "@/app/ui/grids/item";
 
-const positions = ["기타", "베이스", "드럼", "보컬", "키보드"];
-const genres = ["종합", "락", "팝", "인디", "재즈", "펑크", "메탈"];
-const level = ["프로", "아마추어", "스터디", "직장인 밴드"];
+const positions = Object.values(PositionEnum);
+const genres = Object.values(GenreEnum);
+const level = Object.values(LevelEnum);
 
 export type BottomSheetContentType = null | "position" | "genre" | "level";
 

@@ -7,9 +7,7 @@ const commonStyle: CSSProperties = {
   background: "#323234",
 
   fontFamily: "SUIT-BODY",
-  fontSize: "14px",
-
-  textAlign: "center",
+  fontSize: "0.875rem",
 };
 const deactivatedStyle: CSSProperties = {
   ...commonStyle,
@@ -24,28 +22,36 @@ const activatedStyle: CSSProperties = {
 
 const GridItem = ({
   idx,
-  content,
-  state,
+  text,
+  isFocused,
   onClick,
+  style,
 }: {
   idx: number;
-  content: string;
-  state: boolean;
+  text: string;
+  isFocused: boolean;
   onClick: (idx: number) => void;
+  style?: CSSProperties;
 }) => {
-  const [style, setStyle] = useState(deactivatedStyle);
+  const [innerStyle, setInnerStyle] = useState(deactivatedStyle);
 
   useEffect(() => {
-    if (state) {
-      setStyle(activatedStyle);
+    if (isFocused) {
+      setInnerStyle(activatedStyle);
     } else {
-      setStyle(deactivatedStyle);
+      setInnerStyle(deactivatedStyle);
     }
-  }, [state]);
+  }, [isFocused]);
+
+  console.log({ ...innerStyle, ...style });
 
   return (
-    <div className="p-4" style={style} onClick={() => onClick(idx)}>
-      {content}
+    <div
+      className="flex justify-center items-center"
+      style={{ ...innerStyle, ...style }}
+      onClick={() => onClick(idx)}
+    >
+      {text}
     </div>
   );
 };
