@@ -1,6 +1,6 @@
 "use client";
 
-import BottomSheet from "@/app/ui/bottom-sheet/body";
+import BottomSheet, { BottomSheetHeight } from "@/app/ui/bottom-sheet/body";
 import CancelButton from "@/app/ui/buttons/cancel";
 import CompleteButton from "@/app/ui/buttons/complete";
 import { NextButton } from "@/app/ui/buttons/next";
@@ -9,13 +9,14 @@ import { BandType } from "@/app/ui/images/signup/band-type";
 import { Genre } from "@/app/ui/images/signup/genre";
 import { Position } from "@/app/ui/images/signup/position";
 import SelectItem from "@/app/ui/grids/item";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BottomSheetContent, {
   BottomSheetContentType,
 } from "./(bottom-sheet)/content";
+import { globalContext } from "../../layout";
 
 const TextBox = ({
   upTxt,
@@ -60,16 +61,10 @@ const TextBox = ({
 };
 
 export default function SignUp_Profile() {
-  // STATE
-  const [isPulledUp, setIsPulledUp] = useState(false);
-  const [bottomSheetType, setBottomSheetType] =
-    useState<BottomSheetContentType>(null);
-
-  const handleIsPulledUp = (type?: BottomSheetContentType) => {
-    setIsPulledUp(!isPulledUp);
-    if (type) setBottomSheetType(type);
+  const { bottomSheet } = useContext(globalContext);
+  const closeBottomSheet = () => {
+    bottomSheet.setter({ location: "hidden" });
   };
-  //
 
   // FORM
   // const formSchema = z.object({
@@ -230,7 +225,18 @@ export default function SignUp_Profile() {
               upTxt="포지션"
               downTxt="선택"
               moveTo="2.16vh"
-              onClick={() => handleIsPulledUp("position")}
+              onClick={() =>
+                bottomSheet.setter({
+                  location: "middle",
+                  children: (
+                    <BottomSheetContent
+                      type="position"
+                      handleCancel={closeBottomSheet}
+                      handleComplete={closeBottomSheet}
+                    />
+                  ),
+                })
+              }
             />
             <Position />
           </div>
@@ -239,7 +245,18 @@ export default function SignUp_Profile() {
               upTxt="선호장르"
               downTxt="선택"
               moveTo="0px"
-              onClick={() => handleIsPulledUp("genre")}
+              onClick={() =>
+                bottomSheet.setter({
+                  location: "middle",
+                  children: (
+                    <BottomSheetContent
+                      type="genre"
+                      handleCancel={closeBottomSheet}
+                      handleComplete={closeBottomSheet}
+                    />
+                  ),
+                })
+              }
             />
             <Genre
               style={{
@@ -252,7 +269,18 @@ export default function SignUp_Profile() {
               upTxt="밴드 유형"
               downTxt="선택"
               moveTo="-2.25vh" //"-17px"
-              onClick={() => handleIsPulledUp("level")}
+              onClick={() =>
+                bottomSheet.setter({
+                  location: "middle",
+                  children: (
+                    <BottomSheetContent
+                      type="level"
+                      handleCancel={closeBottomSheet}
+                      handleComplete={closeBottomSheet}
+                    />
+                  ),
+                })
+              }
             />
             <BandType
               style={{
@@ -262,14 +290,6 @@ export default function SignUp_Profile() {
           </div>
         </div>
       </div>
-      {/* 바텀 시트 */}
-      <BottomSheet pullUp={isPulledUp}>
-        <BottomSheetContent
-          type={bottomSheetType}
-          handleCancel={() => handleIsPulledUp()}
-          handleComplete={() => handleIsPulledUp()}
-        />
-      </BottomSheet>
     </div>
   );
 }

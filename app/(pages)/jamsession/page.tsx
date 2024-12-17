@@ -1,8 +1,15 @@
+"use client";
+
 import CategoryFilter from "@/app/ui/categories/category-filter";
 import TopNavBar from "../../ui/navbar/jamsession/top";
 import Filter from "@/app/ui/images/filter";
+import { useContext } from "react";
+import { globalContext } from "../layout";
+import BottomSheetContent from "./bottom-sheet/content";
 
 export default function JamSession() {
+  const { bottomSheet } = useContext(globalContext);
+
   return (
     <div className="grow flex flex-col">
       <TopNavBar />
@@ -30,7 +37,16 @@ export default function JamSession() {
           >
             필터
           </p>
-          <Filter />
+          <div
+            onClick={() =>
+              bottomSheet.setter({
+                location: "high",
+                children: <BottomSheetContent />,
+              })
+            }
+          >
+            <Filter />
+          </div>
         </span>
       </div>
       <div className="grow flex justify-center items-center">

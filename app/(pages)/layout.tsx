@@ -1,12 +1,12 @@
 "use client";
 
 import { createContext, ReactNode, useState } from "react";
-import BottomSheet, { BottomSheetLocation } from "../ui/bottom-sheet/body";
+import BottomSheet, { BottomSheetHeight } from "../ui/bottom-sheet/body";
 
 export interface BottomSheetContext {
-  location: BottomSheetLocation;
-  content: ReactNode;
-  handler: null | ((input: Omit<BottomSheetContext, "handler">) => void);
+  location: BottomSheetHeight;
+  children: ReactNode;
+  setter: (input: Partial<BottomSheetContext>) => void;
 }
 
 export interface GlobalContext {
@@ -15,8 +15,8 @@ export interface GlobalContext {
 const defaultContext: GlobalContext = {
   bottomSheet: {
     location: null,
-    content: null,
-    handler: null,
+    children: null,
+    setter: () => {},
   },
 };
 
@@ -29,17 +29,17 @@ function GlobalLayout({
 }>) {
   const [globalState, setGlobalState] = useState<GlobalContext>(defaultContext);
 
-  const handleBottomSheet = (input: Omit<BottomSheetContext, "handler">) => {
+  const handleBottomSheet = (input: Partial<BottomSheetContext>) => {
     globalState.bottomSheet = { ...globalState.bottomSheet, ...input };
     setGlobalState({ ...globalState });
   };
-  globalState.bottomSheet.handler = handleBottomSheet;
+  globalState.bottomSheet.setter = handleBottomSheet;
 
   return (
     <globalContext.Provider value={globalState}>
       {children}
       <BottomSheet pullUp={globalState.bottomSheet.location}>
-        {globalState.bottomSheet.content}
+        {globalState.bottomSheet.children}
       </BottomSheet>
     </globalContext.Provider>
   );
