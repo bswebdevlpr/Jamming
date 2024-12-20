@@ -1,6 +1,12 @@
 "use client";
 
-import { CSSProperties, useState } from "react";
+import {
+  CSSProperties,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import GridItem from "./item";
 
 const gridCols: { [key: number]: string } = {
@@ -19,25 +25,45 @@ const gridCols: { [key: number]: string } = {
  */
 const Grid = ({
   items,
+  values,
   colNum,
   itemStyle,
+  itemStyleActivated,
+  handleState,
+  useInitState,
 }: {
   items: string[];
+  values: any[];
+  handleState: (input: any) => void;
   colNum?: number;
   itemStyle?: CSSProperties;
+  itemStyleActivated?: CSSProperties;
+  useInitState?: {
+    initState: boolean;
+    setInitState: Dispatch<SetStateAction<boolean>>;
+  };
 }) => {
   const [itemStateList, setItemStateList] = useState<boolean[]>(
     Array(items.length).fill(false)
   );
-  const handleItemClick = (selectedIdx: number) => {
+  const handleItemClick = (selectedIdx: number, value: any) => {
     setItemStateList((prev) => {
       const newList = [...prev].map((val, idx) => idx === selectedIdx);
 
       return newList;
     });
+
+    handleState(value);
   };
 
-  const createItems = (texts: string[]) => {
+  useEffect(() => {
+    if (useInitState?.initState) {
+      setItemStateList(Array(items.length).fill(false));
+      useInitState.setInitState(!useInitState?.initState);
+    }
+  }, [useInitState?.initState]);
+
+  const createItems = (texts: string[], values: any[]) => {
     return (
       <>
         {texts.map((text, idx) => (
@@ -45,9 +71,11 @@ const Grid = ({
             key={idx}
             idx={idx}
             text={text}
+            value={values[idx]}
             isFocused={itemStateList[idx]}
             onClick={handleItemClick}
             style={itemStyle}
+            styleActivated={itemStyleActivated}
           />
         ))}
       </>
@@ -56,7 +84,7 @@ const Grid = ({
 
   return (
     <div className={`grid ${gridCols[colNum ?? 3]} gap-1`}>
-      {createItems(items)}
+      {createItems(items, values)}
     </div>
   );
 };
