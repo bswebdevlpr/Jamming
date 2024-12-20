@@ -21,7 +21,7 @@ const VerticalListItem = ({
   return (
     <motion.div style={{ ...style, cursor: "pointer" }} onClick={onClick}>
       <motion.div
-        className="py-3"
+        className="py-3 px-5"
         style={{
           fontFamily: "SUIT-BODY",
           fontSize: "0.875rem",
