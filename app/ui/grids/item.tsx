@@ -43,8 +43,6 @@ const GridItem = ({
     }
   }, [isFocused]);
 
-  console.log({ ...innerStyle, ...style });
-
   return (
     <div
       className="flex justify-center items-center"

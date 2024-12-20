@@ -14,8 +14,9 @@ const locations: Partial<ListItemProp>[] = Object.keys(Location).map((key) => {
 
   return {
     text: Location[typeForcedKey],
+    backgroundUrl: LocationBackgroundURL[typeForcedKey],
     style: {
-      background: `linear-gradient(90deg, rgba(0, 0, 0, 0.80) 0%, rgba(0, 0, 0, 0.00) 50%), url(${LocationBackgroundURL[typeForcedKey]}) lightgray 50% / cover no-repeat`,
+      backgroundColor: "#111113",
     },
   };
 });
@@ -54,7 +55,7 @@ export default function LocationPopup({
         top: 0,
         left: 0,
 
-        overflow: "scroll",
+        overflow: "auto",
 
         backgroundColor: "#111113",
       }}
