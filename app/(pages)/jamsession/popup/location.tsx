@@ -77,7 +77,7 @@ export default function LocationPopup({
         </p>
         <X onClick={invertLocation} />
       </div>
-      <VerticalList props={locations} className="px-5" />
+      <VerticalList props={locations} />
     </div>
   );
 }
