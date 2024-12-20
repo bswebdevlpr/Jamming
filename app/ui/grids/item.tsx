@@ -13,41 +13,54 @@ const deactivatedStyle: CSSProperties = {
   ...commonStyle,
   color: "#C0C0C5",
 };
-const activatedStyle: CSSProperties = {
-  ...commonStyle,
-
-  border: "1.5px solid #A3FF0C",
-  color: "#A3FF0C",
-};
 
 const GridItem = ({
   idx,
   text,
+  value,
   isFocused,
   onClick,
   style,
+  styleActivated,
 }: {
   idx: number;
   text: string;
+  value: any;
   isFocused: boolean;
-  onClick: (idx: number) => void;
+  onClick: (idx: number, value: any) => void;
   style?: CSSProperties;
+  styleActivated?: CSSProperties;
 }) => {
-  const [innerStyle, setInnerStyle] = useState(deactivatedStyle);
+  const initStyle = {
+    ...deactivatedStyle,
+    ...style,
+  };
+
+  const [innerStyle, setInnerStyle] = useState(initStyle);
+
+  const activatedStyle: CSSProperties = {
+    ...commonStyle,
+    ...style,
+
+    border: "1.5px solid #A3FF0C",
+    color: "#A3FF0C",
+
+    ...styleActivated,
+  };
 
   useEffect(() => {
     if (isFocused) {
       setInnerStyle(activatedStyle);
     } else {
-      setInnerStyle(deactivatedStyle);
+      setInnerStyle(initStyle);
     }
   }, [isFocused]);
 
   return (
     <div
       className="flex justify-center items-center"
-      style={{ ...innerStyle, ...style }}
-      onClick={() => onClick(idx)}
+      style={innerStyle}
+      onClick={() => onClick(idx, value)}
     >
       {text}
     </div>
