@@ -23,6 +23,7 @@ export default function VerticalList({
           <VerticalListItem
             key={idx}
             text={typeForcedProp.text}
+            backgroundUrl={typeForcedProp.backgroundUrl}
             onClick={returnTxt(typeForcedProp.text)}
             style={prop.style}
           />
