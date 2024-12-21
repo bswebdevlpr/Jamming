@@ -9,20 +9,18 @@ import { useState } from "react";
 export default function TopNavBar() {
   const [isLocationClicked, setIsLocationClicked] = useState(false);
   const handleLocationClick = () => {
-    console.log("handler clicked!");
     setIsLocationClicked(!isLocationClicked);
   };
 
   return (
-    <div className="flex flex-row justify-between py-3">
+    <div className="flex flex-row justify-between px-5 py-3">
       <div className="flex flex-row gap-1" onClick={handleLocationClick}>
         <p
           style={{
             fontFamily: "SUIT-TITLE",
             fontSize: "1.125rem",
             color: "#FFF",
-          }}
-        >
+          }}>
           서울
         </p>
         <DownArrow />
@@ -31,10 +29,7 @@ export default function TopNavBar() {
         <Bell />
         <Calendar />
       </div>
-      <LocationPopup
-        turnOn={isLocationClicked}
-        invertLocation={handleLocationClick}
-      />
+      <LocationPopup turnOn={isLocationClicked} turnOff={handleLocationClick} />
     </div>
   );
 }

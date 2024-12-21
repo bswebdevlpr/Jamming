@@ -9,30 +9,26 @@ export default function BottomNavBar() {
       style={{
         height: "6.93vh", // 52px
         borderTop: "1px solid #323234",
-        background: "#111113",
-      }}
-    >
+        background: "var(--background)",
+      }}>
       <div
         className="grow flex justify-center items-center"
         style={{
           padding: "6px 18px",
-        }}
-      >
+        }}>
         <MyActivity />
       </div>
       <div
         style={{
           transform: "translate(0vh, -2.13vh)", // 16px
-        }}
-      >
+        }}>
         <HomeButton />
       </div>
       <div
         className="grow flex justify-center items-center"
         style={{
           padding: "6px 18px",
-        }}
-      >
+        }}>
         <Profile />
       </div>
     </div>
