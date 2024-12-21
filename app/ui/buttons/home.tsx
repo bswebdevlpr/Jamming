@@ -9,9 +9,8 @@ export default function HomeButton() {
         height: "56px",
         border: "1px solid #A3FF0C",
         borderRadius: "50%",
-        backgroundColor: "#111113",
-      }}
-    >
+        backgroundColor: "var(--background)",
+      }}>
       <Logo />
     </div>
   );

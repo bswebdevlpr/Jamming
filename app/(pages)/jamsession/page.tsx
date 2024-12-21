@@ -1,7 +1,5 @@
 "use client";
 
-import CategoryFilter from "@/app/ui/categories/category-filter";
-import TopNavBar from "../../ui/navbar/jamsession/top";
 import Filter from "@/app/ui/images/filter";
 import { useContext } from "react";
 import { globalContext } from "../layout";
@@ -12,7 +10,6 @@ export default function JamSession() {
 
   return (
     <div className="grow flex flex-col">
-      <TopNavBar />
       {/* <CategoryFilter />  */}
       {/* 슬라이드 캘린더 */}
       <p className="py-8 text-center">Slide Calendarrrrrrrrrrrr</p>
@@ -23,8 +20,7 @@ export default function JamSession() {
             fontFamily: "SBAggroB",
             fontSize: "0.875rem",
             color: "#9F9FA2",
-          }}
-        >
+          }}>
           JAM SESSION
         </p>
         <span className="flex flex-row gap-1 justify-center items-center">
@@ -33,8 +29,7 @@ export default function JamSession() {
               fontFamily: "SUIT-TITLE",
               fontSize: "0.875rem",
               color: "#9F9FA2",
-            }}
-          >
+            }}>
             필터
           </p>
           <div
@@ -43,8 +38,7 @@ export default function JamSession() {
                 location: "high",
                 children: <BottomSheetContent />,
               })
-            }
-          >
+            }>
             <Filter />
           </div>
         </span>

@@ -8,6 +8,9 @@ export default function X({ onClick }: { onClick: () => void }) {
       width={24}
       height={24}
       onClick={onClick}
+      style={{
+        cursor: "pointer",
+      }}
     />
   );
 }
