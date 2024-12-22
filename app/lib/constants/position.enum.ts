@@ -4,4 +4,5 @@ export enum PositionEnum {
   Drum = "드럼",
   Vocal = "보컬",
   Keyboard = "키보드",
+  ETC = "그 외",
 }

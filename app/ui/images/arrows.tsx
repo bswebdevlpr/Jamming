@@ -10,16 +10,35 @@ export const RightArrow = ({
   return (
     <Image
       className="ml-auto"
-      src="/arrow-right.svg"
-      alt="arrow-right"
+      src="/common/arrows/arrow-right.svg"
+      alt="arrow right"
       width={width ?? 20}
       height={height ?? 20}
+      style={{ cursor: "pointer" }}
     />
   );
 };
 
 export const DownArrow = () => {
   return (
-    <Image src="/arrow-down.svg" alt="arrow-down" width={20} height={20} />
+    <Image
+      src="/common/arrows/arrow-down.svg"
+      alt="arrow down"
+      width={20}
+      height={20}
+      style={{ cursor: "pointer" }}
+    />
+  );
+};
+
+export const LeftArrow: React.FC = () => {
+  return (
+    <Image
+      src="/common/arrows/arrow-left.svg"
+      alt="arrow left"
+      width={20}
+      height={20}
+      style={{ cursor: "pointer" }}
+    />
   );
 };

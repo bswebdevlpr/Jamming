@@ -7,6 +7,9 @@ export type BottomSheetHeight = null | "high" | "middle" | "low" | "hidden";
 
 interface Props {
   children: ReactNode;
+  width: number;
+  height: number;
+  pullUp: BottomSheetHeight;
   // ref: RefObject<HTMLDivElement>;
 }
 
@@ -14,24 +17,13 @@ const HIGH_Y = 97.77;
 const MIDDLE_Y = 59.95;
 const LOW_Y = 0;
 
-const Wrapper = ({
-  children,
-  pullUp,
-}: Props & {
-  pullUp: BottomSheetHeight;
-}) => {
+const Wrapper = ({ children, width, height, pullUp }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
-
-  const [sheetWidth, setSheetWidth] = useState(0);
-  const [sheetHeight, setSheetHeight] = useState(0);
-
-  const [prevDist, setPrevDist] = useState(0);
-
   useEffect(() => {
-    setSheetWidth(document.body.offsetWidth);
-    setSheetHeight(window.innerHeight);
     ref.current?.style.setProperty("display", "flex");
   }, []);
+
+  const [prevDist, setPrevDist] = useState(0);
 
   useEffect(() => {
     switch (pullUp) {
@@ -65,8 +57,8 @@ const Wrapper = ({
       ref={ref}
       className="flex flex-col absolute z-20"
       style={{
-        width: `${sheetWidth}px`,
-        height: `${sheetHeight}px`,
+        width: `${width}px`,
+        height: `${height}px`,
 
         borderTopLeftRadius: "8px",
         borderTopRightRadius: "8px",
@@ -84,7 +76,7 @@ const Wrapper = ({
 };
 Wrapper.displayName = "BottomSheetWrapper";
 
-const BottomSheetContent = ({ children }: Props) => (
+const BottomSheetContent = ({ children }: { children: ReactNode }) => (
   <div
     style={{
       overflow: "auto",
@@ -96,17 +88,11 @@ const BottomSheetContent = ({ children }: Props) => (
   </div>
 );
 
-const BottomSheet = ({
-  children,
-  pullUp,
-}: {
-  children: ReactNode;
-  pullUp: BottomSheetHeight;
-}) => {
+const BottomSheet = ({ children, width, height, pullUp }: Props) => {
   // const { sheet, content } = useBottomSheet();
 
   return (
-    <Wrapper pullUp={pullUp}>
+    <Wrapper width={width} height={height} pullUp={pullUp}>
       <BottomSheetHeader />
       <BottomSheetContent>{children}</BottomSheetContent>
     </Wrapper>

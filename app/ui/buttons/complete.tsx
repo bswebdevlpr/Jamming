@@ -1,9 +1,18 @@
-const CompleteButton = ({ onClick }: { onClick: () => void }) => {
+import { CSSProperties } from "react";
+
+const CompleteButton = ({
+  onClick,
+  className,
+  style,
+}: {
+  onClick: () => void;
+  className?: string;
+  style?: CSSProperties;
+}) => {
   return (
     <button
       style={{
         width: "167.5px",
-        height: "44px",
 
         border: "1px solid #535355",
         borderRadius: "8px",
@@ -11,9 +20,12 @@ const CompleteButton = ({ onClick }: { onClick: () => void }) => {
         padding: "10px 12px",
 
         fontFamily: "SUIT-BODY",
-        fontSize: "16px",
+        fontSize: "1rem",
         color: "#C0C0C5",
+
+        ...style,
       }}
+      className={className}
       onClick={onClick}
     >
       완료
