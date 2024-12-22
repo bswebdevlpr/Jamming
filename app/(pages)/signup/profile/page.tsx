@@ -4,7 +4,6 @@ import BottomSheet, {
   BottomSheetHeight,
 } from "@/app/ui/templates/bottom-sheet/body";
 import CancelButton from "@/app/ui/buttons/cancel";
-import CompleteButton from "@/app/ui/buttons/complete";
 import { NextButton } from "@/app/ui/buttons/next";
 import { Camera } from "@/app/ui/images/camera";
 import { BandType } from "@/app/ui/images/signup/band-type";

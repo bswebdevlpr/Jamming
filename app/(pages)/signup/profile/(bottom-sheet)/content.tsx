@@ -58,7 +58,8 @@ const BottomSheetContent = ({
             fontFamily: "SUIT-BODY",
             fontSize: "20px",
             color: "#C0C0C5",
-          }}>
+          }}
+        >
           {title}
         </p>
         {/* {
