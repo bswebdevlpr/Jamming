@@ -8,9 +8,11 @@ import {
   MusicNote,
   OpenChat,
 } from "@/app/ui/images/jamsession/popup/create-jam";
-import { ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { globalContext } from "../../layout";
 import BottomSheetContent from "../bottom-sheet/content";
+import { ImageWithTxt } from "@/app/ui/templates/images";
+import SelectHeadCount from "./select-headcount";
 
 const FlexRow = ({
   left,
@@ -27,13 +29,16 @@ const FlexRow = ({
       style={{
         height: "6.9%",
         borderBottom: "1px solid #333335",
-      }}>
+      }}
+      onClick={onClick}
+    >
       <p
         style={{
           fontFamily: "SUIT-TITLE",
           fontSize: "0.875rem",
           color: "#DCDCDD",
-        }}>
+        }}
+      >
         {left}
       </p>
       <span className="flex flex-row gap-2 cursor-pointer">
@@ -43,21 +48,13 @@ const FlexRow = ({
             fontSize: "0.875rem",
             color: "#DCDCDD",
             opacity: 0.6,
-          }}>
+          }}
+        >
           {right}
         </p>
         <RightArrow />
       </span>
     </div>
-  );
-};
-
-const ImageWithTxt = ({ image, text }: { image: ReactNode; text: string }) => {
-  return (
-    <span className="flex flex-row justify-center items-center opacity-60">
-      {image}
-      {text}
-    </span>
   );
 };
 
@@ -68,21 +65,23 @@ export default function CreateJam({
   isTurnedOn: boolean;
   turnOff: () => void;
 }) {
-  // INIT
   const ref = useRef<HTMLDivElement>(null);
 
+  // SATES
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+
+  const [isHeadCountTurnedOn, setIsHeadCountTurnedOn] = useState(false);
+  //
+
+  // CONTEXT
+  const { bottomSheet } = useContext(globalContext);
+  //
 
   useEffect(() => {
     setWidth(document.body.offsetWidth);
     setHeight(document.body.offsetHeight);
-  });
-  //
-
-  // // CONTEXT
-  const { bottomSheet } = useContext(globalContext);
-  // //
+  }, []);
 
   useEffect(() => {
     if (ref.current) {
@@ -104,19 +103,22 @@ export default function CreateJam({
         overflow: "auto",
 
         backgroundColor: "var(--background)",
-      }}>
+      }}
+    >
       <div
         className="flex flex-row justify-between py-3 px-5"
         style={{
           borderBottom: "1px solid #333335",
-        }}>
+        }}
+      >
         <X onClick={turnOff} />
         <p
           style={{
             fontFamily: "SUIT-TITLE",
             fontSize: "1rem",
             color: "#FFF",
-          }}>
+          }}
+        >
           JAM NOW!
         </p>
         <p
@@ -125,7 +127,8 @@ export default function CreateJam({
             fontSize: "1rem",
             color: "#A3FF0C",
           }}
-          onClick={turnOff}>
+          onClick={turnOff}
+        >
           완료
         </p>
       </div>
@@ -133,12 +136,18 @@ export default function CreateJam({
         <FlexRow
           left="카테고리"
           right="선택"
-          onClick={bottomSheet.setter({
-            location: "high",
-            children: <BottomSheetContent />,
-          })}
+          onClick={() =>
+            bottomSheet.setter({
+              location: "high",
+              children: <BottomSheetContent />,
+            })
+          }
         />
-        <FlexRow left="참여 인원" right="0" />
+        <FlexRow
+          left="참여 인원"
+          right="0"
+          onClick={() => setIsHeadCountTurnedOn(true)}
+        />
         <FlexRow left="날짜" right="0000.00.00 00:00" />
         <div className="flex flex-col gap-5 px-5 pt-7 overflow-auto">
           <p
@@ -147,7 +156,8 @@ export default function CreateJam({
               fontSize: "1rem",
               color: "#FFF",
               opacity: 0.5,
-            }}>
+            }}
+          >
             제목을 입력하세요.
           </p>
           <p
@@ -156,7 +166,8 @@ export default function CreateJam({
               fontSize: "0.875rem",
               color: "#FFF",
               opacity: 0.5,
-            }}>
+            }}
+          >
             즐거운 잼세션을 위한 모집글을 적어주세요.
           </p>
         </div>
@@ -175,12 +186,33 @@ export default function CreateJam({
 
           borderTop: "1px solid #333335",
           borderBottom: "1px solid #333335",
-        }}>
-        <ImageWithTxt image={<MusicNote />} text="합주곡" />
-        <ImageWithTxt image={<Gallery />} text="사진" />
-        <ImageWithTxt image={<Location />} text="장소" />
-        <ImageWithTxt image={<OpenChat />} text="채팅방링크" />
+        }}
+      >
+        <ImageWithTxt
+          image={<MusicNote />}
+          text="합주곡"
+          style={{ opacity: 0.6 }}
+        />
+        <ImageWithTxt
+          image={<Gallery />}
+          text="사진"
+          style={{ opacity: 0.6 }}
+        />
+        <ImageWithTxt
+          image={<Location />}
+          text="장소"
+          style={{ opacity: 0.6 }}
+        />
+        <ImageWithTxt
+          image={<OpenChat />}
+          text="채팅방링크"
+          style={{ opacity: 0.6 }}
+        />
       </div>
+      <SelectHeadCount
+        isTurnedOn={isHeadCountTurnedOn}
+        turnOff={() => setIsHeadCountTurnedOn(false)}
+      />
     </div>
   );
 }

@@ -21,10 +21,6 @@ export const RoundedCheckbox = ({
   thisState: boolean;
   className?: string;
 }) => {
-  const handler = () => {
-    onClick(!thisState);
-  };
-
   return (
     <>
       {!thisState ? (
@@ -33,7 +29,7 @@ export const RoundedCheckbox = ({
           className={className}
           style={style_checkbox_round_unchecked}
           checked={thisState}
-          onChange={handler}
+          onChange={() => onClick(!thisState)}
         />
       ) : (
         <Image
@@ -41,7 +37,7 @@ export const RoundedCheckbox = ({
           alt="note"
           width={20}
           height={20}
-          onClick={handler}
+          onClick={() => onClick(!thisState)}
         />
       )}
     </>
