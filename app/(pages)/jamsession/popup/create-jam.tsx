@@ -8,9 +8,19 @@ import {
   MusicNote,
   OpenChat,
 } from "@/app/ui/images/jamsession/popup/create-jam";
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { globalContext } from "../../layout";
+import BottomSheetContent from "../bottom-sheet/content";
 
-const FlexRow = ({ left, right }: { left: string; right: string }) => {
+const FlexRow = ({
+  left,
+  right,
+  onClick,
+}: {
+  left: string;
+  right: string;
+  onClick?: any;
+}) => {
   return (
     <div
       className="flex flex-row justify-between items-center px-5 py-2"
@@ -26,7 +36,7 @@ const FlexRow = ({ left, right }: { left: string; right: string }) => {
         }}>
         {left}
       </p>
-      <span className="flex flex-row gap-2">
+      <span className="flex flex-row gap-2 cursor-pointer">
         <p
           style={{
             fontFamily: "SUIT-BODY",
@@ -58,6 +68,7 @@ export default function CreateJam({
   isTurnedOn: boolean;
   turnOff: () => void;
 }) {
+  // INIT
   const ref = useRef<HTMLDivElement>(null);
 
   const [width, setWidth] = useState(0);
@@ -67,6 +78,11 @@ export default function CreateJam({
     setWidth(document.body.offsetWidth);
     setHeight(document.body.offsetHeight);
   });
+  //
+
+  // // CONTEXT
+  const { bottomSheet } = useContext(globalContext);
+  // //
 
   useEffect(() => {
     if (ref.current) {
@@ -108,15 +124,23 @@ export default function CreateJam({
             fontFamily: "SUIT-TITLE",
             fontSize: "1rem",
             color: "#A3FF0C",
-          }}>
+          }}
+          onClick={turnOff}>
           완료
         </p>
       </div>
       <div className="grow flex flex-col">
-        <FlexRow left="카테고리" right="선택" />
+        <FlexRow
+          left="카테고리"
+          right="선택"
+          onClick={bottomSheet.setter({
+            location: "high",
+            children: <BottomSheetContent />,
+          })}
+        />
         <FlexRow left="참여 인원" right="0" />
         <FlexRow left="날짜" right="0000.00.00 00:00" />
-        <div className="flex flex-col gap-5 px-5 pt-7">
+        <div className="flex flex-col gap-5 px-5 pt-7 overflow-auto">
           <p
             style={{
               fontFamily: "SUIT-BODY",

@@ -4,11 +4,6 @@ import { PositionEnum } from "@/app/lib/constants/position.enum";
 import CancelButton from "@/app/ui/buttons/cancel";
 import CompleteButton from "@/app/ui/buttons/complete";
 import Grid from "@/app/ui/grids/grid";
-import GridItem from "@/app/ui/grids/item";
-
-const positions = Object.values(PositionEnum);
-const genres = Object.values(GenreEnum);
-const level = Object.values(LevelEnum);
 
 export type BottomSheetContentType = null | "position" | "genre" | "level";
 
@@ -31,9 +26,27 @@ const BottomSheetContent = ({
       : null;
 
   const body = () => {
-    if (type === "position") return <Grid items={positions} />;
-    else if (type === "genre") return <Grid items={genres} />;
-    else if (type === "level") return <Grid items={level} />;
+    if (type === "position")
+      return (
+        <Grid
+          items={Object.values(PositionEnum)}
+          values={Object.keys(PositionEnum)}
+        />
+      );
+    else if (type === "genre")
+      return (
+        <Grid
+          items={Object.values(GenreEnum)}
+          values={Object.keys(GenreEnum)}
+        />
+      );
+    else if (type === "level")
+      return (
+        <Grid
+          items={Object.values(LevelEnum)}
+          values={Object.keys(LevelEnum)}
+        />
+      );
     else return null;
   };
 
@@ -45,8 +58,7 @@ const BottomSheetContent = ({
             fontFamily: "SUIT-BODY",
             fontSize: "20px",
             color: "#C0C0C5",
-          }}
-        >
+          }}>
           {title}
         </p>
         {/* {
