@@ -30,12 +30,34 @@ export const DownArrow = () => {
     />
   );
 };
+export const DownArrowWhite = () => {
+  return (
+    <Image
+      src="/common/arrows/arrow-down-white.svg"
+      alt="arrow down"
+      width={16}
+      height={16}
+      style={{ cursor: "pointer" }}
+    />
+  );
+};
 
 export const LeftArrow: React.FC = () => {
   return (
     <Image
       src="/common/arrows/arrow-left.svg"
       alt="arrow left"
+      width={20}
+      height={20}
+      style={{ cursor: "pointer" }}
+    />
+  );
+};
+export const LeftArrowWhite: React.FC = () => {
+  return (
+    <Image
+      src="/common/arrows/arrow-left-white.svg"
+      alt="whitearrow left"
       width={20}
       height={20}
       style={{ cursor: "pointer" }}
