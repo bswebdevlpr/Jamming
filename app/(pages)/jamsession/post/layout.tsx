@@ -1,4 +1,4 @@
-import { LeftArrow } from "@/app/ui/images/arrows";
+import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import Kebap from "@/app/ui/images/jamsession/post/kebap";
 import WorkSpace from "@/app/ui/layouts/workspace";
 import ButtonTemplate from "@/app/ui/templates/buttons";
@@ -8,15 +8,18 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <WorkSpace>
       <div className="flex flex-row justify-between items-center px-4 py-3">
-        <LeftArrow />
+        <LeftArrowWhite />
         <Kebap />
       </div>
       {children}
       <div
-        className="flex justify-center items-center px-4 py-2"
+        className="w-full flex justify-center items-center px-4 py-2"
         style={{
+          backgroundColor: "#111113",
           borderTop: "1px solid #333335",
           boxShadow: "0 -10px 10px rgba(0, 0, 0, 0.3)",
+          position: "fixed",
+          bottom: 0,
         }}
       >
         <ButtonTemplate
