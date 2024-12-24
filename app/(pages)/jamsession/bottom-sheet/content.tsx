@@ -5,7 +5,7 @@ import { LevelEnum } from "@/app/lib/constants/level.enum";
 import { PositionEnum } from "@/app/lib/constants/position.enum";
 import InitButton from "@/app/ui/buttons/initialize";
 import SelectButton from "@/app/ui/buttons/select";
-import CategoryItem from "@/app/ui/categories/category-item-layout";
+import { CategoryFilterItem } from "@/app/ui/categories/items";
 import Grid from "@/app/ui/grids/grid";
 import Genre from "@/app/ui/images/categories/genre";
 import Level from "@/app/ui/images/categories/level";
@@ -55,9 +55,9 @@ const BottomSheetContent = () => {
         style={{ marginBottom: "12.875rem" }}
       >
         <div className="flex flex-col gap-3">
-          <CategoryItem text="장르">
+          <CategoryFilterItem text="장르">
             <Genre />
-          </CategoryItem>
+          </CategoryFilterItem>
           <Grid
             colNum={4}
             items={Object.values(GenreEnum)}
@@ -76,9 +76,9 @@ const BottomSheetContent = () => {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <CategoryItem text="포지션">
+          <CategoryFilterItem text="포지션">
             <Position />
-          </CategoryItem>
+          </CategoryFilterItem>
           <Grid
             colNum={4}
             items={Object.values(PositionEnum)}
@@ -97,9 +97,9 @@ const BottomSheetContent = () => {
           />
         </div>
         <div className="flex flex-col gap-3">
-          <CategoryItem text="레벨">
+          <CategoryFilterItem text="레벨">
             <Level />
-          </CategoryItem>
+          </CategoryFilterItem>
           <Grid
             colNum={4}
             items={Object.values(LevelEnum)}

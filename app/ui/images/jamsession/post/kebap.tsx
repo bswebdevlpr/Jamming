@@ -1,12 +1,13 @@
 import Image from "next/image";
 
-const Kebap = () => {
+const Kebap = ({ onClick }: { onClick: () => void }) => {
   return (
     <Image
       src={"/jamsession/post/kebap.svg"}
       alt="kebap menu"
       width={24}
       height={24}
+      onClick={onClick}
     />
   );
 };
