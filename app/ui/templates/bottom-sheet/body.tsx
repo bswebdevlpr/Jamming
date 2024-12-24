@@ -3,7 +3,13 @@ import BottomSheetHeader from "./header";
 import { useBottomSheet } from "@/app/hooks/useBottomSheet";
 import { motion } from "framer-motion";
 
-export type BottomSheetHeight = null | "high" | "middle" | "low" | "hidden";
+export type BottomSheetHeight =
+  | null
+  | "high"
+  | "middle"
+  | "low"
+  | "superLow"
+  | "hidden";
 
 interface Props {
   children: ReactNode;
@@ -13,9 +19,10 @@ interface Props {
   // ref: RefObject<HTMLDivElement>;
 }
 
-const HIGH_Y = 97.77;
+const HIGH_Y = 94.35;
 const MIDDLE_Y = 59.95;
-const LOW_Y = 0;
+const LOW_Y = 16.7;
+const SUPER_LOW_Y = 10.5;
 
 const Wrapper = ({ children, width, height, pullUp }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -28,25 +35,29 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
   useEffect(() => {
     switch (pullUp) {
       case "high":
-        ref.current?.style.setProperty("transform", `translateY(-${HIGH_Y}vh)`);
+        ref.current?.style.setProperty("transform", `translateY(-${HIGH_Y}%)`);
         setPrevDist(HIGH_Y);
         break;
       case "middle":
         ref.current?.style.setProperty(
           "transform",
-          `translateY(-${MIDDLE_Y}vh)`
+          `translateY(-${MIDDLE_Y}%)`
         );
         setPrevDist(MIDDLE_Y);
         break;
       case "low":
-        ref.current?.style.setProperty("transform", `translateY(-${LOW_Y}vh)`);
+        ref.current?.style.setProperty("transform", `translateY(-${LOW_Y}%)`);
         setPrevDist(LOW_Y);
         break;
-      case "hidden":
+      case "superLow":
         ref.current?.style.setProperty(
           "transform",
-          `translateY(${prevDist}vh)`
+          `translateY(-${SUPER_LOW_Y}%)`
         );
+        setPrevDist(SUPER_LOW_Y);
+        break;
+      case "hidden":
+        ref.current?.style.setProperty("transform", `translateY(${prevDist}%)`);
         setPrevDist(0);
         break;
     }

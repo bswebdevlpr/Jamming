@@ -1,4 +1,16 @@
-import { DownArrowWhite } from "@/app/ui/images/arrows";
+"use client";
+
+import { CategoryTagItem } from "@/app/ui/categories/items";
+import { DownArrowWhite, LeftArrowWhite } from "@/app/ui/images/arrows";
+import Kebap from "@/app/ui/images/jamsession/post/kebap";
+import { useContext, useState } from "react";
+import { globalContext } from "../../layout";
+import { ImageWithTxt } from "@/app/ui/templates/images";
+import EditIcon from "@/app/ui/images/jamsession/post/edit";
+import DeleteIcon from "@/app/ui/images/jamsession/post/delete";
+import ReportIcon from "@/app/ui/images/jamsession/post/report";
+import ButtonTemplate from "@/app/ui/templates/buttons";
+import Modal from "./modal";
 
 const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
   return (
@@ -35,8 +47,76 @@ const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
 };
 
 export default function JamSession_Post() {
+  const { bottomSheet } = useContext(globalContext);
+
+  const [isModalOn, setIsModalOn] = useState(false);
+
   return (
     <div className="grow h-full max-h-full flex flex-col overflow-hidden">
+      <div className="flex flex-row justify-between items-center px-4 py-3">
+        <LeftArrowWhite />
+        <Kebap
+          onClick={
+            // 작성자
+            // () =>
+            // bottomSheet.setter({
+            //   location: "low",
+            //   children: (
+            //     <div className="flex flex-col px-4 pt-2 pb-3">
+            //       <ImageWithTxt
+            //         image={<EditIcon />}
+            //         text="수정하기"
+            //         style={{
+            //           padding: "12px",
+            //           gap: "8px",
+
+            //           fontFamily: "SUIT-BODY",
+            //           fontSize: "13px",
+            //           color: "#F2F2F4",
+
+            //           borderBottom: "1px solid #323234",
+            //         }}
+            //       />
+            //       <ImageWithTxt
+            //         image={<DeleteIcon />}
+            //         text="삭제하기"
+            //         style={{
+            //           padding: "12px",
+            //           gap: "8px",
+
+            //           fontFamily: "SUIT-BODY",
+            //           fontSize: "13px",
+            //           color: "#FF3E2F",
+            //         }}
+            //       />
+            //     </div>
+            //   ),
+            // })
+
+            // 일반 유저
+            () =>
+              bottomSheet.setter({
+                location: "superLow",
+                children: (
+                  <div className="flex flex-col px-4 pt-2 pb-3">
+                    <ImageWithTxt
+                      image={<ReportIcon />}
+                      text="신고하기"
+                      style={{
+                        padding: "12px",
+                        gap: "8px",
+
+                        fontFamily: "SUIT-BODY",
+                        fontSize: "13px",
+                        color: "#FF3E2F",
+                      }}
+                    />
+                  </div>
+                ),
+              })
+          }
+        />
+      </div>
       <div
         className="flex flex-row px-4 py-2 gap-3"
         style={{
@@ -94,7 +174,23 @@ export default function JamSession_Post() {
           </div>
         </div>
       </div>
-      <FlexRow tag="카테고리" content={"ㅋㅋ"} />
+      <FlexRow
+        tag="카테고리"
+        content={
+          <div className="flex flex-row gap-1">
+            <CategoryTagItem text="서울" />
+            <CategoryTagItem text="재즈" />
+            <CategoryTagItem text="아마추어" />
+            <CategoryTagItem
+              text="2pm"
+              style={{
+                backgroundColor: "#304313",
+                color: "#A3FF0C",
+              }}
+            />
+          </div>
+        }
+      />
       <FlexRow tag="참여 인원" content={"0"} />
       <FlexRow tag="날짜" content={"0000.00.00 00:00"} />
       <FlexRow
@@ -138,10 +234,10 @@ export default function JamSession_Post() {
         }}
       />
       <div
-        className="px-4 truncate"
+        className="grow px-4"
         style={{
           width: "100%",
-          height: "5%", //"51.77%",
+          // height: "5%", //"51.77%",
           overflow: "auto",
         }}
       >
@@ -187,6 +283,25 @@ export default function JamSession_Post() {
           지원 및 자세한 내용은 아래 연락처로 문자 바랍니다.
         </p>
       </div>
+      <div
+        className="w-full flex justify-center items-center px-4 py-2"
+        style={{
+          backgroundColor: "#111113",
+          borderTop: "1px solid #333335",
+          boxShadow: "0 -10px 10px rgba(0, 0, 0, 0.3)",
+        }}
+      >
+        <ButtonTemplate
+          text="JAM 참여 신청"
+          style={{
+            width: "100%",
+            color: "#A3FF0C",
+            border: "1px solid #A3FF0C",
+            background: "#304313",
+          }}
+        />
+      </div>
+      <Modal isTurnedOn={isModalOn} turnOff={() => setIsModalOn(false)} />
     </div>
   );
 }
