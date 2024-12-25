@@ -252,7 +252,7 @@ export default function JamSession_Post() {
           급구 재즈 드러머
         </p>
         <p
-          className="pt-5"
+          className="py-5"
           style={{
             fontFamily: "SUIT-BODY",
             fontSize: "0.875rem",
@@ -299,9 +299,10 @@ export default function JamSession_Post() {
             border: "1px solid #A3FF0C",
             background: "#304313",
           }}
+          onClick={() => setIsModalOn(!isModalOn)}
         />
       </div>
-      <Modal isTurnedOn={isModalOn} turnOff={() => setIsModalOn(false)} />
+      <Modal isTurnedOn={isModalOn} turnOff={() => setIsModalOn(!isModalOn)} />
     </div>
   );
 }

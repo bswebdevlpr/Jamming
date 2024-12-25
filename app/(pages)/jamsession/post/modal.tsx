@@ -12,6 +12,7 @@ export default function Modal({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("isTurnedOn:", isTurnedOn);
     if (ref.current) {
       ref.current.style.display = isTurnedOn ? "flex" : "none";
     }
@@ -19,7 +20,8 @@ export default function Modal({
 
   return (
     <div
-      className="absolute w-full h-full flex justify-center items-center px-8"
+      ref={ref}
+      className="absolute w-full h-full flex justify-center items-center px-8 hidden"
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
       }}
@@ -45,33 +47,70 @@ export default function Modal({
           참여 신청 어필 한마디!
         </p>
         <div
-          className="grow p-3 mb-8"
+          className="p-3 mb-8"
           style={{
+            height: "54.05%",
+
             fontFamily: "SUIT-BODY",
             fontSize: "0.875rem",
             color: "#E5E5E9",
 
             border: "1px solid #767678",
             borderRadius: "8px",
+
+            position: "relative",
           }}
         >
           입력
-          <p>0/300</p>
+          <p
+            style={{
+              position: "absolute",
+              bottom: 8,
+              right: 10,
+
+              fontSize: "0.75rem",
+              color: "#9F9FA2",
+            }}
+          >
+            0/300
+          </p>
         </div>
-        <div className="flex flex-row gap-3">
+        <div
+          className="grow flex flex-row gap-3"
+          style={{
+            height: "16.21%",
+          }}
+        >
           <button
             style={{
-              width: "42.02%",
-              height: "13.95%",
-              borderRadius: "8px",
+              width: "47.90%",
 
               fontFamily: "SUIT-BODY",
               fontSize: "1rem",
 
+              borderRadius: "8px",
               border: "1px solid #444447",
+              backgroundColor: "#323234",
             }}
+            onClick={turnOff}
           >
             취소
+          </button>
+          <button
+            style={{
+              width: "47.90%",
+
+              fontFamily: "SUIT-BODY",
+              fontSize: "1rem",
+              color: "#A3FF0C",
+
+              borderRadius: "8px",
+              border: "1px solid #A3FF0C",
+              backgroundColor: "#304313",
+            }}
+            onClick={turnOff}
+          >
+            전송
           </button>
         </div>
       </div>
