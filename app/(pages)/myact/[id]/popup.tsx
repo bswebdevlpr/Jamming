@@ -129,7 +129,7 @@ export default function Popup({
                 border: "0.8px solid #FF3773",
               }}
             >
-              114BPM
+              240BPM
             </p>
           }
         />

@@ -3,7 +3,7 @@
 import JamNow from "@/app/ui/buttons/jam-now";
 import TopNavBar from "@/app/ui/navbar/myact/top";
 import { useState } from "react";
-import Popup from "./jamsession/popup";
+import Popup from "./[id]/popup";
 
 export default function JamSession() {
   const [isPopupOn, setIsPopupOn] = useState(false);
