@@ -16,7 +16,6 @@ export default function ReportTypeModal({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("isTurnedOn:", isTurnedOn);
     if (ref.current) {
       ref.current.style.display = isTurnedOn ? "flex" : "none";
     }

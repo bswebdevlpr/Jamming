@@ -3,13 +3,14 @@ import Image from "next/image";
 export const RightArrow = ({
   width,
   height,
+  className,
 }: {
   width?: number;
   height?: number;
+  className?: string;
 }) => {
   return (
     <Image
-      className="ml-auto"
       src="/common/arrows/arrow-right.svg"
       alt="arrow right"
       width={width ?? 20}

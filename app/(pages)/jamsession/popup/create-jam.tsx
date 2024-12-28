@@ -52,7 +52,7 @@ const FlexRow = ({
         >
           {right}
         </p>
-        <RightArrow />
+        <RightArrow className="ml-auto" />
       </span>
     </div>
   );
