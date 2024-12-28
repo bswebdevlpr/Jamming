@@ -1,7 +1,13 @@
+"use client";
+
 import JamNow from "@/app/ui/buttons/jam-now";
 import TopNavBar from "@/app/ui/navbar/myact/top";
+import { useState } from "react";
+import Popup from "./jamsession/popup";
 
 export default function JamSession() {
+  const [isPopupOn, setIsPopupOn] = useState(false);
+
   return (
     <div className="grow flex flex-col">
       <TopNavBar />
@@ -19,9 +25,13 @@ export default function JamSession() {
           My Jam
         </p>
       </div>
-      <div className="grow flex justify-center items-center px-5">
+      <div
+        className="grow flex justify-center items-center px-5"
+        onClick={() => setIsPopupOn(!isPopupOn)}
+      >
         Jam Session Feeeddddddddd
       </div>
+      <Popup isTurnedOn={isPopupOn} turnOff={() => setIsPopupOn(false)} />
       <JamNow />
     </div>
   );

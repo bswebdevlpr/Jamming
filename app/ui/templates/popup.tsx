@@ -29,8 +29,6 @@ export default function PopupTemplate({
   useEffect(() => {
     setWidth(document.body.offsetWidth);
     setHeight(document.body.offsetHeight);
-
-    console.log(document.body.offsetWidth, document.body.offsetHeight);
   }, []);
 
   useEffect(() => {

@@ -26,7 +26,7 @@ const PolicyRow = ({
       >
         ({opt}) {txt}
       </p>
-      <RightArrow />
+      <RightArrow className="ml-auto" />
     </div>
   );
 };

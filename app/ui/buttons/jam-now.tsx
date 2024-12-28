@@ -7,7 +7,6 @@ import { useState } from "react";
 export default function JamNow() {
   const [isTurnedOn, setIsTurnedOn] = useState(false);
   const turnOff = () => {
-    console.log("turnoff triggered", isTurnedOn);
     setIsTurnedOn(!isTurnedOn);
   };
 
@@ -26,14 +25,16 @@ export default function JamNow() {
 
           cursor: "pointer",
         }}
-        onClick={() => setIsTurnedOn(true)}>
+        onClick={() => setIsTurnedOn(true)}
+      >
         <Plus />
         <p
           style={{
             fontFamily: "SBAggroM",
             fontSize: "0.875rem",
             color: "#A3FF0C",
-          }}>
+          }}
+        >
           JAM NOW!
         </p>
       </span>
