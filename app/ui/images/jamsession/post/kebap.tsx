@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const Kebap = ({ onClick }: { onClick: () => void }) => {
+const Kebap = ({ onClick }: { onClick?: () => any }) => {
   return (
     <Image
       src={"/jamsession/post/kebap.svg"}
