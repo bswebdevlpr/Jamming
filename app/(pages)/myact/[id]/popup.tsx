@@ -64,8 +64,6 @@ export default function Popup({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("turnoff triggered", isTurnedOn);
-
     if (ref.current) {
       ref.current.style.display = isTurnedOn ? "flex" : "none";
     }

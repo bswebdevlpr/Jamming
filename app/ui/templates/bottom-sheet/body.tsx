@@ -9,6 +9,7 @@ export type BottomSheetHeight =
   | "middle"
   | "low"
   | "superLow"
+  | number
   | "hidden";
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
   width: number;
   height: number;
   pullUp: BottomSheetHeight;
+  header?: boolean;
   // ref: RefObject<HTMLDivElement>;
 }
 
@@ -34,6 +36,8 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
 
   useEffect(() => {
     switch (pullUp) {
+      case null:
+        break;
       case "high":
         ref.current?.style.setProperty("transform", `translateY(-${HIGH_Y}%)`);
         setPrevDist(HIGH_Y);
@@ -59,6 +63,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
       case "hidden":
         ref.current?.style.setProperty("transform", `translateY(${prevDist}%)`);
         setPrevDist(0);
+        break;
+      default:
+        ref.current?.style.setProperty("transform", `translateY(-${pullUp}%)`);
+        setPrevDist(pullUp);
         break;
     }
   }, [pullUp]);
@@ -99,12 +107,18 @@ const BottomSheetContent = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-const BottomSheet = ({ children, width, height, pullUp }: Props) => {
+const BottomSheet = ({
+  children,
+  width,
+  height,
+  pullUp,
+  header = true,
+}: Props) => {
   // const { sheet, content } = useBottomSheet();
 
   return (
     <Wrapper width={width} height={height} pullUp={pullUp}>
-      <BottomSheetHeader />
+      {header && <BottomSheetHeader />}
       <BottomSheetContent>{children}</BottomSheetContent>
     </Wrapper>
   );

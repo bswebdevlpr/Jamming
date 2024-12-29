@@ -3,9 +3,10 @@
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import Kebap from "@/app/ui/images/jamsession/post/kebap";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import { ReactNode, useContext } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { globalContext } from "../../layout";
 import ButtonTemplate from "@/app/ui/templates/buttons";
+import Popup from "./popup";
 
 const FlexRow = ({
   picture,
@@ -76,16 +77,25 @@ const FlexRow = ({
 };
 
 export default function History() {
+  // INIT
   const { bottomSheet } = useContext(globalContext);
+  useEffect(() => {
+    if (bottomSheet.setHeader) bottomSheet.setHeader(false);
+  }, []);
+  //
+
+  // STATES
+  const [isNoshowOn, setIsNoshowOn] = useState(false);
+  //
 
   const customedKebap = Kebap({
     onClick: () =>
       bottomSheet.setter({
-        location: "low",
+        location: 24,
         children: (
-          <div className="flex flex-col items-center px-4 pt-2 pb-3">
+          <div className="flex flex-col px-4 pt-2 pb-3">
             <p
-              className="w-full px-3 py-3.5"
+              className="w-full px-3 py-3.5 text-center"
               style={{
                 fontFamily: "SUIT-BODY",
                 fontSize: "15px",
@@ -97,23 +107,33 @@ export default function History() {
               REJAM!
             </p>
             <p
-              className="w-full px-3 py-3.5 mb-3"
+              className="w-full px-3 py-3.5 text-center"
               style={{
                 fontFamily: "SUIT-BODY",
                 fontSize: "15px",
                 color: "#F2F2F4",
               }}
+              onClick={() => setIsNoshowOn(true)}
             >
               노쇼 체크
             </p>
-            <ButtonTemplate text="취소" className="w-full" />
+            <ButtonTemplate
+              text="취소"
+              className="w-full my-3"
+              style={{
+                backgroundColor: "#323234",
+
+                border: "1px solid #444447",
+                borderRadius: "8px",
+              }}
+            />
           </div>
         ),
       }),
   });
 
   return (
-    <div className="grow flex flex-col px-4 mb-3">
+    <div className="grow flex flex-col px-4 mb-3 relative">
       <ImageWithTxt
         image={<LeftArrowWhite />}
         text="멤버 보기"
@@ -185,6 +205,7 @@ export default function History() {
         }
         kebap={customedKebap}
       />
+      <Popup isTurnedOn={isNoshowOn} turnOff={() => setIsNoshowOn(false)} />
     </div>
   );
 }

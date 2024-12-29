@@ -37,6 +37,8 @@ const ButtonTemplate = ({
   return (
     <button
       style={{
+        cursor: "pointer",
+
         borderRadius: "8px",
 
         padding: "10px 12px",

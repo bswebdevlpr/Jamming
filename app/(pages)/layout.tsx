@@ -11,6 +11,8 @@ interface BottomSheetContext {
   children: ReactNode;
   location: BottomSheetHeight;
   setter: (input: Partial<BottomSheetContext>) => void;
+  header?: boolean;
+  setHeader: null | ((input: boolean) => void);
 }
 
 export interface GlobalContext {
@@ -24,6 +26,8 @@ const defaultContext: GlobalContext = {
     children: null,
     location: null,
     setter: () => {},
+    header: true,
+    setHeader: null,
   },
 };
 export const globalContext = createContext<GlobalContext>(defaultContext);
@@ -37,20 +41,23 @@ function GlobalLayout({
   // INIT
   const [globalState, setGlobalState] = useState<GlobalContext>(defaultContext);
 
+  // BOTTOM SHEET
+  globalState.bottomSheet.setter = (input: Partial<BottomSheetContext>) => {
+    globalState.bottomSheet = { ...globalState.bottomSheet, ...input };
+    setGlobalState({ ...globalState });
+  };
+  globalState.bottomSheet.setHeader = (input: boolean) => {
+    globalState.bottomSheet.header = input;
+    globalState.bottomSheet = { ...globalState.bottomSheet };
+  };
+  //
+
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
     setWidth(document.body.offsetWidth);
     setHeight(document.body.offsetHeight);
-
-    // BOTTOM SHEET
-    const handleBottomSheet = (input: Partial<BottomSheetContext>) => {
-      globalState.bottomSheet = { ...globalState.bottomSheet, ...input };
-      setGlobalState({ ...globalState });
-    };
-    globalState.bottomSheet.setter = handleBottomSheet;
-    //
   }, []);
   //
 
@@ -61,6 +68,7 @@ function GlobalLayout({
         width={width}
         height={height}
         pullUp={globalState.bottomSheet.location}
+        header={globalState.bottomSheet.header}
       >
         {globalState.bottomSheet.children}
       </BottomSheet>
