@@ -2,7 +2,7 @@
 
 import { CategoryTagItem } from "@/app/ui/categories/items";
 import { DownArrowWhite, LeftArrowWhite } from "@/app/ui/images/arrows";
-import Kebap from "@/app/ui/images/jamsession/post/kebap";
+import Kebap from "@/app/ui/images/menu/kebap";
 import { useContext, useState } from "react";
 import { globalContext } from "../../layout";
 import { ImageWithTxt } from "@/app/ui/templates/images";
