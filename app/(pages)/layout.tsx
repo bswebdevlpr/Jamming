@@ -4,7 +4,6 @@ import { createContext, ReactNode, useEffect, useState } from "react";
 import BottomSheet, {
   BottomSheetHeight,
 } from "../ui/templates/bottom-sheet/body";
-import PopupTemplate from "../ui/templates/popup";
 
 // INTERFACES
 interface BottomSheetContext {
@@ -16,12 +15,16 @@ interface BottomSheetContext {
 }
 
 export interface GlobalContext {
+  bodyWidth: number;
+  bodyHeight: number;
   bottomSheet: BottomSheetContext;
 }
 //
 
 // CONTEXTS
 const defaultContext: GlobalContext = {
+  bodyWidth: 0,
+  bodyHeight: 0,
   bottomSheet: {
     children: null,
     location: null,
@@ -56,8 +59,19 @@ function GlobalLayout({
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    setWidth(document.body.offsetWidth);
-    setHeight(document.body.offsetHeight);
+    const width = document.body.offsetWidth;
+    const height = document.body.offsetHeight;
+
+    setWidth(width);
+    setHeight(height);
+
+    setGlobalState({
+      ...globalState,
+      ...{
+        bodyWidth: width,
+        bodyHeight: height,
+      },
+    });
   }, []);
   //
 

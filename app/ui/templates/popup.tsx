@@ -1,8 +1,10 @@
 "use client";
 
+import { globalContext } from "@/app/(pages)/layout";
 import React, {
   CSSProperties,
   ReactNode,
+  useContext,
   useEffect,
   useRef,
   useState,
@@ -10,28 +12,25 @@ import React, {
 
 export default function PopupTemplate({
   children,
+  isTurnedOn,
+  width,
+  height,
   className,
   style,
-  isTurnedOn,
 }: {
   children: ReactNode;
+  isTurnedOn: boolean;
+  width?: number;
+  height?: number;
   className?: string;
   style?: CSSProperties;
-  isTurnedOn: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  // STATES
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
-  //
+  const { bodyWidth, bodyHeight } = useContext(globalContext);
 
   useEffect(() => {
-    setWidth(document.body.offsetWidth);
-    setHeight(document.body.offsetHeight);
-  }, []);
-
-  useEffect(() => {
+    console.log("turnedOn", isTurnedOn);
     if (ref.current) {
       ref.current.style.display = isTurnedOn ? "flex" : "none";
     }
@@ -43,8 +42,8 @@ export default function PopupTemplate({
       ref={ref}
       className={`hidden absolute z-10 ${className}`}
       style={{
-        width: `${width}px`,
-        height: `${height}px`,
+        width: `${width ?? bodyWidth}px`,
+        height: `${height ?? bodyHeight}px`,
 
         top: 0,
         left: 0,

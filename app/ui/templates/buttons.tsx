@@ -1,14 +1,14 @@
 import { CSSProperties } from "react";
 
-export const ButtonInactiveStyle: CSSProperties = {
+const CommonStyle = {
+  cursor: "pointer",
+
+  borderRadius: "8px",
+
   padding: "10px 12px",
 
   fontFamily: "SUIT-BODY",
   fontSize: "1rem",
-
-  borderRadius: "8px",
-  border: "1px solid #444447",
-  backgroundColor: "#323234",
 };
 
 export const ButtonActiveStyle: CSSProperties = {
@@ -28,25 +28,29 @@ const ButtonTemplate = ({
   onClick,
   className,
   style,
+  isActive,
+  styleActivated,
 }: {
   text: string;
   onClick?: () => void;
   className?: string;
   style?: CSSProperties;
+  isActive?: boolean;
+  styleActivated?: CSSProperties;
 }) => {
   return (
     <button
-      style={{
-        cursor: "pointer",
-
-        borderRadius: "8px",
-
-        padding: "10px 12px",
-
-        fontFamily: "SUIT-BODY",
-        fontSize: "1rem",
-        ...style,
-      }}
+      style={
+        isActive
+          ? {
+              ...CommonStyle,
+              ...styleActivated,
+            }
+          : {
+              ...CommonStyle,
+              ...style,
+            }
+      }
       className={className}
       onClick={onClick}
     >

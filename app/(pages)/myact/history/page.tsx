@@ -1,7 +1,7 @@
 "use client";
 
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
-import Kebap from "@/app/ui/images/jamsession/post/kebap";
+import Kebap from "@/app/ui/images/menu/kebap";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { globalContext } from "../../layout";
