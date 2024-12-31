@@ -8,7 +8,7 @@ const ImageWithTxt = ({
   onClick,
 }: {
   image: ReactNode;
-  text: string;
+  text: string | ReactNode;
   className?: string;
   style?: CSSProperties;
   onClick?: () => void;
@@ -20,7 +20,7 @@ const ImageWithTxt = ({
       onClick={onClick}
     >
       {image}
-      <p>{text}</p>
+      {typeof text === "string" ? <p>{text}</p> : text}
     </span>
   );
 };

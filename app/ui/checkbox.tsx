@@ -1,16 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CSSProperties } from "react";
-
-const style_checkbox_round_unchecked: CSSProperties = {
-  appearance: "none",
-  width: "20px",
-  height: "20px",
-  border: "1.5px solid",
-  borderRadius: "50%",
-  borderColor: "#9F9FA2",
-};
+import * as Checkbox from "@radix-ui/react-checkbox";
 
 export const RoundedCheckbox = ({
   onClick,
@@ -27,7 +18,14 @@ export const RoundedCheckbox = ({
         <input
           type="checkbox"
           className={className}
-          style={style_checkbox_round_unchecked}
+          style={{
+            appearance: "none",
+            width: "20px",
+            height: "20px",
+            border: "1.5px solid",
+            borderRadius: "50%",
+            borderColor: "#9F9FA2",
+          }}
           checked={thisState}
           onChange={() => onClick(!thisState)}
         />
@@ -41,5 +39,34 @@ export const RoundedCheckbox = ({
         />
       )}
     </>
+  );
+};
+
+export const SquaredCheckbox = ({}: // onClick,
+// thisState,
+// className,
+{
+  // onClick: (() => void) | ((newVal: boolean) => void);
+  // thisState: boolean;
+  className?: string;
+}) => {
+  return (
+    <Checkbox.Root
+      className="w-5 h-5"
+      style={{
+        border: "2px solid #9DA2AC",
+        borderRadius: "5px",
+      }}
+    >
+      <Checkbox.CheckboxIndicator>
+        <div
+          className="w-4 h-4"
+          style={{
+            backgroundColor: "white",
+            borderRadius: "4px",
+          }}
+        ></div>
+      </Checkbox.CheckboxIndicator>
+    </Checkbox.Root>
   );
 };
