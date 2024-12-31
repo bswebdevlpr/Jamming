@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import * as Checkbox from "@radix-ui/react-checkbox";
+import { CSSProperties } from "react";
 
 export const RoundedCheckbox = ({
   onClick,
@@ -42,12 +43,15 @@ export const RoundedCheckbox = ({
   );
 };
 
-export const SquaredCheckbox = ({}: // onClick,
+export const SquaredCheckbox = ({
+  style,
+}: // onClick,
 // thisState,
 // className,
 {
   // onClick: (() => void) | ((newVal: boolean) => void);
   // thisState: boolean;
+  style?: CSSProperties;
   className?: string;
 }) => {
   return (
@@ -56,6 +60,7 @@ export const SquaredCheckbox = ({}: // onClick,
       style={{
         border: "2px solid #9DA2AC",
         borderRadius: "5px",
+        ...style,
       }}
     >
       <Checkbox.CheckboxIndicator>

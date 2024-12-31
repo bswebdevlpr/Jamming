@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CSSProperties } from "react";
 
 export const RightArrow = ({
   width,
@@ -55,14 +56,24 @@ export const LeftArrow: React.FC = () => {
     />
   );
 };
-export const LeftArrowWhite = ({ onClick }: { onClick?: () => void }) => {
+export const LeftArrowWhite = ({
+  onClick,
+  width,
+  height,
+  style,
+}: {
+  onClick?: () => void;
+  width?: number;
+  height?: number;
+  style?: CSSProperties;
+}) => {
   return (
     <Image
       src="/common/arrows/arrow-left-white.svg"
       alt="whitearrow left"
-      width={20}
-      height={20}
-      style={{ cursor: "pointer" }}
+      width={width ?? 20}
+      height={height ?? 20}
+      style={{ cursor: "pointer", ...style }}
       onClick={onClick}
     />
   );

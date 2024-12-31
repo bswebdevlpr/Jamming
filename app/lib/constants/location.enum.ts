@@ -1,4 +1,4 @@
-export enum Location {
+export enum LocationEnum {
   Everywhere = "전체",
   Seoul = "서울",
   Incheon = "인천",
