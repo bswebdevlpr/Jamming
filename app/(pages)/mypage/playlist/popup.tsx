@@ -36,7 +36,7 @@ export default function Popup({
         }}
       >
         <div className="flex justify-end mb-3.5">
-          <X onClick={turnOff} className="" />
+          <X onClick={turnOff} />
         </div>
         <p
           style={{

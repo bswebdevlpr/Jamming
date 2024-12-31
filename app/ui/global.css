@@ -105,3 +105,14 @@ body {
   min-height: inherit;
   min-width: inherit;
 }
+
+@layer components {
+  .overflow-without-scrollbar {
+    @apply overflow-auto;
+    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .overflow-without-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+}

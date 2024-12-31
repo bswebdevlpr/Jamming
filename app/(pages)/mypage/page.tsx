@@ -1,8 +1,13 @@
+"use client";
+
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import Love from "@/app/ui/images/love";
 import SettingIcon from "@/app/ui/images/mypage/setting";
 import RadixAvatar from "@/app/ui/templates/avatar";
 import Tag from "@/app/ui/templates/tag";
+import BPMPopup from "./popup";
+import { useState } from "react";
+import { redirect } from "next/navigation";
 
 const FlexRow = () => {
   return (
@@ -49,8 +54,10 @@ const FlexRow = () => {
 };
 
 export default function MyPage() {
+  const [isBPMPopupOn, setIsBPMPopupOn] = useState(false);
+
   return (
-    <div className="grow flex flex-col items-center overflow-auto">
+    <div className="grow flex flex-col items-center overflow-without-scrollbar">
       <div className="w-full flex justify-between py-5 px-4 mb-1">
         <LeftArrowWhite />
         <p
@@ -172,6 +179,7 @@ export default function MyPage() {
             style={{
               fontFamily: "SUIT-BODY",
               color: "#C0C0C5",
+              cursor: "pointer",
             }}
           >
             <p
@@ -194,6 +202,7 @@ export default function MyPage() {
               style={{
                 fontSize: "0.75rem",
               }}
+              onClick={() => setIsBPMPopupOn(true)}
             >
               what is BPM
             </p>
@@ -220,6 +229,7 @@ export default function MyPage() {
               fontSize: "0.75rem",
               color: "#C0C0C5",
             }}
+            onClick={() => redirect("/mypage/playlist")}
           >
             더 보기
           </p>
@@ -279,6 +289,10 @@ export default function MyPage() {
           </div>
         </div>
       </div>
+      <BPMPopup
+        isTurnedOn={isBPMPopupOn}
+        turnOff={() => setIsBPMPopupOn(false)}
+      />
     </div>
   );
 }

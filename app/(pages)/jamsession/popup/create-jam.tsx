@@ -149,7 +149,7 @@ export default function CreateJam({
           onClick={() => setIsHeadCountTurnedOn(true)}
         />
         <FlexRow left="날짜" right="0000.00.00 00:00" />
-        <div className="flex flex-col gap-5 px-5 pt-7 overflow-auto">
+        <div className="flex flex-col gap-5 px-5 pt-7 overflow-without-scrollbar">
           <p
             style={{
               fontFamily: "SUIT-BODY",
