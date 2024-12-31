@@ -5,10 +5,12 @@ import MeatballMenu from "@/app/ui/images/menu/meatball";
 import PlusPinkIcon from "@/app/ui/images/mypage/playlist/plus";
 import SettingIcon from "@/app/ui/images/mypage/setting";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Popup from "./popup";
+import { globalContext } from "../../layout";
+import ButtonTemplate from "@/app/ui/templates/buttons";
 
-const FlexRow = () => {
+const FlexRow = ({ menuOnClick }: { menuOnClick: () => void }) => {
   return (
     <div
       className="relative flex flex-row items-center px-4 py-4 gap-3.5 overflow-auto"
@@ -52,12 +54,63 @@ const FlexRow = () => {
         style={{
           marginLeft: "auto",
         }}
+        onClick={menuOnClick}
       />
     </div>
   );
 };
 
 export default function Playlist() {
+  const { bottomSheet } = useContext(globalContext);
+  const bottomSheetHandler = () =>
+    bottomSheet.setter({
+      location: 24,
+      header: false,
+      children: (
+        <div className="flex flex-col px-4 pt-2 pb-3">
+          <p
+            className="w-full px-3 py-3.5 text-center"
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "15px",
+              color: "#F2F2F4",
+
+              borderBottom: "1px solid #323234",
+            }}
+            onClick={() => {
+              bottomSheet.setter({ location: "hidden" });
+            }}
+          >
+            공개로 전환
+          </p>
+          <p
+            className="w-full px-3 py-3.5 text-center"
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "15px",
+              color: "#FF380C",
+            }}
+            onClick={() => {
+              bottomSheet.setter({ location: "hidden" });
+            }}
+          >
+            삭제
+          </p>
+          <ButtonTemplate
+            text="취소"
+            className="w-full my-3"
+            style={{
+              backgroundColor: "#323234",
+
+              border: "1px solid #444447",
+              borderRadius: "8px",
+            }}
+            onClick={() => bottomSheet.setter({ location: "hidden" })}
+          />
+        </div>
+      ),
+    });
+
   const [isPopupOn, setIsPopupOn] = useState(false);
 
   return (
@@ -129,12 +182,12 @@ export default function Playlist() {
         />
       </div>
       <div className="w-full">
-        <FlexRow />
-        <FlexRow />
-        <FlexRow />
-        <FlexRow />
-        <FlexRow />
-        <FlexRow />
+        <FlexRow menuOnClick={bottomSheetHandler} />
+        <FlexRow menuOnClick={bottomSheetHandler} />
+        <FlexRow menuOnClick={bottomSheetHandler} />
+        <FlexRow menuOnClick={bottomSheetHandler} />
+        <FlexRow menuOnClick={bottomSheetHandler} />
+        <FlexRow menuOnClick={bottomSheetHandler} />
       </div>
       <ImageWithTxt
         image={<PlusPinkIcon />}
