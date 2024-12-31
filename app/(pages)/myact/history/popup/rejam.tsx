@@ -2,7 +2,7 @@
 
 import { SquaredCheckbox } from "@/app/ui/checkbox";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
-import Profile from "@/app/ui/images/jamsession/profile";
+import Profile from "@/app/ui/images/navbar/profile";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import { ReactNode, useEffect, useRef } from "react";

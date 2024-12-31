@@ -8,6 +8,7 @@ import { globalContext } from "../../layout";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import NoshowPopup from "./popup/noshow";
 import RejamPopup from "./popup/rejam";
+import RadixAvatar from "@/app/ui/templates/avatar";
 
 const FlexRow = ({
   picture,
@@ -155,61 +156,36 @@ export default function History() {
       />
       <FlexRow
         picture={
-          <div
-            className="shrink-0"
-            style={{
-              width: "52px",
-              height: "52px",
-              borderRadius: "100px",
-              background:
-                "linear-gradient(0deg, rgba(255, 187, 12, 0.70) 0%, rgba(255, 187, 12, 0.70) 100%)",
-              backgroundBlendMode: "color, normal",
-            }}
+          <RadixAvatar
+            width={52}
+            height={52}
+            src="/samples/history-yellow.jpg"
           />
         }
         kebap={customedKebap}
       />
       <FlexRow
         picture={
-          <div
-            className="shrink-0"
-            style={{
-              width: "52px",
-              height: "52px",
-              borderRadius: "100px",
-              background:
-                "linear-gradient(0deg, rgba(255, 187, 12, 0.70) 0%, rgba(255, 187, 12, 0.70) 100%)",
-            }}
+          <RadixAvatar width={52} height={52} src="/samples/history-red.jpg" />
+        }
+        kebap={customedKebap}
+      />
+      <FlexRow
+        picture={
+          <RadixAvatar
+            width={52}
+            height={52}
+            src="/samples/history-purple.jpg"
           />
         }
         kebap={customedKebap}
       />
       <FlexRow
         picture={
-          <div
-            className="shrink-0"
-            style={{
-              width: "52px",
-              height: "52px",
-              borderRadius: "50%",
-              background:
-                "linear-gradient(0deg, rgba(255, 187, 12, 0.70) 0%, rgba(255, 187, 12, 0.70) 100%)",
-            }}
-          />
-        }
-        kebap={customedKebap}
-      />
-      <FlexRow
-        picture={
-          <div
-            className="shrink-0"
-            style={{
-              width: "52px",
-              height: "52px",
-              borderRadius: "50%",
-              background:
-                "linear-gradient(0deg, rgba(255, 187, 12, 0.70) 0%, rgba(255, 187, 12, 0.70) 100%)",
-            }}
+          <RadixAvatar
+            width={52}
+            height={52}
+            src="/samples/history-yellow.jpg"
           />
         }
         kebap={customedKebap}
