@@ -136,6 +136,7 @@ export default function History() {
                 border: "1px solid #444447",
                 borderRadius: "8px",
               }}
+              onClick={() => bottomSheet.setter({ location: "hidden" })}
             />
           </div>
         ),
