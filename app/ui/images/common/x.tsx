@@ -6,7 +6,7 @@ export default function X({
   className,
   style,
 }: {
-  onClick: () => void;
+  onClick?: () => void;
   className?: string;
   style?: CSSProperties;
 }) {

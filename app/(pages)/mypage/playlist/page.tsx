@@ -13,7 +13,7 @@ import ButtonTemplate from "@/app/ui/templates/buttons";
 const FlexRow = ({ menuOnClick }: { menuOnClick: () => void }) => {
   return (
     <div
-      className="relative flex flex-row items-center px-4 py-4 gap-3.5 overflow-auto"
+      className="relative flex flex-row items-center px-4 py-4 gap-3.5 overflow-without-scrollbar"
       style={{
         borderBottom: "1px solid #323234",
       }}
@@ -114,7 +114,7 @@ export default function Playlist() {
   const [isPopupOn, setIsPopupOn] = useState(false);
 
   return (
-    <div className="grow flex flex-col items-center overflow-auto">
+    <div className="grow flex flex-col items-center overflow-without-scrollbar">
       <div className="w-full flex justify-between py-5 px-4 mb-1">
         <LeftArrowWhite />
         <p
