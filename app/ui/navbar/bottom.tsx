@@ -41,7 +41,18 @@ export default function BottomNavBar() {
           borderTop: "1px solid #323234",
         }}
       >
-        <Profile />
+        <span className="flex flex-col items-center">
+          <Profile />
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "12px",
+              color: "#9F9FA2",
+            }}
+          >
+            프로필
+          </p>
+        </span>
       </div>
     </div>
   );

@@ -55,7 +55,7 @@ export const LeftArrow: React.FC = () => {
     />
   );
 };
-export const LeftArrowWhite: React.FC = () => {
+export const LeftArrowWhite = ({ onClick }: { onClick?: () => void }) => {
   return (
     <Image
       src="/common/arrows/arrow-left-white.svg"
@@ -63,6 +63,7 @@ export const LeftArrowWhite: React.FC = () => {
       width={20}
       height={20}
       style={{ cursor: "pointer" }}
+      onClick={onClick}
     />
   );
 };

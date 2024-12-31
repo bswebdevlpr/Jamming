@@ -6,7 +6,8 @@ import { ImageWithTxt } from "@/app/ui/templates/images";
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { globalContext } from "../../layout";
 import ButtonTemplate from "@/app/ui/templates/buttons";
-import Popup from "./popup";
+import NoshowPopup from "./popup/noshow";
+import RejamPopup from "./popup/rejam";
 
 const FlexRow = ({
   picture,
@@ -86,6 +87,7 @@ export default function History() {
 
   // STATES
   const [isNoshowOn, setIsNoshowOn] = useState(false);
+  const [isRejamOn, setIsRejamOn] = useState(false);
   //
 
   const customedKebap = Kebap({
@@ -103,6 +105,10 @@ export default function History() {
 
                 borderBottom: "1px solid #323234",
               }}
+              onClick={() => {
+                bottomSheet.setter({ location: "hidden" });
+                setIsRejamOn(true);
+              }}
             >
               REJAM!
             </p>
@@ -113,7 +119,10 @@ export default function History() {
                 fontSize: "15px",
                 color: "#F2F2F4",
               }}
-              onClick={() => setIsNoshowOn(true)}
+              onClick={() => {
+                bottomSheet.setter({ location: "hidden" });
+                setIsNoshowOn(true);
+              }}
             >
               노쇼 체크
             </p>
@@ -133,7 +142,7 @@ export default function History() {
   });
 
   return (
-    <div className="grow flex flex-col px-4 mb-3 relative">
+    <div className="grow flex flex-col px-4 mb-3">
       <ImageWithTxt
         image={<LeftArrowWhite />}
         text="멤버 보기"
@@ -205,7 +214,11 @@ export default function History() {
         }
         kebap={customedKebap}
       />
-      <Popup isTurnedOn={isNoshowOn} turnOff={() => setIsNoshowOn(false)} />
+      <NoshowPopup
+        isTurnedOn={isNoshowOn}
+        turnOff={() => setIsNoshowOn(false)}
+      />
+      <RejamPopup isTurnedOn={isRejamOn} turnOff={() => setIsRejamOn(false)} />
     </div>
   );
 }

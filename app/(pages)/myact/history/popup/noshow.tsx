@@ -1,10 +1,9 @@
-import { RightArrow } from "@/app/ui/images/arrows";
 import X from "@/app/ui/images/common/x";
 import OopsIcon from "@/app/ui/images/myact/oopts";
 import ButtonTemplate from "@/app/ui/templates/buttons";
-import { ReactNode, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
-export default function Popup({
+export default function NoshowPopup({
   isTurnedOn,
   turnOff,
 }: {
@@ -22,7 +21,7 @@ export default function Popup({
   return (
     <div
       ref={ref}
-      className="hidden absolute w-full h-full flex justify-center items-center"
+      className="hidden absolute z-10 w-full h-full flex justify-center items-center"
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
         top: 0,
