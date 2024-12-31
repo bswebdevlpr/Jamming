@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import HomeButton from "../buttons/home";
 import MyActivity from "../images/navbar/my-activity";
-import Profile from "../images/jamsession/profile";
+import Profile from "../images/navbar/profile";
 
 export default function BottomNavBar() {
   const path = usePathname();
@@ -38,16 +38,18 @@ export default function BottomNavBar() {
         className="grow flex justify-center items-center"
         style={{
           padding: "6px 18px",
-          borderTop: "1px solid #323234",
+          borderTop: `1px solid ${
+            path.startsWith("/mypage") ? "#A3FF0C" : "#323234"
+          }`,
         }}
       >
         <span className="flex flex-col items-center">
-          <Profile />
+          <Profile focused={path.startsWith("/mypage")} />
           <p
             style={{
               fontFamily: "SUIT-BODY",
               fontSize: "12px",
-              color: "#9F9FA2",
+              color: path.startsWith("/mypage") ? "#A3FF0C" : "#9F9FA2",
             }}
           >
             프로필

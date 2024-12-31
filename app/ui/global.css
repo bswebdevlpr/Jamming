@@ -62,6 +62,8 @@
   --background: #111113;
   --foreground: #ededed;
 
+  --highlight: #a3ff0c;
+
   --min-width: 375px;
   /* min-height: 812px; statusbar, footer 포함*/
   --min-height: 753px;
