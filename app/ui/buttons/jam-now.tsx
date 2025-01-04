@@ -1,6 +1,6 @@
 "use client";
 
-import CreateJam from "@/app/(pages)/jamsession/popup/create-jam";
+import CreateJam from "@/app/(pages)/(only-user)/jamsession/popup/create-jam";
 import Plus from "../images/jamsession/plus";
 import { useState } from "react";
 

@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import BottomSheetContent, {
   BottomSheetContentType,
 } from "./(bottom-sheet)/content";
-import { globalContext } from "../../layout";
+import { globalContext } from "../../../layout";
 
 const TextBox = ({
   upTxt,

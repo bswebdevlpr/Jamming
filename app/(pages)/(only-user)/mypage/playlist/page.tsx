@@ -7,7 +7,7 @@ import SettingIcon from "@/app/ui/images/mypage/setting";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import { useContext, useState } from "react";
 import Popup from "./popup";
-import { globalContext } from "../../layout";
+import { globalContext } from "../../../layout";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 
 const FlexRow = ({ menuOnClick }: { menuOnClick: () => void }) => {

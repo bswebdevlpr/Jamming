@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import HomeButton from "../buttons/home";
 import MyActivity from "../images/navbar/my-activity";
 import Profile from "../images/navbar/profile";
@@ -23,14 +23,20 @@ export default function BottomNavBar() {
           borderTop: `1px solid ${
             path.startsWith("/myact") ? "#A3FF0C" : "#323234"
           }`,
+
+          cursor: "pointer",
         }}
+        onClick={() => redirect("/myact")}
       >
         <MyActivity focused={path.startsWith("/myact")} />
       </div>
       <div
         style={{
           transform: "translate(0vh, -2.13vh)", // 16px
+
+          cursor: "pointer",
         }}
+        onClick={() => redirect("/jamsession")}
       >
         <HomeButton />
       </div>
@@ -41,7 +47,10 @@ export default function BottomNavBar() {
           borderTop: `1px solid ${
             path.startsWith("/mypage") ? "#A3FF0C" : "#323234"
           }`,
+
+          cursor: "pointer",
         }}
+        onClick={() => redirect("/mypage")}
       >
         <span className="flex flex-col items-center">
           <Profile focused={path.startsWith("/mypage")} />

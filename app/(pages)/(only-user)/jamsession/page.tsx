@@ -2,11 +2,11 @@
 
 import Filter from "@/app/ui/images/filter";
 import { useContext } from "react";
-import { globalContext } from "../layout";
 import BottomSheetContent from "./bottom-sheet/content";
 import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
 import JamNow from "@/app/ui/buttons/jam-now";
+import { globalContext } from "../../layout";
 
 export default function JamSession() {
   const { bottomSheet } = useContext(globalContext);

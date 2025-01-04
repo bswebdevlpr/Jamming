@@ -1,7 +1,7 @@
 "use client";
 
 import { globalContext } from "@/app/(pages)/layout";
-import { CSSProperties, useContext, useEffect } from "react";
+import { CSSProperties, useContext } from "react";
 
 const commonStyle = {
   width: "67.76%",

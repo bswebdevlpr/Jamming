@@ -8,7 +8,7 @@ export default function RadixAvatar({
 }: {
   width?: number;
   height?: number;
-  src?: string;
+  src?: null | string;
 }) {
   return (
     <Avatar.Root>
@@ -20,7 +20,7 @@ export default function RadixAvatar({
         }}
       >
         <Avatar.Image
-          src={src}
+          src={src ?? undefined}
           alt="Avatar"
           style={{
             width: width ?? "140px",
@@ -37,7 +37,7 @@ export default function RadixAvatar({
             borderRadius: "50%",
             padding: "5px",
           }}
-          // delayMs={600}
+          delayMs={600}
         >
           <Logo width={90} height={90} />
         </Avatar.Fallback>

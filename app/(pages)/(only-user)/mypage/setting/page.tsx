@@ -1,5 +1,9 @@
-import { LeftArrowWhite, RightArrow } from "@/app/ui/images/arrows";
+"use client";
+
+import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import RadixSwitch from "@/app/ui/templates/switch";
+import { signOut } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default function Setting() {
   return (
@@ -51,18 +55,30 @@ export default function Setting() {
         </div>
         <RadixSwitch />
       </div>
-      <p
+      <div
         className="px-4 py-5"
         style={{
-          fontFamily: "SUIT-BODY",
-          fontSize: "1rem",
-          color: "#FFF",
-
           borderBottom: "1px solid var(--border)",
         }}
       >
-        로그아웃
-      </p>
+        <p
+          style={{
+            fontFamily: "SUIT-BODY",
+            fontSize: "1rem",
+            color: "#FFF",
+
+            display: "inline",
+
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            signOut();
+            redirect("/");
+          }}
+        >
+          로그아웃
+        </p>
+      </div>
       <div className="flex flex-row justify-between px-4 pt-5">
         <div>
           <p
