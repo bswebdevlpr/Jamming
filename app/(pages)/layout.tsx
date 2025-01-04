@@ -6,6 +6,7 @@ import BottomSheet, {
 } from "../ui/templates/bottom-sheet/body";
 
 import { SessionProvider } from "next-auth/react";
+import SmallLoading from "../ui/loading/small";
 
 // INTERFACES
 interface BottomSheetContext {
@@ -19,6 +20,10 @@ interface BottomSheetContext {
 export interface GlobalContext {
   bodyWidth: number;
   bodyHeight: number;
+
+  isSmallLoadingOn: boolean;
+  setSmallLoading: () => void;
+
   bottomSheet: BottomSheetContext;
 }
 //
@@ -27,6 +32,10 @@ export interface GlobalContext {
 const defaultContext: GlobalContext = {
   bodyWidth: 0,
   bodyHeight: 0,
+
+  isSmallLoadingOn: false,
+  setSmallLoading: () => {},
+
   bottomSheet: {
     children: null,
     location: null,
@@ -45,6 +54,13 @@ function GlobalLayout({
 }>) {
   // INIT
   const [globalState, setGlobalState] = useState<GlobalContext>(defaultContext);
+
+  // SMALL LOADING
+  globalState.setSmallLoading = () => {
+    globalState.isSmallLoadingOn = !globalState.isSmallLoadingOn;
+    setGlobalState({ ...globalState });
+  };
+  //
 
   // BOTTOM SHEET
   globalState.bottomSheet.setter = (input: Partial<BottomSheetContext>) => {
@@ -81,6 +97,7 @@ function GlobalLayout({
     <SessionProvider>
       <globalContext.Provider value={globalState}>
         {children}
+        <SmallLoading isTurnedOn={globalState.isSmallLoadingOn} />
         <BottomSheet
           width={width}
           height={height}

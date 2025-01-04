@@ -30,7 +30,6 @@ export default function PopupTemplate({
   const { bodyWidth, bodyHeight } = useContext(globalContext);
 
   useEffect(() => {
-    console.log("turnedOn", isTurnedOn);
     if (ref.current) {
       ref.current.style.display = isTurnedOn ? "flex" : "none";
     }

@@ -3,7 +3,7 @@
 import Bell from "@/app/ui/images/jamsession/bell";
 import Calendar from "@/app/ui/images/jamsession/calendar";
 import { DownArrow } from "../../images/arrows";
-import LocationPopup from "@/app/(pages)/jamsession/popup/location";
+import LocationPopup from "@/app/(pages)/(only-user)/jamsession/popup/location";
 import { useState } from "react";
 
 export default function TopNavBar() {
@@ -20,7 +20,8 @@ export default function TopNavBar() {
             fontFamily: "SUIT-TITLE",
             fontSize: "1.125rem",
             color: "#FFF",
-          }}>
+          }}
+        >
           서울
         </p>
         <DownArrow />

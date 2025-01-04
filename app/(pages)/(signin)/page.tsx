@@ -1,11 +1,27 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import FullScreenLoading from "../../ui/loading/fullscreen";
 
 export default function SignIn() {
+  const session = useSession();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (session.status === "loading") setIsLoading(true);
+    else if (session.status === "authenticated") {
+      setIsLoading(false);
+      redirect("/jamsession");
+    } else setIsLoading(false);
+  }, [session.status]);
+
   return (
     <div className="flex flex-col justify-between items-center min-h-screen">
+      <FullScreenLoading isTurnedOn={isLoading} />
       <div
         style={{
           height: "11.42%",

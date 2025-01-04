@@ -9,10 +9,10 @@ import {
   OpenChat,
 } from "@/app/ui/images/jamsession/popup/create-jam";
 import { useContext, useEffect, useRef, useState } from "react";
-import { globalContext } from "../../layout";
 import BottomSheetContent from "../bottom-sheet/content";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import SelectHeadCount from "./select-headcount";
+import { globalContext } from "@/app/(pages)/layout";
 
 const FlexRow = ({
   left,

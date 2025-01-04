@@ -7,7 +7,8 @@ import RadixAvatar from "@/app/ui/templates/avatar";
 import Tag from "@/app/ui/templates/tag";
 import BPMPopup from "./popup";
 import { useState } from "react";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const FlexRow = () => {
   return (
@@ -54,7 +55,12 @@ const FlexRow = () => {
 };
 
 export default function MyPage() {
+  const session = useSession();
+  const user = session.data?.user;
+
   const [isBPMPopupOn, setIsBPMPopupOn] = useState(false);
+
+  const pathname = usePathname();
 
   return (
     <div className="grow flex flex-col items-center overflow-without-scrollbar">
@@ -69,9 +75,9 @@ export default function MyPage() {
         >
           프로필
         </p>
-        <SettingIcon />
+        <SettingIcon onClick={() => redirect(pathname + "/setting")} />
       </div>
-      <RadixAvatar src="/samples/mypage.svg" />
+      <RadixAvatar src={user?.image} />
       <div
         className="flex gap-1.5"
         style={{
@@ -83,7 +89,7 @@ export default function MyPage() {
           marginBottom: "16px",
         }}
       >
-        <p>사용자1</p>
+        <p>{user?.name ?? "Jammer"}</p>
         <p>|</p>
         <p
           style={{
