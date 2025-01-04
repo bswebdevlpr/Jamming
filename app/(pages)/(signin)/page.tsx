@@ -71,13 +71,13 @@ export default function SignIn() {
           음악인을 위한 합주 플랫폼
         </p>
       </div>
-      <button onClick={() => signIn()}>SIBAL TEST</button>
-      {/* <Image
+      <Image
         src="/signup/large-wide.png"
         alt="kakao login"
         width={350}
         height={52}
-      /> */}
+        onClick={() => signIn("kakao")}
+      />
     </div>
   );
 }
