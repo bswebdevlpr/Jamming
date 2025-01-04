@@ -5,6 +5,8 @@ import BottomSheet, {
   BottomSheetHeight,
 } from "../ui/templates/bottom-sheet/body";
 
+import { SessionProvider } from "next-auth/react";
+
 // INTERFACES
 interface BottomSheetContext {
   children: ReactNode;
@@ -76,17 +78,19 @@ function GlobalLayout({
   //
 
   return (
-    <globalContext.Provider value={globalState}>
-      {children}
-      <BottomSheet
-        width={width}
-        height={height}
-        pullUp={globalState.bottomSheet.location}
-        header={globalState.bottomSheet.header}
-      >
-        {globalState.bottomSheet.children}
-      </BottomSheet>
-    </globalContext.Provider>
+    <SessionProvider>
+      <globalContext.Provider value={globalState}>
+        {children}
+        <BottomSheet
+          width={width}
+          height={height}
+          pullUp={globalState.bottomSheet.location}
+          header={globalState.bottomSheet.header}
+        >
+          {globalState.bottomSheet.children}
+        </BottomSheet>
+      </globalContext.Provider>
+    </SessionProvider>
   );
 }
 export default GlobalLayout;

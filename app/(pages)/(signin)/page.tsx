@@ -1,10 +1,18 @@
+"use client";
+
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 
 export default function SignIn() {
   return (
-    <div className="grid grid-rows-[86px_1fr_222px] justify-items-center min-h-screen font-[family-name:var(--font-geist-sans)]">
-      <div></div> {/* 빈칸 */}
-      <div className="flex flex-col items-center">
+    <div className="flex flex-col justify-between items-center min-h-screen">
+      <div
+        style={{
+          height: "11.42%",
+        }}
+      ></div>{" "}
+      {/* 빈칸 */}
+      <div className="grow flex flex-col items-center">
         <div className="relative">
           <Image
             className="shrink-0 absolute"
@@ -63,53 +71,13 @@ export default function SignIn() {
           음악인을 위한 합주 플랫폼
         </p>
       </div>
-      <div className="flex gap-4 items-center flex-col">
-        <a
-          className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            className="dark:invert"
-            src="/vercel.svg"
-            alt="Vercel logomark"
-            width={20}
-            height={20}
-          />
-          카카오로 로그인
-        </a>
-        <a
-          className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            className="dark:invert"
-            src="/vercel.svg"
-            alt="Vercel logomark"
-            width={20}
-            height={20}
-          />
-          네이버로 로그인
-        </a>
-        <a
-          className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            className="dark:invert"
-            src="/vercel.svg"
-            alt="Vercel logomark"
-            width={20}
-            height={20}
-          />
-          구글로 로그인
-        </a>
-      </div>
+      <button onClick={() => signIn()}>SIBAL TEST</button>
+      {/* <Image
+        src="/signup/large-wide.png"
+        alt="kakao login"
+        width={350}
+        height={52}
+      /> */}
     </div>
   );
 }
