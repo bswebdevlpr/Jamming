@@ -3,6 +3,8 @@
 import { RoundedCheckbox } from "@/app/ui/checkbox";
 import { useEffect, useRef, useState } from "react";
 import { RightArrow } from "@/app/ui/images/arrows";
+import { NextButton } from "@/app/ui/buttons/next";
+import { redirect, usePathname } from "next/navigation";
 
 const PolicyRow = ({
   opt,
@@ -22,8 +24,7 @@ const PolicyRow = ({
         style={{
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
-        }}
-      >
+        }}>
         ({opt}) {txt}
       </p>
       <RightArrow className="ml-auto" />
@@ -32,6 +33,7 @@ const PolicyRow = ({
 };
 
 export default function SignUp_Policy() {
+  // INIT
   const isInited = useRef(false);
 
   const [acceptAllTermCon, setAcceptAllTermCon] = useState(false);
@@ -54,9 +56,22 @@ export default function SignUp_Policy() {
       setTermCons(newState);
     };
   };
+  //
+
+  const pathname = usePathname();
+
+  const [isButtonActivated, setIsButtonActivated] = useState(false);
+  useEffect(() => {
+    let checkCnt = 0;
+
+    for (const con of termCons.slice(0, termCons.length - 1))
+      if (con) checkCnt++;
+    if (checkCnt === termCons.length - 1) setIsButtonActivated(true);
+    else setIsButtonActivated(false);
+  }, [termCons]);
 
   return (
-    <div className="flex flex-col">
+    <div className="grow flex flex-col justify-between">
       <div className="flex flex-col mb-5">
         <p
           style={{
@@ -64,8 +79,7 @@ export default function SignUp_Policy() {
             fontSize: "24px",
             color: "#C0C0C5",
           }}
-          className=""
-        >
+          className="">
           반갑습니다
         </p>
         <p
@@ -74,76 +88,86 @@ export default function SignUp_Policy() {
             fontSize: "24px",
             color: "#C0C0C5",
           }}
-          className=""
-        >
+          className="">
           시작 전, 약관에 동의해주세요
         </p>
       </div>
-      <div
-        className="flex flex-row justify-between items-center mb-3"
-        style={{
-          borderTop: "1px solid",
-          borderBottom: "1px solid",
-          borderColor: "#444447",
+      <div className="grow">
+        <div
+          className="flex flex-row justify-between items-center mb-3"
+          style={{
+            borderTop: "1px solid",
+            borderBottom: "1px solid",
+            borderColor: "#444447",
 
-          paddingTop: "17.5px",
-          paddingRight: "20px",
-          paddingBottom: "17.5px",
-          paddingLeft: "12px",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "16px",
-            color: "#E5E5E9",
-          }}
-        >
-          약관 전체동의
-        </p>
-        <RoundedCheckbox
-          onClick={handleAllTermCon()}
-          thisState={acceptAllTermCon}
-        />
-      </div>
-      <div className="mx-3 mb-8">
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "13px",
-          }}
-        >
-          본인은 만 14세 이상이며, 로그인 진행 시 이용 약관,
-        </p>
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "13px",
-          }}
-        >
-          개인정보 수집 및 이용 동의서, 운영 정책에 동의하게 됩니다.
-        </p>
-      </div>
-      <div className="flex flex-col gap-4 mx-3">
-        {[
-          "서비스 이용약관",
-          "전자금융거래 이용약관",
-          "개인정보 수집/이용 동의",
-          "본인확인서비스 이용약관",
-        ].map((txt, idx) => (
-          <PolicyRow
-            key={idx}
-            opt={"필수"}
-            txt={txt}
-            onClick={handleTermConAction(idx)}
-            thisState={termCons[idx]}
+            paddingTop: "17.5px",
+            paddingRight: "20px",
+            paddingBottom: "17.5px",
+            paddingLeft: "12px",
+          }}>
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "16px",
+              color: "#E5E5E9",
+            }}>
+            약관 전체동의
+          </p>
+          <RoundedCheckbox
+            onClick={handleAllTermCon()}
+            thisState={acceptAllTermCon}
           />
-        ))}
-        <PolicyRow
-          opt={"선택"}
-          txt={"마케팅 수신 이용 동의"}
-          onClick={handleTermConAction(termCons.length - 1)}
-          thisState={termCons[termCons.length - 1]}
+        </div>
+        <div className="mx-3 mb-8">
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "13px",
+            }}>
+            본인은 만 14세 이상이며, 로그인 진행 시 이용 약관,
+          </p>
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "13px",
+            }}>
+            개인정보 수집 및 이용 동의서, 운영 정책에 동의하게 됩니다.
+          </p>
+        </div>
+        <div className="flex flex-col gap-4 mx-3">
+          {[
+            "서비스 이용약관",
+            "전자금융거래 이용약관",
+            "개인정보 수집/이용 동의",
+            "본인확인서비스 이용약관",
+          ].map((txt, idx) => (
+            <PolicyRow
+              key={idx}
+              opt={"필수"}
+              txt={txt}
+              onClick={handleTermConAction(idx)}
+              thisState={termCons[idx]}
+            />
+          ))}
+          <PolicyRow
+            opt={"선택"}
+            txt={"마케팅 수신 이용 동의"}
+            onClick={handleTermConAction(termCons.length - 1)}
+            thisState={termCons[termCons.length - 1]}
+          />
+        </div>
+      </div>
+      <div className="flex justify-center items-center">
+        <NextButton
+          isActive={isButtonActivated}
+          onClick={() =>
+            isButtonActivated &&
+            redirect(
+              `${pathname}/profile?${new URLSearchParams({
+                acceptMarketing: termCons[termCons.length - 1],
+              }).toString()}`
+            )
+          }
         />
       </div>
     </div>

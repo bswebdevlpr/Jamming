@@ -109,7 +109,7 @@ body {
 }
 
 @layer components {
-  .overflow-without-scrollbar {
+  .overflow-without-scroll {
     @apply overflow-auto;
     -ms-overflow-style: none; /* IE/Edge */
     scrollbar-width: none; /* Firefox */
