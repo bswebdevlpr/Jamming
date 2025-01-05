@@ -1,6 +1,5 @@
-import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import BottomSheetHeader from "./header";
-import { useBottomSheet } from "@/app/hooks/useBottomSheet";
 import { motion } from "framer-motion";
 
 export type BottomSheetHeight =
