@@ -26,12 +26,14 @@ const TextBox = ({
   upTxt,
   downTxt,
   moveTo,
+  state,
   onClick,
 }: {
   upTxt: string;
   downTxt: string;
   moveTo: string;
-  onClick: () => void;
+  state: any;
+  onClick: (state: any) => void;
 }) => {
   return (
     <div
@@ -41,13 +43,15 @@ const TextBox = ({
         transform: `translate(0px, ${moveTo})`,
         cursor: "pointer",
       }}
-      onClick={onClick}>
+      onClick={() => onClick(state)}
+    >
       <p
         style={{
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
-        }}>
+        }}
+      >
         {upTxt}
       </p>
       <p
@@ -55,7 +59,8 @@ const TextBox = ({
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
-        }}>
+        }}
+      >
         {downTxt}
       </p>
     </div>
@@ -101,7 +106,8 @@ export default function SignUp_Profile() {
           fontSize: "24px",
           color: "#C0C0C5",
           marginBottom: "18px",
-        }}>
+        }}
+      >
         프로필을 설정해주세요
       </p>
       <div className="flex flex-col">
@@ -112,20 +118,23 @@ export default function SignUp_Profile() {
               height: "24.55vh", // "184.92px",
               backgroundColor: "#242426",
               clipPath: "polygon(0% 0%, 0% 100%, 85% 85%, 100% 0%)",
-            }}>
+            }}
+          >
             <span
               className="inline-block"
               style={{
                 marginTop: "35.69%", // "66px",
                 marginLeft: "30.72%", // "54px",
-              }}>
+              }}
+            >
               <div className="flex flex-col items-center">
                 <Camera style={{ marginBottom: "6px" }} />
                 <p
                   style={{
                     fontFamily: "SUIT-BODY",
                     fontSize: "12px",
-                  }}>
+                  }}
+                >
                   프로필 사진
                 </p>
               </div>
@@ -150,19 +159,22 @@ export default function SignUp_Profile() {
                 // clipPath:
                 //   "polygon(0% 0%, 0% 10.09vh, 42.66vw 10.09vh, 42.66vw 0vh)",
                 // "polygon(0px 0px, 0px 76px, 160px 76px, 160px 0px)",
-              }}>
+              }}
+            >
               <div
                 className="flex flex-col justify-between"
                 style={{
                   width: "100%",
                   height: "100%",
                   padding: "14px 16px 10px 16px",
-                }}>
+                }}
+              >
                 <p
                   style={{
                     fontFamily: "SUIT-BODY",
                     fontSize: "12px",
-                  }}>
+                  }}
+                >
                   <span style={{ color: "#A3FF0C" }}>*</span>닉네임
                 </p>
                 <div className="flex flex-row justify-between">
@@ -171,7 +183,8 @@ export default function SignUp_Profile() {
                       fontFamily: "SUIT-BODY",
                       fontSize: "12px",
                       color: "#9F9FA2",
-                    }}>
+                    }}
+                  >
                     입력
                   </p>
                   <p
@@ -179,7 +192,8 @@ export default function SignUp_Profile() {
                       fontFamily: "SUIT-BODY",
                       fontSize: "12px",
                       color: "#767678",
-                    }}>
+                    }}
+                  >
                     0/8
                   </p>
                 </div>
@@ -191,19 +205,22 @@ export default function SignUp_Profile() {
                 width: "102%", //"171px",
                 height: "57%", //"100px",
                 padding: "14px 8px",
-              }}>
+              }}
+            >
               <p
                 style={{
                   fontFamily: "SUIT-BODY",
                   fontSize: "14px",
                   color: "#E5E5E9",
-                }}>
+                }}
+              >
                 나를 나타내는 태그
                 <span
                   style={{
                     fontSize: "12px",
                     color: "#9F9FA2",
-                  }}>
+                  }}
+                >
                   (최대 4개)
                 </span>
               </p>
@@ -212,7 +229,8 @@ export default function SignUp_Profile() {
                   fontFamily: "SUIT-BODY",
                   fontSize: "12px",
                   color: "#9F9FA2",
-                }}>
+                }}
+              >
                 # 입력
               </p>
             </div>
@@ -224,20 +242,23 @@ export default function SignUp_Profile() {
               upTxt="포지션"
               downTxt="선택"
               moveTo="2.16vh"
-              onClick={() =>
+              state={position}
+              onClick={(state) => {
+                console.log("state:", state);
+
                 bottomSheet.setter({
                   location: "high",
                   children: (
                     <BottomSheetContent
                       type="position"
-                      state={position}
+                      state={state}
                       handleState={(value) => setPosition(value)}
                       handleCancel={closeBottomSheet}
                       handleComplete={closeBottomSheet}
                     />
                   ),
-                })
-              }
+                });
+              }}
             />
             <Position />
           </div>
@@ -246,13 +267,14 @@ export default function SignUp_Profile() {
               upTxt="선호장르"
               downTxt="선택"
               moveTo="0px"
-              onClick={() =>
+              state={genre}
+              onClick={(state) =>
                 bottomSheet.setter({
                   location: "high",
                   children: (
                     <BottomSheetContent
                       type="genre"
-                      state={genre}
+                      state={state}
                       handleState={(value) => setGenre(value)}
                       handleCancel={closeBottomSheet}
                       handleComplete={closeBottomSheet}
@@ -272,13 +294,14 @@ export default function SignUp_Profile() {
               upTxt="레벨"
               downTxt="선택"
               moveTo="-2.25vh" //"-17px"
-              onClick={() =>
+              state={level}
+              onClick={(state) =>
                 bottomSheet.setter({
                   location: "high",
                   children: (
                     <BottomSheetContent
                       type="level"
-                      state={level}
+                      state={state}
                       handleState={(value) => setLevel(value)}
                       handleCancel={closeBottomSheet}
                       handleComplete={closeBottomSheet}

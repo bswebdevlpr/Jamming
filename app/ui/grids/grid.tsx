@@ -54,13 +54,7 @@ const Grid = ({
   );
 
   useEffect(() => {
-    console.log("state:", state);
-    console.log("이거에서", itemStateList);
-    console.log(
-      "이거로 바뀌어야함",
-      values.map((val) => val === state)
-    );
-    setItemStateList(values.map((val) => val === state));
+    console.log("state from grid", state);
   }, [state]);
 
   useEffect(() => {
@@ -74,7 +68,6 @@ const Grid = ({
     setItemStateList((prev) =>
       [...prev].map((val, idx) => idx === selectedIdx)
     );
-
     handleState(value);
   };
 
