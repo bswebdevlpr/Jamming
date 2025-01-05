@@ -1,3 +1,5 @@
+"use client";
+
 import { GenreEnum } from "@/app/lib/constants/genre.enum";
 import { LevelEnum } from "@/app/lib/constants/level.enum";
 import { PositionEnum } from "@/app/lib/constants/position.enum";
@@ -5,6 +7,7 @@ import CancelButton from "@/app/ui/buttons/cancel";
 import CompleteButton from "@/app/ui/buttons/complete";
 import Grid from "@/app/ui/grids/grid";
 import { BOTTOMSHEET_HEIGHT_HIGH } from "@/app/ui/templates/bottom-sheet/body";
+import { useEffect } from "react";
 
 export type BottomSheetContentType = null | "position" | "genre" | "level";
 
@@ -21,50 +24,36 @@ const BottomSheetContent = ({
   handleComplete: () => void;
   handleState: (value: any) => void;
 }) => {
-  const body = () => {
-    if (type === "position")
-      return (
-        <Grid
-          items={Object.values(PositionEnum)}
-          values={Object.keys(PositionEnum)}
-          state={state}
-          handleState={handleState}
-        />
-      );
-    else if (type === "genre")
-      return (
-        <Grid
-          items={Object.values(GenreEnum)}
-          values={Object.keys(GenreEnum)}
-          state={state}
-          handleState={handleState}
-        />
-      );
-    else if (type === "level")
-      return (
-        <Grid
-          items={Object.values(LevelEnum)}
-          values={Object.keys(LevelEnum)}
-          state={state}
-          handleState={handleState}
-        />
-      );
-    else return null;
-  };
+  const prevState = state;
+
+  useEffect(() => {
+    console.log("state from BottomSheetContent", state);
+  }, [state]);
+
+  const thisEnum =
+    type === "position"
+      ? PositionEnum
+      : type === "genre"
+      ? GenreEnum
+      : type === "level"
+      ? LevelEnum
+      : null;
 
   return (
     <div
       className="flex flex-col justify-between"
       style={{
         height: `${BOTTOMSHEET_HEIGHT_HIGH}%`,
-      }}>
+      }}
+    >
       <div className="flex flex-col items-center gap-2">
         <p
           style={{
             fontFamily: "SUIT-BODY",
             fontSize: "20px",
             color: "#C0C0C5",
-          }}>
+          }}
+        >
           {type === "position"
             ? "포지션 선택"
             : type === "genre"
@@ -87,13 +76,18 @@ const BottomSheetContent = ({
       </div>
       <div className="grow flex flex-col mb-7">
         {/* 선택사항들 */}
-        {body()}
+        <Grid
+          items={thisEnum ? Object.values(thisEnum) : []}
+          values={thisEnum ? Object.keys(thisEnum) : []}
+          state={state}
+          handleState={handleState}
+        />
       </div>
       {/* 취소/완료 버튼 */}
       <div className="flex justify-center gap-2 mb-2">
         <CancelButton
           onClick={() => {
-            handleState(state);
+            handleState(prevState);
             handleCancel();
           }}
         />
