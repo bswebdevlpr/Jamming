@@ -10,7 +10,7 @@ import { BandType } from "@/app/ui/images/signup/band-type";
 import { Genre } from "@/app/ui/images/signup/genre";
 import { Position } from "@/app/ui/images/signup/position";
 import SelectItem from "@/app/ui/grids/item";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,6 +39,7 @@ const TextBox = ({
       style={{
         padding: "14px 16px 16px",
         transform: `translate(0px, ${moveTo})`,
+        cursor: "pointer",
       }}
       onClick={onClick}>
       <p
@@ -72,6 +73,10 @@ export default function SignUp_Profile() {
   const [position, setPosition] = useState<null | PositionEnum>(null);
   const [genre, setGenre] = useState<null | GenreEnum>(null);
   const [level, setLevel] = useState<null | LevelEnum>(null);
+
+  useEffect(() => {
+    console.log(position, genre, level);
+  }, [position, genre, level]);
 
   // FORM
   // const formSchema = z.object({
@@ -225,12 +230,10 @@ export default function SignUp_Profile() {
                   children: (
                     <BottomSheetContent
                       type="position"
+                      state={position}
+                      handleState={(value) => setPosition(value)}
                       handleCancel={closeBottomSheet}
                       handleComplete={closeBottomSheet}
-                      handleState={(e) => {
-                        console.log("hello?", e);
-                        setPosition(e);
-                      }}
                     />
                   ),
                 })
@@ -249,12 +252,10 @@ export default function SignUp_Profile() {
                   children: (
                     <BottomSheetContent
                       type="genre"
+                      state={genre}
+                      handleState={(value) => setGenre(value)}
                       handleCancel={closeBottomSheet}
                       handleComplete={closeBottomSheet}
-                      handleState={(e) => {
-                        console.log("hello?", e);
-                        setGenre(e);
-                      }}
                     />
                   ),
                 })
@@ -277,12 +278,10 @@ export default function SignUp_Profile() {
                   children: (
                     <BottomSheetContent
                       type="level"
+                      state={level}
+                      handleState={(value) => setLevel(value)}
                       handleCancel={closeBottomSheet}
                       handleComplete={closeBottomSheet}
-                      handleState={(e) => {
-                        console.log("hello?", e);
-                        setLevel(e);
-                      }}
                     />
                   ),
                 })

@@ -10,30 +10,24 @@ export type BottomSheetContentType = null | "position" | "genre" | "level";
 
 const BottomSheetContent = ({
   type,
+  state,
   handleCancel,
   handleComplete,
   handleState,
 }: {
   type: BottomSheetContentType;
+  state: any;
   handleCancel: () => void;
   handleComplete: () => void;
   handleState: (value: any) => void;
 }) => {
-  const title =
-    type === "position"
-      ? "포지션 선택"
-      : type === "genre"
-      ? "장르 선택"
-      : type === "level"
-      ? "밴드 유형 선택"
-      : null;
-
   const body = () => {
     if (type === "position")
       return (
         <Grid
           items={Object.values(PositionEnum)}
           values={Object.keys(PositionEnum)}
+          state={state}
           handleState={handleState}
         />
       );
@@ -42,6 +36,7 @@ const BottomSheetContent = ({
         <Grid
           items={Object.values(GenreEnum)}
           values={Object.keys(GenreEnum)}
+          state={state}
           handleState={handleState}
         />
       );
@@ -50,6 +45,7 @@ const BottomSheetContent = ({
         <Grid
           items={Object.values(LevelEnum)}
           values={Object.keys(LevelEnum)}
+          state={state}
           handleState={handleState}
         />
       );
@@ -69,7 +65,13 @@ const BottomSheetContent = ({
             fontSize: "20px",
             color: "#C0C0C5",
           }}>
-          {title}
+          {type === "position"
+            ? "포지션 선택"
+            : type === "genre"
+            ? "장르 선택"
+            : type === "level"
+            ? "밴드 유형 선택"
+            : null}
         </p>
         {/* {
             <p
@@ -89,7 +91,12 @@ const BottomSheetContent = ({
       </div>
       {/* 취소/완료 버튼 */}
       <div className="flex justify-center gap-2 mb-2">
-        <CancelButton onClick={handleCancel} />
+        <CancelButton
+          onClick={() => {
+            handleState(state);
+            handleCancel();
+          }}
+        />
         <CompleteButton onClick={handleComplete} />
       </div>
     </div>

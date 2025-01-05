@@ -29,15 +29,21 @@ const Grid = ({
   colNum,
   itemStyle,
   itemStyleActivated,
+
+  state,
   handleState,
+
   useInitState,
 }: {
   items: string[];
   values: any[];
+  state?: any;
   handleState: (input: any) => void;
   colNum?: number;
   itemStyle?: CSSProperties;
   itemStyleActivated?: CSSProperties;
+
+  // 초기화 사용 시
   useInitState?: {
     initState: boolean;
     setInitState: Dispatch<SetStateAction<boolean>>;
@@ -46,15 +52,16 @@ const Grid = ({
   const [itemStateList, setItemStateList] = useState<boolean[]>(
     Array(items.length).fill(false)
   );
-  const handleItemClick = (selectedIdx: number, value: any) => {
-    setItemStateList((prev) => {
-      const newList = [...prev].map((val, idx) => idx === selectedIdx);
 
-      return newList;
-    });
-
-    handleState(value);
-  };
+  useEffect(() => {
+    console.log("state:", state);
+    console.log("이거에서", itemStateList);
+    console.log(
+      "이거로 바뀌어야함",
+      values.map((val) => val === state)
+    );
+    setItemStateList(values.map((val) => val === state));
+  }, [state]);
 
   useEffect(() => {
     if (useInitState?.initState) {
@@ -62,6 +69,14 @@ const Grid = ({
       useInitState.setInitState(!useInitState?.initState);
     }
   }, [useInitState?.initState]);
+
+  const handleItemClick = (selectedIdx: number, value: any) => {
+    setItemStateList((prev) =>
+      [...prev].map((val, idx) => idx === selectedIdx)
+    );
+
+    handleState(value);
+  };
 
   const createItems = (texts: string[], values: any[]) => {
     return (
