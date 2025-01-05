@@ -21,10 +21,10 @@ interface Props {
   // ref: RefObject<HTMLDivElement>;
 }
 
-const HIGH_Y = 94.35;
-const MIDDLE_Y = 59.95;
-const LOW_Y = 16.7;
-const SUPER_LOW_Y = 10.5;
+export const BOTTOMSHEET_HEIGHT_HIGH = 94.35;
+export const BOTTOMSHEET_HEIGHT_MIDDLE = 59.95;
+export const BOTTOMSHEET_HEIGHT_LOW = 16.7;
+export const BOTTOMSHEET_HEIGHT_SUPER_LOW = 10.5;
 
 const Wrapper = ({ children, width, height, pullUp }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -39,26 +39,32 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
       case null:
         break;
       case "high":
-        ref.current?.style.setProperty("transform", `translateY(-${HIGH_Y}%)`);
-        setPrevDist(HIGH_Y);
+        ref.current?.style.setProperty(
+          "transform",
+          `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
+        );
+        setPrevDist(BOTTOMSHEET_HEIGHT_HIGH);
         break;
       case "middle":
         ref.current?.style.setProperty(
           "transform",
-          `translateY(-${MIDDLE_Y}%)`
+          `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
         );
-        setPrevDist(MIDDLE_Y);
+        setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
         break;
       case "low":
-        ref.current?.style.setProperty("transform", `translateY(-${LOW_Y}%)`);
-        setPrevDist(LOW_Y);
+        ref.current?.style.setProperty(
+          "transform",
+          `translateY(-${BOTTOMSHEET_HEIGHT_LOW}%)`
+        );
+        setPrevDist(BOTTOMSHEET_HEIGHT_LOW);
         break;
       case "superLow":
         ref.current?.style.setProperty(
           "transform",
-          `translateY(-${SUPER_LOW_Y}%)`
+          `translateY(-${BOTTOMSHEET_HEIGHT_SUPER_LOW}%)`
         );
-        setPrevDist(SUPER_LOW_Y);
+        setPrevDist(BOTTOMSHEET_HEIGHT_SUPER_LOW);
         break;
       case "hidden":
         ref.current?.style.setProperty("transform", `translateY(${prevDist}%)`);
@@ -87,8 +93,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         transition: "transform 0.75s ease-out",
 
         display: "none",
-      }}
-    >
+      }}>
       {children}
     </motion.div>
   );
@@ -101,8 +106,7 @@ const BottomSheetContent = ({ children }: { children: ReactNode }) => (
       overflow: "auto",
       WebkitOverflowScrolling: "touch",
       height: "100%",
-    }}
-  >
+    }}>
     {children}
   </div>
 );

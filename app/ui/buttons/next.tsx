@@ -22,6 +22,8 @@ const style_inactivated: CSSProperties = {
   fontFamily: "SUIT-TITLE",
   fontSize: "16px",
   color: "#767678",
+
+  cursor: "default",
 };
 
 const style_activated: CSSProperties = {
@@ -39,16 +41,18 @@ const style_activated: CSSProperties = {
 export const NextButton = ({
   className,
   isActive,
+  onClick,
 }: {
   className?: string;
   isActive?: boolean;
+  onClick?: () => void;
 }) => {
   return (
     <button
       type="button"
       className={className}
       style={!isActive ? style_inactivated : style_activated}
-    >
+      onClick={onClick}>
       다음
     </button>
   );

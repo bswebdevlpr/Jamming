@@ -4,6 +4,7 @@ import { PositionEnum } from "@/app/lib/constants/position.enum";
 import CancelButton from "@/app/ui/buttons/cancel";
 import CompleteButton from "@/app/ui/buttons/complete";
 import Grid from "@/app/ui/grids/grid";
+import { BOTTOMSHEET_HEIGHT_HIGH } from "@/app/ui/templates/bottom-sheet/body";
 
 export type BottomSheetContentType = null | "position" | "genre" | "level";
 
@@ -11,10 +12,12 @@ const BottomSheetContent = ({
   type,
   handleCancel,
   handleComplete,
+  handleState,
 }: {
   type: BottomSheetContentType;
   handleCancel: () => void;
   handleComplete: () => void;
+  handleState: (value: any) => void;
 }) => {
   const title =
     type === "position"
@@ -31,6 +34,7 @@ const BottomSheetContent = ({
         <Grid
           items={Object.values(PositionEnum)}
           values={Object.keys(PositionEnum)}
+          handleState={handleState}
         />
       );
     else if (type === "genre")
@@ -38,6 +42,7 @@ const BottomSheetContent = ({
         <Grid
           items={Object.values(GenreEnum)}
           values={Object.keys(GenreEnum)}
+          handleState={handleState}
         />
       );
     else if (type === "level")
@@ -45,21 +50,25 @@ const BottomSheetContent = ({
         <Grid
           items={Object.values(LevelEnum)}
           values={Object.keys(LevelEnum)}
+          handleState={handleState}
         />
       );
     else return null;
   };
 
   return (
-    <div className="h-full flex flex-col justify-between">
+    <div
+      className="flex flex-col justify-between"
+      style={{
+        height: `${BOTTOMSHEET_HEIGHT_HIGH}%`,
+      }}>
       <div className="flex flex-col items-center gap-2">
         <p
           style={{
             fontFamily: "SUIT-BODY",
             fontSize: "20px",
             color: "#C0C0C5",
-          }}
-        >
+          }}>
           {title}
         </p>
         {/* {
@@ -74,9 +83,9 @@ const BottomSheetContent = ({
         </p>
         } */}
       </div>
-      <div className="grow flex flex-col justify-end mb-7">
+      <div className="grow flex flex-col mb-7">
         {/* 선택사항들 */}
-        <div className="grid grid-cols-3 gap-1">{body()}</div>
+        {body()}
       </div>
       {/* 취소/완료 버튼 */}
       <div className="flex justify-center gap-2 mb-2">
