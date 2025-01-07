@@ -50,11 +50,11 @@ const Grid = ({
   };
 }) => {
   const [itemStateList, setItemStateList] = useState<boolean[]>(
-    Array(items.length).fill(false)
+    values.map((val) => val === state)
   );
 
   useEffect(() => {
-    console.log("state from grid", state);
+    setItemStateList(values.map((val) => val === state));
   }, [state]);
 
   useEffect(() => {

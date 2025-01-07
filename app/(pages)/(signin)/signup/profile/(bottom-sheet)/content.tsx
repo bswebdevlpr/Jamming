@@ -7,7 +7,7 @@ import CancelButton from "@/app/ui/buttons/cancel";
 import CompleteButton from "@/app/ui/buttons/complete";
 import Grid from "@/app/ui/grids/grid";
 import { BOTTOMSHEET_HEIGHT_HIGH } from "@/app/ui/templates/bottom-sheet/body";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export type BottomSheetContentType = null | "position" | "genre" | "level";
 
@@ -24,11 +24,7 @@ const BottomSheetContent = ({
   handleComplete: () => void;
   handleState: (value: any) => void;
 }) => {
-  const prevState = state;
-
-  useEffect(() => {
-    console.log("state from BottomSheetContent", state);
-  }, [state]);
+  const [localState, setLocalState] = useState(state);
 
   const thisEnum =
     type === "position"
@@ -41,7 +37,7 @@ const BottomSheetContent = ({
 
   return (
     <div
-      className="flex flex-col justify-between"
+      className="flex flex-col justify-between px-4"
       style={{
         height: `${BOTTOMSHEET_HEIGHT_HIGH}%`,
       }}
@@ -79,15 +75,19 @@ const BottomSheetContent = ({
         <Grid
           items={thisEnum ? Object.values(thisEnum) : []}
           values={thisEnum ? Object.keys(thisEnum) : []}
-          state={state}
-          handleState={handleState}
+          state={localState}
+          handleState={(val) => {
+            handleState(val);
+            setLocalState(val);
+          }}
         />
       </div>
       {/* 취소/완료 버튼 */}
       <div className="flex justify-center gap-2 mb-2">
         <CancelButton
           onClick={() => {
-            handleState(prevState);
+            handleState(state);
+            setLocalState(state);
             handleCancel();
           }}
         />
