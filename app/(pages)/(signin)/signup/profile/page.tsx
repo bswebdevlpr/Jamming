@@ -26,13 +26,11 @@ const TextBox = ({
   upTxt,
   downTxt,
   moveTo,
-  state,
   onClick,
 }: {
   upTxt: string;
   downTxt: string;
   moveTo: string;
-  state: any;
   onClick: (state: any) => void;
 }) => {
   return (
@@ -43,7 +41,7 @@ const TextBox = ({
         transform: `translate(0px, ${moveTo})`,
         cursor: "pointer",
       }}
-      onClick={() => onClick(state)}
+      onClick={onClick}
     >
       <p
         style={{
@@ -78,10 +76,6 @@ export default function SignUp_Profile() {
   const [position, setPosition] = useState<null | PositionEnum>(null);
   const [genre, setGenre] = useState<null | GenreEnum>(null);
   const [level, setLevel] = useState<null | LevelEnum>(null);
-
-  useEffect(() => {
-    console.log(position, genre, level);
-  }, [position, genre, level]);
 
   // FORM
   // const formSchema = z.object({
@@ -242,23 +236,20 @@ export default function SignUp_Profile() {
               upTxt="포지션"
               downTxt="선택"
               moveTo="2.16vh"
-              state={position}
-              onClick={(state) => {
-                console.log("state:", state);
-
+              onClick={() =>
                 bottomSheet.setter({
                   location: "high",
                   children: (
                     <BottomSheetContent
                       type="position"
-                      state={state}
+                      state={position}
                       handleState={(value) => setPosition(value)}
                       handleCancel={closeBottomSheet}
                       handleComplete={closeBottomSheet}
                     />
                   ),
-                });
-              }}
+                })
+              }
             />
             <Position />
           </div>
@@ -267,14 +258,13 @@ export default function SignUp_Profile() {
               upTxt="선호장르"
               downTxt="선택"
               moveTo="0px"
-              state={genre}
-              onClick={(state) =>
+              onClick={() =>
                 bottomSheet.setter({
                   location: "high",
                   children: (
                     <BottomSheetContent
                       type="genre"
-                      state={state}
+                      state={genre}
                       handleState={(value) => setGenre(value)}
                       handleCancel={closeBottomSheet}
                       handleComplete={closeBottomSheet}
@@ -294,14 +284,13 @@ export default function SignUp_Profile() {
               upTxt="레벨"
               downTxt="선택"
               moveTo="-2.25vh" //"-17px"
-              state={level}
               onClick={(state) =>
                 bottomSheet.setter({
                   location: "high",
                   children: (
                     <BottomSheetContent
                       type="level"
-                      state={state}
+                      state={level}
                       handleState={(value) => setLevel(value)}
                       handleCancel={closeBottomSheet}
                       handleComplete={closeBottomSheet}
