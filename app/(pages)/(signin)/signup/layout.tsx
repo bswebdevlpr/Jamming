@@ -9,7 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <WorkSpace>
-      <div className="grow flex flex-col px-4 pt-9 pb-2 overflow-without-scroll">
+      <div className="grow flex flex-col pt-9 pb-2 overflow-without-scroll">
         <div className="mb-5">
           <span className="inline-block">
             <span className="flex flex-row basis-auto grow-0 shrink-0 gap-2.5 ">

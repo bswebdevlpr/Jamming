@@ -1,7 +1,7 @@
-import { Location } from "@/app/lib/constants/location.enum";
+import { LocationEnum } from "@/app/lib/constants/location.enum";
 import Grid from "@/app/ui/grids/grid";
 
-const locations = Object.values(Location);
+const locations = Object.values(LocationEnum);
 
 export default function SignUp_Location() {
   return (

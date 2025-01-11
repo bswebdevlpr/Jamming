@@ -4,13 +4,13 @@ import { CategoryTagItem } from "@/app/ui/categories/items";
 import { DownArrowWhite, LeftArrowWhite } from "@/app/ui/images/arrows";
 import Kebap from "@/app/ui/images/menu/kebap";
 import { useContext, useState } from "react";
-import { globalContext } from "../../layout";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import EditIcon from "@/app/ui/images/jamsession/post/edit";
 import DeleteIcon from "@/app/ui/images/jamsession/post/delete";
 import ReportIcon from "@/app/ui/images/jamsession/post/report";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import Modal from "./modal";
+import { globalContext } from "@/app/(pages)/layout";
 
 const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
   return (
@@ -223,7 +223,7 @@ export default function JamSession_Post() {
             >
               {"내일에서 기다릴게 (I'll See You There Tomorrow"}
             </p>
-            <DownArrowWhite />
+            <DownArrowWhite onClick={() => {}} />
           </div>
         }
       />
