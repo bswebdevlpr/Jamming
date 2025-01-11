@@ -4,11 +4,11 @@ import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import Kebap from "@/app/ui/images/menu/kebap";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import { ReactNode, useContext, useEffect, useState } from "react";
-import { globalContext } from "../../layout";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import NoshowPopup from "./popup/noshow";
 import RejamPopup from "./popup/rejam";
 import RadixAvatar from "@/app/ui/templates/avatar";
+import { globalContext } from "@/app/(pages)/layout";
 
 const FlexRow = ({
   picture,
