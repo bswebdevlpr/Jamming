@@ -1,7 +1,11 @@
 import Image from "next/image";
 import { CSSProperties } from "react";
 
-export const BandType = ({ style }: { style: CSSProperties }) => {
+export const SignUp_Profile_Background_Level = ({
+  style,
+}: {
+  style: CSSProperties;
+}) => {
   return (
     <Image
       style={style}

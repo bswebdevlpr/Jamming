@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export const Position = () => {
+export const SignUp_Profile_Background_Position = () => {
   return (
     <Image
       className="ml-auto w-full h-auto"
