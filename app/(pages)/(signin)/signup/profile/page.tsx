@@ -6,9 +6,6 @@ import BottomSheet, {
 import CancelButton from "@/app/ui/buttons/cancel";
 import { NextButton } from "@/app/ui/buttons/next";
 import { Camera } from "@/app/ui/images/camera";
-import { BandType } from "@/app/ui/images/signup/band-type";
-import { Genre } from "@/app/ui/images/signup/genre";
-import { Position } from "@/app/ui/images/signup/position";
 import SelectItem from "@/app/ui/grids/item";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -21,6 +18,17 @@ import { globalContext } from "../../../layout";
 import { PositionEnum } from "@/app/lib/constants/position.enum";
 import { GenreEnum } from "@/app/lib/constants/genre.enum";
 import { LevelEnum } from "@/app/lib/constants/level.enum";
+import { SignUp_Profile_Background_Genre } from "@/app/ui/images/signup/genre";
+import { SignUp_Profile_Background_Level } from "@/app/ui/images/signup/level";
+import { SignUp_Profile_Background_Position } from "@/app/ui/images/signup/position";
+import NextButton_SignUp from "../buttons/next-button";
+import Image from "next/image";
+
+interface ImageFile {
+  id: number;
+  name: string;
+  url: string;
+}
 
 const TextBox = ({
   upTxt,
@@ -64,12 +72,18 @@ const TextBox = ({
     </div>
   );
 };
+
 // ZOD
 const formSchema = z.object({
+  profileInfo: z.custom<ImageFile>(),
   nickname: z
     .string()
     .min(1, { message: "닉네임을 입력해주세요." })
-    .max(8, { message: "닉네임을 입력해주세요." }),
+    .max(8, { message: "닉네임을 입력해주세요." })
+    .regex(
+      /^[a-zA-Z가-힣]+$/, // 알파벳, 숫자, 공백만 허용
+      "특수문자는 허용되지 않습니다."
+    ),
   level: z.string().min(1, { message: "닉네임을 입력해주세요." }),
   // position: z.enum(),
   genre: z.string().min(1, { message: "닉네임을 입력해주세요." }),
@@ -87,26 +101,56 @@ export default function SignUp_Profile() {
   };
   //
 
+  // STATES
+  const [gridItems, setGridItems] = useState([]);
+
   const [position, setPosition] = useState<null | PositionEnum>(null);
   const [genre, setGenre] = useState<null | GenreEnum>(null);
   const [level, setLevel] = useState<null | LevelEnum>(null);
+  //
 
   // FORM
-
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
+
+  const profileInfo = watch("profileInfo");
+  const nickname = watch("nickname");
+  //
+
+  // HANDLERS
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files;
+
+    if (fileList) {
+      const file = Array.from(fileList)[0];
+
+      const newImage: ImageFile = {
+        id: Date.now(), // 고유한 ID 생성
+        name: file?.name,
+        url: URL.createObjectURL(file), // 미리보기 URL 생성
+      };
+      setValue("profileInfo", newImage);
+    }
+  };
+  //
+
+  useEffect(() => {
+    console.log("nickname:", nickname);
+  }, [nickname]);
 
   const onSubmit = (data: FormData) => {
     console.log("submited:", data);
   };
 
   return (
-    <div className="flex flex-col relative">
+    <div className="h-full flex flex-col relative justify-between">
       <p
         style={{
           fontFamily: "SBAggroM",
@@ -122,12 +166,28 @@ export default function SignUp_Profile() {
           <div className="flex flex-row justify-between min-w-full">
             <div
               style={{
-                width: "51.24%", //"175.765px",
+                width: "64.24%", //"175.765px",
                 height: "24.55vh", // "184.92px",
                 backgroundColor: "#242426",
                 clipPath: "polygon(0% 0%, 0% 100%, 85% 85%, 100% 0%)",
+
+                position: "relative",
               }}
             >
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full h-full absolute opacity-0 z-20"
+              />
+              {profileInfo && (
+                <Image
+                  src={profileInfo.url}
+                  alt="background"
+                  fill={true}
+                  className="absolute z-10"
+                />
+              )}
               <span
                 className="inline-block"
                 style={{
@@ -156,12 +216,12 @@ export default function SignUp_Profile() {
                   height: "43%", //"76px",
                   backgroundColor: "#242426",
                   clipPath: "polygon(100% 0%, 100% 100%, 0% 100%)",
-                  transform: "translate(-962%)", //"translate(-160px)",
+                  transform: "translate(-986%)", //"translate(-160px)",
                 }}
               />
               <div
                 style={{
-                  width: "91.22%",
+                  width: "93.22%",
                   height: "43%", // "76px",
                   backgroundColor: "#242426",
                   // clipPath:
@@ -175,31 +235,32 @@ export default function SignUp_Profile() {
                     width: "100%",
                     height: "100%",
                     padding: "14px 16px 10px 16px",
+
+                    fontFamily: "SUIT-BODY",
+                    fontSize: "14px",
                   }}
                 >
-                  <p
-                    style={{
-                      fontFamily: "SUIT-BODY",
-                      fontSize: "12px",
-                    }}
-                  >
+                  <p>
                     <span style={{ color: "#A3FF0C" }}>*</span>닉네임
                   </p>
+                  {errors.nickname && (
+                    <p style={{ color: "red", fontSize: "10px" }}>
+                      {errors.nickname.message}
+                    </p>
+                  )}
                   <div className="flex flex-row justify-between">
-                    {/* <input
+                    <input
                       id="nickname"
                       type="text"
+                      maxLength={8}
                       {...register("nickname")}
+                      placeholder="입력"
+                      className="w-full"
                       style={{
-                        fontFamily: "SUIT-BODY",
-                        fontSize: "12px",
-                        color: "#9F9FA2",
+                        color: "#E5E5E9",
                         background: "#242426",
                       }}
                     />
-                    {errors.nickname && (
-                      <p style={{ color: "red" }}>{errors.nickname.message}</p>
-                    )} */}
                     <p
                       style={{
                         fontFamily: "SUIT-BODY",
@@ -207,7 +268,7 @@ export default function SignUp_Profile() {
                         color: "#767678",
                       }}
                     >
-                      0/8
+                      {nickname?.length ?? 0}/8
                     </p>
                   </div>
                 </div>
@@ -237,15 +298,20 @@ export default function SignUp_Profile() {
                     (최대 4개)
                   </span>
                 </p>
-                <p
+                <div
+                  className="grid grid-cols-2"
                   style={{
                     fontFamily: "SUIT-BODY",
                     fontSize: "12px",
                     color: "#9F9FA2",
                   }}
                 >
-                  # 입력
-                </p>
+                  {gridItems.length > 0
+                    ? gridItems.map((item, idx) => (
+                        <input key={idx} value={item} />
+                      ))
+                    : "입력"}
+                </div>
               </div>
             </div>
           </div>
@@ -270,7 +336,7 @@ export default function SignUp_Profile() {
                   })
                 }
               />
-              <Position />
+              <SignUp_Profile_Background_Position />
             </div>
             <div className="relative w-full h-auto">
               <TextBox
@@ -292,7 +358,7 @@ export default function SignUp_Profile() {
                   })
                 }
               />
-              <Genre
+              <SignUp_Profile_Background_Genre
                 style={{
                   transform: "translate(0vw, -2.52vh)",
                 }}
@@ -318,7 +384,7 @@ export default function SignUp_Profile() {
                   })
                 }
               />
-              <BandType
+              <SignUp_Profile_Background_Level
                 style={{
                   transform: "translate(0vw, -5.44vh)",
                 }}
@@ -327,6 +393,7 @@ export default function SignUp_Profile() {
           </div>
         </div>
       </form>
+      <NextButton_SignUp isActive={false} nextPath="profile" queryObj={{}} />
     </div>
   );
 }
