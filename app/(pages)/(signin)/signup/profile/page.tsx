@@ -84,6 +84,11 @@ const formSchema = z.object({
       /^[a-zA-Z가-힣]+$/, // 알파벳, 숫자, 공백만 허용
       "특수문자는 허용되지 않습니다."
     ),
+  tags: z
+    .array(z.string())
+    .refine((arr) => arr.every((item) => /^#[가-힣a-zA-Z]+$/.test(item)), {
+      message: "올바른 태그를 입력해주세요.",
+    }),
   level: z.string().min(1, { message: "닉네임을 입력해주세요." }),
   // position: z.enum(),
   genre: z.string().min(1, { message: "닉네임을 입력해주세요." }),
@@ -102,8 +107,6 @@ export default function SignUp_Profile() {
   //
 
   // STATES
-  const [gridItems, setGridItems] = useState([]);
-
   const [position, setPosition] = useState<null | PositionEnum>(null);
   const [genre, setGenre] = useState<null | GenreEnum>(null);
   const [level, setLevel] = useState<null | LevelEnum>(null);
@@ -120,8 +123,9 @@ export default function SignUp_Profile() {
     resolver: zodResolver(formSchema),
   });
 
-  const profileInfo = watch("profileInfo");
-  const nickname = watch("nickname");
+  const profileInfo = watch("profileInfo"),
+    nickname = watch("nickname"),
+    tags = watch("tags", new Array(4).fill(""));
   //
 
   // HANDLERS
@@ -166,12 +170,13 @@ export default function SignUp_Profile() {
           <div className="flex flex-row justify-between min-w-full">
             <div
               style={{
-                width: "64.24%", //"175.765px",
+                width: "53.24%", //"175.765px",
                 height: "24.55vh", // "184.92px",
                 backgroundColor: "#242426",
                 clipPath: "polygon(0% 0%, 0% 100%, 85% 85%, 100% 0%)",
 
                 position: "relative",
+                flexShrink: 0,
               }}
             >
               <input
@@ -212,11 +217,12 @@ export default function SignUp_Profile() {
               <div
                 className="absolute z-10"
                 style={{
-                  width: "9.46%", // "16px",
+                  width: "12.46%", // "16px",
                   height: "43%", //"76px",
                   backgroundColor: "#242426",
                   clipPath: "polygon(100% 0%, 100% 100%, 0% 100%)",
-                  transform: "translate(-986%)", //"translate(-160px)",
+                  transform: "translate(-745%)", //"translate(-160px)",
+                  flexShrink: 0,
                 }}
               />
               <div
@@ -224,6 +230,7 @@ export default function SignUp_Profile() {
                   width: "93.22%",
                   height: "43%", // "76px",
                   backgroundColor: "#242426",
+                  flexShrink: 0,
                   // clipPath:
                   //   "polygon(0% 0%, 0% 10.09vh, 42.66vw 10.09vh, 42.66vw 0vh)",
                   // "polygon(0px 0px, 0px 76px, 160px 76px, 160px 0px)",
@@ -276,8 +283,8 @@ export default function SignUp_Profile() {
               <div
                 className="flex flex-col justify-between"
                 style={{
-                  width: "102%", //"171px",
-                  height: "57%", //"100px",
+                  width: "110%", //"171px",
+                  height: "55.24%", //"100px",
                   padding: "14px 8px",
                 }}
               >
@@ -306,11 +313,26 @@ export default function SignUp_Profile() {
                     color: "#9F9FA2",
                   }}
                 >
-                  {gridItems.length > 0
-                    ? gridItems.map((item, idx) => (
-                        <input key={idx} value={item} />
-                      ))
-                    : "입력"}
+                  {tags.map((item, idx) => (
+                    <>
+                      <style jsx>{`
+                        input::placeholder {
+                          font-size: 12px;
+                        }
+                      }`}</style>
+                      <input
+                        type="text"
+                        key={idx}
+                        placeholder={idx === 2 ? "# 입력" : ""}
+                        className="max-w-fit"
+                        style={{
+                          background: "var(--background)",
+                          color: "var(--highlight)",
+                          fontSize: "14px",
+                        }}
+                      />
+                    </>
+                  ))}
                 </div>
               </div>
             </div>
