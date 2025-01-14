@@ -39,7 +39,7 @@ export default function JamSession() {
           </p>
           <div
             onClick={() =>
-              bottomSheet.setter({
+              bottomSheet.set({
                 location: "high",
                 children: <BottomSheetContent />,
               })
