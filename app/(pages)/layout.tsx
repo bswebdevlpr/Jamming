@@ -12,7 +12,7 @@ import SmallLoading from "../ui/loading/small";
 interface BottomSheetContext {
   children: ReactNode;
   location: BottomSheetHeight;
-  setter: (input: Partial<BottomSheetContext>) => void;
+  set: (input: Partial<BottomSheetContext>) => void;
   header?: boolean;
   setHeader: null | ((input: boolean) => void);
 }
@@ -39,7 +39,7 @@ const defaultContext: GlobalContext = {
   bottomSheet: {
     children: null,
     location: null,
-    setter: () => {},
+    set: () => {},
     header: true,
     setHeader: null,
   },
@@ -63,7 +63,7 @@ function GlobalLayout({
   //
 
   // BOTTOM SHEET
-  globalState.bottomSheet.setter = (input: Partial<BottomSheetContext>) => {
+  globalState.bottomSheet.set = (input: Partial<BottomSheetContext>) => {
     globalState.bottomSheet = { ...globalState.bottomSheet, ...input };
     setGlobalState({ ...globalState });
   };

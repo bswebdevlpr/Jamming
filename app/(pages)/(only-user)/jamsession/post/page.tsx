@@ -59,7 +59,7 @@ export default function JamSession_Post() {
           onClick={
             // 작성자
             // () =>
-            // bottomSheet.setter({
+            // bottomSheet.set({
             //   location: "low",
             //   children: (
             //     <div className="flex flex-col px-4 pt-2 pb-3">
@@ -95,7 +95,7 @@ export default function JamSession_Post() {
 
             // 일반 유저
             () =>
-              bottomSheet.setter({
+              bottomSheet.set({
                 location: "superLow",
                 children: (
                   <div className="flex flex-col px-4 pt-2 pb-3">

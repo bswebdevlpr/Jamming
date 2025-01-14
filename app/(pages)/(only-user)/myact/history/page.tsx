@@ -93,7 +93,7 @@ export default function History() {
 
   const customedKebap = Kebap({
     onClick: () =>
-      bottomSheet.setter({
+      bottomSheet.set({
         location: 24,
         children: (
           <div className="flex flex-col px-4 pt-2 pb-3">
@@ -107,7 +107,7 @@ export default function History() {
                 borderBottom: "1px solid #323234",
               }}
               onClick={() => {
-                bottomSheet.setter({ location: "hidden" });
+                bottomSheet.set({ location: "hidden" });
                 setIsRejamOn(true);
               }}
             >
@@ -121,7 +121,7 @@ export default function History() {
                 color: "#F2F2F4",
               }}
               onClick={() => {
-                bottomSheet.setter({ location: "hidden" });
+                bottomSheet.set({ location: "hidden" });
                 setIsNoshowOn(true);
               }}
             >
@@ -136,7 +136,7 @@ export default function History() {
                 border: "1px solid #444447",
                 borderRadius: "8px",
               }}
-              onClick={() => bottomSheet.setter({ location: "hidden" })}
+              onClick={() => bottomSheet.set({ location: "hidden" })}
             />
           </div>
         ),

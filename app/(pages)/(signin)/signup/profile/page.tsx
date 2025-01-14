@@ -102,7 +102,7 @@ export default function SignUp_Profile() {
   // INIT
   const { bottomSheet } = useContext(globalContext);
   const closeBottomSheet = () => {
-    bottomSheet.setter({ location: "hidden" });
+    bottomSheet.set({ location: "hidden" });
   };
   //
 
@@ -146,8 +146,8 @@ export default function SignUp_Profile() {
   //
 
   useEffect(() => {
-    console.log("nickname:", nickname);
-  }, [nickname]);
+    console.log(position, genre, level);
+  }, [position, genre, level]);
 
   const onSubmit = (data: FormData) => {
     console.log("submited:", data);
@@ -281,7 +281,7 @@ export default function SignUp_Profile() {
                 </div>
               </div>
               <div
-                className="flex flex-col justify-between"
+                className="flex flex-col gap-3"
                 style={{
                   width: "110%", //"171px",
                   height: "55.24%", //"100px",
@@ -306,7 +306,7 @@ export default function SignUp_Profile() {
                   </span>
                 </p>
                 <div
-                  className="grid grid-cols-2"
+                  className="grid grid-cols-2 gap-0.5"
                   style={{
                     fontFamily: "SUIT-BODY",
                     fontSize: "12px",
@@ -315,7 +315,7 @@ export default function SignUp_Profile() {
                 >
                   {tags.map((item, idx) => (
                     <>
-                      <style jsx>{`
+                      <style jsx key={idx}>{`
                         input::placeholder {
                           font-size: 12px;
                         }
@@ -330,6 +330,14 @@ export default function SignUp_Profile() {
                           color: "var(--highlight)",
                           fontSize: "14px",
                         }}
+                        onChange={(txt) =>
+                          setValue(
+                            "tags",
+                            tags.map((tag, innerIdx) =>
+                              idx === innerIdx ? txt.target.value : tag
+                            )
+                          )
+                        }
                       />
                     </>
                   ))}
@@ -344,7 +352,7 @@ export default function SignUp_Profile() {
                 downTxt="선택"
                 moveTo="2.16vh"
                 onClick={() =>
-                  bottomSheet.setter({
+                  bottomSheet.set({
                     location: "high",
                     children: (
                       <BottomSheetContent
@@ -366,7 +374,7 @@ export default function SignUp_Profile() {
                 downTxt="선택"
                 moveTo="0px"
                 onClick={() =>
-                  bottomSheet.setter({
+                  bottomSheet.set({
                     location: "high",
                     children: (
                       <BottomSheetContent
@@ -392,7 +400,7 @@ export default function SignUp_Profile() {
                 downTxt="선택"
                 moveTo="-2.25vh" //"-17px"
                 onClick={(state) =>
-                  bottomSheet.setter({
+                  bottomSheet.set({
                     location: "high",
                     children: (
                       <BottomSheetContent

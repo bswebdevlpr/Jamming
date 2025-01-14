@@ -16,7 +16,8 @@ const FlexRow = ({ menuOnClick }: { menuOnClick: () => void }) => {
       className="relative flex flex-row items-center px-4 py-4 gap-3.5 overflow-without-scroll"
       style={{
         borderBottom: "1px solid #323234",
-      }}>
+      }}
+    >
       <div
         style={{
           width: "112px",
@@ -28,13 +29,15 @@ const FlexRow = ({ menuOnClick }: { menuOnClick: () => void }) => {
         className="flex flex-col"
         style={{
           gap: "5px",
-        }}>
+        }}
+      >
         <p
           style={{
             fontFamily: "SUIT-BODY",
             fontSize: "1rem",
             color: "#FFF",
-          }}>
+          }}
+        >
           영상 제목
         </p>
         <p
@@ -42,7 +45,8 @@ const FlexRow = ({ menuOnClick }: { menuOnClick: () => void }) => {
             fontFamily: "SUIT-BODY",
             fontSize: "0.75rem",
             color: "#C0C0C5",
-          }}>
+          }}
+        >
           업로드 날짜 2024.09.25
         </p>
       </div>
@@ -59,7 +63,7 @@ const FlexRow = ({ menuOnClick }: { menuOnClick: () => void }) => {
 export default function Playlist() {
   const { bottomSheet } = useContext(globalContext);
   const bottomSheetHandler = () =>
-    bottomSheet.setter({
+    bottomSheet.set({
       location: 24,
       header: false,
       children: (
@@ -74,8 +78,9 @@ export default function Playlist() {
               borderBottom: "1px solid #323234",
             }}
             onClick={() => {
-              bottomSheet.setter({ location: "hidden" });
-            }}>
+              bottomSheet.set({ location: "hidden" });
+            }}
+          >
             공개로 전환
           </p>
           <p
@@ -86,8 +91,9 @@ export default function Playlist() {
               color: "#FF380C",
             }}
             onClick={() => {
-              bottomSheet.setter({ location: "hidden" });
-            }}>
+              bottomSheet.set({ location: "hidden" });
+            }}
+          >
             삭제
           </p>
           <ButtonTemplate
@@ -99,7 +105,7 @@ export default function Playlist() {
               border: "1px solid #444447",
               borderRadius: "8px",
             }}
-            onClick={() => bottomSheet.setter({ location: "hidden" })}
+            onClick={() => bottomSheet.set({ location: "hidden" })}
           />
         </div>
       ),
@@ -116,7 +122,8 @@ export default function Playlist() {
             fontFamily: "SUIT-BODY",
             fontSize: "1rem",
             color: "#FFF",
-          }}>
+          }}
+        >
           내 연주 목록
         </p>
         <SettingIcon />
@@ -126,7 +133,8 @@ export default function Playlist() {
         style={{
           fontFamily: "SUIT-BODY",
           fontSize: "0.875rem",
-        }}>
+        }}
+      >
         <p
           className="basis-1/2"
           style={{
@@ -136,7 +144,8 @@ export default function Playlist() {
 
             paddingTop: "18px",
             paddingBottom: "8px",
-          }}>
+          }}
+        >
           공개
         </p>
         <p
@@ -148,7 +157,8 @@ export default function Playlist() {
 
             paddingTop: "20px",
             paddingBottom: "8px",
-          }}>
+          }}
+        >
           비공개
         </p>
       </div>

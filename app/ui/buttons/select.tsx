@@ -46,7 +46,7 @@ export default function SelectButton({
       className="flex justify-center items-center text-base"
       style={!isActive ? initStyle : styleActivated}
       onClick={() =>
-        bottomSheet.setter({
+        bottomSheet.set({
           location: "hidden",
         })
       }

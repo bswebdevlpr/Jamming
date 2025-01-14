@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import BottomSheetHeader from "./header";
 import { motion } from "framer-motion";
+import debounce from "@/app/lib/debounce";
 
 export type BottomSheetHeight =
   | null
@@ -34,46 +35,75 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
   const [prevDist, setPrevDist] = useState(0);
 
   useEffect(() => {
-    switch (pullUp) {
-      case null:
-        break;
-      case "high":
-        ref.current?.style.setProperty(
-          "transform",
-          `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
-        );
-        setPrevDist(BOTTOMSHEET_HEIGHT_HIGH);
-        break;
-      case "middle":
-        ref.current?.style.setProperty(
-          "transform",
-          `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
-        );
-        setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
-        break;
-      case "low":
-        ref.current?.style.setProperty(
-          "transform",
-          `translateY(-${BOTTOMSHEET_HEIGHT_LOW}%)`
-        );
-        setPrevDist(BOTTOMSHEET_HEIGHT_LOW);
-        break;
-      case "superLow":
-        ref.current?.style.setProperty(
-          "transform",
-          `translateY(-${BOTTOMSHEET_HEIGHT_SUPER_LOW}%)`
-        );
-        setPrevDist(BOTTOMSHEET_HEIGHT_SUPER_LOW);
-        break;
-      case "hidden":
-        ref.current?.style.setProperty("transform", `translateY(${prevDist}%)`);
-        setPrevDist(0);
-        break;
-      default:
-        ref.current?.style.setProperty("transform", `translateY(-${pullUp}%)`);
-        setPrevDist(pullUp);
-        break;
-    }
+    if (ref.current)
+      switch (pullUp) {
+        case null:
+          break;
+        case "high":
+          ref.current?.style.setProperty(
+            "transform",
+            `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
+          );
+          setPrevDist(BOTTOMSHEET_HEIGHT_HIGH);
+          debounce(
+            () => ref.current!.style.setProperty("user-select", "auto"),
+            750
+          );
+
+          break;
+        case "middle":
+          ref.current?.style.setProperty(
+            "transform",
+            `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
+          );
+          setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
+          debounce(
+            () => ref.current!.style.setProperty("user-select", "auto"),
+            750
+          );
+          break;
+        case "low":
+          ref.current?.style.setProperty(
+            "transform",
+            `translateY(-${BOTTOMSHEET_HEIGHT_LOW}%)`
+          );
+          setPrevDist(BOTTOMSHEET_HEIGHT_LOW);
+          debounce(
+            () => ref.current!.style.setProperty("user-select", "auto"),
+            750
+          );
+          break;
+        case "superLow":
+          ref.current?.style.setProperty(
+            "transform",
+            `translateY(-${BOTTOMSHEET_HEIGHT_SUPER_LOW}%)`
+          );
+          setPrevDist(BOTTOMSHEET_HEIGHT_SUPER_LOW);
+          debounce(
+            () => ref.current!.style.setProperty("user-select", "auto"),
+            750
+          );
+          break;
+        case "hidden":
+          ref.current?.style.setProperty("user-select", "none");
+          ref.current?.style.setProperty(
+            "transform",
+            `translateY(${prevDist}%)`
+          );
+          setPrevDist(0);
+          break;
+        default:
+          ref.current?.style.setProperty(
+            "transform",
+            `translateY(-${pullUp}%)`
+          );
+          setPrevDist(pullUp);
+          debounce(
+            () => ref.current!.style.setProperty("user-select", "auto"),
+            750
+          );
+          break;
+      }
   }, [pullUp]);
 
   return (
@@ -92,7 +122,8 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         transition: "transform 0.75s ease-out",
 
         display: "none",
-      }}>
+      }}
+    >
       {children}
     </motion.div>
   );
@@ -105,7 +136,8 @@ const BottomSheetContent = ({ children }: { children: ReactNode }) => (
       overflow: "auto",
       WebkitOverflowScrolling: "touch",
       height: "100%",
-    }}>
+    }}
+  >
     {children}
   </div>
 );
