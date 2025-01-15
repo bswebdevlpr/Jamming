@@ -399,7 +399,7 @@ export default function SignUp_Profile() {
                 upTxt="레벨"
                 downTxt="선택"
                 moveTo="-2.25vh" //"-17px"
-                onClick={(state) =>
+                onClick={() =>
                   bottomSheet.set({
                     location: "high",
                     children: (
