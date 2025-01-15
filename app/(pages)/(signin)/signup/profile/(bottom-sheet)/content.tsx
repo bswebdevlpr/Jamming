@@ -24,7 +24,15 @@ const BottomSheetContent = ({
   handleComplete: () => void;
   handleState: (value: any) => void;
 }) => {
-  const [localState, setLocalState] = useState(state);
+  const [localPosition, setLocalPosition] = useState<null | PositionEnum>(
+    type === "position" ? state : null
+  );
+  const [localGenre, setLocalGenre] = useState<null | GenreEnum>(
+    type === "genre" ? state : null
+  );
+  const [localLevel, setLocalLevel] = useState<null | LevelEnum>(
+    type === "level" ? state : null
+  );
 
   const thisEnum =
     type === "position"
@@ -75,10 +83,21 @@ const BottomSheetContent = ({
         <Grid
           items={thisEnum ? Object.values(thisEnum) : []}
           values={thisEnum ? Object.keys(thisEnum) : []}
-          state={localState}
+          state={
+            type === "position"
+              ? localPosition
+              : type === "genre"
+              ? localGenre
+              : type === "level"
+              ? localLevel
+              : null
+          }
           handleState={(val) => {
             handleState(val);
-            setLocalState(val);
+
+            if (type === "position") setLocalPosition(val);
+            else if (type === "genre") setLocalGenre(val);
+            else if (type === "level") setLocalLevel(val);
           }}
         />
       </div>
@@ -87,7 +106,9 @@ const BottomSheetContent = ({
         <CancelButton
           onClick={() => {
             handleState(state);
-            setLocalState(state);
+            if (type === "position") setLocalPosition(state);
+            else if (type === "genre") setLocalGenre(state);
+            else if (type === "level") setLocalLevel(state);
             handleCancel();
           }}
         />
