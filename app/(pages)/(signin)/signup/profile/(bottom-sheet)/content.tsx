@@ -5,7 +5,11 @@ import { LevelEnum } from "@/app/lib/constants/level.enum";
 import { PositionEnum } from "@/app/lib/constants/position.enum";
 import CancelButton from "@/app/ui/buttons/cancel";
 import CompleteButton from "@/app/ui/buttons/complete";
+import { CategoryFilterItem } from "@/app/ui/categories/items";
 import Grid from "@/app/ui/grids/grid";
+import Genre from "@/app/ui/images/categories/genre";
+import Level from "@/app/ui/images/categories/level";
+import Position from "@/app/ui/images/categories/position";
 import { BOTTOMSHEET_HEIGHT_HIGH } from "@/app/ui/templates/bottom-sheet/body";
 import { useEffect, useState } from "react";
 
@@ -43,6 +47,15 @@ const BottomSheetContent = ({
       ? LevelEnum
       : null;
 
+  const selectedCategory =
+    type === "position"
+      ? "포지션"
+      : type === "genre"
+      ? "장르"
+      : type === "level"
+      ? "레벨"
+      : "";
+
   return (
     <div
       className="flex flex-col justify-between px-4"
@@ -50,21 +63,17 @@ const BottomSheetContent = ({
         height: `${BOTTOMSHEET_HEIGHT_HIGH}%`,
       }}
     >
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex justify-center">
         <p
           style={{
-            fontFamily: "SUIT-BODY",
+            fontFamily: "Pretendard-SB",
             fontSize: "20px",
             color: "#C0C0C5",
+            marginTop: "20px",
+            marginBottom: "15px",
           }}
         >
-          {type === "position"
-            ? "포지션 선택"
-            : type === "genre"
-            ? "장르 선택"
-            : type === "level"
-            ? "밴드 유형 선택"
-            : null}
+          {selectedCategory}
         </p>
         {/* {
             <p
@@ -78,6 +87,15 @@ const BottomSheetContent = ({
         </p>
         } */}
       </div>
+      <CategoryFilterItem text={selectedCategory} className="py-2">
+        {type === "position" ? (
+          <Position />
+        ) : type === "genre" ? (
+          <Genre />
+        ) : type === "level" ? (
+          <Level />
+        ) : null}
+      </CategoryFilterItem>
       <div className="grow flex flex-col mb-7">
         {/* 선택사항들 */}
         <Grid

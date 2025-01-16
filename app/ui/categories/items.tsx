@@ -3,12 +3,19 @@ import { CSSProperties, ReactNode } from "react";
 const CategoryFilterItem = ({
   children,
   text,
+  className,
+  style,
 }: {
   children: ReactNode;
   text?: string;
+  className?: string;
+  style?: CSSProperties;
 }) => {
   return (
-    <span className="flex flex-row gap-1">
+    <span
+      className={`flex flex-row gap-1${className ? " " + className : ""}`}
+      style={style}
+    >
       {children}
       {text && (
         <p

@@ -9,11 +9,13 @@ export const SignUp_Profile_Background_Level = ({
   return (
     <Image
       style={style}
-      className="ml-auto w-full h-auto"
+      className="w-full"
       src="/signup/profile/band-type.svg"
       alt="band type"
       width={0}
       height={0}
+      priority={true}
+      loading="eager"
       // width={347}
       // height={123.41}
     />
