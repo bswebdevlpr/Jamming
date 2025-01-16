@@ -53,9 +53,6 @@ const Grid = ({
     values.map((val) => val === state)
   );
 
-  console.log("From Grid", state, itemStateList);
-  console.log(items, values);
-
   useEffect(() => {
     setItemStateList(values.map((val) => val === state));
   }, [state, values]);

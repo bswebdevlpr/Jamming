@@ -165,7 +165,7 @@ export default function SignUp_Profile() {
       >
         프로필을 설정해주세요
       </p>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="grow">
         <div className="flex flex-col">
           <div className="flex flex-row justify-between min-w-full">
             <div
