@@ -8,6 +8,8 @@ const commonStyle: CSSProperties = {
 
   fontFamily: "SUIT-BODY",
   fontSize: "0.875rem",
+
+  cursor: "pointer",
 };
 const deactivatedStyle: CSSProperties = {
   ...commonStyle,

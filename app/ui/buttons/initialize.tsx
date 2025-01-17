@@ -22,6 +22,8 @@ export default function InitButton({
         fontFamily: "SUIT-BODY",
         fontSize: "1rem",
 
+        cursor: "pointer",
+
         ...style,
       }}
       onClick={onClick}
