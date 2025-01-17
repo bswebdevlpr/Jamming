@@ -184,6 +184,9 @@ export default function SignUp_Profile() {
                 accept="image/*"
                 onChange={handleFileChange}
                 className="w-full h-full absolute opacity-0 z-20"
+                style={{
+                  cursor: "pointer",
+                }}
               />
               {profileInfo && (
                 <Image
@@ -359,8 +362,6 @@ export default function SignUp_Profile() {
                         type="position"
                         state={position}
                         handleState={(value) => setPosition(value)}
-                        handleCancel={closeBottomSheet}
-                        handleComplete={closeBottomSheet}
                       />
                     ),
                   })
@@ -381,8 +382,6 @@ export default function SignUp_Profile() {
                         type="genre"
                         state={genre}
                         handleState={(value) => setGenre(value)}
-                        handleCancel={closeBottomSheet}
-                        handleComplete={closeBottomSheet}
                       />
                     ),
                   })
@@ -407,8 +406,6 @@ export default function SignUp_Profile() {
                         type="level"
                         state={level}
                         handleState={(value) => setLevel(value)}
-                        handleCancel={closeBottomSheet}
-                        handleComplete={closeBottomSheet}
                       />
                     ),
                   })

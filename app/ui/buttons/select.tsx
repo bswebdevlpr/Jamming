@@ -1,7 +1,7 @@
 "use client";
 
 import { globalContext } from "@/app/(pages)/layout";
-import { CSSProperties, useContext } from "react";
+import { CSSProperties, useContext, useEffect } from "react";
 
 const commonStyle = {
   width: "67.76%",
@@ -14,15 +14,24 @@ const commonStyle = {
 
   fontFamily: "SUIT-BODY",
   fontSize: "1rem",
+
+  cursor: "pointer",
 };
 
 export default function SelectButton({
   style,
   isActive,
+  state,
 }: {
   style?: CSSProperties;
   isActive?: boolean;
+  state?: any;
 }) {
+  useEffect(() => {
+    console.log("isActive", isActive);
+    console.log("state", state);
+  }, [isActive, state]);
+
   // STYLE
   const initStyle = {
     ...commonStyle,

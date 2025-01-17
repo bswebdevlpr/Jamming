@@ -59,11 +59,15 @@
 }
 
 @font-face {
-  font-family: "Pretendard-SB";
+  font-family: "Pretendard-500";
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff")
+    format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard-600";
   src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff")
     format("woff");
-  /* font-weight: 400;
-  font-style: normal; */
 }
 
 :root {
