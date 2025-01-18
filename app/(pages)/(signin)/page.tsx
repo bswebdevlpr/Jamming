@@ -13,7 +13,10 @@ export default function SignIn() {
 
   useEffect(() => {
     if (session.status === "loading") setIsLoading(true);
-    else if (session.status === "authenticated") {
+    else if (
+      session.data?.user?.isRegistered &&
+      session.status === "authenticated"
+    ) {
       setIsLoading(false);
       redirect("/jamsession");
     } else setIsLoading(false);
