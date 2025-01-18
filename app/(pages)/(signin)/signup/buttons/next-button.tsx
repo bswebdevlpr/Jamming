@@ -8,13 +8,15 @@ export default function NextButton_SignUp({
   isActive,
   nextPath,
   queryObj,
+  type,
 }: {
   isActive: boolean;
   nextPath: string;
-  queryObj: { [key: string]: string };
+  queryObj: { [key: string]: any };
+  type?: "submit" | "reset" | "button" | undefined;
 }) {
-  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const query = searchParams.toString();
 
   return (
     <div className="flex justify-center items-center">
@@ -24,12 +26,15 @@ export default function NextButton_SignUp({
           isActive &&
           debounce(
             redirect(
-              `${pathname}/${nextPath}?${searchParams.toString()}${
-                queryObj && new URLSearchParams(queryObj).toString()
+              `${nextPath}?${query.length > 0 ? query : ""}${
+                queryObj &&
+                (query.length > 0 ? "&" : "") +
+                  new URLSearchParams(queryObj).toString()
               }`
             )
           )
         }
+        type={type}
       />
     </div>
   );

@@ -1,30 +1,50 @@
 import { CSSProperties } from "react";
 
+const commonStyle: CSSProperties = {
+  width: "167.5px",
+  padding: "10px 12px",
+
+  borderRadius: "8px",
+
+  fontFamily: "SUIT-BODY",
+  fontSize: "1rem",
+};
+
 const CompleteButton = ({
   onClick,
   className,
   style,
+  isActive,
 }: {
   onClick: () => void;
   className?: string;
   style?: CSSProperties;
+  isActive?: boolean;
 }) => {
   return (
     <button
-      style={{
-        width: "167.5px",
+      style={
+        !isActive
+          ? {
+              ...commonStyle,
 
-        border: "1px solid #535355",
-        borderRadius: "8px",
+              color: "#C0C0C5",
+              border: "1px solid #535355",
 
-        padding: "10px 12px",
+              ...style,
+            }
+          : {
+              ...commonStyle,
 
-        fontFamily: "SUIT-BODY",
-        fontSize: "1rem",
-        color: "#C0C0C5",
+              color: "#A3FF0C",
+              border: "1px solid #A3FF0C",
+              background: "rgba(163, 255, 12, 0.12)",
 
-        ...style,
-      }}
+              cursor: "pointer",
+
+              ...style,
+            }
+      }
       className={className}
       onClick={onClick}
     >

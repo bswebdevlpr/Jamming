@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 export interface ListItemProp {
   text: string;
   backgroundUrl?: string;
-  onClick: () => string;
+  onClick: () => void;
   style?: CSSProperties;
 }
 
@@ -13,7 +13,9 @@ const VerticalListItem = ({
   backgroundUrl,
   onClick,
   style,
-}: ListItemProp) => {
+  isFocused,
+  setIsFocused,
+}: ListItemProp & { isFocused: boolean; setIsFocused: () => void }) => {
   const hoverTapStyle =
     backgroundUrl &&
     `linear-gradient(90deg, rgba(0, 0, 0, 0.80) 0%, rgba(0, 0, 0, 0.00) 50%), url(${backgroundUrl}) lightgray 50% / cover no-repeat`;
@@ -26,6 +28,7 @@ const VerticalListItem = ({
           fontFamily: "SUIT-BODY",
           fontSize: "0.875rem",
           color: "#FFF",
+          ...(isFocused ? { background: hoverTapStyle, opacity: 1 } : {}),
         }}
         whileHover={
           backgroundUrl && {
@@ -39,6 +42,10 @@ const VerticalListItem = ({
             opacity: 1,
           }
         }
+        onClick={() => {
+          setIsFocused();
+          onClick();
+        }}
       >
         {text}
       </motion.div>

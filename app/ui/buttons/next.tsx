@@ -42,17 +42,20 @@ export const NextButton = ({
   className,
   isActive,
   onClick,
+  type,
 }: {
   className?: string;
   isActive?: boolean;
   onClick?: () => void;
+  type?: "submit" | "reset" | "button" | undefined;
 }) => {
   return (
     <button
-      type="button"
+      type={type ?? "button"}
       className={className}
       style={!isActive ? style_inactivated : style_activated}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       다음
     </button>
   );
