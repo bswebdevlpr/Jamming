@@ -27,11 +27,6 @@ export default function SelectButton({
   isActive?: boolean;
   state?: any;
 }) {
-  useEffect(() => {
-    console.log("isActive", isActive);
-    console.log("state", state);
-  }, [isActive, state]);
-
   // STYLE
   const initStyle = {
     ...commonStyle,

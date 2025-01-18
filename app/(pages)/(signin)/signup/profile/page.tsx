@@ -1,19 +1,11 @@
 "use client";
 
-import BottomSheet, {
-  BottomSheetHeight,
-} from "@/app/ui/templates/bottom-sheet/body";
-import CancelButton from "@/app/ui/buttons/cancel";
-import { NextButton } from "@/app/ui/buttons/next";
 import { Camera } from "@/app/ui/images/camera";
-import SelectItem from "@/app/ui/grids/item";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import BottomSheetContent, {
-  BottomSheetContentType,
-} from "./(bottom-sheet)/content";
+import BottomSheetContent from "./(bottom-sheet)/content";
 import { globalContext } from "../../../layout";
 import { PositionEnum } from "@/app/lib/constants/position.enum";
 import { GenreEnum } from "@/app/lib/constants/genre.enum";
@@ -74,58 +66,68 @@ const TextBox = ({
 };
 
 // ZOD
+type FormData = z.infer<typeof formSchema>;
+
 const formSchema = z.object({
-  profileInfo: z.custom<ImageFile>(),
+  profileInfo: z.custom<ImageFile>().nullable(),
   nickname: z
     .string()
-    .min(1, { message: "닉네임을 입력해주세요." })
-    .max(8, { message: "닉네임을 입력해주세요." })
+    .min(1, { message: "닉네임을 입력해주세요" })
+    .max(8, { message: "닉네임을 입력해주세요" })
     .regex(
       /^[a-zA-Z가-힣]+$/, // 알파벳, 숫자, 공백만 허용
-      "특수문자는 허용되지 않습니다."
+      "올바른 닉네임을 입력해주세요"
     ),
   tags: z
     .array(z.string())
     .refine((arr) => arr.every((item) => /^#[가-힣a-zA-Z]+$/.test(item)), {
-      message: "올바른 태그를 입력해주세요.",
+      message: "올바른 태그를 입력해주세요",
     }),
-  level: z.string().min(1, { message: "닉네임을 입력해주세요." }),
-  // position: z.enum(),
-  genre: z.string().min(1, { message: "닉네임을 입력해주세요." }),
-  bandType: z.string().min(1, { message: "닉네임을 입력해주세요." }),
+  position: z.nativeEnum(PositionEnum),
+  genre: z.nativeEnum(GenreEnum),
+  level: z.nativeEnum(LevelEnum),
 });
-
-type FormData = z.infer<typeof formSchema>;
 //
 
 export default function SignUp_Profile() {
   // INIT
   const { bottomSheet } = useContext(globalContext);
-  const closeBottomSheet = () => {
-    bottomSheet.set({ location: "hidden" });
-  };
   //
 
   // STATES
-  const [position, setPosition] = useState<null | PositionEnum>(null);
-  const [genre, setGenre] = useState<null | GenreEnum>(null);
-  const [level, setLevel] = useState<null | LevelEnum>(null);
+  const [position, setPosition] = useState<PositionEnum>();
+  const [genre, setGenre] = useState<GenreEnum>();
+  const [level, setLevel] = useState<LevelEnum>();
   //
 
   // FORM
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
-  } = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-  });
+  const { register, handleSubmit, formState, watch, setValue, getValues } =
+    useForm<FormData>({
+      defaultValues: {
+        nickname: "",
+        tags: new Array(4).fill(""),
+        position,
+        genre,
+        level,
+      },
+      resolver: zodResolver(formSchema),
+    });
 
   const profileInfo = watch("profileInfo"),
     nickname = watch("nickname"),
-    tags = watch("tags", new Array(4).fill(""));
+    tags = watch("tags");
+  //
+
+  // USEEFFECT
+  useEffect(() => {
+    if (position) setValue("position", position);
+  }, [position]);
+  useEffect(() => {
+    if (genre) setValue("genre", genre);
+  }, [genre]);
+  useEffect(() => {
+    if (level) setValue("level", level);
+  }, [level]);
   //
 
   // HANDLERS
@@ -143,18 +145,14 @@ export default function SignUp_Profile() {
       setValue("profileInfo", newImage);
     }
   };
-  //
-
-  useEffect(() => {
-    console.log(position, genre, level);
-  }, [position, genre, level]);
 
   const onSubmit = (data: FormData) => {
     console.log("submited:", data);
   };
+  //
 
   return (
-    <div className="h-full flex flex-col relative justify-between">
+    <div className="h-full flex flex-col relative">
       <p
         style={{
           fontFamily: "SBAggroM",
@@ -165,7 +163,10 @@ export default function SignUp_Profile() {
       >
         프로필을 설정해주세요
       </p>
-      <form onSubmit={handleSubmit(onSubmit)} className="grow">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="grow flex flex-col justify-between"
+      >
         <div className="flex flex-col">
           <div className="flex flex-row justify-between min-w-full">
             <div
@@ -253,9 +254,9 @@ export default function SignUp_Profile() {
                   <p>
                     <span style={{ color: "#A3FF0C" }}>*</span>닉네임
                   </p>
-                  {errors.nickname && (
+                  {formState.errors.nickname && (
                     <p style={{ color: "red", fontSize: "10px" }}>
-                      {errors.nickname.message}
+                      {formState.errors.nickname.message}
                     </p>
                   )}
                   <div className="flex flex-row justify-between">
@@ -316,7 +317,7 @@ export default function SignUp_Profile() {
                     color: "#9F9FA2",
                   }}
                 >
-                  {tags.map((item, idx) => (
+                  {tags.map((tag, idx) => (
                     <>
                       <style jsx key={idx}>{`
                         input::placeholder {
@@ -326,6 +327,7 @@ export default function SignUp_Profile() {
                       <input
                         type="text"
                         key={idx}
+                        value={tag}
                         placeholder={idx === 2 ? "# 입력" : ""}
                         className="max-w-fit"
                         style={{
@@ -333,11 +335,15 @@ export default function SignUp_Profile() {
                           color: "var(--highlight)",
                           fontSize: "14px",
                         }}
-                        onChange={(txt) =>
+                        onChange={(e) =>
                           setValue(
                             "tags",
                             tags.map((tag, innerIdx) =>
-                              idx === innerIdx ? txt.target.value : tag
+                              idx === innerIdx
+                                ? e.target.value.startsWith("#")
+                                  ? e.target.value
+                                  : "#" + e.target.value
+                                : tag
                             )
                           )
                         }
@@ -419,8 +425,21 @@ export default function SignUp_Profile() {
             </div>
           </div>
         </div>
+        <NextButton_SignUp
+          isActive={
+            !!(
+              nickname &&
+              !formState.errors.nickname &&
+              position &&
+              genre &&
+              level
+            )
+          }
+          nextPath="location"
+          queryObj={getValues()}
+          type="submit"
+        />
       </form>
-      <NextButton_SignUp isActive={false} nextPath="profile" queryObj={{}} />
     </div>
   );
 }

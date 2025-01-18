@@ -4,6 +4,7 @@ import { RoundedCheckbox } from "@/app/ui/checkbox";
 import { useEffect, useRef, useState } from "react";
 import { RightArrow } from "@/app/ui/images/arrows";
 import NextButton_SignUp from "../buttons/next-button";
+import { usePathname } from "next/navigation";
 
 const PolicyRow = ({
   opt,
@@ -57,6 +58,8 @@ export default function SignUp_Policy() {
     };
   };
   //
+
+  const pathname = usePathname();
 
   const [isButtonActivated, setIsButtonActivated] = useState(false);
   useEffect(() => {
@@ -163,7 +166,7 @@ export default function SignUp_Policy() {
       </div>
       <NextButton_SignUp
         isActive={isButtonActivated}
-        nextPath="profile"
+        nextPath={pathname + "/profile"}
         queryObj={{
           acceptMarketing: termCons[termCons.length - 1],
         }}

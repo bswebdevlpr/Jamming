@@ -3,5 +3,7 @@ export default function ContentArea({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="grow flex flex-col px-5">{children}</div>;
+  return (
+    <div className="w-full h-full grow flex flex-col px-5">{children}</div>
+  );
 }

@@ -1,4 +1,6 @@
-import { CSSProperties } from "react";
+"use client";
+
+import { CSSProperties, useState } from "react";
 import { ListItemProp, VerticalListItem } from "./item";
 
 export default function VerticalList({
@@ -6,13 +8,13 @@ export default function VerticalList({
   className,
   style,
 }: {
-  props: Partial<ListItemProp>[];
+  props: ListItemProp[];
   className?: string;
   style?: CSSProperties;
 }) {
-  const returnTxt = (text: string) => {
-    return () => text;
-  };
+  const [isFocused, setIsFocused] = useState<boolean[]>(
+    new Array(props.length).fill(false)
+  );
 
   return (
     <div className={`flex flex-col ${className}`} style={style}>
@@ -24,8 +26,12 @@ export default function VerticalList({
             key={idx}
             text={typeForcedProp.text}
             backgroundUrl={typeForcedProp.backgroundUrl}
-            onClick={returnTxt(typeForcedProp.text)}
+            onClick={prop.onClick}
             style={prop.style}
+            isFocused={isFocused[idx]}
+            setIsFocused={() =>
+              setIsFocused(isFocused.map((val, innerIdx) => idx === innerIdx))
+            }
           />
         );
       })}
