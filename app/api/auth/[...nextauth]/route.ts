@@ -1,3 +1,4 @@
+import { createClient } from "@/app/util/supabase/server";
 import NextAuth from "next-auth";
 import KakaoProvider from "next-auth/providers/kakao";
 
@@ -12,6 +13,12 @@ const handler = NextAuth({
     signIn: "/",
     signOut: "/",
     error: "/",
+  },
+  callbacks: {
+    async session({ session, token, user }) {
+      session.user.id = token.sub;
+      return session;
+    },
   },
 });
 

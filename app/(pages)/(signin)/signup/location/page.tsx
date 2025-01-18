@@ -1,23 +1,62 @@
 "use client";
 
+import { GenreEnum } from "@/app/lib/constants/genre.enum";
 import {
   LocationBackgroundURL,
   LocationEnum,
 } from "@/app/lib/constants/location.enum";
 import CompleteButton from "@/app/ui/buttons/complete";
-import { ListItemProp } from "@/app/ui/lists/item";
 import VerticalList from "@/app/ui/lists/list";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import createUser from "./actions";
+import _ from "lodash";
+import { useSession } from "next-auth/react";
 
 export default function SignUp_Location() {
-  const [location, setLocation] = useState<LocationEnum>();
+  const session = useSession();
+
+  const searchParams = useSearchParams();
+
+  const data: { [key: string]: any } = {};
+  for (const [key, value] of searchParams.entries()) {
+    let temp;
+
+    if (key === "tags") temp = value.split(",");
+    else if (key === "position" || key === "level")
+      temp = value[0].toLowerCase();
+    else if (key === "genre") {
+      const firstLetter = value[0].toLowerCase();
+      temp =
+        firstLetter === "p" ? value.slice(0, 2).toLowerCase() : firstLetter;
+    } else temp = value;
+
+    console.log(key, value, temp);
+
+    data[key === "position" ? "pos" : key] = temp;
+  }
+  console.log(data);
+
+  const [location, setLocation] = useState<keyof typeof LocationEnum>();
 
   useEffect(() => {
-    console.log(location);
+    console.log("location", location);
+    console.log(
+      location
+        ?.split("")
+        .filter((c) => 65 <= c.charCodeAt(0) && c.charCodeAt(0) <= 90)
+        .map((val) => val.toLowerCase())
+        .join("")
+    );
   }, [location]);
 
   return (
-    <div className="grow flex flex-col justify-between overflow-hidden">
+    <div
+      className="flex flex-col justify-between"
+      style={{
+        height: "93.79%",
+      }}
+    >
       <div>
         <p
           style={{
@@ -38,7 +77,13 @@ export default function SignUp_Location() {
           }}
         />
       </div>
-      <div className="grow overflow-without-scroll">
+      <div
+        className="overflow-without-scroll"
+        style={{
+          height: "84.92%",
+          margin: "0 -20px 0 -20px",
+        }}
+      >
         <VerticalList
           props={Object.keys(LocationEnum).map((key) => {
             const typeForcedKey: keyof typeof LocationEnum =
@@ -50,7 +95,7 @@ export default function SignUp_Location() {
               style: {
                 backgroundColor: "var(--background)",
               },
-              onClick: () => setLocation(LocationEnum[typeForcedKey]),
+              onClick: () => setLocation(typeForcedKey),
             };
           })}
         />
@@ -58,7 +103,17 @@ export default function SignUp_Location() {
       <CompleteButton
         style={{ width: "100%" }}
         isActive={!!location}
-        onClick={() => {}}
+        onClick={() =>
+          createUser({
+            id: session.data.user.id,
+            ...data,
+            location: location
+              ?.split("")
+              .filter((c) => 65 <= c.charCodeAt(0) && c.charCodeAt(0) <= 90)
+              .map((val) => val.toLowerCase())
+              .join(""),
+          })
+        }
       />
     </div>
   );

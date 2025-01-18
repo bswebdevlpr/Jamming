@@ -8,9 +8,9 @@ import { useEffect } from "react";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const session = useSession();
 
-  // useEffect(() => {
-  //   if (session.status === "unauthenticated") redirect("/");
-  // }, [session.status]);
+  useEffect(() => {
+    if (session.status === "unauthenticated") redirect("/");
+  }, [session.status]);
 
   return (
     <>
