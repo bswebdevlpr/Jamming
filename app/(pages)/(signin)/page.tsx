@@ -3,24 +3,70 @@
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FullScreenLoading from "../../ui/loading/fullscreen";
+import { getSession, getUser, signInWithKakao } from "@/app/util/supabase/auth";
+import { createClient } from "@/app/util/supabase/server";
 
 export default function SignIn() {
-  const session = useSession();
+  // const session = useSession();
+
+  const [session, setSession] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      // 페이지 로드 시 현재 세션을 불러옵니다.
+      const fetchSession = async () => {
+        const {
+          data: { session },
+        } = await getSession();
+
+        console.log(session);
+        setSession(session);
+
+        console.log(await getUser());
+      };
+      fetchSession();
+    } catch (e) {
+      console.error("Failed to fetch the session");
+    }
+
+    // // 세션 변경을 실시간으로 감지
+    // const { data: listener } = supabase.auth?.onAuthStateChange(
+    //   (event, session) => {
+    //     setSession(session);
+    //   }
+    // );
+
+    // // 컴포넌트가 언마운트될 때 리스너 제거
+    // return () => {
+    //   listener?.subscription.unsubscribe();
+    // };
+  }, []);
+
+  useEffect(() => {
+    console.log("session:", session);
+  }, [session]);
+  // const session = useCallback(async () => {
+  //   console.log("callback triggered");
+
+  //   const session = await getSession();
+  //   console.log(session);
+  //   return session;
+  // }, []);
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (session.status === "loading") setIsLoading(true);
-    else if (
-      session.data?.user?.isRegistered &&
-      session.status === "authenticated"
-    ) {
-      setIsLoading(false);
-      redirect("/jamsession");
-    } else setIsLoading(false);
-  }, [session.status]);
+  // useEffect(() => {
+  //   if (session.status === "loading") setIsLoading(true);
+  //   else if (
+  //     session.data?.user?.isRegistered &&
+  //     session.status === "authenticated"
+  //   ) {
+  //     setIsLoading(false);
+  //     redirect("/jamsession");
+  //   } else setIsLoading(false);
+  // }, [session.status]);
 
   return (
     <div className="flex flex-col justify-between items-center min-h-screen">
@@ -95,7 +141,8 @@ export default function SignIn() {
         alt="kakao login"
         width={350}
         height={52}
-        onClick={() => signIn("kakao")}
+        onClick={signInWithKakao}
+        // onClick={() => signIn("kakao")} // next-auth
       />
     </div>
   );
