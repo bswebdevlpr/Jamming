@@ -1,30 +1,19 @@
 "use client";
 
-import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
-import { redirect } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FullScreenLoading from "../../ui/loading/fullscreen";
-import { getSession, getUser, signInWithKakao } from "@/app/util/supabase/auth";
-import { createClient } from "@/app/util/supabase/server";
+import { getUser, signInWithKakao } from "@/app/util/supabase/auth";
 
 export default function SignIn() {
-  // const session = useSession();
-
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
     try {
       // 페이지 로드 시 현재 세션을 불러옵니다.
       const fetchSession = async () => {
-        const {
-          data: { session },
-        } = await getSession();
-
-        console.log(session);
-        setSession(session);
-
-        console.log(await getUser());
+        const user = await getUser();
+        setSession(user);
       };
       fetchSession();
     } catch (e) {
@@ -43,17 +32,6 @@ export default function SignIn() {
     //   listener?.subscription.unsubscribe();
     // };
   }, []);
-
-  useEffect(() => {
-    console.log("session:", session);
-  }, [session]);
-  // const session = useCallback(async () => {
-  //   console.log("callback triggered");
-
-  //   const session = await getSession();
-  //   console.log(session);
-  //   return session;
-  // }, []);
 
   const [isLoading, setIsLoading] = useState(false);
 
