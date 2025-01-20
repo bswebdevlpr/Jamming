@@ -59,9 +59,15 @@ export default function SignUp_Policy() {
   };
   //
 
+  // HOOKS
   const pathname = usePathname();
+  //
 
+  // STATES
   const [isButtonActivated, setIsButtonActivated] = useState(false);
+  //
+
+  // USE-EFFECTS
   useEffect(() => {
     let checkCnt = 0;
 
@@ -70,6 +76,7 @@ export default function SignUp_Policy() {
     if (checkCnt === termCons.length - 1) setIsButtonActivated(true);
     else setIsButtonActivated(false);
   }, [termCons]);
+  //
 
   return (
     <div className="grow flex flex-col justify-between">

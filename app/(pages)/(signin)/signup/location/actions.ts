@@ -6,6 +6,5 @@ const supabase = await createClient();
 
 export default async function createUser(input: any) {
   const res = await supabase.from("user").insert(input);
-  console.log(res);
   return;
 }
