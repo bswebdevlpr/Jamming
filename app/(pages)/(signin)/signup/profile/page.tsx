@@ -15,6 +15,7 @@ import { SignUp_Profile_Background_Level } from "@/app/ui/images/signup/level";
 import { SignUp_Profile_Background_Position } from "@/app/ui/images/signup/position";
 import NextButton_SignUp from "../buttons/next-button";
 import Image from "next/image";
+import { isNicknameUnique } from "@/app/api/auth/signup/functions";
 
 interface ImageFile {
   id: number;
@@ -146,8 +147,12 @@ export default function SignUp_Profile() {
     }
   };
 
-  const onSubmit = (data: FormData) => {
+  const onSubmit = async (data: FormData) => {
     console.log("submited:", data);
+    console.log("데이터가 적절하지 않아요!");
+    await isNicknameUnique();
+
+    return false;
   };
   //
 
@@ -438,6 +443,7 @@ export default function SignUp_Profile() {
           nextPath="location"
           queryObj={getValues()}
           type="submit"
+          onClick={onSubmit}
         />
       </form>
     </div>
