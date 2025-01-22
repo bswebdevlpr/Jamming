@@ -9,11 +9,13 @@ export default function NextButton_SignUp({
   nextPath,
   queryObj,
   type,
+  onClick,
 }: {
   isActive: boolean;
   nextPath: string;
   queryObj: { [key: string]: any };
   type?: "submit" | "reset" | "button" | undefined;
+  onClick?: (arg?: any) => any;
 }) {
   const searchParams = useSearchParams();
   const query = searchParams.toString();
@@ -23,16 +25,18 @@ export default function NextButton_SignUp({
       <NextButton
         isActive={isActive}
         onClick={() =>
-          isActive &&
-          debounce(
-            redirect(
-              `${nextPath}?${query.length > 0 ? query : ""}${
-                queryObj &&
-                (query.length > 0 ? "&" : "") +
-                  new URLSearchParams(queryObj).toString()
-              }`
-            )
-          )
+          isActive && onClick
+            ? onClick()
+            : true &&
+              debounce(
+                redirect(
+                  `${nextPath}?${query.length > 0 ? query : ""}${
+                    queryObj &&
+                    (query.length > 0 ? "&" : "") +
+                      new URLSearchParams(queryObj).toString()
+                  }`
+                )
+              )
         }
         type={type}
       />

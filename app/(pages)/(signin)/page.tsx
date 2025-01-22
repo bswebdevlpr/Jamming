@@ -3,22 +3,23 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import FullScreenLoading from "../../ui/loading/fullscreen";
-import { getUser, signInWithKakao } from "@/app/util/supabase/auth";
+import { signInWithKakao } from "@/app/util/supabase/auth";
+import { createClient } from "@/app/util/supabase/client";
 
 export default function SignIn() {
+  const supabase = createClient();
+
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
-    try {
-      // 페이지 로드 시 현재 세션을 불러옵니다.
-      const fetchSession = async () => {
-        const user = await getUser();
-        setSession(user);
-      };
-      fetchSession();
-    } catch (e) {
-      console.error("Failed to fetch the session");
-    }
+    // 페이지 로드 시 현재 세션을 불러옵니다.
+    const fetchSession = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) setSession(user);
+    };
+    fetchSession();
 
     // // 세션 변경을 실시간으로 감지
     // const { data: listener } = supabase.auth?.onAuthStateChange(
@@ -114,6 +115,14 @@ export default function SignIn() {
           음악인을 위한 합주 플랫폼
         </p>
       </div>
+      <button
+        onClick={async () => {
+          console.log("signout!");
+          await supabase.auth.signOut();
+        }}
+      >
+        로그아웃
+      </button>
       <Image
         src="/signup/large-wide.png"
         alt="kakao login"
