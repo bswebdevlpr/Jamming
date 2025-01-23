@@ -15,7 +15,8 @@ import { SignUp_Profile_Background_Level } from "@/app/ui/images/signup/level";
 import { SignUp_Profile_Background_Position } from "@/app/ui/images/signup/position";
 import NextButton_SignUp from "../buttons/next-button";
 import Image from "next/image";
-import { isNicknameUnique } from "@/app/api/auth/signup/functions";
+import { createClient } from "@/app/util/supabase/client";
+import { validateNickname } from "@/app/api/functions/validation";
 
 interface ImageFile {
   id: number;
@@ -148,9 +149,7 @@ export default function SignUp_Profile() {
   };
 
   const onSubmit = async (data: FormData) => {
-    console.log("submited:", data);
-    console.log("데이터가 적절하지 않아요!");
-    await isNicknameUnique();
+    // await validateNickname(nickname);
 
     return false;
   };
@@ -442,8 +441,8 @@ export default function SignUp_Profile() {
           }
           nextPath="location"
           queryObj={getValues()}
-          type="submit"
           onClick={onSubmit}
+          type="submit"
         />
       </form>
     </div>

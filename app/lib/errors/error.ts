@@ -12,10 +12,10 @@ export class CustomError {
   //   code: 1,
   //   msg: "로그인 도중 에러가 발생했습니다. 잠시 후 다시 시도해주세요.",
   // },
-  // NicknameNotUnique: {
-  //   code: 1,
-  //   msg: "이미 존재하는 닉네임입니다.",
-  // },
+  static NicknameNotUnique = {
+    code: 1,
+    msg: "이미 존재하는 닉네임입니다.",
+  };
 }
 // export const CustomError: {
 //   [key: string]: CodeAndMsg;
