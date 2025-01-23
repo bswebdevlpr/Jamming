@@ -20,24 +20,28 @@ export default function NextButton_SignUp({
   const searchParams = useSearchParams();
   const query = searchParams.toString();
 
+  console.log("isActive:", isActive);
+  console.log(onClick ? onClick() : true);
+
   return (
     <div className="flex justify-center items-center">
       <NextButton
         isActive={isActive}
-        onClick={() =>
-          isActive && onClick
-            ? onClick()
-            : true &&
-              debounce(
-                redirect(
-                  `${nextPath}?${query.length > 0 ? query : ""}${
-                    queryObj &&
-                    (query.length > 0 ? "&" : "") +
-                      new URLSearchParams(queryObj).toString()
-                  }`
-                )
+        onClick={() => {
+          console.log("inside onClick, isActive:", isActive);
+          if (isActive) {
+            if (onClick) onClick();
+            debounce(
+              redirect(
+                `${nextPath}?${query.length > 0 ? query : ""}${
+                  queryObj &&
+                  (query.length > 0 ? "&" : "") +
+                    new URLSearchParams(queryObj).toString()
+                }`
               )
-        }
+            );
+          }
+        }}
         type={type}
       />
     </div>
