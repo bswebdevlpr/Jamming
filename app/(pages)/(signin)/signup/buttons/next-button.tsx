@@ -9,19 +9,14 @@ export default function NextButton_SignUp({
   nextPath,
   queryObj,
   type,
-  onClick,
 }: {
   isActive: boolean;
   nextPath: string;
   queryObj: { [key: string]: any };
   type?: "submit" | "reset" | "button" | undefined;
-  onClick?: (arg?: any) => any;
 }) {
   const searchParams = useSearchParams();
   const query = searchParams.toString();
-
-  console.log("isActive:", isActive);
-  console.log(onClick ? onClick() : true);
 
   return (
     <div className="flex justify-center items-center">
@@ -30,16 +25,16 @@ export default function NextButton_SignUp({
         onClick={() => {
           console.log("inside onClick, isActive:", isActive);
           if (isActive) {
-            if (onClick) onClick();
-            debounce(
-              redirect(
-                `${nextPath}?${query.length > 0 ? query : ""}${
-                  queryObj &&
-                  (query.length > 0 ? "&" : "") +
-                    new URLSearchParams(queryObj).toString()
-                }`
-              )
-            );
+            // debounce(
+            //   redirect(
+            //     `${nextPath}?${query.length > 0 ? query : ""}${
+            //       queryObj &&
+            //       (query.length > 0 ? "&" : "") +
+            //         new URLSearchParams(queryObj).toString()
+            //     }`
+            //   )
+            // );
+            console.log("will be redirected");
           }
         }}
         type={type}
