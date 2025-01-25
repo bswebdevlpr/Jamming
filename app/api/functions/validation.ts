@@ -1,20 +1,21 @@
 "use server";
 
+import { CustomError } from "@/app/lib/errors/error";
 import { createClient } from "@/app/util/supabase/server";
 
-export async function validateNickname(nickname: string): Promise<boolean> {
+export async function isNicknameUnique(nickname: string): Promise<boolean> {
   let ret: boolean = false;
 
   try {
     const supabase = await createClient();
 
-    const result = await supabase
+    ret = await supabase
       .from("user_nickname")
       .select()
-      .eq("nickname", nickname);
-    console.log(result);
+      .eq("nickname", nickname)
+      .then((res) => !!(res.data && res.data.length === 0));
   } catch (e) {
-    throw new Error("이미 존재하는 닉네임입니다.");
+    throw CustomError.UnExpected;
   }
 
   return ret;
