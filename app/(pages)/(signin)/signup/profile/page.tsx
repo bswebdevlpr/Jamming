@@ -13,16 +13,13 @@ import { LevelEnum } from "@/app/lib/constants/level.enum";
 import { SignUp_Profile_Background_Genre } from "@/app/ui/images/signup/genre";
 import { SignUp_Profile_Background_Level } from "@/app/ui/images/signup/level";
 import { SignUp_Profile_Background_Position } from "@/app/ui/images/signup/position";
-import NextButton_SignUp from "../buttons/next-button";
+import NextButton_SignUp, { debouncedRedirect } from "../buttons/next-button";
 import Image from "next/image";
 import { isNicknameUnique } from "@/app/api/functions/validation";
 import { CustomErrMsg } from "@/app/lib/errors/error";
-
-interface ImageFile {
-  id: number;
-  name: string;
-  url: string;
-}
+import { usePathname, useSearchParams } from "next/navigation";
+import { FormData_User, FormSchema_User } from "@/app/lib/zod";
+import { ImageFile } from "@/app/lib/interfaces/zod.interface";
 
 const TextBox = ({
   upTxt,
@@ -64,33 +61,12 @@ const TextBox = ({
   );
 };
 
-// ZOD
-type FormData = z.infer<typeof formSchema>;
-
-const formSchema = z.object({
-  profileInfo: z.custom<ImageFile>().nullable(),
-  nickname: z
-    .string()
-    .min(1, { message: "닉네임을 입력해주세요" })
-    .max(8, { message: "닉네임을 입력해주세요" })
-    .regex(
-      /^[a-zA-Z가-힣0-9]+$/, // 알파벳, 숫자, 공백만 허용
-      "올바른 닉네임을 입력해주세요"
-    ),
-  tags: z
-    .array(z.string())
-    .refine((arr) => arr.every((item) => /^#[가-힣a-zA-Z]+$/.test(item)), {
-      message: "올바른 태그를 입력해주세요",
-    }),
-  position: z.nativeEnum(PositionEnum),
-  genre: z.nativeEnum(GenreEnum),
-  level: z.nativeEnum(LevelEnum),
-});
-//
-
 export default function SignUp_Profile() {
   // INIT
   const { bottomSheet } = useContext(globalContext);
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   //
 
   // STATES
@@ -108,7 +84,7 @@ export default function SignUp_Profile() {
     setValue,
     getValues,
     setError,
-  } = useForm<FormData>({
+  } = useForm<FormData_User>({
     defaultValues: {
       nickname: "",
       tags: new Array(4).fill(""),
@@ -116,10 +92,10 @@ export default function SignUp_Profile() {
       genre,
       level,
     },
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(FormSchema_User),
   });
 
-  const profileInfo = watch("profileInfo"),
+  const profileImage = watch("profileImage"),
     nickname = watch("nickname"),
     tags = watch("tags");
   //
@@ -148,16 +124,19 @@ export default function SignUp_Profile() {
         name: file?.name,
         url: URL.createObjectURL(file), // 미리보기 URL 생성
       };
-      setValue("profileInfo", newImage);
+      setValue("profileImage", newImage);
     }
   };
 
-  const onSubmit = async (data: FormData) => {
-    console.log("onSubmit triggered");
-    console.log("validation result:", await isNicknameUnique(data.nickname));
-
+  const onSubmit = async (data: FormData_User) => {
     if (!(await isNicknameUnique(data.nickname)))
       setError("nickname", { message: CustomErrMsg.NicknameNotUnique });
+    else
+      debouncedRedirect(
+        pathname.split("/").slice(0, 2).join("/") + "/location",
+        searchParams.toString(),
+        getValues()
+      );
   };
   //
 
@@ -173,8 +152,9 @@ export default function SignUp_Profile() {
         프로필을 설정해주세요
       </p>
       <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="grow flex flex-col justify-between">
+        name="profile_form"
+        className="grow flex flex-col justify-between"
+        onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col">
           <div className="flex flex-row justify-between min-w-full">
             <div
@@ -196,9 +176,9 @@ export default function SignUp_Profile() {
                   cursor: "pointer",
                 }}
               />
-              {profileInfo && (
+              {profileImage && (
                 <Image
-                  src={profileInfo.url}
+                  src={profileImage.url}
                   alt="background"
                   fill={true}
                   className="absolute z-10"
@@ -433,9 +413,6 @@ export default function SignUp_Profile() {
               level
             )
           }
-          nextPath="location"
-          queryObj={getValues()}
-          type="submit"
         />
       </form>
     </div>

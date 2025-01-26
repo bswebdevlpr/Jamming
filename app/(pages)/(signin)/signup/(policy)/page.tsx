@@ -3,7 +3,7 @@
 import { RoundedCheckbox } from "@/app/ui/checkbox";
 import { useEffect, useRef, useState } from "react";
 import { RightArrow } from "@/app/ui/images/arrows";
-import NextButton_SignUp from "../buttons/next-button";
+import NextButton_SignUp, { debouncedRedirect } from "../buttons/next-button";
 import { usePathname } from "next/navigation";
 
 const PolicyRow = ({
@@ -24,8 +24,7 @@ const PolicyRow = ({
         style={{
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
-        }}
-      >
+        }}>
         ({opt}) {txt}
       </p>
       <RightArrow className="ml-auto" />
@@ -87,8 +86,7 @@ export default function SignUp_Policy() {
             fontSize: "24px",
             color: "#C0C0C5",
           }}
-          className=""
-        >
+          className="">
           반갑습니다
         </p>
         <p
@@ -97,8 +95,7 @@ export default function SignUp_Policy() {
             fontSize: "24px",
             color: "#C0C0C5",
           }}
-          className=""
-        >
+          className="">
           시작 전, 약관에 동의해주세요
         </p>
       </div>
@@ -114,15 +111,13 @@ export default function SignUp_Policy() {
             paddingRight: "20px",
             paddingBottom: "17.5px",
             paddingLeft: "12px",
-          }}
-        >
+          }}>
           <p
             style={{
               fontFamily: "SUIT-BODY",
               fontSize: "16px",
               color: "#E5E5E9",
-            }}
-          >
+            }}>
             약관 전체동의
           </p>
           <RoundedCheckbox
@@ -135,16 +130,14 @@ export default function SignUp_Policy() {
             style={{
               fontFamily: "SUIT-BODY",
               fontSize: "13px",
-            }}
-          >
+            }}>
             본인은 만 14세 이상이며, 로그인 진행 시 이용 약관,
           </p>
           <p
             style={{
               fontFamily: "SUIT-BODY",
               fontSize: "13px",
-            }}
-          >
+            }}>
             개인정보 수집 및 이용 동의서, 운영 정책에 동의하게 됩니다.
           </p>
         </div>
@@ -173,10 +166,11 @@ export default function SignUp_Policy() {
       </div>
       <NextButton_SignUp
         isActive={isButtonActivated}
-        nextPath={pathname + "/profile"}
-        queryObj={{
-          acceptMarketing: termCons[termCons.length - 1],
-        }}
+        onClick={() =>
+          debouncedRedirect(pathname + "/profile", undefined, {
+            acceptMarketing: termCons[termCons.length - 1],
+          })
+        }
       />
     </div>
   );
