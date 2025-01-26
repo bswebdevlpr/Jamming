@@ -1,44 +1,32 @@
-"use client";
-
 import debounce from "@/app/lib/debounce";
 import { NextButton } from "@/app/ui/buttons/next";
-import { redirect, usePathname, useSearchParams } from "next/navigation";
+import { redirect } from "next/navigation";
+
+export function debouncedRedirect(
+  nextPath: string,
+  queryStr?: string,
+  queryObj?: { [key: string]: any }
+) {
+  debounce(
+    redirect(
+      `${nextPath}?${queryStr ? queryStr : ""}${
+        queryObj &&
+        (queryStr ? "&" : "") + new URLSearchParams(queryObj).toString()
+      }`
+    )
+  );
+}
 
 export default function NextButton_SignUp({
   isActive,
-  nextPath,
-  queryObj,
-  type,
+  onClick,
 }: {
   isActive: boolean;
-  nextPath: string;
-  queryObj: { [key: string]: any };
-  type?: "submit" | "reset" | "button" | undefined;
+  onClick?: (arg?: any) => any;
 }) {
-  const searchParams = useSearchParams();
-  const query = searchParams.toString();
-
   return (
     <div className="flex justify-center items-center">
-      <NextButton
-        isActive={isActive}
-        onClick={() => {
-          console.log("inside onClick, isActive:", isActive);
-          if (isActive) {
-            // debounce(
-            //   redirect(
-            //     `${nextPath}?${query.length > 0 ? query : ""}${
-            //       queryObj &&
-            //       (query.length > 0 ? "&" : "") +
-            //         new URLSearchParams(queryObj).toString()
-            //     }`
-            //   )
-            // );
-            console.log("will be redirected");
-          }
-        }}
-        type={type}
-      />
+      <NextButton isActive={isActive} onClick={onClick} />
     </div>
   );
 }

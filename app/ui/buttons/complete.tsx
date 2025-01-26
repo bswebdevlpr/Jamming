@@ -16,7 +16,7 @@ const CompleteButton = ({
   style,
   isActive,
 }: {
-  onClick: () => void;
+  onClick?: () => void;
   className?: string;
   style?: CSSProperties;
   isActive?: boolean;
@@ -46,8 +46,7 @@ const CompleteButton = ({
             }
       }
       className={className}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       완료
     </button>
   );
