@@ -15,13 +15,14 @@ export async function GET(request: Request) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      const isRegistered = await supabase
+      const user = await supabase
         .from("user")
         .select()
         .eq("id", data.user.id)
-        .then((res) => res.data && res.data.length > 0);
+        .then((res) => res.data && res.data[0]);
+      console.log("registered user info:", user); // TODO: 로그인 시 유저 추가정보 가져와서 세션에 업데이트
 
-      const next = isRegistered ? "/jamsession" : "/signup";
+      const next = user ? "/jamsession" : "/signup";
 
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === "development";

@@ -3,7 +3,6 @@
 import { Camera } from "@/app/ui/images/camera";
 import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BottomSheetContent from "./(bottom-sheet)/content";
 import { globalContext } from "../../../layout";
@@ -17,7 +16,7 @@ import NextButton_SignUp, { debouncedRedirect } from "../buttons/next-button";
 import Image from "next/image";
 import { isNicknameUnique } from "@/app/api/functions/validation";
 import { CustomErrMsg } from "@/app/lib/errors/error";
-import { usePathname, useSearchParams } from "next/navigation";
+import { redirect, usePathname, useSearchParams } from "next/navigation";
 import { FormData_User, FormSchema_User } from "@/app/lib/zod";
 import { ImageFile } from "@/app/lib/interfaces/zod.interface";
 
@@ -86,6 +85,7 @@ export default function SignUp_Profile() {
     setError,
   } = useForm<FormData_User>({
     defaultValues: {
+      acceptMarketing: undefined,
       nickname: "",
       tags: new Array(4).fill(""),
       position,
@@ -100,7 +100,14 @@ export default function SignUp_Profile() {
     tags = watch("tags");
   //
 
-  // USEEFFECT
+  // USE-EFFECT
+  useEffect(() => {
+    const query = searchParams.get("acceptMarketing");
+    if (query === null) redirect("/signup");
+
+    setValue("acceptMarketing", Boolean(query));
+  }, []);
+
   useEffect(() => {
     if (position) setValue("position", position);
   }, [position]);

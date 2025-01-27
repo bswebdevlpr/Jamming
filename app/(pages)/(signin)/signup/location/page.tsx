@@ -6,7 +6,7 @@ import {
 } from "@/app/lib/constants/location.enum";
 import CompleteButton from "@/app/ui/buttons/complete";
 import VerticalList from "@/app/ui/lists/list";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import createUser from "./actions";
 import _ from "lodash";
@@ -21,7 +21,6 @@ export default function SignUp_Location() {
     acc[key] = val;
     return acc;
   }, {} as { [key: string]: string });
-  console.log(queries);
   //
 
   // STATES
@@ -31,6 +30,12 @@ export default function SignUp_Location() {
   // FORM
   const { handleSubmit, setValue, getValues } = useForm<FormData_User>({
     defaultValues: {
+      acceptMarketing:
+        queries.acceptMarketing === "true"
+          ? true
+          : queries.acceptMarketing === "false"
+          ? false
+          : undefined,
       nickname: queries.nickname,
       tags: queries.tags.split(","),
       position: queries.position,
@@ -49,9 +54,12 @@ export default function SignUp_Location() {
   //
 
   // HANDLER
-  const onSubmit = async () => {
+  const onSubmit = async (data: FormData_User) => {
+    if (!location) return;
+
     // DATA REFINING
-    const createDto = getValues();
+    const createDto = data;
+
     Object.entries(createDto).forEach(([key, val]) => {
       if (key === "position" || key === "level")
         createDto[key] = (val as string).charAt(0).toLowerCase();
@@ -71,15 +79,17 @@ export default function SignUp_Location() {
     });
     //
 
-    // createUser({
-    //   id: session.data.user.id,
-    //   ...data,
-    //   location: location
-    //     ?.split("")
-    //     .filter((c) => 65 <= c.charCodeAt(0) && c.charCodeAt(0) <= 90)
-    //     .map((val) => val.toLowerCase())
-    //     .join(""),
-    // });
+    _.set(createDto, "pos", createDto.position);
+    _.unset(createDto, "position");
+
+    await createUser(createDto)
+      .then(() => {
+        // TODO: refresh session data
+        redirect("/jamsession");
+      })
+      .catch(() => {
+        redirect("/");
+      });
   };
   //
 
@@ -131,9 +141,8 @@ export default function SignUp_Location() {
         />
       </div>
       <form
-        onSubmit={handleSubmit(onSubmit, () => {
-          console.log("다시하셈");
-          // redirect
+        onSubmit={handleSubmit(onSubmit, (prop) => {
+          // TODO: 데이터 validation해서 비정상 데이터이면 처음으로 redirect
         })}>
         <CompleteButton style={{ width: "100%" }} isActive={!!location} />
       </form>
