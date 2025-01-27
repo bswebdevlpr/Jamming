@@ -8,7 +8,6 @@ import Tag from "@/app/ui/templates/tag";
 import BPMPopup from "./popup";
 import { useState } from "react";
 import { redirect, usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 
 const FlexRow = () => {
   return (

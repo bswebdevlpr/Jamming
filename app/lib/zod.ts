@@ -6,6 +6,7 @@ import { ImageFile } from "./interfaces/zod.interface";
 import { LocationEnum } from "./constants/location.enum";
 
 export const FormSchema_User = z.object({
+  acceptMarketing: z.boolean(),
   profileImage: z.custom<ImageFile>().nullable(),
   nickname: z
     .string()
@@ -23,7 +24,9 @@ export const FormSchema_User = z.object({
   position: z.enum(Object.keys(PositionEnum) as [string, ...string[]]),
   genre: z.enum(Object.keys(GenreEnum) as [string, ...string[]]),
   level: z.enum(Object.keys(LevelEnum) as [string, ...string[]]),
-  location: z.enum(Object.keys(LocationEnum) as [string, ...string[]]),
+  location: z
+    .enum(Object.keys(LocationEnum) as [string, ...string[]])
+    .optional(),
 });
 
 export type FormData_User = z.infer<typeof FormSchema_User>;

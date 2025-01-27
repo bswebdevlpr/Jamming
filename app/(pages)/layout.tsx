@@ -5,7 +5,6 @@ import BottomSheet, {
   BottomSheetHeight,
 } from "../ui/templates/bottom-sheet/body";
 
-import { SessionProvider } from "next-auth/react";
 import SmallLoading from "../ui/loading/small";
 
 // INTERFACES
@@ -94,20 +93,17 @@ function GlobalLayout({
   //
 
   return (
-    <SessionProvider>
-      <globalContext.Provider value={globalState}>
-        {children}
-        <SmallLoading isTurnedOn={globalState.isSmallLoadingOn} />
-        <BottomSheet
-          width={width}
-          height={height}
-          pullUp={globalState.bottomSheet.location}
-          header={globalState.bottomSheet.header}
-        >
-          {globalState.bottomSheet.children}
-        </BottomSheet>
-      </globalContext.Provider>
-    </SessionProvider>
+    <globalContext.Provider value={globalState}>
+      {children}
+      <SmallLoading isTurnedOn={globalState.isSmallLoadingOn} />
+      <BottomSheet
+        width={width}
+        height={height}
+        pullUp={globalState.bottomSheet.location}
+        header={globalState.bottomSheet.header}>
+        {globalState.bottomSheet.children}
+      </BottomSheet>
+    </globalContext.Provider>
   );
 }
 export default GlobalLayout;
