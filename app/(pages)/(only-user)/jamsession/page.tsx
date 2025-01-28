@@ -1,19 +1,30 @@
 "use client";
 
 import Filter from "@/app/ui/images/filter";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import BottomSheetContent from "./bottom-sheet/content";
 import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
 import JamNow from "@/app/ui/buttons/jam-now";
 import { globalContext } from "../../layout";
+import { LocationEnum } from "@/app/lib/constants/location.enum";
 
 export default function JamSession() {
+  // GLOBAL
   const { bottomSheet } = useContext(globalContext);
+  //
+
+  // STATES
+  const [location, setLocation] = useState<LocationEnum>();
+  //
+
+  useEffect(() => {
+    console.log("location:", location);
+  }, [location]);
 
   return (
     <div className="grow flex flex-col">
-      <TopNavBar />
+      <TopNavBar location={location} setLocation={setLocation} />
       {/* 슬라이드 캘린더 */}
       <p className="py-8 text-center">Slide Calendarrrrrrrrrrrr</p>
       {/* 잼세션 피드 */}
@@ -23,8 +34,7 @@ export default function JamSession() {
             fontFamily: "SBAggroB",
             fontSize: "0.875rem",
             color: "#9F9FA2",
-          }}
-        >
+          }}>
           JAM SESSION
         </p>
         <span className="flex flex-row gap-1 justify-center items-center">
@@ -33,8 +43,7 @@ export default function JamSession() {
               fontFamily: "SUIT-TITLE",
               fontSize: "0.875rem",
               color: "#9F9FA2",
-            }}
-          >
+            }}>
             필터
           </p>
           <div
@@ -43,8 +52,7 @@ export default function JamSession() {
                 location: "high",
                 children: <BottomSheetContent />,
               })
-            }
-          >
+            }>
             <Filter />
           </div>
         </span>

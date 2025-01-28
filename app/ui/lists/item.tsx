@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 export interface ListItemProp {
   text: string;
+  value: any;
   backgroundUrl?: string;
   onClick: () => void;
   style?: CSSProperties;
@@ -25,6 +26,8 @@ const VerticalListItem = ({
       <motion.div
         className="py-3 px-5"
         style={{
+          height: "52px",
+
           fontFamily: "SUIT-BODY",
           fontSize: "0.875rem",
           color: "#FFF",
@@ -45,8 +48,7 @@ const VerticalListItem = ({
         onClick={() => {
           setIsFocused();
           onClick();
-        }}
-      >
+        }}>
         {text}
       </motion.div>
     </motion.div>

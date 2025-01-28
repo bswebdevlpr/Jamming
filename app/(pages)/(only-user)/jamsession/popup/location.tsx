@@ -16,6 +16,7 @@ const locations: Partial<ListItemProp>[] = Object.keys(LocationEnum).map(
 
     return {
       text: LocationEnum[typeForcedKey],
+      value: typeForcedKey,
       backgroundUrl: LocationBackgroundURL[typeForcedKey],
       style: {
         backgroundColor: "var(--background)",
@@ -27,9 +28,11 @@ const locations: Partial<ListItemProp>[] = Object.keys(LocationEnum).map(
 export default function LocationPopup({
   turnOn,
   turnOff,
+  setLocation,
 }: {
   turnOn: boolean;
   turnOff: any;
+  setLocation: (location: LocationEnum) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -61,26 +64,31 @@ export default function LocationPopup({
         overflow: "auto",
 
         backgroundColor: "var(--background)",
-      }}
-    >
+      }}>
       <div
         className="flex flex-row justify-between w-full px-5 py-3 mb-3"
         style={{
           borderBottom: "1px solid #323234",
-        }}
-      >
+        }}>
         <p
           style={{
             fontFamily: "SUIT-TITLE",
             fontSize: "1.125rem",
             color: "#FFF",
-          }}
-        >
+          }}>
           지역 선택
         </p>
         <X onClick={turnOff} />
       </div>
-      <VerticalList props={locations} />
+      <VerticalList
+        props={locations.map((prop) => {
+          prop.onClick = () => {
+            setLocation(prop.value);
+            turnOff();
+          };
+          return prop;
+        })}
+      />
     </div>
   );
 }
