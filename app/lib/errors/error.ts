@@ -8,6 +8,12 @@ export class CustomError {
   static UnExpected = new Error(
     "예기치 못한 문제가 발생했습니다. 문제가 지속적으로 발생한다면 피드백으로 전송 부탁드립니다."
   );
+  static SignUp = new Error(
+    "회원가입에 실패했습니다. 새로고침후 다시 진행해주세요. 계속 실패한다면 처음부터 다시 진행해주세요."
+  );
+  static GetSession = new Error(
+    "세션 불러오기에 실패했습니다. 문제가 지속적으로 발생한다면 피드백으로 전송 부탁드립니다."
+  );
   // SignIn: {
   //   code: 1,
   //   msg: "로그인 도중 에러가 발생했습니다. 잠시 후 다시 시도해주세요.",

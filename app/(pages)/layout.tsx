@@ -1,30 +1,16 @@
 "use client";
 
 import { createContext, ReactNode, useEffect, useState } from "react";
-import BottomSheet, {
-  BottomSheetHeight,
-} from "../ui/templates/bottom-sheet/body";
+import BottomSheet from "../ui/templates/bottom-sheet/body";
 
 import SmallLoading from "../ui/loading/small";
+import {
+  BottomSheetContext,
+  GlobalContext,
+  UserProfile,
+} from "../lib/interfaces/global.interface";
 
 // INTERFACES
-interface BottomSheetContext {
-  children: ReactNode;
-  location: BottomSheetHeight;
-  set: (input: Partial<BottomSheetContext>) => void;
-  header?: boolean;
-  setHeader: null | ((input: boolean) => void);
-}
-
-export interface GlobalContext {
-  bodyWidth: number;
-  bodyHeight: number;
-
-  isSmallLoadingOn: boolean;
-  setSmallLoading: () => void;
-
-  bottomSheet: BottomSheetContext;
-}
 //
 
 // CONTEXTS
@@ -41,6 +27,21 @@ const defaultContext: GlobalContext = {
     set: () => {},
     header: true,
     setHeader: null,
+  },
+
+  session: {
+    userProfile: {
+      isLoaded: undefined,
+      acceptMarketing: undefined,
+      profileImage: undefined,
+      nickname: undefined,
+      tags: undefined,
+      position: undefined,
+      genre: undefined,
+      level: undefined,
+      location: undefined,
+    },
+    setUserProfile: () => {},
   },
 };
 export const globalContext = createContext<GlobalContext>(defaultContext);
@@ -69,6 +70,16 @@ function GlobalLayout({
   globalState.bottomSheet.setHeader = (input: boolean) => {
     globalState.bottomSheet.header = input;
     globalState.bottomSheet = { ...globalState.bottomSheet };
+  };
+  //
+
+  // USER PROFILE
+  globalState.session.setUserProfile = (input: Partial<UserProfile>) => {
+    globalState.session.userProfile = {
+      ...globalState.session.userProfile,
+      ...input,
+    };
+    globalState.session = { ...globalState.session };
   };
   //
 

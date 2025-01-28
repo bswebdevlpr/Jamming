@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import BottomSheetHeader from "./header";
 import { motion } from "framer-motion";
-import debounce from "@/app/lib/debounce";
+import _ from "lodash";
 
 export type BottomSheetHeight =
   | null
@@ -45,7 +45,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
           );
           setPrevDist(BOTTOMSHEET_HEIGHT_HIGH);
-          debounce(
+          _.debounce(
             () => ref.current!.style.setProperty("user-select", "auto"),
             750
           );
@@ -57,7 +57,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
           );
           setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
-          debounce(
+          _.debounce(
             () => ref.current!.style.setProperty("user-select", "auto"),
             750
           );
@@ -68,7 +68,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             `translateY(-${BOTTOMSHEET_HEIGHT_LOW}%)`
           );
           setPrevDist(BOTTOMSHEET_HEIGHT_LOW);
-          debounce(
+          _.debounce(
             () => ref.current!.style.setProperty("user-select", "auto"),
             750
           );
@@ -79,7 +79,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             `translateY(-${BOTTOMSHEET_HEIGHT_SUPER_LOW}%)`
           );
           setPrevDist(BOTTOMSHEET_HEIGHT_SUPER_LOW);
-          debounce(
+          _.debounce(
             () => ref.current!.style.setProperty("user-select", "auto"),
             750
           );
@@ -98,7 +98,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             `translateY(-${pullUp}%)`
           );
           setPrevDist(pullUp);
-          debounce(
+          _.debounce(
             () => ref.current!.style.setProperty("user-select", "auto"),
             750
           );
@@ -122,8 +122,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         transition: "transform 0.75s ease-out",
 
         display: "none",
-      }}
-    >
+      }}>
       {children}
     </motion.div>
   );
@@ -136,8 +135,7 @@ const BottomSheetContent = ({ children }: { children: ReactNode }) => (
       overflow: "auto",
       WebkitOverflowScrolling: "touch",
       height: "100%",
-    }}
-  >
+    }}>
     {children}
   </div>
 );
