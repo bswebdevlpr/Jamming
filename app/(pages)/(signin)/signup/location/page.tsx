@@ -7,12 +7,13 @@ import {
 import CompleteButton from "@/app/ui/buttons/complete";
 import VerticalList from "@/app/ui/lists/list";
 import { redirect, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import createUser from "./actions";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
 import { FormData_User, FormSchema_User } from "@/app/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { globalContext } from "@/app/(pages)/layout";
 
 export default function SignUp_Location() {
   // INIT
@@ -21,6 +22,8 @@ export default function SignUp_Location() {
     acc[key] = val;
     return acc;
   }, {} as { [key: string]: string });
+
+  const { session } = useContext(globalContext);
   //
 
   // STATES
@@ -83,12 +86,13 @@ export default function SignUp_Location() {
     _.unset(createDto, "position");
 
     await createUser(createDto)
-      .then(() => {
-        // TODO: refresh session data
+      .then((newUserProfile) => {
+        session.setUserProfile(newUserProfile);
         redirect("/jamsession");
       })
       .catch(() => {
-        redirect("/");
+        // TODO: 에러모달 - SignUp 에러
+        redirect("/signup");
       });
   };
   //
@@ -142,7 +146,8 @@ export default function SignUp_Location() {
       </div>
       <form
         onSubmit={handleSubmit(onSubmit, (prop) => {
-          // TODO: 데이터 validation해서 비정상 데이터이면 처음으로 redirect
+          // TODO: 에러모달 - 잘못된 데이터가 입력되었습니다. 처음부터 다시 진행해주세요.
+          redirect("/signup");
         })}>
         <CompleteButton style={{ width: "100%" }} isActive={!!location} />
       </form>

@@ -19,8 +19,8 @@ export async function GET(request: Request) {
         .from("user")
         .select()
         .eq("id", data.user.id)
-        .then((res) => res.data && res.data[0]);
-      console.log("registered user info:", user); // TODO: 로그인 시 유저 추가정보 가져와서 세션에 업데이트
+        .single()
+        .then((res) => res.data);
 
       const next = user ? "/jamsession" : "/signup";
 

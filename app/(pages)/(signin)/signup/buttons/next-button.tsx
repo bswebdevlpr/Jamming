@@ -1,5 +1,5 @@
-import debounce from "@/app/lib/debounce";
 import { NextButton } from "@/app/ui/buttons/next";
+import _ from "lodash";
 import { redirect } from "next/navigation";
 
 export function debouncedRedirect(
@@ -7,7 +7,7 @@ export function debouncedRedirect(
   queryStr?: string,
   queryObj?: { [key: string]: any }
 ) {
-  debounce(
+  _.debounce(
     redirect(
       `${nextPath}?${queryStr ? queryStr : ""}${
         queryObj &&

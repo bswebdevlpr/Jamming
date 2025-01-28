@@ -89,7 +89,6 @@ export default function SignIn() {
           음악인을 위한 합주 플랫폼
         </p>
       </div>
-      <button onClick={() => supabase.auth.signOut()}>sign out</button>
       <Image
         src="/signup/large-wide.png"
         alt="kakao login"

@@ -5,32 +5,56 @@ import WorkSpace from "@/app/ui/layouts/workspace";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { createClient } from "@/app/util/supabase/client";
 import { redirect, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { globalContext } from "../layout";
+import { CustomError } from "@/app/lib/errors/error";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [isSigned, setIsSigned] = useState(false);
+
+  const { session } = useContext(globalContext);
+  console.log("userProfile:", session.userProfile);
+
+  const [goToSignUp, setGoToSignUp] = useState(false);
 
   useEffect(() => {
-    const validateUser = async () => {
-      const supabase = createClient();
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
+    try {
+      const validateUser = async () => {
+        const supabase = createClient();
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser();
 
-      if (!user || error) {
-        setIsSigned(false);
-        redirect("/");
-      } else setIsSigned(true);
-    };
-    validateUser();
+        console.log("user:", user);
+
+        if (!user || error) {
+          setGoToSignUp(false);
+          redirect("/");
+        } else {
+          const { data } = await supabase
+            .from("user")
+            .select()
+            .eq("id", user.id)
+            .single();
+
+          if (data) {
+            session.setUserProfile({ ...data, isLoaded: true });
+            redirect("/jamsession");
+          } else setGoToSignUp(true);
+        }
+      };
+      validateUser();
+    } catch (e) {
+      // TODO: 에러모달
+      throw CustomError.GetSession;
+    }
   }, []);
 
   return (
     <WorkSpace>
       <ContentArea>
-        {pathname === "/" || isSigned ? (
+        {pathname === "/" || goToSignUp ? (
           children
         ) : (
           <FullScreenLoading isTurnedOn={true} />
