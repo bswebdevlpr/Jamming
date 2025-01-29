@@ -1,16 +1,9 @@
 import moment from "moment";
-import { useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import Slider from "react-slick";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-interface DateDto {
-  date: string;
-  day: string;
-  month: string;
-  year: string;
-}
 
 const MapDateToKor = {
   0: "일",
@@ -22,35 +15,13 @@ const MapDateToKor = {
   6: "토",
 };
 
-export default function CommuteRecordDateSlider() {
-  // CONSTANTS
-
-  const enumerateDaysBetweenDates = (startDate, endDate) => {
-    const dates: DateDto[] = [];
-
-    for (
-      let now = startDate.clone();
-      now.isSameOrBefore(endDate);
-      now.add(1, "days")
-    ) {
-      const obj = {
-        date: MapDateToKor[now.format("d")],
-        day: now.format("DD"),
-        month: now.format("MM"),
-        year: now.format("YYYY"),
-      };
-      dates.push(obj);
-    }
-    return dates;
-  };
-  //
-
-  // REF
-  //
-
-  // HOOKS
-  //
-
+export default function CommuteRecordDateSlider({
+  selectedDate,
+  setSelectedDate,
+}: {
+  selectedDate: number;
+  setSelectedDate: Dispatch<SetStateAction<number>>;
+}) {
   // STATES & MEMOS
   const settings = useMemo(() => {
     return {
@@ -63,31 +34,47 @@ export default function CommuteRecordDateSlider() {
     };
   }, []);
 
-  const { today, twoWeeksLater } = useMemo(() => {
+  const { today, endOfPeriod } = useMemo(() => {
     const today = moment();
-    const twoWeeksLater = moment().add(2, "weeks").endOf("week");
+    const endOfPeriod = moment().add(2, "weeks").subtract(1, "d");
 
     return {
       today,
-      twoWeeksLater,
+      endOfPeriod,
     };
   }, []);
 
-  const [dates, setDates] = useState<DateDto[]>(null);
-  const [selectedDay, setSelectedDate] = useState<string>(today.format("DD"));
+  const [dates, setDates] = useState<moment.Moment[]>(null);
   //
 
   // USE-EFFECTS
   useEffect(() => {
-    setDates(enumerateDaysBetweenDates(today, twoWeeksLater));
-  }, [today, twoWeeksLater]);
+    const dates: moment.Moment[] = [];
+
+    for (
+      let now = today.clone();
+      now.isSameOrBefore(endOfPeriod);
+      now.add(1, "days")
+    ) {
+      dates.push(now.clone());
+    }
+
+    setDates(dates);
+  }, [today, endOfPeriod]);
   //
 
   const sliders = () => {
     return dates?.map((date, idx) => {
-      const highlight = date.day === selectedDay;
+      const thisDate = date.date();
+      const thisDay = date.day();
+
+      const highlight = date.date() === selectedDate;
+
       return (
-        <div key={idx} className="flex flex-col" onClick={() => {}}>
+        <div
+          key={idx}
+          className="flex flex-col"
+          onClick={() => setSelectedDate(thisDate)}>
           <div
             className="flex flex-col items-center py-1"
             style={{
@@ -97,6 +84,7 @@ export default function CommuteRecordDateSlider() {
               borderRadius: "4px",
               border: highlight ? "1px solid var(--highlight)" : undefined,
               background: highlight ? "rgba(163, 255, 12, 0.12)" : undefined,
+              opacity: (idx + 1) % 7 === 0 ? 0.5 : 1,
 
               fontFamily: "SUIT-TITLE",
 
@@ -111,7 +99,7 @@ export default function CommuteRecordDateSlider() {
 
                 marginBottom: "2px",
               }}>
-              {date.date}
+              {MapDateToKor[thisDay]}
             </span>
             <span
               style={{
@@ -122,7 +110,7 @@ export default function CommuteRecordDateSlider() {
 
                 marginBottom: "6px",
               }}>
-              {date.day}
+              {thisDate}
             </span>
             <span
               className="w-1 h-1 shrink-0"
