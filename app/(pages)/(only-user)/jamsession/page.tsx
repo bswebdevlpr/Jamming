@@ -8,6 +8,8 @@ import BottomNavBar from "@/app/ui/navbar/bottom";
 import JamNow from "@/app/ui/buttons/jam-now";
 import { globalContext } from "../../layout";
 import { LocationEnum } from "@/app/lib/constants/location.enum";
+import CommuteRecordDateSlider from "@/app/ui/calendar/slide-calendar";
+import moment from "moment";
 
 export default function JamSession() {
   // GLOBAL
@@ -16,18 +18,23 @@ export default function JamSession() {
 
   // STATES
   const [location, setLocation] = useState<LocationEnum>();
+  const [selectedDate, setSelectedDate] = useState<number>(moment().date());
   //
 
   useEffect(() => {
     console.log("location:", location);
-  }, [location]);
+    console.log("selectedDate:", selectedDate);
+  }, [location, selectedDate]);
 
   return (
     <div className="grow flex flex-col">
       <TopNavBar location={location} setLocation={setLocation} />
-      {/* 슬라이드 캘린더 */}
-      <p className="py-8 text-center">Slide Calendarrrrrrrrrrrr</p>
-      {/* 잼세션 피드 */}
+      <div className="p-5">
+        <CommuteRecordDateSlider
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+      </div>
       <div className="flex flex-row justify-between px-5 pb-4">
         <p
           style={{
@@ -57,6 +64,7 @@ export default function JamSession() {
           </div>
         </span>
       </div>
+      {/* 잼세션 피드 */}
       <div className="grow flex justify-center items-center px-5">
         Jam Session Feeeddddddddd
       </div>
