@@ -12,31 +12,52 @@ import Level from "@/app/ui/images/categories/level";
 import Position from "@/app/ui/images/categories/position";
 import { useEffect, useState } from "react";
 
-const BottomSheetContent = () => {
+const BottomSheetContent = ({
+  genre,
+  position,
+  level,
+  setGenre,
+  setPosition,
+  setLevel,
+}: {
+  genre: GenreEnum;
+  position: PositionEnum;
+  level: LevelEnum;
+  setGenre: (input: GenreEnum) => void;
+  setPosition: (input: PositionEnum) => void;
+  setLevel: (input: LevelEnum) => void;
+}) => {
   // STATES
-  const [genre, setGenre] = useState<null | GenreEnum>(null);
-  const [position, setPosition] = useState<null | PositionEnum>(null);
-  const [level, setLevel] = useState<null | LevelEnum>(null);
+  const [localGenre, setLocalGenre] = useState<GenreEnum>(genre);
+  const [localPosition, setLocalPosition] = useState<PositionEnum>(position);
+  const [localLevel, setLocalLevel] = useState<LevelEnum>(level);
 
-  const [isInit, setIsInit] = useState(false);
+  // const [isInit, setIsInit] = useState(false);
   const [activateSelect, setActivateSelect] = useState(false);
   //
 
   // HANDLERS
   const handleGenre = (input: GenreEnum) => {
     setGenre(input);
+    setLocalGenre(input);
   };
   const handlePosition = (input: PositionEnum) => {
     setPosition(input);
+    setLocalPosition(input);
   };
   const handleLevel = (input: LevelEnum) => {
     setLevel(input);
+    setLocalLevel(input);
   };
   //
 
   useEffect(() => {
-    if (genre || position || level) setActivateSelect(true);
-  }, [genre, position, level]);
+    if (localGenre || localPosition || localLevel) setActivateSelect(true);
+  }, [localGenre, localPosition, localLevel]);
+
+  // useEffect(() => {
+  //   console.log("isInit:", isInit);
+  // }, [isInit]);
 
   return (
     <div className="flex flex-col justify-between pt-6 px-5">
@@ -68,11 +89,12 @@ const BottomSheetContent = () => {
               border: "1px solid #A3FF0C",
               background: "rgba(163, 255, 12, 0.12)",
             }}
+            state={localGenre}
             handleState={handleGenre}
-            useInitState={{
-              initState: isInit,
-              setInitState: setIsInit,
-            }}
+            // useInitState={{
+            //   initState: isInit,
+            //   setInitState: setIsInit,
+            // }}
           />
         </div>
         <div className="flex flex-col gap-3">
@@ -89,11 +111,12 @@ const BottomSheetContent = () => {
               border: "1px solid #FF3773",
               background: "rgba(255, 55, 115, 0.12)",
             }}
+            state={localPosition}
             handleState={handlePosition}
-            useInitState={{
-              initState: isInit,
-              setInitState: setIsInit,
-            }}
+            // useInitState={{
+            //   initState: isInit,
+            //   setInitState: setIsInit,
+            // }}
           />
         </div>
         <div className="flex flex-col gap-3">
@@ -110,16 +133,24 @@ const BottomSheetContent = () => {
               border: "1px solid #0C7CFF",
               background: "rgba(0, 94, 203, 0.12)",
             }}
+            state={localLevel}
             handleState={handleLevel}
-            useInitState={{
-              initState: isInit,
-              setInitState: setIsInit,
-            }}
+            // useInitState={{
+            //   initState: isInit,
+            //   setInitState: setIsInit,
+            // }}
           />
         </div>
       </div>
       <div className="w-full flex flex-row justify-center gap-2">
-        <InitButton onClick={() => setIsInit(!isInit)} />
+        <InitButton
+          onClick={() => {
+            // setIsInit(!isInit);
+            handleGenre(null);
+            handlePosition(null);
+            handleLevel(null);
+          }}
+        />
         <SelectButton isActive={activateSelect} />
       </div>
     </div>

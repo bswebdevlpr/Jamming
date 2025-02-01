@@ -19,7 +19,6 @@ export async function signInWithKakao() {
 
   if (data.url) redirect(data.url);
   if (error) {
-    console.error("Failed to sign in");
     if (isDev) console.error(error);
   }
 }

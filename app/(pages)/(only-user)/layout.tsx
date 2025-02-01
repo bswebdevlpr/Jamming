@@ -2,73 +2,71 @@
 
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { createClient } from "@/app/util/supabase/client";
-import { redirect } from "next/navigation";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { globalContext } from "../layout";
+import { useRouter } from "next/navigation";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { session } = useContext(globalContext);
-  console.log("userProfile:", session.userProfile);
+  const {
+    session: { userProfile, setUserProfile },
+  } = useContext(globalContext);
+  const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const supabase = createClient();
 
     // validation
-    const validate = async () => {
-      let ret: boolean = false;
+    const validateUser = async () => {
+      let redirectUrl = null;
 
-      const { data, error } = await supabase.auth.getSession();
-      console.log("session:", data);
-      if (!data || error) {
-        await supabase.auth.signOut();
-        await supabase.auth.initialize();
-        redirect("/");
-      } else if (!session.userProfile.isLoaded) {
-        const { data: userProfile, error: userProfileError } = await supabase
-          .from("user")
-          .select()
-          .eq("id", data.session.user.id)
-          .single();
-        console.log(userProfile, error);
-
-        if (!userProfile || userProfileError) {
-          await supabase.auth.signOut();
-          await supabase.auth.initialize();
-          redirect("/");
+      try {
+        if (!userProfile.isLoaded) {
+          await supabase.auth
+            .getUser()
+            .then(async ({ data: { user }, error }) => {
+              if (!user || error) {
+                await supabase.auth.signOut();
+                await supabase.auth.initialize();
+                redirectUrl = "/";
+              } else {
+                await supabase
+                  .from("user")
+                  .select()
+                  .eq("id", user.id)
+                  .single()
+                  .then(async ({ data, error }) => {
+                    if (!data || error) {
+                      await supabase.auth.signOut();
+                      await supabase.auth.initialize();
+                      redirectUrl = "/";
+                    } else setUserProfile({ ...data, isLoaded: true });
+                  });
+              }
+            });
         }
+      } catch (e) {
+        redirectUrl = "/";
+      }
 
-        session.setUserProfile({ ...userProfile, isLoaded: true });
-        ret = true;
-      } else ret = true;
-
-      return ret;
+      if (redirectUrl) router.push(redirectUrl);
+      else setIsLoading(false);
     };
-    const valRes = validate();
+    validateUser();
     //
 
-    let authListener;
-    if (valRes) {
-      const onAuth = supabase.auth.onAuthStateChange((event, session) => {
-        if (event === "SIGNED_OUT") {
-          redirect("/");
-        }
-      });
-      authListener = onAuth.data;
-    }
+    const onAuth = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        router.push("/");
+      }
+    });
+    const authListener = onAuth.data;
 
     return () => {
       authListener?.subscription.unsubscribe();
     };
   }, []);
 
-  return (
-    <>
-      {children}
-      {/* {session.status === "authenticated" ? (
-        children
-      ) : (
-        <FullScreenLoading isTurnedOn={session.status === "loading"} />
-      )} */}
-    </>
-  );
+  return <>{isLoading ? <FullScreenLoading isTurnedOn={true} /> : children}</>;
 }

@@ -10,6 +10,9 @@ import { globalContext } from "../../layout";
 import { LocationEnum } from "@/app/lib/constants/location.enum";
 import CommuteRecordDateSlider from "@/app/ui/calendar/slide-calendar";
 import moment from "moment";
+import { GenreEnum } from "@/app/lib/constants/genre.enum";
+import { PositionEnum } from "@/app/lib/constants/position.enum";
+import { LevelEnum } from "@/app/lib/constants/level.enum";
 
 export default function JamSession() {
   // GLOBAL
@@ -17,9 +20,16 @@ export default function JamSession() {
   //
 
   // STATES
+  const [genre, setGenre] = useState<GenreEnum>(null);
+  const [position, setPosition] = useState<PositionEnum>(null);
+  const [level, setLevel] = useState<LevelEnum>(null);
   const [location, setLocation] = useState<LocationEnum>();
   const [selectedDate, setSelectedDate] = useState<number>(moment().date());
   //
+
+  useEffect(() => {
+    console.log(genre, position, level);
+  }, [genre, position, level]);
 
   useEffect(() => {
     console.log("location:", location);
@@ -41,7 +51,8 @@ export default function JamSession() {
             fontFamily: "SBAggroB",
             fontSize: "0.875rem",
             color: "#9F9FA2",
-          }}>
+          }}
+        >
           JAM SESSION
         </p>
         <span className="flex flex-row gap-1 justify-center items-center">
@@ -50,16 +61,27 @@ export default function JamSession() {
               fontFamily: "SUIT-TITLE",
               fontSize: "0.875rem",
               color: "#9F9FA2",
-            }}>
+            }}
+          >
             필터
           </p>
           <div
             onClick={() =>
               bottomSheet.set({
                 location: "high",
-                children: <BottomSheetContent />,
+                children: (
+                  <BottomSheetContent
+                    genre={genre}
+                    position={position}
+                    level={level}
+                    setGenre={setGenre}
+                    setPosition={setPosition}
+                    setLevel={setLevel}
+                  />
+                ),
               })
-            }>
+            }
+          >
             <Filter />
           </div>
         </span>

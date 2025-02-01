@@ -13,7 +13,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   const { session } = useContext(globalContext);
-  console.log("userProfile:", session.userProfile);
 
   const [goToSignUp, setGoToSignUp] = useState(false);
 
@@ -25,8 +24,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           data: { user },
           error,
         } = await supabase.auth.getUser();
-
-        console.log("user:", user);
 
         if (!user || error) {
           setGoToSignUp(false);
