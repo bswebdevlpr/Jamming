@@ -3,9 +3,15 @@
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
 import Calendar from "@/app/ui/images/jamsession/calendar";
+import { PickersCalendarHeader } from "@mui/x-date-pickers/PickersCalendarHeader";
+import {
+  PickersDay,
+  PickersDayProps,
+} from "@mui/x-date-pickers/PickersDay/PickersDay";
+import { Badge } from "@mui/material";
 
 const MapDateToKor = {
   0: "일",
@@ -19,7 +25,11 @@ const MapDateToKor = {
 
 export default function TestPage() {
   // PREVENT HYDRATION FAIL
+  // STATES & MEMOS
+  const today = useMemo(() => moment(), []);
+
   const [isClient, setIsClient] = useState(false);
+  //
 
   useEffect(() => {
     setIsClient(true);
@@ -30,13 +40,65 @@ export default function TestPage() {
   }
   //
 
+  const CustomCalendarHeader = (props) => {
+    return (
+      <div>
+        <PickersCalendarHeader {...props} />
+        {/* <div className="flex gap-2" style={{ marginBottom: "24px" }}>
+          이곳은 필터가 들어갈것이다
+        </div> */}
+      </div>
+    );
+  };
+  const CustomDay = (
+    props: PickersDayProps<moment.Moment> & { highlightedDays?: number[] }
+  ) => {
+    const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+
+    const isSelected =
+      !props.outsideCurrentMonth &&
+      highlightedDays.indexOf(props.day.date()) >= 0;
+
+    return (
+      <div className="relative basis-1/7 flex justify-center">
+        {isSelected && (
+          <div
+            style={{
+              width: "4px",
+              height: "4px",
+
+              borderRadius: "50%",
+
+              backgroundColor:
+                props.day.format("YYYY-MM-DD") === today.format("YYYY-MM-DD")
+                  ? "var(--border)"
+                  : "var(--highlight)",
+
+              position: "absolute",
+              top: "50%",
+              left: "45%",
+              zIndex: 10,
+            }}
+          />
+        )}
+        <PickersDay
+          {...other}
+          outsideCurrentMonth={outsideCurrentMonth}
+          day={day}
+        />
+      </div>
+    );
+  };
+
   return (
-    <div>
+    <div className="w-full h-full">
       {isClient ? (
         <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="ko">
           <DateCalendar
             slots={{
+              calendarHeader: CustomCalendarHeader,
               switchViewIcon: Calendar,
+              day: CustomDay,
             }}
             slotProps={{
               switchViewButton: {
@@ -61,8 +123,14 @@ export default function TestPage() {
               rightArrowIcon: {
                 htmlColor: "#FFFFFF",
               },
+              day: {
+                highlightedDays: [1, 5],
+              } as any,
             }}
             sx={{
+              maxHeight: "100%",
+              height: "fit-content",
+
               // HEADER
               "& .MuiPickersCalendarHeader-root": {
                 marginTop: "0px",
@@ -110,7 +178,6 @@ export default function TestPage() {
 
               // // BODY - BODY
               "& .MuiPickersDay-root": {
-                flexBasis: "calc(14.28%)",
                 height: "64px",
 
                 padding: "8px",
@@ -127,8 +194,9 @@ export default function TestPage() {
                 color: "var(--border)",
                 backgroundColor: "var(--highlight)",
                 borderRadius: "4px",
-
-                zIndex: 10,
+              },
+              "& .Mui-selected": {
+                backgroundColor: "transparent",
               },
               // //
               //
