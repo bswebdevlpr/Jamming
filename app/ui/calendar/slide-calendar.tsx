@@ -36,7 +36,7 @@ export default function CommuteRecordDateSlider({
 
   const { today, endOfPeriod } = useMemo(() => {
     const today = moment();
-    const endOfPeriod = moment().add(2, "weeks").subtract(1, "d");
+    const endOfPeriod = moment().add(1, "month").subtract(1, "day");
 
     return {
       today,
@@ -74,7 +74,8 @@ export default function CommuteRecordDateSlider({
         <div
           key={idx}
           className="flex flex-col"
-          onClick={() => setSelectedDate(thisDate)}>
+          onClick={() => setSelectedDate(thisDate)}
+        >
           <div
             className="flex flex-col items-center py-1"
             style={{
@@ -89,7 +90,8 @@ export default function CommuteRecordDateSlider({
               fontFamily: "SUIT-TITLE",
 
               cursor: "pointer",
-            }}>
+            }}
+          >
             <span
               style={{
                 color: highlight ? "var(--highlight)" : "#FFF",
@@ -98,7 +100,8 @@ export default function CommuteRecordDateSlider({
                 letterSpacing: "-0.3px",
 
                 marginBottom: "2px",
-              }}>
+              }}
+            >
               {MapDateToKor[thisDay]}
             </span>
             <span
@@ -109,7 +112,8 @@ export default function CommuteRecordDateSlider({
                 letterSpacing: "-0.35px",
 
                 marginBottom: "6px",
-              }}>
+              }}
+            >
               {thisDate}
             </span>
             <span

@@ -28,9 +28,6 @@ export const BOTTOMSHEET_HEIGHT_SUPER_LOW = 10.5;
 
 const Wrapper = ({ children, width, height, pullUp }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    ref.current?.style.setProperty("display", "flex");
-  }, []);
 
   const [prevDist, setPrevDist] = useState(0);
 
@@ -40,6 +37,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         case null:
           break;
         case "high":
+          ref.current?.style.setProperty("display", "flex");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
@@ -52,6 +50,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
 
           break;
         case "middle":
+          ref.current?.style.setProperty("display", "flex");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
@@ -63,6 +62,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
           );
           break;
         case "low":
+          ref.current?.style.setProperty("display", "flex");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_LOW}%)`
@@ -74,6 +74,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
           );
           break;
         case "superLow":
+          ref.current?.style.setProperty("display", "flex");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_SUPER_LOW}%)`
@@ -91,8 +92,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             `translateY(${prevDist}%)`
           );
           setPrevDist(0);
+          ref.current?.style.setProperty("display", "none");
           break;
         default:
+          ref.current?.style.setProperty("display", "flex");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${pullUp}%)`
@@ -122,7 +125,8 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         transition: "transform 0.75s ease-out",
 
         display: "none",
-      }}>
+      }}
+    >
       {children}
     </motion.div>
   );
@@ -135,7 +139,8 @@ const BottomSheetContent = ({ children }: { children: ReactNode }) => (
       overflow: "auto",
       WebkitOverflowScrolling: "touch",
       height: "100%",
-    }}>
+    }}
+  >
     {children}
   </div>
 );

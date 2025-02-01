@@ -32,37 +32,38 @@ const Grid = ({
 
   state,
   handleState,
-
-  useInitState,
-}: {
+}: // useInitState,
+{
   items: string[];
   values: any[];
-  state?: any;
-  handleState: (input: any) => void;
   colNum?: number;
   itemStyle?: CSSProperties;
   itemStyleActivated?: CSSProperties;
 
+  state?: any;
+  handleState: (input: any) => void;
+
   // 초기화 사용 시
-  useInitState?: {
-    initState: boolean;
-    setInitState: Dispatch<SetStateAction<boolean>>;
-  };
+  // useInitState?: {
+  //   initState: boolean;
+  //   setInitState: Dispatch<SetStateAction<boolean>>;
+  // };
 }) => {
   const [itemStateList, setItemStateList] = useState<boolean[]>(
     values.map((val) => val === state)
   );
 
   useEffect(() => {
+    console.log(state);
     setItemStateList(values.map((val) => val === state));
   }, [state, values]);
 
-  useEffect(() => {
-    if (useInitState?.initState) {
-      setItemStateList(Array(items.length).fill(false));
-      useInitState.setInitState(!useInitState?.initState);
-    }
-  }, [useInitState?.initState]);
+  // useEffect(() => {
+  //   if (useInitState?.initState) {
+  //     setItemStateList(Array(items.length).fill(false));
+  //     useInitState.setInitState(!useInitState?.initState);
+  //   }
+  // }, [useInitState?.initState]);
 
   const handleItemClick = (selectedIdx: number, value: any) => {
     setItemStateList((prev) =>
@@ -70,6 +71,10 @@ const Grid = ({
     );
     handleState(value);
   };
+
+  useEffect(() => {
+    console.log(itemStateList);
+  }, [itemStateList]);
 
   const createItems = (texts: string[], values: any[]) => {
     return (
