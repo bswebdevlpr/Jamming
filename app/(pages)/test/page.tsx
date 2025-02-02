@@ -29,6 +29,8 @@ export default function TestPage() {
   const today = useMemo(() => moment(), []);
 
   const [isClient, setIsClient] = useState(false);
+
+  const [selectedDate, setSelectedDate] = useState<number>();
   //
 
   useEffect(() => {
@@ -55,13 +57,13 @@ export default function TestPage() {
   ) => {
     const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
 
-    const isSelected =
+    const filtered =
       !props.outsideCurrentMonth &&
       highlightedDays.indexOf(props.day.date()) >= 0;
 
     return (
       <div className="relative basis-1/7 flex justify-center">
-        {isSelected && (
+        {filtered && (
           <div
             style={{
               width: "4px",
@@ -70,7 +72,8 @@ export default function TestPage() {
               borderRadius: "50%",
 
               backgroundColor:
-                props.day.format("YYYY-MM-DD") === today.format("YYYY-MM-DD")
+                props.day.format("YYYY-MM-DD") === today.format("YYYY-MM-DD") &&
+                selectedDate !== today.date()
                   ? "var(--border)"
                   : "var(--highlight)",
 
@@ -85,6 +88,7 @@ export default function TestPage() {
           {...other}
           outsideCurrentMonth={outsideCurrentMonth}
           day={day}
+          onClick={() => setSelectedDate(day.date())}
         />
       </div>
     );
@@ -124,12 +128,12 @@ export default function TestPage() {
                 htmlColor: "#FFFFFF",
               },
               day: {
-                highlightedDays: [1, 5],
+                highlightedDays: [2, 5],
               } as any,
             }}
             sx={{
               maxHeight: "100%",
-              height: "fit-content",
+              height: "100%",
 
               // HEADER
               "& .MuiPickersCalendarHeader-root": {
@@ -184,18 +188,39 @@ export default function TestPage() {
                 color: "#FFF",
                 alignItems: "start",
               }, // 날짜 글자색 변경
+
+              "& .MuiPickersDay-root:hover": {
+                backgroundColor: "transparent",
+              },
+
               "& .MuiPickersDay-root.Mui-selected": {
                 border: "1px solid var(--highlight)",
-                color: "white", // 선택된 날짜 글자색 변경
+                color: "white",
                 backgroundColor: "transparent",
                 borderRadius: "4px",
               },
+              // "& .MuiPickersDay-root.Mui-selected:hover": {
+              //   backgroundColor: "transparent",
+              // },
+
               "& .MuiPickersDay-today": {
                 color: "var(--border)",
                 backgroundColor: "var(--highlight)",
                 borderRadius: "4px",
               },
-              "& .Mui-selected": {
+              // "& .MuiTouchRipple-root": {
+              //   backgroundColor: "transparent",
+              // },
+              // "& .Mui-selected": {
+              //   backgroundColor: "transparent",
+              // },
+              "& [class$='-slideTransition']": {
+                overflow: "visible",
+              },
+              "& [class*='ripple']": {
+                backgroundColor: "transparent",
+              },
+              "& [class*='Ripple']": {
                 backgroundColor: "transparent",
               },
               // //
