@@ -99,6 +99,7 @@ export default function TestPage() {
       {isClient ? (
         <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="ko">
           <DateCalendar
+            reduceAnimations
             slots={{
               calendarHeader: CustomCalendarHeader,
               switchViewIcon: Calendar,
@@ -151,6 +152,7 @@ export default function TestPage() {
               },
               "& .MuiIconButton-edgeStart": {
                 padding: "0px 0px 0px 12px",
+                transition: "none",
               },
               "& .MuiIconButton-edgeEnd": {
                 padding: "0px 12px 0px 0px",
@@ -187,21 +189,16 @@ export default function TestPage() {
                 padding: "8px",
                 color: "#FFF",
                 alignItems: "start",
+                "&:focus": { backgroundColor: "transparent" },
               }, // 날짜 글자색 변경
-
-              "& .MuiPickersDay-root:hover": {
-                backgroundColor: "transparent",
-              },
 
               "& .MuiPickersDay-root.Mui-selected": {
                 border: "1px solid var(--highlight)",
                 color: "white",
                 backgroundColor: "transparent",
                 borderRadius: "4px",
+                "&:focus": { backgroundColor: "transparent" },
               },
-              // "& .MuiPickersDay-root.Mui-selected:hover": {
-              //   backgroundColor: "transparent",
-              // },
 
               "& .MuiPickersDay-today": {
                 color: "var(--border)",
