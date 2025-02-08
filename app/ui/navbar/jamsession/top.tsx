@@ -4,7 +4,13 @@ import Bell from "@/app/ui/images/jamsession/bell";
 import CalendarImage from "@/app/ui/images/jamsession/calendar";
 import { DownArrow } from "../../images/arrows";
 import LocationPopup from "@/app/(pages)/(only-user)/jamsession/popup/location";
-import { useContext, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { LocationEnum } from "@/app/lib/constants/location.enum";
 import { globalContext } from "@/app/(pages)/layout";
 import CalendarComponent from "../../calendar/calendar";
@@ -14,11 +20,15 @@ export default function TopNavBar({
   selectedDate,
   setLocation,
   setSelectedDate,
+  filters,
+  setFilters,
 }: {
   location: LocationEnum;
   selectedDate: moment.Moment;
   setLocation: (location: LocationEnum) => void;
   setSelectedDate: (input: moment.Moment) => void;
+  filters: any[];
+  setFilters: Dispatch<SetStateAction<any[]>>;
 }) {
   // GLOBAL
   const { bottomSheet } = useContext(globalContext);
@@ -33,10 +43,6 @@ export default function TopNavBar({
     setIsLocationClicked(!isLocationClicked);
   };
   //
-
-  useEffect(() => {
-    console.log("inside top NavBar, location:", location);
-  }, [location]);
 
   return (
     <div className="flex flex-row justify-between px-5 py-3">
@@ -63,18 +69,8 @@ export default function TopNavBar({
                 <CalendarComponent
                   selectedDate={selectedDate}
                   setSelectedDate={setSelectedDate}
-                  filters={[
-                    { text: "서울", value: "서울" },
-                    { text: "재즈", value: "재즈" },
-                    { text: "아마추어", value: "재즈" },
-                    { text: "재즈", value: "재즈" },
-                    { text: "재즈", value: "재즈" },
-                    { text: "재즈", value: "재즈" },
-                    { text: "재즈", value: "재즈" },
-                    { text: "재즈", value: "재즈" },
-                    { text: "재즈", value: "재즈" },
-                    { text: "아마추어", value: "재즈" },
-                  ]}
+                  filters={filters}
+                  setFilters={setFilters}
                 />
               ),
             })

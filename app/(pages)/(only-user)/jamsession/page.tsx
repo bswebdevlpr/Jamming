@@ -8,7 +8,7 @@ import BottomNavBar from "@/app/ui/navbar/bottom";
 import JamNow from "@/app/ui/buttons/jam-now";
 import { globalContext } from "../../layout";
 import { LocationEnum } from "@/app/lib/constants/location.enum";
-import CommuteRecordDateSlider from "@/app/ui/calendar/slide-calendar";
+import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import moment from "moment";
 import { GenreEnum } from "@/app/lib/constants/genre.enum";
 import { PositionEnum } from "@/app/lib/constants/position.enum";
@@ -25,16 +25,23 @@ export default function JamSession() {
   const [level, setLevel] = useState<LevelEnum>(null);
   const [location, setLocation] = useState<LocationEnum>();
   const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
+
+  const [filters, setFilters] = useState<any[]>([
+    genre,
+    position,
+    level,
+    location,
+  ]);
   //
 
   useEffect(() => {
-    console.log(genre, position, level);
-  }, [genre, position, level]);
-
-  useEffect(() => {
-    console.log("location:", location);
-    console.log("selectedDate:", selectedDate);
-  }, [location, selectedDate]);
+    setFilters([
+      LocationEnum[location],
+      GenreEnum[genre],
+      PositionEnum[position],
+      LevelEnum[level],
+    ]);
+  }, [location, genre, position, level]);
 
   return (
     <div className="grow flex flex-col">
@@ -43,9 +50,11 @@ export default function JamSession() {
         selectedDate={selectedDate}
         setLocation={setLocation}
         setSelectedDate={setSelectedDate}
+        filters={filters}
+        setFilters={setFilters}
       />
       <div className="p-5">
-        <CommuteRecordDateSlider
+        <SlideCalendarComponent
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
         />

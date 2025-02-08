@@ -54,7 +54,6 @@ const Grid = ({
   );
 
   useEffect(() => {
-    console.log(state);
     setItemStateList(values.map((val) => val === state));
   }, [state, values]);
 

@@ -1,5 +1,14 @@
+"use client";
+
 import moment from "moment";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Slider from "react-slick";
 
 import "slick-carousel/slick/slick.css";
@@ -15,13 +24,15 @@ const MapDateToKor = {
   6: "토",
 };
 
-export default function CommuteRecordDateSlider({
+export default function SlideCalendarComponent({
   selectedDate,
   setSelectedDate,
 }: {
   selectedDate: moment.Moment;
   setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
 }) {
+  let sliderRef = useRef(null);
+
   // STATES & MEMOS
   const settings = useMemo(() => {
     return {
@@ -36,7 +47,7 @@ export default function CommuteRecordDateSlider({
 
   const { today, endOfPeriod } = useMemo(() => {
     const today = moment();
-    const endOfPeriod = moment().add(1, "month").subtract(1, "day");
+    const endOfPeriod = moment().add(2, "week").subtract(1, "day");
 
     return {
       today,
@@ -61,6 +72,19 @@ export default function CommuteRecordDateSlider({
 
     setDates(dates);
   }, [today, endOfPeriod]);
+
+  useEffect(() => {
+    if (dates && dates.length > 0) {
+      const idx = dates.reduce((acc, cur, idx) => {
+        return cur.format("YYYYMMDD") === selectedDate.format("YYYYMMDD")
+          ? idx
+          : acc;
+      }, 0);
+      console.log("dates:", dates, "selectedDate:", selectedDate, "idx:", idx);
+
+      sliderRef.slickGoTo(idx);
+    }
+  }, [selectedDate]);
   //
 
   const sliders = () => {
@@ -71,13 +95,9 @@ export default function CommuteRecordDateSlider({
         date.format("YYYYMMDD") === selectedDate.format("YYYYMMDD");
 
       return (
-        <div
-          key={idx}
-          className="flex flex-col justify-center items-center"
-          onClick={() => setSelectedDate(date)}
-        >
+        <div key={idx} className="flex" onClick={() => setSelectedDate(date)}>
           <div
-            className="flex flex-col items-center py-1"
+            className="flex flex-col items-center py-1 mx-auto"
             style={{
               width: "32px",
               height: "56px",
@@ -85,7 +105,7 @@ export default function CommuteRecordDateSlider({
               borderRadius: "4px",
               border: highlight ? "1px solid var(--highlight)" : undefined,
               background: highlight ? "rgba(163, 255, 12, 0.12)" : undefined,
-              opacity: (idx + 1) % 7 === 0 ? 0.5 : 1,
+              opacity: !highlight && (idx + 1) % 7 === 0 ? 0.5 : 1,
 
               fontFamily: "SUIT-TITLE",
 
@@ -133,7 +153,14 @@ export default function CommuteRecordDateSlider({
 
   return (
     <div style={{ overflow: "hidden" }}>
-      <Slider {...settings}>{sliders()}</Slider>
+      <Slider
+        {...settings}
+        ref={(slider) => {
+          sliderRef = slider;
+        }}
+      >
+        {sliders()}
+      </Slider>
     </div>
   );
 }
