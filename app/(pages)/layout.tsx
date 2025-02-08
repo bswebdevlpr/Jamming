@@ -25,7 +25,7 @@ const defaultContext: GlobalContext = {
     children: null,
     location: null,
     set: () => {},
-    header: true,
+    header: false,
     setHeader: null,
   },
 
@@ -111,7 +111,8 @@ function GlobalLayout({
         width={width}
         height={height}
         pullUp={globalState.bottomSheet.location}
-        header={globalState.bottomSheet.header}>
+        header={globalState.bottomSheet.header}
+      >
         {globalState.bottomSheet.children}
       </BottomSheet>
     </globalContext.Provider>

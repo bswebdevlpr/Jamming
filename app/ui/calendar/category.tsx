@@ -2,22 +2,36 @@ import X from "../images/common/x";
 
 export function CalendarCategoryList({
   filters,
+  onClick,
 }: {
-  filters: {
-    text: string;
-    value: any;
-  }[];
+  filters: any[];
+  onClick: (input: any[]) => any;
 }) {
   return (
     <div className="flex flex-wrap gap-2">
-      {filters.map(({ text, value }, idx) => (
-        <CalendarCategoryItem key={idx} text={text} />
-      ))}
+      {filters.map(
+        (val, idx) =>
+          val && (
+            <CalendarCategoryItem
+              key={idx}
+              text={val}
+              onClick={() =>
+                onClick(onClick(filters.filter((filter) => filter !== val)))
+              }
+            />
+          )
+      )}
     </div>
   );
 }
 
-function CalendarCategoryItem({ text }: { text: string }) {
+function CalendarCategoryItem({
+  text,
+  onClick,
+}: {
+  text: any;
+  onClick: () => any;
+}) {
   return (
     <span
       className="shrink-0 grow-0 flex gap-0.5 py-1 pl-2 pr-1.5"
@@ -38,7 +52,7 @@ function CalendarCategoryItem({ text }: { text: string }) {
       >
         {text}
       </p>
-      <X width={16} height={16} />
+      <X width={16} height={16} onClick={onClick} />
     </span>
   );
 }

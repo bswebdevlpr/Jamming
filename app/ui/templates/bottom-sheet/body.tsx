@@ -92,7 +92,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             `translateY(${prevDist}%)`
           );
           setPrevDist(0);
-          ref.current?.style.setProperty("display", "none");
+          _.debounce(
+            () => ref.current?.style.setProperty("display", "none"),
+            750
+          );
           break;
         default:
           ref.current?.style.setProperty("display", "flex");
@@ -117,14 +120,14 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         width: `${width}px`,
         height: `${height}px`,
 
+        top: `${height}px`,
+
         borderTopLeftRadius: "8px",
         borderTopRightRadius: "8px",
         backgroundColor: "#242426",
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
 
         transition: "transform 0.75s ease-out",
-
-        display: "none",
       }}
     >
       {children}
@@ -150,7 +153,7 @@ const BottomSheet = ({
   width,
   height,
   pullUp,
-  header = true,
+  header = false,
 }: Props) => {
   // const { sheet, content } = useBottomSheet();
 

@@ -3,8 +3,8 @@
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
-import { useEffect, useMemo, useState } from "react";
-import moment from "moment";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
+import moment, { locales } from "moment";
 import CalendarImage from "@/app/ui/images/jamsession/calendar";
 import { PickersCalendarHeader } from "@mui/x-date-pickers/PickersCalendarHeader";
 import {
@@ -32,8 +32,8 @@ export default function CalendarComponent({
 }: {
   selectedDate: moment.Moment;
   setSelectedDate: (input: moment.Moment) => void;
-  filters: { text: string; value: any }[];
-  setFilters?: (input: string[]) => void;
+  filters: any[];
+  setFilters: Dispatch<SetStateAction<any[]>>;
 }) {
   // PREVENT HYDRATION FAIL
   // STATES & MEMOS
@@ -54,8 +54,8 @@ export default function CalendarComponent({
   }, []);
 
   useEffect(() => {
-    console.log(selectedDate, localSelectedDate);
-  }, [selectedDate, localSelectedDate]);
+    if (localSelectedDate !== selectedDate) setLocalSelectedDate(selectedDate);
+  }, [selectedDate]);
 
   if (!isClient) {
     return null; // 클라이언트에서만 렌더링
@@ -67,7 +67,7 @@ export default function CalendarComponent({
       <div>
         <PickersCalendarHeader {...props} />
         <div style={{ marginBottom: "24px" }}>
-          <CalendarCategoryList filters={filters} />
+          <CalendarCategoryList filters={filters} onClick={setFilters} />
         </div>
       </div>
     );
@@ -93,7 +93,8 @@ export default function CalendarComponent({
 
               backgroundColor:
                 props.day.format("YYYY-MM-DD") === today.format("YYYY-MM-DD") &&
-                selectedDate.format("YYYY-MM-DD") !== today.format("YYYY-MM-DD")
+                localSelectedDate.format("YYYY-MM-DD") !==
+                  today.format("YYYY-MM-DD")
                   ? "var(--border)"
                   : "var(--highlight)",
 
@@ -108,6 +109,9 @@ export default function CalendarComponent({
           {...other}
           outsideCurrentMonth={outsideCurrentMonth}
           day={day}
+          selected={
+            localSelectedDate.format("YYYYMMDD") === day.format("YYYYMMDD")
+          }
           onClick={() => handleSelectedDate(day)}
           style={{
             fontFamily: "Pretendard-400",
@@ -132,6 +136,8 @@ export default function CalendarComponent({
           >
             <DateCalendar
               reduceAnimations
+              minDate={today}
+              maxDate={today.clone().add(3, "month")}
               slots={{
                 calendarHeader: CustomCalendarHeader,
                 switchViewIcon: CalendarImage,
