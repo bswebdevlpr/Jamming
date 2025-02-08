@@ -24,7 +24,7 @@ export default function JamSession() {
   const [position, setPosition] = useState<PositionEnum>(null);
   const [level, setLevel] = useState<LevelEnum>(null);
   const [location, setLocation] = useState<LocationEnum>();
-  const [selectedDate, setSelectedDate] = useState<number>(moment().date());
+  const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
   //
 
   useEffect(() => {
@@ -38,7 +38,12 @@ export default function JamSession() {
 
   return (
     <div className="grow flex flex-col">
-      <TopNavBar location={location} setLocation={setLocation} />
+      <TopNavBar
+        location={location}
+        selectedDate={selectedDate}
+        setLocation={setLocation}
+        setSelectedDate={setSelectedDate}
+      />
       <div className="p-5">
         <CommuteRecordDateSlider
           selectedDate={selectedDate}

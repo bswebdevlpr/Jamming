@@ -19,8 +19,8 @@ export default function CommuteRecordDateSlider({
   selectedDate,
   setSelectedDate,
 }: {
-  selectedDate: number;
-  setSelectedDate: Dispatch<SetStateAction<number>>;
+  selectedDate: moment.Moment;
+  setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
 }) {
   // STATES & MEMOS
   const settings = useMemo(() => {
@@ -65,16 +65,16 @@ export default function CommuteRecordDateSlider({
 
   const sliders = () => {
     return dates?.map((date, idx) => {
-      const thisDate = date.date();
       const thisDay = date.day();
 
-      const highlight = date.date() === selectedDate;
+      const highlight =
+        date.format("YYYYMMDD") === selectedDate.format("YYYYMMDD");
 
       return (
         <div
           key={idx}
-          className="flex flex-col"
-          onClick={() => setSelectedDate(thisDate)}
+          className="flex flex-col justify-center items-center"
+          onClick={() => setSelectedDate(date)}
         >
           <div
             className="flex flex-col items-center py-1"
@@ -114,7 +114,7 @@ export default function CommuteRecordDateSlider({
                 marginBottom: "6px",
               }}
             >
-              {thisDate}
+              {date.date()}
             </span>
             <span
               className="w-1 h-1 shrink-0"

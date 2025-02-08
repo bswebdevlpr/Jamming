@@ -85,8 +85,9 @@
   --border: #323234;
 
   --min-width: 375px;
-  /* min-height: 812px; statusbar, footer 포함*/
+  /* min-height: 659px; statusbar, footer 제외*/
   --min-height: 753px;
+  /* normal height: 812 / 718*/
   --max-width: 600px;
   --max-height: 1080px;
 

@@ -15,7 +15,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const supabase = createClient();
+    let supabase = null;
+
+    try {
+      supabase = createClient();
+    } catch (e) {
+      // TODO: 경고 로그인할 수 없음
+      router.push("/");
+    }
 
     // validation
     const validateUser = async () => {
