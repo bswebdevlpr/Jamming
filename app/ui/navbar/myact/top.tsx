@@ -1,7 +1,7 @@
 "use client";
 
 import Bell from "@/app/ui/images/jamsession/bell";
-import Calendar from "@/app/ui/images/jamsession/calendar";
+import CalendarImage from "@/app/ui/images/jamsession/calendar";
 
 export default function TopNavBar() {
   return (
@@ -17,7 +17,7 @@ export default function TopNavBar() {
       </p>
       <div className="flex flex-row gap-5">
         <Bell />
-        <Calendar />
+        <CalendarImage />
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { useEffect, useMemo, useState } from "react";
 import moment from "moment";
-import Calendar from "@/app/ui/images/jamsession/calendar";
+import CalendarImage from "@/app/ui/images/jamsession/calendar";
 import { PickersCalendarHeader } from "@mui/x-date-pickers/PickersCalendarHeader";
 import {
   PickersDay,
@@ -102,7 +102,7 @@ export default function TestPage() {
             reduceAnimations
             slots={{
               calendarHeader: CustomCalendarHeader,
-              switchViewIcon: Calendar,
+              switchViewIcon: CalendarImage,
               day: CustomDay,
             }}
             slotProps={{

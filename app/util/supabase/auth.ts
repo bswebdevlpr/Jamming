@@ -20,5 +20,6 @@ export async function signInWithKakao() {
   if (data.url) redirect(data.url);
   if (error) {
     if (isDev) console.error(error);
+    redirect("/");
   }
 }
