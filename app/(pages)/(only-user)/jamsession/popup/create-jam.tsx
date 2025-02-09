@@ -8,11 +8,23 @@ import {
   MusicNote,
   OpenChat,
 } from "@/app/ui/images/jamsession/popup/create-jam";
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import BottomSheetContent from "../bottom-sheet/content";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import SelectHeadCount from "./select-headcount";
+import SelectHeadCountPopup from "./select-headcount";
 import { globalContext } from "@/app/(pages)/layout";
+import { GenreEnum } from "@/app/lib/constants/genre.enum";
+import { PositionEnum } from "@/app/lib/constants/position.enum";
+import { LevelEnum } from "@/app/lib/constants/level.enum";
+import ClockPopup from "./clock";
+import moment from "moment";
 
 const FlexRow = ({
   left,
@@ -23,6 +35,10 @@ const FlexRow = ({
   right: string;
   onClick?: any;
 }) => {
+  useEffect(() => {
+    console.log("right:", right);
+  }, [right]);
+
   return (
     <div
       className="flex flex-row justify-between items-center px-5 py-2"
@@ -61,21 +77,33 @@ const FlexRow = ({
 export default function CreateJam({
   isTurnedOn,
   turnOff,
+  selectedDate,
+  setSelectedDate,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
+  selectedDate: moment.Moment;
+  setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
 }) {
+  // GLOBAL
+  const { bottomSheet } = useContext(globalContext);
+  //
+
   const ref = useRef<HTMLDivElement>(null);
 
   // SATES
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
-  const [isHeadCountTurnedOn, setIsHeadCountTurnedOn] = useState(false);
-  //
+  const [isHeadCountPopupTurnedOn, setIsHeadCountPopupTurnedOn] =
+    useState(false);
+  const [isClockPopupTurnedOn, setIsClockPopupTurnedOn] = useState(false);
 
-  // CONTEXT
-  const { bottomSheet } = useContext(globalContext);
+  const [genre, setGenre] = useState<GenreEnum>(null);
+  const [position, setPosition] = useState<PositionEnum>(null);
+  const [level, setLevel] = useState<LevelEnum>(null);
+
+  const [headCnts, setHeadCnts] = useState<number[]>(new Array(6).fill(0));
   //
 
   useEffect(() => {
@@ -88,6 +116,10 @@ export default function CreateJam({
       ref.current.style.display = isTurnedOn ? "flex" : "none";
     }
   }, [isTurnedOn]);
+
+  useEffect(() => {
+    console.log("at create jam, selectedDate:", selectedDate);
+  }, [selectedDate]);
 
   return (
     <div
@@ -139,16 +171,33 @@ export default function CreateJam({
           onClick={() =>
             bottomSheet.set({
               location: "high",
-              children: <BottomSheetContent />,
+              children: (
+                <BottomSheetContent
+                  genre={genre}
+                  position={position}
+                  level={level}
+                  setGenre={setGenre}
+                  setPosition={setPosition}
+                  setLevel={setLevel}
+                />
+              ),
             })
           }
         />
         <FlexRow
           left="참여 인원"
-          right="0"
-          onClick={() => setIsHeadCountTurnedOn(true)}
+          right={headCnts.reduce((acc, cur) => acc + cur, 0).toString()}
+          onClick={() => setIsHeadCountPopupTurnedOn(true)}
         />
-        <FlexRow left="날짜" right="0000.00.00 00:00" />
+        <FlexRow
+          left="날짜"
+          right={
+            selectedDate
+              ? selectedDate.format("YYYY.MM.DD HH:mm")
+              : "0000.00.00 00:00"
+          }
+          onClick={() => setIsClockPopupTurnedOn(true)}
+        />
         <div className="flex flex-col gap-5 px-5 pt-7 overflow-without-scroll">
           <p
             style={{
@@ -209,9 +258,17 @@ export default function CreateJam({
           style={{ opacity: 0.6 }}
         />
       </div>
-      <SelectHeadCount
-        isTurnedOn={isHeadCountTurnedOn}
-        turnOff={() => setIsHeadCountTurnedOn(false)}
+      <SelectHeadCountPopup
+        isTurnedOn={isHeadCountPopupTurnedOn}
+        turnOff={() => setIsHeadCountPopupTurnedOn(false)}
+        headCnts={headCnts}
+        setHeadCnts={setHeadCnts}
+      />
+      <ClockPopup
+        isTurnedOn={isClockPopupTurnedOn}
+        turnOff={() => setIsClockPopupTurnedOn(false)}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
       />
     </div>
   );

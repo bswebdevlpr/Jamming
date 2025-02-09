@@ -55,10 +55,6 @@ const BottomSheetContent = ({
     if (localGenre || localPosition || localLevel) setActivateSelect(true);
   }, [localGenre, localPosition, localLevel]);
 
-  // useEffect(() => {
-  //   console.log("isInit:", isInit);
-  // }, [isInit]);
-
   return (
     <div className="flex flex-col justify-between pt-6 px-5">
       <p

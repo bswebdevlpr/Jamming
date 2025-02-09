@@ -47,7 +47,7 @@ export default function SlideCalendarComponent({
 
   const { today, endOfPeriod } = useMemo(() => {
     const today = moment();
-    const endOfPeriod = moment().add(2, "week").subtract(1, "day");
+    const endOfPeriod = today.clone().add(2, "week").subtract(1, "day");
 
     return {
       today,
@@ -80,8 +80,8 @@ export default function SlideCalendarComponent({
           ? idx
           : acc;
       }, 0);
-      console.log("dates:", dates, "selectedDate:", selectedDate, "idx:", idx);
 
+      // @ts-expect-error: refer to react-slick api
       sliderRef.slickGoTo(idx);
     }
   }, [selectedDate]);

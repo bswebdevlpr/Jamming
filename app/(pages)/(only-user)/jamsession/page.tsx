@@ -43,6 +43,10 @@ export default function JamSession() {
     ]);
   }, [location, genre, position, level]);
 
+  useEffect(() => {
+    console.log("at page, selectedDate", selectedDate);
+  }, [selectedDate]);
+
   return (
     <div className="grow flex flex-col">
       <TopNavBar
@@ -104,7 +108,7 @@ export default function JamSession() {
       <div className="grow flex justify-center items-center px-5">
         Jam Session Feeeddddddddd
       </div>
-      <JamNow />
+      <JamNow selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
       <BottomNavBar />
     </div>
   );
