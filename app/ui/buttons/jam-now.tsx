@@ -2,9 +2,15 @@
 
 import CreateJam from "@/app/(pages)/(only-user)/jamsession/popup/create-jam";
 import Plus from "../images/jamsession/plus";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
-export default function JamNow() {
+export default function JamNow({
+  selectedDate,
+  setSelectedDate,
+}: {
+  selectedDate: moment.Moment;
+  setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
+}) {
   const [isTurnedOn, setIsTurnedOn] = useState(false);
   const turnOff = () => {
     setIsTurnedOn(!isTurnedOn);
@@ -38,7 +44,12 @@ export default function JamNow() {
           JAM NOW!
         </p>
       </span>
-      <CreateJam isTurnedOn={isTurnedOn} turnOff={turnOff} />
+      <CreateJam
+        isTurnedOn={isTurnedOn}
+        turnOff={turnOff}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+      />
     </div>
   );
 }

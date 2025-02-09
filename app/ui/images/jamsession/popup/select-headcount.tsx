@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const Plus = () => {
+const Plus = ({ onClick }: { onClick?: () => void }) => {
   return (
     <Image
       src="/jamsession/popup/plus.svg"
@@ -8,11 +8,12 @@ const Plus = () => {
       width={24}
       height={24}
       style={{ cursor: "pointer" }}
+      onClick={onClick}
     />
   );
 };
 
-const Minus = () => {
+const Minus = ({ onClick }: { onClick?: () => void }) => {
   return (
     <Image
       src="/jamsession/popup/minus.svg"
@@ -22,6 +23,7 @@ const Minus = () => {
       style={{
         cursor: "pointer",
       }}
+      onClick={onClick}
     />
   );
 };

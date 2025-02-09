@@ -4,20 +4,21 @@ import { PositionEnum } from "@/app/lib/constants/position.enum";
 import CompleteButton from "@/app/ui/buttons/complete";
 import { RoundedCheckbox } from "@/app/ui/checkbox";
 import { LeftArrow } from "@/app/ui/images/arrows";
-import Plus from "@/app/ui/images/jamsession/plus";
-import { Minus } from "@/app/ui/images/jamsession/popup/select-headcount";
+import { Plus, Minus } from "@/app/ui/images/jamsession/popup/select-headcount";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import PopupTemplate from "@/app/ui/templates/popup";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 const FlexRow = ({
   left,
   right,
-  onClick,
+  onClickPlus,
+  onClickMinus,
 }: {
   left: string;
   right: string;
-  onClick?: any;
+  onClickPlus: () => void;
+  onClickMinus: () => void;
 }) => {
   return (
     <div
@@ -36,7 +37,7 @@ const FlexRow = ({
         {left}
       </p>
       <span className="flex flex-row items-center gap-3">
-        <Minus />
+        <Minus onClick={onClickMinus} />
         <p
           style={{
             fontFamily: "SUIT-BODY",
@@ -46,18 +47,22 @@ const FlexRow = ({
         >
           {right}
         </p>
-        <Plus />
+        <Plus onClick={onClickPlus} />
       </span>
     </div>
   );
 };
 
-export default function SelectHeadCount({
+export default function SelectHeadCountPopup({
   isTurnedOn,
   turnOff,
+  headCnts,
+  setHeadCnts,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
+  headCnts: number[];
+  setHeadCnts: Dispatch<SetStateAction<number[]>>;
 }) {
   const [anyone, setAnyone] = useState(false);
 
@@ -88,7 +93,23 @@ export default function SelectHeadCount({
         </div>
         <div className="grow flex flex-col">
           {Object.values(PositionEnum).map((position, idx) => (
-            <FlexRow key={idx} left={position} right="0" />
+            <FlexRow
+              key={idx}
+              left={position}
+              right={headCnts[idx].toString()}
+              onClickPlus={() => {
+                const newArr = [...headCnts];
+                newArr[idx] += 1;
+                setHeadCnts(newArr);
+              }}
+              onClickMinus={() => {
+                if (headCnts[idx] > 0) {
+                  const newArr = [...headCnts];
+                  newArr[idx] -= 1;
+                  setHeadCnts(newArr);
+                }
+              }}
+            />
           ))}
         </div>
         <div className="flex flex-col px-5">

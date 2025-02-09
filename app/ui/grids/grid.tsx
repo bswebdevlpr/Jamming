@@ -71,10 +71,6 @@ const Grid = ({
     handleState(value);
   };
 
-  useEffect(() => {
-    console.log(itemStateList);
-  }, [itemStateList]);
-
   const createItems = (texts: string[], values: any[]) => {
     return (
       <>
