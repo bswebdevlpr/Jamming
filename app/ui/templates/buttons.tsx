@@ -23,6 +23,15 @@ export const ButtonActiveStyle: CSSProperties = {
   backgroundColor: "#304313",
 };
 
+export interface ButtonTemplateProps {
+  text: string;
+  onClick?: () => void;
+  className?: string;
+  style?: CSSProperties;
+  isActive?: boolean;
+  styleActivated?: CSSProperties;
+}
+
 const ButtonTemplate = ({
   text,
   onClick,
@@ -30,14 +39,7 @@ const ButtonTemplate = ({
   style,
   isActive,
   styleActivated,
-}: {
-  text: string;
-  onClick?: () => void;
-  className?: string;
-  style?: CSSProperties;
-  isActive?: boolean;
-  styleActivated?: CSSProperties;
-}) => {
+}: ButtonTemplateProps) => {
   return (
     <button
       style={
@@ -52,7 +54,7 @@ const ButtonTemplate = ({
             }
       }
       className={className}
-      onClick={onClick}
+      onClick={isActive ? onClick : null}
     >
       {text}
     </button>
