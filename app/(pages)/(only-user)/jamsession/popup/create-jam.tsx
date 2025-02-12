@@ -63,7 +63,7 @@ const FlexRow = ({
             fontFamily: "SUIT-BODY",
             fontSize: "0.875rem",
             color: "#DCDCDD",
-            opacity: 0.6,
+            opacity: right === "선택" ? 0.6 : 1,
           }}
         >
           {right}
@@ -104,6 +104,7 @@ export default function CreateJam({
   const [level, setLevel] = useState<LevelEnum>(null);
 
   const [headCnts, setHeadCnts] = useState<number[]>(new Array(6).fill(0));
+  const [anyone, setAnyone] = useState<boolean>(false);
   //
 
   useEffect(() => {
@@ -186,7 +187,11 @@ export default function CreateJam({
         />
         <FlexRow
           left="참여 인원"
-          right={headCnts.reduce((acc, cur) => acc + cur, 0).toString()}
+          right={
+            anyone
+              ? "상관없음"
+              : headCnts.reduce((acc, cur) => acc + cur, 0).toString()
+          }
           onClick={() => setIsHeadCountPopupTurnedOn(true)}
         />
         <FlexRow
@@ -198,27 +203,40 @@ export default function CreateJam({
           }
           onClick={() => setIsClockPopupTurnedOn(true)}
         />
-        <div className="flex flex-col gap-5 px-5 pt-7 overflow-without-scroll">
-          <p
+        <div className="flex flex-col gap-4 px-5 pt-6 overflow-without-scroll">
+          <style jsx>{`
+            input::placeholder,
+            textarea::placeholder {
+              color: #fff;
+              opacity: 0.5;
+            }
+          `}</style>
+          <input
+            type="text"
+            placeholder="제목을 입력하세요."
             style={{
               fontFamily: "SUIT-BODY",
               fontSize: "1rem",
-              color: "#FFF",
-              opacity: 0.5,
+              fontStyle: "normal",
+
+              lineHeight: "normal",
+              letterSpacing: "-0.384px",
             }}
-          >
-            제목을 입력하세요.
-          </p>
-          <p
+          />
+          <textarea
+            placeholder="즐거운 잼세션을 위한 모집글을 적어주세요."
             style={{
+              height: "30.64vh",
+
+              color: "#FFF",
               fontFamily: "SUIT-BODY",
               fontSize: "0.875rem",
-              color: "#FFF",
-              opacity: 0.5,
+              fontStyle: "normal",
+
+              lineHeight: "normal",
+              letterSpacing: "-0.336px",
             }}
-          >
-            즐거운 잼세션을 위한 모집글을 적어주세요.
-          </p>
+          />
         </div>
       </div>
       <div
@@ -263,6 +281,8 @@ export default function CreateJam({
         turnOff={() => setIsHeadCountPopupTurnedOn(false)}
         headCnts={headCnts}
         setHeadCnts={setHeadCnts}
+        anyone={anyone}
+        setAnyone={setAnyone}
       />
       <ClockPopup
         isTurnedOn={isClockPopupTurnedOn}

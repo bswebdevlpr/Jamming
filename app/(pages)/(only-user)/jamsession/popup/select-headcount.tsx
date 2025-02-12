@@ -7,7 +7,7 @@ import { LeftArrow } from "@/app/ui/images/arrows";
 import { Plus, Minus } from "@/app/ui/images/jamsession/popup/select-headcount";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import PopupTemplate from "@/app/ui/templates/popup";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const FlexRow = ({
   left,
@@ -58,13 +58,19 @@ export default function SelectHeadCountPopup({
   turnOff,
   headCnts,
   setHeadCnts,
+  anyone,
+  setAnyone,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
   headCnts: number[];
   setHeadCnts: Dispatch<SetStateAction<number[]>>;
+  anyone: boolean;
+  setAnyone: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [anyone, setAnyone] = useState(false);
+  useEffect(() => {
+    setHeadCnts(new Array(6).fill(0));
+  }, [anyone]);
 
   return (
     <PopupTemplate isTurnedOn={isTurnedOn}>
@@ -98,12 +104,14 @@ export default function SelectHeadCountPopup({
               left={position}
               right={headCnts[idx].toString()}
               onClickPlus={() => {
-                const newArr = [...headCnts];
-                newArr[idx] += 1;
-                setHeadCnts(newArr);
+                if (!anyone) {
+                  const newArr = [...headCnts];
+                  newArr[idx] += 1;
+                  setHeadCnts(newArr);
+                }
               }}
               onClickMinus={() => {
-                if (headCnts[idx] > 0) {
+                if (headCnts[idx] > 0 && !anyone) {
                   const newArr = [...headCnts];
                   newArr[idx] -= 1;
                   setHeadCnts(newArr);
@@ -129,7 +137,8 @@ export default function SelectHeadCountPopup({
             }}
           />
           <CompleteButton
-            onClick={() => {}}
+            isActive={anyone || headCnts.reduce((acc, cur) => acc + cur, 0) > 0}
+            onClick={turnOff}
             className="my-2"
             style={{
               width: "100%",
