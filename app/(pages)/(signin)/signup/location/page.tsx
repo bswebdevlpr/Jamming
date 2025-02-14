@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { FormData_User, FormSchema_User } from "@/app/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { globalContext } from "@/app/(pages)/layout";
+import { convertFormData } from "@/app/lib/functions/convert";
 
 export default function SignUp_Location() {
   // INIT
@@ -61,25 +62,7 @@ export default function SignUp_Location() {
     if (!location) return;
 
     // DATA REFINING
-    const createDto = data;
-
-    Object.entries(createDto).forEach(([key, val]) => {
-      if (key === "position" || key === "level")
-        createDto[key] = (val as string).charAt(0).toLowerCase();
-      else if (key === "genre") {
-        const firstLetter = (val as string).charAt(0).toLowerCase();
-        createDto[key] =
-          firstLetter === "p"
-            ? (val as string).slice(0, 2).toLowerCase()
-            : firstLetter;
-      } else if (key === "location")
-        createDto[key] = (val as string)
-          .split("")
-          .filter((c) => 65 <= c.charCodeAt(0) && c.charCodeAt(0) <= 90)
-          .map((val) => val.toLowerCase())
-          .join("");
-      else createDto[key] = val;
-    });
+    const createDto = convertFormData(data);
     //
 
     _.set(createDto, "pos", createDto.position);
@@ -102,7 +85,8 @@ export default function SignUp_Location() {
       className="flex flex-col justify-between"
       style={{
         height: "93.79%",
-      }}>
+      }}
+    >
       <div>
         <p
           style={{
@@ -111,7 +95,8 @@ export default function SignUp_Location() {
             color: "#C0C0C5",
 
             marginBottom: "18px",
-          }}>
+          }}
+        >
           활동 가능한 지역을 선택해주세요
         </p>
         <hr
@@ -127,7 +112,8 @@ export default function SignUp_Location() {
         style={{
           height: "84.92%",
           margin: "0 -20px 0 -20px",
-        }}>
+        }}
+      >
         <VerticalList
           props={Object.keys(LocationEnum).map((key) => {
             const typeForcedKey: keyof typeof LocationEnum =
@@ -148,7 +134,8 @@ export default function SignUp_Location() {
         onSubmit={handleSubmit(onSubmit, (prop) => {
           // TODO: 에러모달 - 잘못된 데이터가 입력되었습니다. 처음부터 다시 진행해주세요.
           redirect("/signup");
-        })}>
+        })}
+      >
         <CompleteButton style={{ width: "100%" }} isActive={!!location} />
       </form>
     </div>
