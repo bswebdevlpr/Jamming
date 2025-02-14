@@ -28,5 +28,26 @@ export const FormSchema_User = z.object({
     .enum(Object.keys(LocationEnum) as [string, ...string[]])
     .optional(),
 });
-
 export type FormData_User = z.infer<typeof FormSchema_User>;
+
+export const FormSchema_Post = z.object({
+  title: z
+    .string()
+    .min(5, {
+      message: "제목을 5글자 이상 입력해주세요.",
+    })
+    .max(20, {
+      message: "제목은 20글자를 초과할 수 없습니다.",
+    }),
+  body: z.string().max(1000, {
+    message: "내용은 1000글자를 초과할 수 없습니다.",
+  }),
+  pos: z.array(z.enum(Object.keys(PositionEnum) as [string, ...string[]])),
+  genre: z.array(z.enum(Object.keys(GenreEnum) as [string, ...string[]])),
+  level: z.array(z.enum(Object.keys(LevelEnum) as [string, ...string[]])),
+  headCnt: z.number().max(100, {
+    message: "최대 인원수는 100명을 초과할 수 없습니다.",
+  }),
+  date: z.string().date(),
+});
+export type FormData_Post = z.infer<typeof FormSchema_Post>;
