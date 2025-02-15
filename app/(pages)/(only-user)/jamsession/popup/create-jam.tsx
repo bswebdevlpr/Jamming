@@ -172,6 +172,9 @@ export default function CreateJam({
   const onSubmit = async (data: FormData_Post) => {
     await createJam(convertFormData(data)).then((res) => {
       if (res) turnOff();
+      // TODO: 실패 팝업
+      else {
+      }
     });
   };
   //

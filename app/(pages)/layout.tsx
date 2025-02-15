@@ -9,9 +9,7 @@ import {
   GlobalContext,
   UserProfile,
 } from "../lib/interfaces/global.interface";
-
-// INTERFACES
-//
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // CONTEXTS
 const defaultContext: GlobalContext = {
@@ -45,7 +43,11 @@ const defaultContext: GlobalContext = {
   },
 };
 export const globalContext = createContext<GlobalContext>(defaultContext);
-// CONTEXTS
+//
+
+// EXTERNAL PACKAGES
+const queryClient = new QueryClient();
+//
 
 function GlobalLayout({
   children,
@@ -105,16 +107,18 @@ function GlobalLayout({
 
   return (
     <globalContext.Provider value={globalState}>
-      {children}
-      <SmallLoading isTurnedOn={globalState.isSmallLoadingOn} />
-      <BottomSheet
-        width={width}
-        height={height}
-        pullUp={globalState.bottomSheet.location}
-        header={globalState.bottomSheet.header}
-      >
-        {globalState.bottomSheet.children}
-      </BottomSheet>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <SmallLoading isTurnedOn={globalState.isSmallLoadingOn} />
+        <BottomSheet
+          width={width}
+          height={height}
+          pullUp={globalState.bottomSheet.location}
+          header={globalState.bottomSheet.header}
+        >
+          {globalState.bottomSheet.children}
+        </BottomSheet>
+      </QueryClientProvider>
     </globalContext.Provider>
   );
 }

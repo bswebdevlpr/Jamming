@@ -4,7 +4,12 @@ import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import Love from "@/app/ui/images/love";
 import SettingIcon from "@/app/ui/images/mypage/setting";
 import RadixAvatar from "@/app/ui/templates/avatar";
-import Tag from "@/app/ui/templates/tag";
+import {
+  GenreTag,
+  LevelTag,
+  LocationTag,
+  PositionTag,
+} from "@/app/ui/tags/category-tag";
 import BPMPopup from "./popup";
 import { useState } from "react";
 import { redirect, usePathname } from "next/navigation";
@@ -15,7 +20,8 @@ const FlexRow = () => {
       className="flex flex-row items-center px-4 py-4 gap-3.5"
       style={{
         borderBottom: "1px solid #323234",
-      }}>
+      }}
+    >
       <div
         style={{
           width: "112px",
@@ -27,13 +33,15 @@ const FlexRow = () => {
         className="flex flex-col"
         style={{
           gap: "5px",
-        }}>
+        }}
+      >
         <p
           style={{
             fontFamily: "SUIT-BODY",
             fontSize: "1rem",
             color: "#FFF",
-          }}>
+          }}
+        >
           영상 제목
         </p>
         <p
@@ -41,7 +49,8 @@ const FlexRow = () => {
             fontFamily: "SUIT-BODY",
             fontSize: "0.75rem",
             color: "#C0C0C5",
-          }}>
+          }}
+        >
           업로드 날짜 2024.09.25
         </p>
       </div>
@@ -66,7 +75,8 @@ export default function MyPage() {
             fontFamily: "SUIT-BODY",
             fontSize: "1rem",
             color: "#FFF",
-          }}>
+          }}
+        >
           프로필
         </p>
         <SettingIcon onClick={() => redirect(pathname + "/setting")} />
@@ -81,13 +91,15 @@ export default function MyPage() {
 
           marginTop: "22px",
           marginBottom: "16px",
-        }}>
+        }}
+      >
         <p>{user?.name ?? "Jammer"}</p>
         <p>|</p>
         <p
           style={{
             color: "var(--highlight)",
-          }}>
+          }}
+        >
           Moderato
         </p>
       </div>
@@ -95,42 +107,20 @@ export default function MyPage() {
         className="flex flex-row gap-1"
         style={{
           marginBottom: "23px",
-        }}>
-        <Tag
-          text="기타"
-          style={{
-            color: "#FF3773",
-            background: "rgba(255, 55, 115, 0.24)",
-          }}
-        />
-        <Tag
-          text="헤비메탈"
-          style={{
-            color: "#A3FF0C",
-            background: "rgba(163, 255, 12, 0.16)",
-          }}
-        />
-        <Tag
-          text="분당"
-          style={{
-            color: "#3994FF",
-            background: "rgba(12, 124, 255, 0.20)",
-          }}
-        />
-        <Tag
-          text="프로"
-          style={{
-            color: "#E5E5E9",
-            background: "#242426",
-          }}
-        />
+        }}
+      >
+        <PositionTag text="기타" />
+        <GenreTag text="헤비메탈" />
+        <LocationTag text="분당" />
+        <LevelTag text="프로" />
       </div>
       <div
         className="w-full flex flex-col"
         style={{
           padding: "0px 38px",
           marginBottom: "22px",
-        }}>
+        }}
+      >
         <p
           style={{
             fontFamily: "SUIT-BODY",
@@ -138,12 +128,14 @@ export default function MyPage() {
             color: "#FFF",
 
             marginBottom: "5px",
-          }}>
+          }}
+        >
           BPM&nbsp;&nbsp;
           <span
             style={{
               color: "var(--highlight)",
-            }}>
+            }}
+          >
             114
           </span>
         </p>
@@ -174,7 +166,8 @@ export default function MyPage() {
               fontFamily: "SUIT-BODY",
               color: "#C0C0C5",
               cursor: "pointer",
-            }}>
+            }}
+          >
             <p
               style={{
                 width: "14px",
@@ -187,14 +180,16 @@ export default function MyPage() {
 
                 textAlign: "center",
                 lineHeight: "14px",
-              }}>
+              }}
+            >
               ?
             </p>
             <p
               style={{
                 fontSize: "0.75rem",
               }}
-              onClick={() => setIsBPMPopupOn(true)}>
+              onClick={() => setIsBPMPopupOn(true)}
+            >
               what is BPM
             </p>
           </div>
@@ -205,12 +200,14 @@ export default function MyPage() {
           className="flex justify-between px-4"
           style={{
             fontFamily: "SUIT-BODY",
-          }}>
+          }}
+        >
           <p
             style={{
               fontSize: "1rem",
               color: "#FFF",
-            }}>
+            }}
+          >
             연주 목록
           </p>
           <p
@@ -218,7 +215,8 @@ export default function MyPage() {
               fontSize: "0.75rem",
               color: "#C0C0C5",
             }}
-            onClick={() => redirect("/mypage/playlist")}>
+            onClick={() => redirect("/mypage/playlist")}
+          >
             더 보기
           </p>
         </div>
@@ -233,13 +231,15 @@ export default function MyPage() {
           style={{
             paddingTop: "20px",
             paddingBottom: "7px",
-          }}>
+          }}
+        >
           <p
             style={{
               fontFamily: "SUIT-BODY",
               fontSize: "1rem",
               color: "#FFF",
-            }}>
+            }}
+          >
             피드백 보내기
           </p>
           <div className="relative">
@@ -268,7 +268,8 @@ export default function MyPage() {
 
                 right: "10px",
                 bottom: "10px",
-              }}>
+              }}
+            >
               0 / 100
             </p>
           </div>
