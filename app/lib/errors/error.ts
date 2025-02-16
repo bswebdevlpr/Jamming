@@ -1,18 +1,27 @@
 "use client";
 
+const postfix = " 문제가 지속적으로 발생한다면 피드백을 전송해주세요.";
+
 export class CustomErrMsg {
   static NicknameNotUnique = "이미 존재하는 닉네임입니다.";
 }
 
-export class CustomError {
-  static UnExpected = new Error(
-    "예기치 못한 문제가 발생했습니다. 문제가 지속적으로 발생한다면 피드백으로 전송 부탁드립니다."
+export class CustomError extends Error {
+  constructor(msg: string) {
+    super(msg);
+  }
+
+  static UnExpected = new CustomError(
+    "예기치 못한 문제가 발생했습니다." + postfix
   );
-  static SignUp = new Error(
+  static SignUp = new CustomError(
     "회원가입에 실패했습니다. 새로고침후 다시 진행해주세요. 계속 실패한다면 처음부터 다시 진행해주세요."
   );
-  static GetSession = new Error(
-    "세션 불러오기에 실패했습니다. 문제가 지속적으로 발생한다면 피드백으로 전송 부탁드립니다."
+  static GetSession = new CustomError(
+    "회원정보를 불러오는 데에 실패했습니다." + postfix
+  );
+  static GetJamFeed = new CustomError(
+    "잼세션 목록을 불러오는 데에 실패했습니다." + postfix
   );
   // SignIn: {
   //   code: 1,

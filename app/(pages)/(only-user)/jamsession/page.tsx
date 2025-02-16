@@ -1,7 +1,7 @@
 "use client";
 
 import Filter from "@/app/ui/images/filter";
-import { useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import BottomSheetContent from "./bottom-sheet/content";
 import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
@@ -13,6 +13,7 @@ import moment from "moment";
 import { GenreEnum } from "@/app/lib/constants/genre.enum";
 import { PositionEnum } from "@/app/lib/constants/position.enum";
 import { LevelEnum } from "@/app/lib/constants/level.enum";
+import JamFeed from "@/app/ui/feeds/jam-feed";
 
 export default function JamSession() {
   // GLOBAL
@@ -48,7 +49,7 @@ export default function JamSession() {
   }, [selectedDate]);
 
   return (
-    <div className="grow flex flex-col">
+    <div className="h-full flex flex-col">
       <TopNavBar
         location={location}
         selectedDate={selectedDate}
@@ -63,53 +64,60 @@ export default function JamSession() {
           setSelectedDate={setSelectedDate}
         />
       </div>
-      <div className="flex flex-row justify-between px-5 pb-4">
-        <p
-          style={{
-            fontFamily: "SBAggroB",
-            fontSize: "0.875rem",
-            color: "#9F9FA2",
-          }}
-        >
-          JAM SESSION
-        </p>
-        <span className="flex flex-row gap-1 justify-center items-center">
+      <div className="grow overflow-hidden flex flex-col justify-between">
+        <div className="flex flex-row justify-between px-5 pb-4">
           <p
             style={{
-              fontFamily: "SUIT-TITLE",
+              fontFamily: "SBAggroB",
               fontSize: "0.875rem",
               color: "#9F9FA2",
             }}
           >
-            필터
+            JAM SESSION
           </p>
-          <div
-            onClick={() =>
-              bottomSheet.set({
-                location: "high",
-                children: (
-                  <BottomSheetContent
-                    genre={genre}
-                    position={position}
-                    level={level}
-                    setGenre={setGenre}
-                    setPosition={setPosition}
-                    setLevel={setLevel}
-                  />
-                ),
-              })
-            }
-          >
-            <Filter />
-          </div>
-        </span>
+          <span className="flex flex-row gap-1 justify-center items-center">
+            <p
+              style={{
+                fontFamily: "SUIT-TITLE",
+                fontSize: "0.875rem",
+                color: "#9F9FA2",
+              }}
+            >
+              필터
+            </p>
+            <div
+              onClick={() =>
+                bottomSheet.set({
+                  location: "high",
+                  children: (
+                    <BottomSheetContent
+                      genre={genre}
+                      position={position}
+                      level={level}
+                      setGenre={setGenre}
+                      setPosition={setPosition}
+                      setLevel={setLevel}
+                    />
+                  ),
+                })
+              }
+            >
+              <Filter />
+            </div>
+          </span>
+        </div>
+        {/* 잼세션 피드 */}
+        <div className="overflow-hidden flex justify-center items-center px-5">
+          <JamFeed />
+        </div>
+        <Fragment>
+          <JamNow
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+          />
+          <BottomNavBar />
+        </Fragment>
       </div>
-      {/* 잼세션 피드 */}
-      <div className="grow flex justify-center items-center px-5">
-        Jam Session Feeeddddddddd
-      </div>
-      <JamNow selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
-      <BottomNavBar />
     </div>
   );
 }
