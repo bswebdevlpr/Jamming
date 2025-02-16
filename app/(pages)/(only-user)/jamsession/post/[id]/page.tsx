@@ -3,7 +3,7 @@
 import { CategoryTagItem } from "@/app/ui/categories/items";
 import { DownArrowWhite, LeftArrowWhite } from "@/app/ui/images/arrows";
 import Kebap from "@/app/ui/images/menu/kebap";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import EditIcon from "@/app/ui/images/jamsession/post/edit";
 import DeleteIcon from "@/app/ui/images/jamsession/post/delete";
@@ -11,6 +11,16 @@ import ReportIcon from "@/app/ui/images/jamsession/post/report";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import Modal from "./modal";
 import { globalContext } from "@/app/(pages)/layout";
+import FullScreenLoading from "@/app/ui/loading/fullscreen";
+import { useParams, useRouter } from "next/navigation";
+import { getJam } from "@/app/api/functions/read";
+import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
+import {
+  MapDataToGenre,
+  MapDataToLevel,
+  MapDataToPosition,
+} from "@/app/lib/maps/jam";
+import moment from "moment";
 
 const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
   return (
@@ -47,11 +57,60 @@ const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
 };
 
 export default function JamSession_Post() {
+  // validation
+  const { id } = useParams();
+  const router = useRouter();
+
+  const [isValidating, setIsValidating] = useState(true);
+  const [jam, setJam] = useState<Entity_JamSession>(null);
+
+  const [dateDiff, setDateDiff] = useState<string>("0000-00-00");
+
+  useEffect(() => {
+    const validate = async () => {
+      const foundJam = await getJam(Number(id as string));
+      if (foundJam) {
+        setIsValidating(false);
+        setJam(foundJam);
+
+        moment.updateLocale("en", {
+          relativeTime: {
+            future: "in %s",
+            past: "%s 전",
+            s: "방금",
+            ss: "%d초",
+            m: "1분",
+            mm: "%d분",
+            h: "1시간",
+            hh: "%d시간",
+            d: "1일",
+            dd: "%d일",
+            w: "한주",
+            ww: "%d주",
+            M: "한달",
+            MM: "%d달",
+            y: "1년",
+            yy: "%d년",
+          },
+        });
+        setDateDiff(moment(foundJam.created_at).fromNow());
+      } else router.back();
+    };
+    validate();
+  }, [id]);
+  //
+
+  // GLOBAL
   const { bottomSheet } = useContext(globalContext);
+  //
 
+  // STATES
   const [isModalOn, setIsModalOn] = useState(false);
+  //
 
-  return (
+  return isValidating ? (
+    <FullScreenLoading />
+  ) : (
     <div className="grow h-full max-h-full flex flex-col overflow-hidden">
       <div className="flex flex-row justify-between items-center px-4 py-3">
         <LeftArrowWhite />
@@ -140,7 +199,7 @@ export default function JamSession_Post() {
                 color: "#FFF",
               }}
             >
-              JAMJAM
+              {jam.user.nickname ?? "-"}
             </p>
             <p
               style={{
@@ -149,7 +208,7 @@ export default function JamSession_Post() {
                 color: "#A3FF0C",
               }}
             >
-              280BPM
+              {jam.user.bpm ?? 0}BPM
             </p>
           </div>
           <div className="flex flex-row justify-between items-center">
@@ -160,7 +219,9 @@ export default function JamSession_Post() {
                 color: "#9F9FA2",
               }}
             >
-              재즈 • 아마추어 • 보컬
+              {jam.user.genre ? MapDataToGenre[jam.user.genre] : "-"} •{" "}
+              {jam.user.level ? MapDataToLevel[jam.user.level] : "-"} •{" "}
+              {jam.user.pos ? MapDataToPosition[jam.user.pos] : "-"}
             </p>
             <p
               style={{
@@ -169,7 +230,7 @@ export default function JamSession_Post() {
                 color: "#9F9FA2",
               }}
             >
-              4일전
+              {dateDiff}
             </p>
           </div>
         </div>

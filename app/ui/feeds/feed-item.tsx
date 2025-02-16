@@ -1,3 +1,6 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import Profile from "../images/navbar/profile";
 import {
   GenreTag,
@@ -10,6 +13,7 @@ import { ImageWithTxt } from "../templates/images";
 
 export interface FeedItemProps_Jam {
   idx: number;
+  id: number;
   title: string;
   location: string;
   pos: string;
@@ -20,6 +24,7 @@ export interface FeedItemProps_Jam {
 
 export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
   idx,
+  id,
   title,
   location,
   pos,
@@ -27,6 +32,8 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
   level,
   maxHeadCnt,
 }) => {
+  const router = useRouter();
+
   const tags = [];
   if (location) tags.push(<LocationTag text={location} />);
   tags.push(<PositionTag text={pos} />);
@@ -39,7 +46,9 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
       className="w-full flex justify-between py-3"
       style={{
         borderBottom: "1px solid var(--border)",
+        cursor: "pointer",
       }}
+      onClick={() => router.push(`/jamsession/post/${id}`)}
     >
       <div className="flex flex-col gap-1.5">
         <p
