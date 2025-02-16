@@ -23,6 +23,7 @@ export class CustomError extends Error {
   static GetJamFeed = new CustomError(
     "잼세션 목록을 불러오는 데에 실패했습니다." + postfix
   );
+  static InvalidJam = new CustomError("유효하지 않은 잼세션입니다.");
   // SignIn: {
   //   code: 1,
   //   msg: "로그인 도중 에러가 발생했습니다. 잠시 후 다시 시도해주세요.",

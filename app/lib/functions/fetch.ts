@@ -19,7 +19,7 @@ export const fetchJams: FetchFeedFunc = async ({ pageParam = 0 }) => {
     await supabase
       .from("jamsession")
       .select()
-      .order("createdAt", { ascending: false })
+      .order("created_at", { ascending: false })
       .range(pageParam * 6, pageParam * 6 + 5)
       .then(({ data, error }) => {
         if (error) throw CustomError.GetJamFeed;

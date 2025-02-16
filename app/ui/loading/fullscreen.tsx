@@ -2,9 +2,9 @@ import PopupTemplate from "@/app/ui/templates/popup";
 import Image from "next/image";
 
 export default function FullScreenLoading({
-  isTurnedOn,
+  isTurnedOn = true,
 }: {
-  isTurnedOn: boolean;
+  isTurnedOn?: boolean;
 }) {
   return (
     <PopupTemplate
