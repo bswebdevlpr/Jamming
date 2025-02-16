@@ -8,21 +8,25 @@ import {
 } from "../tags/category-tag";
 import { ImageWithTxt } from "../templates/images";
 
-export default function FeedItem_Jam({
-  title,
-  location,
-  pos,
-  genre,
-  level,
-  maxHeadCnt,
-}: {
+export interface FeedItemProps_Jam {
+  idx: number;
   title: string;
   location: string;
   pos: string;
   genre: string;
   level: string;
   maxHeadCnt: number;
-}) {
+}
+
+export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
+  idx,
+  title,
+  location,
+  pos,
+  genre,
+  level,
+  maxHeadCnt,
+}) => {
   const tags = [];
   if (location) tags.push(<LocationTag text={location} />);
   tags.push(<PositionTag text={pos} />);
@@ -30,7 +34,13 @@ export default function FeedItem_Jam({
   tags.push(<LevelTag text={level} />);
 
   return (
-    <div className="w-full flex justify-between py-3">
+    <div
+      key={idx}
+      className="w-full flex justify-between py-3"
+      style={{
+        borderBottom: "1px solid var(--border)",
+      }}
+    >
       <div className="flex flex-col gap-1.5">
         <p
           style={{
@@ -80,4 +90,4 @@ export default function FeedItem_Jam({
       </div>
     </div>
   );
-}
+};
