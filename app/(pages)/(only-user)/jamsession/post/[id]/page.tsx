@@ -3,7 +3,7 @@
 import { CategoryTagItem } from "@/app/ui/categories/items";
 import { DownArrowWhite, LeftArrowWhite } from "@/app/ui/images/arrows";
 import Kebap from "@/app/ui/images/menu/kebap";
-import { useContext, useEffect, useState } from "react";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import EditIcon from "@/app/ui/images/jamsession/post/edit";
 import DeleteIcon from "@/app/ui/images/jamsession/post/delete";
@@ -14,13 +14,24 @@ import { globalContext } from "@/app/(pages)/layout";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { useParams, useRouter } from "next/navigation";
 import { getJam } from "@/app/api/functions/read";
-import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
+import {
+  Entity_JamSession,
+  Entity_User,
+} from "@/app/lib/interfaces/entity.interface";
 import {
   MapDataToGenre,
   MapDataToLevel,
   MapDataToPosition,
 } from "@/app/lib/maps/jam";
 import moment from "moment";
+import {
+  GenreTag,
+  LevelTag,
+  LocationTag,
+  PositionTag,
+  TagList,
+} from "@/app/ui/tags/category-tag";
+import { createClient } from "@/app/util/supabase/client";
 
 const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
   return (
@@ -61,10 +72,22 @@ export default function JamSession_Post() {
   const { id } = useParams();
   const router = useRouter();
 
+  const [userId, setUserId] = useState<string>();
   const [isValidating, setIsValidating] = useState(true);
   const [jam, setJam] = useState<Entity_JamSession>(null);
+  const [tags, setTags] = useState<ReactNode[]>(null);
 
   const [dateDiff, setDateDiff] = useState<string>("0000-00-00");
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await createClient().auth.getUser();
+      if (user) setUserId(user.id);
+    };
+    getUser();
+  }, []);
 
   useEffect(() => {
     const validate = async () => {
@@ -94,6 +117,14 @@ export default function JamSession_Post() {
           },
         });
         setDateDiff(moment(foundJam.created_at).fromNow());
+
+        const tagsToRender = [];
+        if (location)
+          tagsToRender.push(<LocationTag text={foundJam.location} />);
+        tagsToRender.push(<PositionTag text={foundJam.pos} />);
+        tagsToRender.push(<GenreTag text={foundJam.genre} />);
+        tagsToRender.push(<LevelTag text={foundJam.level} />);
+        setTags(tagsToRender);
       } else router.back();
     };
     validate();
@@ -116,63 +147,79 @@ export default function JamSession_Post() {
         <LeftArrowWhite />
         <Kebap
           onClick={
-            // 작성자
-            // () =>
-            // bottomSheet.set({
-            //   location: "low",
-            //   children: (
-            //     <div className="flex flex-col px-4 pt-2 pb-3">
-            //       <ImageWithTxt
-            //         image={<EditIcon />}
-            //         text="수정하기"
-            //         style={{
-            //           padding: "12px",
-            //           gap: "8px",
+            userId === jam.userId
+              ? // 작성자
+                () =>
+                  bottomSheet.set({
+                    location: 21.26,
+                    children: (
+                      <div className="flex flex-col px-4 pt-2 pb-3">
+                        <ImageWithTxt
+                          image={<EditIcon />}
+                          text="수정하기"
+                          style={{
+                            padding: "12px",
+                            gap: "8px",
 
-            //           fontFamily: "SUIT-BODY",
-            //           fontSize: "13px",
-            //           color: "#F2F2F4",
+                            fontFamily: "SUIT-BODY",
+                            fontSize: "13px",
+                            color: "#F2F2F4",
 
-            //           borderBottom: "1px solid #323234",
-            //         }}
-            //       />
-            //       <ImageWithTxt
-            //         image={<DeleteIcon />}
-            //         text="삭제하기"
-            //         style={{
-            //           padding: "12px",
-            //           gap: "8px",
+                            borderBottom: "1px solid #323234",
+                          }}
+                        />
+                        <ImageWithTxt
+                          image={<DeleteIcon />}
+                          text="삭제하기"
+                          style={{
+                            padding: "12px",
+                            marginBottom: "12px",
+                            gap: "8px",
 
-            //           fontFamily: "SUIT-BODY",
-            //           fontSize: "13px",
-            //           color: "#FF3E2F",
-            //         }}
-            //       />
-            //     </div>
-            //   ),
-            // })
+                            fontFamily: "SUIT-BODY",
+                            fontSize: "13px",
+                            color: "#FF3E2F",
+                          }}
+                        />
+                        <ButtonTemplate
+                          text="닫기"
+                          className="w-full"
+                          style={{
+                            borderRadius: "8px",
+                            border: "1px solid #444447",
+                            backgroundColor: "#323234",
+                          }}
+                          onClick={() => {
+                            console.log("clicked!");
+                            bottomSheet.set({
+                              location: "hidden",
+                            });
+                          }}
+                        />
+                      </div>
+                    ),
+                  })
+              : // 일반 유저
+                () =>
+                  bottomSheet.set({
+                    location: "superLow",
+                    children: (
+                      <div className="flex flex-col px-4 pt-2 pb-3">
+                        <ImageWithTxt
+                          image={<ReportIcon />}
+                          text="신고하기"
+                          style={{
+                            padding: "12px",
+                            gap: "8px",
 
-            // 일반 유저
-            () =>
-              bottomSheet.set({
-                location: "superLow",
-                children: (
-                  <div className="flex flex-col px-4 pt-2 pb-3">
-                    <ImageWithTxt
-                      image={<ReportIcon />}
-                      text="신고하기"
-                      style={{
-                        padding: "12px",
-                        gap: "8px",
-
-                        fontFamily: "SUIT-BODY",
-                        fontSize: "13px",
-                        color: "#FF3E2F",
-                      }}
-                    />
-                  </div>
-                ),
-              })
+                            fontFamily: "SUIT-BODY",
+                            fontSize: "13px",
+                            color: "#FF3E2F",
+                          }}
+                        />
+                      </div>
+                    ),
+                  })
           }
         />
       </div>
@@ -235,25 +282,16 @@ export default function JamSession_Post() {
           </div>
         </div>
       </div>
+      <FlexRow tag="카테고리" content={<TagList tags={tags} />} />
+      <FlexRow tag="참여 인원" content={jam.maxHeadCnt ?? 0} />
       <FlexRow
-        tag="카테고리"
+        tag="날짜"
         content={
-          <div className="flex flex-row gap-1">
-            <CategoryTagItem text="서울" />
-            <CategoryTagItem text="재즈" />
-            <CategoryTagItem text="아마추어" />
-            <CategoryTagItem
-              text="2pm"
-              style={{
-                backgroundColor: "#304313",
-                color: "#A3FF0C",
-              }}
-            />
-          </div>
+          jam.date
+            ? moment(jam.date).format("YYYY.MM.DD HH:mm")
+            : "0000.00.00 00:00"
         }
       />
-      <FlexRow tag="참여 인원" content={"0"} />
-      <FlexRow tag="날짜" content={"0000.00.00 00:00"} />
       <FlexRow
         tag="장소"
         content={
@@ -310,7 +348,7 @@ export default function JamSession_Post() {
             color: "#FFF",
           }}
         >
-          급구 재즈 드러머
+          {jam.title}
         </p>
         <p
           className="py-5"
@@ -318,30 +356,11 @@ export default function JamSession_Post() {
             fontFamily: "SUIT-BODY",
             fontSize: "0.875rem",
             color: "#F2F2F4",
+
+            whiteSpace: "pre-line",
           }}
         >
-          강남구 신사동에 위치한 대형 라운지에서 공연하는 팀 (방송 출연 및 다수
-          앨범 보유 중인 가수, 싱어송라이터, 보컬 트레이너, 작곡가, 믹싱
-          엔지니어, 유튜버, BJ, 실용음악 전공 재학생 등 다양한 분야의 전공자가
-          팀원으로 활동 중) 으로 공연 이외에도 많은 음악적 교류 (각종 행사 및
-          축가 공연, 오디션, 방송 출연 섭외, 기획사 추천 등) 가 이루어지는 팀
-          입니다.
-          <br /> 1. 모집 내용 : 20세 ~ 35세 남 / 여 보컬 및 댄서 (동반 지원
-          가능)
-          <br /> 2. 근무 지역 : 서울특별시 강남구 신사동 (압구정역 도보 5분) 3.
-          근무 요일 : 월요일 ~ 일요일 중 협의 (출근 일 수 및 요일 조정 가능)
-          <br /> 4. 근무 시간 : PM 06:00 ~ AM 04:00 / PM 08:00 ~ AM 06:00 중 택1
-          (휴게 시간 포함 평균 8시간 근무) 5. 근무 내용 : 음향기기 점검 및 세팅
-          / 라이브 공연 (노래, 댄스, 마술 등의 공연 버스킹)
-          <br /> 6. 급 여 : 월 400~600 (일 평균 10~50) (당일 현금 지급 / 개인 및
-          경력에 따른 차이 있음)
-          <br /> 7. 학 력 : 무관 (비전공자 및 무경력자 지원 가능)
-          <br /> 8. 복리 후생 : 근무 간 무료 식사 제공, 연습실 제공 (코칭 및
-          티칭 가능)
-          <br /> 9. 우대 조건 : 실용음악 전공자, 연습생 경력, 공연팀 경력,
-          음원발매 경력, 방송출연 경력, 유튜버, BJ, 보컬트레이너, 기타/피아노
-          연주자, 동종 업계 경험자 면접 시 공연 참관 및 당일 체험도 가능하며
-          지원 및 자세한 내용은 아래 연락처로 문자 바랍니다.
+          {jam.body ?? ""}
         </p>
       </div>
       <div

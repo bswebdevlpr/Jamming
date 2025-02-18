@@ -13,6 +13,7 @@ export interface Entity_User {
 
 export interface Entity_JamSession {
   id: number;
+  userId: string;
   title: string;
   body: string;
   pos: PositionEnum;

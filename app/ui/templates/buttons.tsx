@@ -54,7 +54,7 @@ const ButtonTemplate = ({
             }
       }
       className={className}
-      onClick={isActive ? onClick : null}
+      onClick={isActive === undefined || isActive ? onClick : null}
     >
       {text}
     </button>

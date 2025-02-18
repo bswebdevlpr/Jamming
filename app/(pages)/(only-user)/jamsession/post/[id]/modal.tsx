@@ -1,5 +1,6 @@
 "use client";
 
+import { createJamEntry } from "@/app/api/functions/create";
 import { useEffect, useRef } from "react";
 
 export default function Modal({
@@ -107,7 +108,9 @@ export default function Modal({
               border: "1px solid #A3FF0C",
               backgroundColor: "#304313",
             }}
-            onClick={turnOff}
+            onClick={() => {
+              createJamEntry();
+            }}
           >
             전송
           </button>

@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Profile from "../images/navbar/profile";
 import {
   GenreTag,
@@ -10,6 +9,7 @@ import {
   TagList,
 } from "../tags/category-tag";
 import { ImageWithTxt } from "../templates/images";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export interface FeedItemProps_Jam {
   idx: number;
@@ -20,6 +20,7 @@ export interface FeedItemProps_Jam {
   genre: string;
   level: string;
   maxHeadCnt: number;
+  router: AppRouterInstance;
 }
 
 export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
@@ -31,9 +32,8 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
   genre,
   level,
   maxHeadCnt,
+  router,
 }) => {
-  const router = useRouter();
-
   const tags = [];
   if (location) tags.push(<LocationTag text={location} />);
   tags.push(<PositionTag text={pos} />);

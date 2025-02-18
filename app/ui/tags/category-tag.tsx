@@ -1,3 +1,9 @@
+import {
+  MapDataToGenre,
+  MapDataToLevel,
+  MapDataToLocation,
+  MapDataToPosition,
+} from "@/app/lib/maps/jam";
 import { CSSProperties, ReactNode } from "react";
 
 interface TagProp {
@@ -28,7 +34,7 @@ function Tag({ text, className, style }: TagProp) {
 export const PositionTag = ({ text, className, style }: TagProp) => {
   return (
     <Tag
-      text={text}
+      text={MapDataToPosition[text]}
       className={className}
       style={{
         color: "#FF3773",
@@ -42,7 +48,7 @@ export const PositionTag = ({ text, className, style }: TagProp) => {
 export const GenreTag = ({ text, className, style }: TagProp) => {
   return (
     <Tag
-      text={text}
+      text={MapDataToGenre[text]}
       className={className}
       style={{
         color: "#A3FF0C",
@@ -56,7 +62,7 @@ export const GenreTag = ({ text, className, style }: TagProp) => {
 export const LocationTag = ({ text, className, style }: TagProp) => {
   return (
     <Tag
-      text={text}
+      text={MapDataToLocation[text]}
       className={className}
       style={{
         color: "#3994FF",
@@ -70,7 +76,7 @@ export const LocationTag = ({ text, className, style }: TagProp) => {
 export const LevelTag = ({ text, className, style }: TagProp) => {
   return (
     <Tag
-      text={text}
+      text={MapDataToLevel[text]}
       className={className}
       style={{
         color: "#E5E5E9",
