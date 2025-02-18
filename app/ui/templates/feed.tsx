@@ -3,6 +3,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { CSSProperties, Fragment, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export type FetchFeedFunc = ({ pageParam }: { pageParam: number }) => Promise<{
   data: any[];
@@ -18,13 +19,16 @@ export default function FeedTemplate({
   feedItem: React.FC<any>;
   style?: CSSProperties;
 }) {
+  const { ref, inView } = useInView();
+
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 0,
     queryKey: ["data"],
     queryFn,
     getNextPageParam: (lastPage, pages) => lastPage.nextPage ?? undefined,
   });
-  const { ref, inView } = useInView();
+
+  const router = useRouter();
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -43,7 +47,7 @@ export default function FeedTemplate({
     >
       {data?.pages.map((page, pageIndex) => (
         <Fragment key={pageIndex}>
-          {page.data.map((data, idx) => feedItem({ idx, ...data }))}
+          {page.data.map((data, idx) => feedItem({ idx, ...data, router }))}
         </Fragment>
       ))}
       <div ref={ref} style={{ height: 20, background: "lightgray" }} />

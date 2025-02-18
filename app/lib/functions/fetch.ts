@@ -24,16 +24,6 @@ export const fetchJams: FetchFeedFunc = async ({ pageParam = 0 }) => {
       .then(({ data, error }) => {
         if (error) throw CustomError.GetJamFeed;
 
-        if (data.length > 0)
-          data = data.map((row) => {
-            row.location = MapDataToLocation[row.location];
-            row.pos = MapDataToPosition[row.pos];
-            row.genre = MapDataToGenre[row.genre];
-            row.level = MapDataToLevel[row.level];
-
-            return row;
-          });
-
         ret.data = data;
         ret.nextPage = data.length < 6 ? null : pageParam + 1;
       });
