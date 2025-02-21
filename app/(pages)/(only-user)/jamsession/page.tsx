@@ -7,12 +7,12 @@ import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
 import JamNow from "@/app/ui/buttons/jam-now";
 import { globalContext } from "../../layout";
-import { LocationEnum } from "@/app/lib/constants/location.enum";
+import { LocationEnum } from "@/app/lib/enums/location.enum";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import moment from "moment";
-import { GenreEnum } from "@/app/lib/constants/genre.enum";
-import { PositionEnum } from "@/app/lib/constants/position.enum";
-import { LevelEnum } from "@/app/lib/constants/level.enum";
+import { GenreEnum } from "@/app/lib/enums/genre.enum";
+import { PositionEnum } from "@/app/lib/enums/position.enum";
+import { LevelEnum } from "@/app/lib/enums/level.enum";
 import JamFeed from "@/app/ui/feeds/jam-feed";
 
 export default function JamSession() {

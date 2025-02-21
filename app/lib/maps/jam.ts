@@ -1,7 +1,7 @@
-import { GenreEnum } from "../constants/genre.enum";
-import { LevelEnum } from "../constants/level.enum";
-import { LocationEnum } from "../constants/location.enum";
-import { PositionEnum } from "../constants/position.enum";
+import { GenreEnum } from "../enums/genre.enum";
+import { LevelEnum } from "../enums/level.enum";
+import { LocationEnum } from "../enums/location.enum";
+import { PositionEnum } from "../enums/position.enum";
 
 export const MapDataToPosition = {
   g: PositionEnum.Guitar,

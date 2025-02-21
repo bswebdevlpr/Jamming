@@ -1,8 +1,8 @@
 "use client";
 
-import { GenreEnum } from "@/app/lib/constants/genre.enum";
-import { LevelEnum } from "@/app/lib/constants/level.enum";
-import { PositionEnum } from "@/app/lib/constants/position.enum";
+import { GenreEnum } from "@/app/lib/enums/genre.enum";
+import { LevelEnum } from "@/app/lib/enums/level.enum";
+import { PositionEnum } from "@/app/lib/enums/position.enum";
 import InitButton from "@/app/ui/buttons/initialize";
 import SelectButton from "@/app/ui/buttons/select";
 import { CategoryFilterItem } from "@/app/ui/categories/items";

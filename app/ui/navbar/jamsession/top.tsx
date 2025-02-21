@@ -11,7 +11,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { LocationEnum } from "@/app/lib/constants/location.enum";
+import { LocationEnum } from "@/app/lib/enums/location.enum";
 import { globalContext } from "@/app/(pages)/layout";
 import CalendarComponent from "../../calendar/calendar";
 
