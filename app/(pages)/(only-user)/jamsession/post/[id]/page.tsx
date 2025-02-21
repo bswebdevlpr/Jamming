@@ -144,7 +144,7 @@ export default function JamSession_Post() {
   ) : (
     <div className="grow h-full max-h-full flex flex-col overflow-hidden">
       <div className="flex flex-row justify-between items-center px-4 py-3">
-        <LeftArrowWhite />
+        <LeftArrowWhite onClick={() => router.back()} />
         <Kebap
           onClick={
             userId === jam.userId
@@ -382,7 +382,12 @@ export default function JamSession_Post() {
           onClick={() => setIsModalOn(!isModalOn)}
         />
       </div>
-      <Modal isTurnedOn={isModalOn} turnOff={() => setIsModalOn(!isModalOn)} />
+      <Modal
+        isTurnedOn={isModalOn}
+        turnOff={() => setIsModalOn(!isModalOn)}
+        userId={userId}
+        jamId={jam.id}
+      />
     </div>
   );
 }

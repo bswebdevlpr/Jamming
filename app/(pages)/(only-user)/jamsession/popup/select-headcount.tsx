@@ -1,6 +1,6 @@
 "use client";
 
-import { PositionEnum } from "@/app/lib/constants/position.enum";
+import { PositionEnum } from "@/app/lib/enums/position.enum";
 import CompleteButton from "@/app/ui/buttons/complete";
 import { RoundedCheckbox } from "@/app/ui/checkbox";
 import { LeftArrow } from "@/app/ui/images/arrows";

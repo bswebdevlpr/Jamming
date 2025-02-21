@@ -1,9 +1,9 @@
 "use client";
 
-import { GenreEnum } from "@/app/lib/constants/genre.enum";
-import { LevelEnum } from "@/app/lib/constants/level.enum";
-import { LocationEnum } from "@/app/lib/constants/location.enum";
-import { PositionEnum } from "@/app/lib/constants/position.enum";
+import { GenreEnum } from "@/app/lib/enums/genre.enum";
+import { LevelEnum } from "@/app/lib/enums/level.enum";
+import { LocationEnum } from "@/app/lib/enums/location.enum";
+import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { SquaredCheckbox } from "@/app/ui/checkbox";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import EditIcon from "@/app/ui/images/jamsession/post/edit";

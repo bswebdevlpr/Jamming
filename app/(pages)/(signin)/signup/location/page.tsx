@@ -3,7 +3,7 @@
 import {
   LocationBackgroundURL,
   LocationEnum,
-} from "@/app/lib/constants/location.enum";
+} from "@/app/lib/enums/location.enum";
 import CompleteButton from "@/app/ui/buttons/complete";
 import VerticalList from "@/app/ui/lists/list";
 import { redirect, useSearchParams } from "next/navigation";

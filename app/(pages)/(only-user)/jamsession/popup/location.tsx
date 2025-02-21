@@ -3,7 +3,7 @@
 import {
   LocationEnum,
   LocationBackgroundURL,
-} from "@/app/lib/constants/location.enum";
+} from "@/app/lib/enums/location.enum";
 import X from "@/app/ui/images/common/x";
 import { ListItemProp } from "@/app/ui/lists/item";
 import VerticalList from "@/app/ui/lists/list";
@@ -64,18 +64,21 @@ export default function LocationPopup({
         overflow: "auto",
 
         backgroundColor: "var(--background)",
-      }}>
+      }}
+    >
       <div
         className="flex flex-row justify-between w-full px-5 py-3 mb-3"
         style={{
           borderBottom: "1px solid #323234",
-        }}>
+        }}
+      >
         <p
           style={{
             fontFamily: "SUIT-TITLE",
             fontSize: "1.125rem",
             color: "#FFF",
-          }}>
+          }}
+        >
           지역 선택
         </p>
         <X onClick={turnOff} />

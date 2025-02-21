@@ -1,16 +1,24 @@
 "use client";
 
 import { createJamEntry } from "@/app/api/functions/create";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Modal({
   isTurnedOn,
   turnOff,
+  userId,
+  jamId,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
+  userId: string;
+  jamId: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+
+  // STATES
+  const [appeal, setAppeal] = useState<string>("");
+  //
 
   useEffect(() => {
     if (ref.current) {
@@ -47,21 +55,35 @@ export default function Modal({
           참여 신청 어필 한마디!
         </p>
         <div
-          className="p-3 mb-8"
           style={{
-            height: "54.05%",
-
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.875rem",
-            color: "#E5E5E9",
-
-            border: "1px solid #767678",
-            borderRadius: "8px",
-
+            width: "100%",
+            height: "46.51%",
             position: "relative",
+            marginBottom: "32px",
           }}
         >
-          입력
+          <style jsx>{`
+              textarea::placeholder {
+                color: #E5E5E9;
+                font-family: "SUIT-BODY",
+                font-size: "0.875rem",
+                opacity: 0.5;
+              }
+            `}</style>
+          <textarea
+            placeholder="입력"
+            maxLength={50}
+            className="p-3"
+            style={{
+              width: "100%",
+              height: "100%",
+              border: "1px solid #767678",
+              borderRadius: "8px",
+
+              fontSize: "0.875rem",
+            }}
+            onChange={(e) => setAppeal(e.target.value)}
+          />
           <p
             style={{
               position: "absolute",
@@ -72,7 +94,7 @@ export default function Modal({
               color: "#9F9FA2",
             }}
           >
-            0/300
+            {`${appeal.length}/50`}
           </p>
         </div>
         <div
@@ -108,9 +130,7 @@ export default function Modal({
               border: "1px solid #A3FF0C",
               backgroundColor: "#304313",
             }}
-            onClick={() => {
-              createJamEntry();
-            }}
+            onClick={() => createJamEntry({ userId, jamId, appeal })}
           >
             전송
           </button>
