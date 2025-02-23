@@ -107,8 +107,8 @@ export default function JamSession() {
           </span>
         </div>
         {/* 잼세션 피드 */}
-        <div className="overflow-hidden flex justify-center items-center px-5">
-          <JamFeed />
+        <div className="grow overflow-hidden flex justify-center items-center px-5">
+          <JamFeed selectedDate={selectedDate} />
         </div>
         <Fragment>
           <JamNow

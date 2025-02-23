@@ -5,17 +5,25 @@ import { useInView } from "react-intersection-observer";
 import { CSSProperties, Fragment, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export type FetchFeedFunc = ({ pageParam }: { pageParam: number }) => Promise<{
+export type FetchFeedFunc = ({
+  pageParam,
+  queryFnParam,
+}: {
+  pageParam: number;
+  queryFnParam: any;
+}) => Promise<{
   data: any[];
   nextPage: number;
 }>;
 
 export default function FeedTemplate({
   queryFn,
+  queryFnParam,
   feedItem,
   style,
 }: {
   queryFn: FetchFeedFunc;
+  queryFnParam: any;
   feedItem: React.FC<any>;
   style?: CSSProperties;
 }) {
@@ -24,7 +32,7 @@ export default function FeedTemplate({
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 0,
     queryKey: ["data"],
-    queryFn,
+    queryFn: (args) => queryFn({ ...args, queryFnParam }),
     getNextPageParam: (lastPage, pages) => lastPage.nextPage ?? undefined,
   });
 
