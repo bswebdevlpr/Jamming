@@ -19,6 +19,7 @@ export interface FeedItemProps_Jam {
   pos: string;
   genre: string;
   level: string;
+  curHeadCnt: number;
   maxHeadCnt: number;
   router: AppRouterInstance;
 }
@@ -31,6 +32,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
   pos,
   genre,
   level,
+  curHeadCnt,
   maxHeadCnt,
   router,
 }) => {
@@ -81,7 +83,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                   color: "var(--highlight)",
                 }}
               >
-                0
+                {curHeadCnt}
               </span>
               /{maxHeadCnt}
             </p>
