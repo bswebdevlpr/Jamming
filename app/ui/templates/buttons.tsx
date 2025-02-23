@@ -1,24 +1,26 @@
 import { CSSProperties } from "react";
 
 const CommonStyle = {
-  cursor: "pointer",
-
+  width: "100%",
   borderRadius: "8px",
-
   padding: "10px 12px",
 
   fontFamily: "SUIT-BODY",
   fontSize: "1rem",
+
+  cursor: "pointer",
 };
 
-export const ButtonActiveStyle: CSSProperties = {
-  padding: "10px 12px",
+export const ButtonBasicInactiveStyle: CSSProperties = {
+  color: "#9F9FA2",
 
-  fontFamily: "SUIT-BODY",
-  fontSize: "1rem",
+  border: "1px solid #444447",
+  backgroundColor: "#323234",
+};
+
+export const ButtonBasicActiveStyle: CSSProperties = {
   color: "#A3FF0C",
 
-  borderRadius: "8px",
   border: "1px solid #A3FF0C",
   backgroundColor: "#304313",
 };
@@ -46,16 +48,17 @@ const ButtonTemplate = ({
         isActive
           ? {
               ...CommonStyle,
+              ...ButtonBasicActiveStyle,
               ...styleActivated,
             }
           : {
               ...CommonStyle,
+              ...ButtonBasicInactiveStyle,
               ...style,
             }
       }
       className={className}
-      onClick={isActive === undefined || isActive ? onClick : null}
-    >
+      onClick={isActive === undefined || isActive ? onClick : null}>
       {text}
     </button>
   );

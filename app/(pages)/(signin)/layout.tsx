@@ -44,7 +44,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       validateUser();
     } catch (e) {
       // TODO: 에러모달
-      throw CustomError.GetSession;
+      throw CustomError.InvalidUserSession;
     }
   }, []);
 

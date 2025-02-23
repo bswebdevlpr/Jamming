@@ -1,7 +1,9 @@
 "use client";
 
 import X from "@/app/ui/images/common/x";
-import ButtonTemplate, { ButtonActiveStyle } from "@/app/ui/templates/buttons";
+import ButtonTemplate, {
+  ButtonBasicActiveStyle,
+} from "@/app/ui/templates/buttons";
 import PopupTemplate from "@/app/ui/templates/popup";
 import { useState } from "react";
 
@@ -20,8 +22,7 @@ export default function Popup({
       className="flex items-center"
       style={{
         backgroundColor: "rgb(0, 0, 0, 0.5)",
-      }}
-    >
+      }}>
       <div
         className="w-full mx-4"
         style={{
@@ -33,8 +34,7 @@ export default function Popup({
           paddingRight: "16px",
           paddingBottom: "24px",
           paddingLeft: "25px",
-        }}
-      >
+        }}>
         <div className="flex justify-end mb-3.5">
           <X onClick={turnOff} />
         </div>
@@ -44,8 +44,7 @@ export default function Popup({
             fontSize: "1rem",
             color: "#FFF",
             paddingBottom: "6px",
-          }}
-        >
+          }}>
           링크
         </p>
         <input
@@ -70,7 +69,7 @@ export default function Popup({
         <ButtonTemplate
           text="업로드 하기"
           isActive={isButtonActive}
-          styleActivated={ButtonActiveStyle}
+          styleActivated={ButtonBasicActiveStyle}
           className="w-full"
           style={{
             borderRadius: "8px",
