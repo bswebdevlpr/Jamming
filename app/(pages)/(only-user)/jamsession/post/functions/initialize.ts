@@ -39,7 +39,7 @@ export const initialize = async (jamId: number) => {
         .includes(user.id);
 
       ret.applyBtnTxt = isAuthor
-        ? "내가 작성한 잼세션입니다"
+        ? "내가 작성한 잼세션이에요"
         : jam.maxHeadCnt !== 0 && jam.maxHeadCnt <= jam.jamEntry.length
         ? "인원이 전부 찼어요"
         : isAlreadyRegistered

@@ -2,7 +2,7 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import { CSSProperties, Fragment, useEffect } from "react";
+import { CSSProperties, Fragment, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 export type FetchFeedFunc = ({
@@ -31,7 +31,7 @@ export default function FeedTemplate({
 
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     initialPageParam: 0,
-    queryKey: ["data"],
+    queryKey: ["data", queryFnParam],
     queryFn: (args) => queryFn({ ...args, queryFnParam }),
     getNextPageParam: (lastPage, pages) => lastPage.nextPage ?? undefined,
   });

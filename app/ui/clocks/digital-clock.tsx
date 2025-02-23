@@ -18,7 +18,6 @@ export default function DigitalClockComponent({
   //
 
   React.useEffect(() => {
-    console.log("localDate:", localDate, "selectedDate:", selectedDate);
     if (localDate)
       setSelectedDate(
         selectedDate
