@@ -44,10 +44,6 @@ export default function JamSession() {
     ]);
   }, [location, genre, position, level]);
 
-  useEffect(() => {
-    console.log("at page, selectedDate", selectedDate);
-  }, [selectedDate]);
-
   return (
     <div className="h-full flex flex-col">
       <TopNavBar
