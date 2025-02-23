@@ -17,7 +17,7 @@ export class CustomError extends Error {
   static SignUp = new CustomError(
     "회원가입에 실패했습니다. 새로고침후 다시 진행해주세요. 계속 실패한다면 처음부터 다시 진행해주세요."
   );
-  static GetSession = new CustomError(
+  static InvalidUserSession = new CustomError(
     "회원정보를 불러오는 데에 실패했습니다." + postfix
   );
   static GetJamFeed = new CustomError(

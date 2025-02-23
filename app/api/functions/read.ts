@@ -14,7 +14,8 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
       .select(
         `
             *,
-            user ( nickname, pos, genre, level, bpm )
+            user ( nickname, pos, genre, level, bpm ),
+            jamEntry ( id, jamId, userId )
         `
       )
       .eq("id", id)

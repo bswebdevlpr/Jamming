@@ -1,6 +1,5 @@
 "use client";
 
-import { CategoryTagItem } from "@/app/ui/categories/items";
 import { DownArrowWhite, LeftArrowWhite } from "@/app/ui/images/arrows";
 import Kebap from "@/app/ui/images/menu/kebap";
 import { ReactNode, useContext, useEffect, useState } from "react";
@@ -13,7 +12,6 @@ import Modal from "./modal";
 import { globalContext } from "@/app/(pages)/layout";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { useParams, useRouter } from "next/navigation";
-import { getJam } from "@/app/api/functions/read";
 import {
   Entity_JamSession,
   Entity_User,
@@ -31,7 +29,8 @@ import {
   PositionTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
-import { createClient } from "@/app/util/supabase/client";
+import { initialize } from "../functions/initialize";
+import { CustomError } from "@/app/lib/errors/error";
 
 const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
   return (
@@ -40,16 +39,14 @@ const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
       style={{
         height: "6.37%",
         borderBottom: "1px solid #333335",
-      }}
-    >
+      }}>
       <p
         style={{
           width: "19.2%",
           fontFamily: "SUIT-TITLE",
           fontSize: "0.875rem",
           color: "#9F9FA2",
-        }}
-      >
+        }}>
         {tag}
       </p>
       <div
@@ -59,8 +56,7 @@ const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
           fontSize: "0.875rem",
           color: "#FFF",
           flexGrow: 1,
-        }}
-      >
+        }}>
         {content}
       </div>
     </div>
@@ -69,32 +65,38 @@ const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
 
 export default function JamSession_Post() {
   // validation
-  const { id } = useParams();
+  const { id: jamId } = useParams();
   const router = useRouter();
 
-  const [userId, setUserId] = useState<string>();
-  const [isValidating, setIsValidating] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(true);
+
   const [jam, setJam] = useState<Entity_JamSession>(null);
+  const [user, setUser] = useState<Entity_User>();
   const [tags, setTags] = useState<ReactNode[]>(null);
 
   const [dateDiff, setDateDiff] = useState<string>("0000-00-00");
 
-  useEffect(() => {
-    const getUser = async () => {
-      const {
-        data: { user },
-      } = await createClient().auth.getUser();
-      if (user) setUserId(user.id);
-    };
-    getUser();
-  }, []);
+  const [applyBtnTxt, setApplyBtnTxt] = useState<string>("Loading..");
+  const [isApplyBtnActive, setIsApplyBtnActive] = useState<boolean>(false);
 
   useEffect(() => {
-    const validate = async () => {
-      const foundJam = await getJam(Number(id as string));
-      if (foundJam) {
-        setIsValidating(false);
+    try {
+      (async () => {
+        const {
+          jam: foundJam,
+          user: foundUser,
+          isApplyBtnActive: isApplyBtnActiveFromFunc,
+          applyBtnTxt: applyBtnTxtFromFunc,
+        } = await initialize(Number(jamId as string));
+        if (!foundJam) throw CustomError.InvalidJam;
+        else if (!foundUser) throw CustomError.InvalidUserSession;
+
         setJam(foundJam);
+        setUser(foundUser);
+
+        if (applyBtnTxtFromFunc) setApplyBtnTxt(applyBtnTxtFromFunc);
+        if (isApplyBtnActiveFromFunc !== undefined)
+          setIsApplyBtnActive(isApplyBtnActiveFromFunc);
 
         moment.updateLocale("en", {
           relativeTime: {
@@ -125,10 +127,16 @@ export default function JamSession_Post() {
         tagsToRender.push(<GenreTag text={foundJam.genre} />);
         tagsToRender.push(<LevelTag text={foundJam.level} />);
         setTags(tagsToRender);
-      } else router.back();
-    };
-    validate();
-  }, [id]);
+
+        setIsInitializing(isApplyBtnActiveFromFunc);
+      })();
+    } catch (e) {
+      const errToShow = e instanceof CustomError ? e : CustomError.UnExpected;
+      // TODO: 에러팝업
+      console.error(errToShow);
+      router.back();
+    }
+  }, [jamId]);
   //
 
   // GLOBAL
@@ -139,7 +147,7 @@ export default function JamSession_Post() {
   const [isModalOn, setIsModalOn] = useState(false);
   //
 
-  return isValidating ? (
+  return isInitializing ? (
     <FullScreenLoading />
   ) : (
     <div className="grow h-full max-h-full flex flex-col overflow-hidden">
@@ -147,7 +155,7 @@ export default function JamSession_Post() {
         <LeftArrowWhite onClick={() => router.back()} />
         <Kebap
           onClick={
-            userId === jam.userId
+            user.id === jam.userId
               ? // 작성자
                 () =>
                   bottomSheet.set({
@@ -173,8 +181,8 @@ export default function JamSession_Post() {
                           text="삭제하기"
                           style={{
                             padding: "12px",
-                            marginBottom: "12px",
                             gap: "8px",
+                            marginBottom: "12px",
 
                             fontFamily: "SUIT-BODY",
                             fontSize: "13px",
@@ -202,7 +210,7 @@ export default function JamSession_Post() {
               : // 일반 유저
                 () =>
                   bottomSheet.set({
-                    location: "superLow",
+                    location: 16.5,
                     children: (
                       <div className="flex flex-col px-4 pt-2 pb-3">
                         <ImageWithTxt
@@ -211,10 +219,26 @@ export default function JamSession_Post() {
                           style={{
                             padding: "12px",
                             gap: "8px",
+                            marginBottom: "12px",
 
                             fontFamily: "SUIT-BODY",
                             fontSize: "13px",
                             color: "#FF3E2F",
+                          }}
+                        />
+                        <ButtonTemplate
+                          text="닫기"
+                          className="w-full"
+                          style={{
+                            borderRadius: "8px",
+                            border: "1px solid #444447",
+                            backgroundColor: "#323234",
+                          }}
+                          onClick={() => {
+                            console.log("clicked!");
+                            bottomSheet.set({
+                              location: "hidden",
+                            });
                           }}
                         />
                       </div>
@@ -227,8 +251,7 @@ export default function JamSession_Post() {
         className="flex flex-row px-4 py-2 gap-3"
         style={{
           borderBottom: "1px solid #333335",
-        }}
-      >
+        }}>
         <div
           style={{
             width: "44px",
@@ -244,8 +267,7 @@ export default function JamSession_Post() {
                 fontFamily: "SUIT-BODY",
                 fontSize: "0.875rem",
                 color: "#FFF",
-              }}
-            >
+              }}>
               {jam.user.nickname ?? "-"}
             </p>
             <p
@@ -253,8 +275,7 @@ export default function JamSession_Post() {
                 fontFamily: "SUIT-TITLE",
                 fontSize: "0.875rem",
                 color: "#A3FF0C",
-              }}
-            >
+              }}>
               {jam.user.bpm ?? 0}BPM
             </p>
           </div>
@@ -264,8 +285,7 @@ export default function JamSession_Post() {
                 fontFamily: "SUIT-BODY",
                 fontSize: "0.75rem",
                 color: "#9F9FA2",
-              }}
-            >
+              }}>
               {jam.user.genre ? MapDataToGenre[jam.user.genre] : "-"} •{" "}
               {jam.user.level ? MapDataToLevel[jam.user.level] : "-"} •{" "}
               {jam.user.pos ? MapDataToPosition[jam.user.pos] : "-"}
@@ -275,8 +295,7 @@ export default function JamSession_Post() {
                 fontFamily: "SUIT-BODY",
                 fontSize: "0.875rem",
                 color: "#9F9FA2",
-              }}
-            >
+              }}>
               {dateDiff}
             </p>
           </div>
@@ -302,8 +321,7 @@ export default function JamSession_Post() {
                 fontFamily: "SUIT-BODY",
                 fontSize: "0.75rem",
                 color: "#9F9FA2",
-              }}
-            >
+              }}>
               경기도 성남시 분당구 돌마로486번길 6 상록프라자
             </p>
           </div>
@@ -318,8 +336,7 @@ export default function JamSession_Post() {
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-              }}
-            >
+              }}>
               {"내일에서 기다릴게 (I'll See You There Tomorrow"}
             </p>
             <DownArrowWhite onClick={() => {}} />
@@ -338,16 +355,14 @@ export default function JamSession_Post() {
           width: "100%",
           // height: "5%", //"51.77%",
           overflow: "auto",
-        }}
-      >
+        }}>
         <p
           className="pt-8"
           style={{
             fontFamily: "SUIT-BODY",
             fontSize: "1.125rem",
             color: "#FFF",
-          }}
-        >
+          }}>
           {jam.title}
         </p>
         <p
@@ -358,8 +373,7 @@ export default function JamSession_Post() {
             color: "#F2F2F4",
 
             whiteSpace: "pre-line",
-          }}
-        >
+          }}>
           {jam.body ?? ""}
         </p>
       </div>
@@ -369,23 +383,22 @@ export default function JamSession_Post() {
           backgroundColor: "#111113",
           borderTop: "1px solid #333335",
           boxShadow: "0 -10px 10px rgba(0, 0, 0, 0.3)",
-        }}
-      >
+        }}>
         <ButtonTemplate
-          text="JAM 참여 신청"
-          style={{
-            width: "100%",
+          text={applyBtnTxt}
+          styleActivated={{
             color: "#A3FF0C",
             border: "1px solid #A3FF0C",
             background: "#304313",
           }}
           onClick={() => setIsModalOn(!isModalOn)}
+          isActive={isApplyBtnActive}
         />
       </div>
       <Modal
         isTurnedOn={isModalOn}
         turnOff={() => setIsModalOn(!isModalOn)}
-        userId={userId}
+        userId={user.id}
         jamId={jam.id}
       />
     </div>

@@ -6,7 +6,9 @@ import {
   LeftArrowWhite,
 } from "@/app/ui/images/arrows";
 import AlertIcon from "@/app/ui/images/jamsession/post/report/alert";
-import ButtonTemplate, { ButtonActiveStyle } from "@/app/ui/templates/buttons";
+import ButtonTemplate, {
+  ButtonBasicActiveStyle,
+} from "@/app/ui/templates/buttons";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import { useParams } from "next/navigation";
 import ReportTypeModal from "./modal";
@@ -19,16 +21,14 @@ const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
       style={{
         height: "6.37%",
         borderBottom: "1px solid #333335",
-      }}
-    >
+      }}>
       <p
         style={{
           width: "19.2%",
           fontFamily: "SUIT-TITLE",
           fontSize: "0.875rem",
           color: "#9F9FA2",
-        }}
-      >
+        }}>
         {tag}
       </p>
       <div
@@ -38,8 +38,7 @@ const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
           fontSize: "0.875rem",
           color: "#FFF",
           flexGrow: 1,
-        }}
-      >
+        }}>
         {content}
       </div>
     </div>
@@ -94,15 +93,13 @@ export default function Report() {
           className="grow px-5 py-6"
           style={{
             fontFamily: "SUIT-BODY",
-          }}
-        >
+          }}>
           <p
             className="mb-5"
             style={{
               fontSize: "1rem",
               color: "#F2F2F4",
-            }}
-          >
+            }}>
             신고 내용
           </p>
           <p style={{ fontSize: "0.875rem", color: "#9F9FA2" }}>입력</p>
@@ -121,8 +118,7 @@ export default function Report() {
             color: "#E5E5E9",
 
             marginBottom: "25%",
-          }}
-        >
+          }}>
           <ImageWithTxt
             style={{
               alignItems: "start",
@@ -165,7 +161,7 @@ export default function Report() {
         <ButtonTemplate
           text="제출하기"
           className="w-full"
-          style={ButtonActiveStyle}
+          style={ButtonBasicActiveStyle}
         />
       </div>
     </div>
