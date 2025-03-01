@@ -16,11 +16,12 @@ import { LevelEnum } from "@/app/lib/enums/level.enum";
 import JamFeed from "@/app/ui/feeds/jam-feed";
 
 export interface Filter_JamSessionFeed {
-  location: LocationEnum;
   selectedDate: moment.Moment;
-  genre: GenreEnum;
-  position: PositionEnum;
-  level: LevelEnum;
+  myJam?: boolean;
+  location?: LocationEnum;
+  genre?: GenreEnum;
+  position?: PositionEnum;
+  level?: LevelEnum;
 }
 
 export default function JamSession() {
@@ -57,13 +58,12 @@ export default function JamSession() {
   return (
     <div className="h-full flex flex-col">
       <TopNavBar
-        location={location}
-        selectedDate={selectedDate}
-        setLocation={setLocation}
-        setSelectedDate={setSelectedDate}
         filter={filter}
         setFilter={setFilter}
+        setLocation={setLocation}
+        setSelectedDate={setSelectedDate}
       />
+      {/* 슬라이드 캘린더 */}
       <div className="p-5">
         <SlideCalendarComponent
           selectedDate={selectedDate}

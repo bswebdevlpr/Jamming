@@ -315,7 +315,7 @@ export default function JamSession_Post() {
         </div>
       </div>
       <FlexRow tag="카테고리" content={<TagList tags={tags} />} />
-      <FlexRow tag="참여 인원" content={jam.maxHeadCnt ?? 0} />
+      <FlexRow tag="참여 인원" content={jam.max_head_cnt ?? 0} />
       <FlexRow
         tag="날짜"
         content={

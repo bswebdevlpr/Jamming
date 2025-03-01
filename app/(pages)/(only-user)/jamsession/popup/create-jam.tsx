@@ -130,7 +130,7 @@ export default function CreateJam({
       pos: [position],
       level: [level],
       headCnt: headCnts.reduce((acc, cur) => acc + cur, 0),
-      date: selectedDate.format("YYYY-MM-DD"),
+      date: selectedDate?.format("YYYY-MM-DD"),
     },
     resolver: zodResolver(FormSchema_Post),
   });
@@ -164,7 +164,7 @@ export default function CreateJam({
     );
   }, [headCnts]);
   useEffect(() => {
-    setValue("date", selectedDate.format("YYYY-MM-DD"));
+    if (selectedDate) setValue("date", selectedDate.format("YYYY-MM-DD"));
   }, [selectedDate]);
   //
 

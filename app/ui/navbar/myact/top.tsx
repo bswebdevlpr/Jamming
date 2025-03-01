@@ -1,9 +1,24 @@
 "use client";
 
+import { globalContext } from "@/app/(pages)/layout";
 import Bell from "@/app/ui/images/jamsession/bell";
 import CalendarImage from "@/app/ui/images/jamsession/calendar";
+import { Dispatch, SetStateAction, useContext } from "react";
+import CalendarComponent from "../../calendar/calendar";
+import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
+import { MapDateToKor } from "@/app/lib/maps/moment";
 
-export default function TopNavBar() {
+export default function TopNavBar({
+  filter,
+  setFilter,
+  setSelectedDate,
+}: {
+  filter: Filter_JamSessionFeed;
+  setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
+  setSelectedDate: (input: moment.Moment) => void;
+}) {
+  const { bottomSheet } = useContext(globalContext);
+
   return (
     <div className="flex flex-row justify-between px-5 py-3">
       <p
@@ -13,11 +28,29 @@ export default function TopNavBar() {
           color: "#FFF",
         }}
       >
-        8월 14일 수요일
+        {`${
+          filter.selectedDate.month() + 1
+        }월 ${filter.selectedDate.date()}일 ${
+          MapDateToKor[filter.selectedDate.day()]
+        }요일`}
       </p>
       <div className="flex flex-row gap-5">
         <Bell />
-        <CalendarImage />
+        <CalendarImage
+          onClick={() =>
+            bottomSheet.set({
+              header: false,
+              location: "high",
+              children: (
+                <CalendarComponent
+                  filter={filter}
+                  setFilter={setFilter}
+                  setSelectedDate={setSelectedDate}
+                />
+              ),
+            })
+          }
+        />
       </div>
     </div>
   );

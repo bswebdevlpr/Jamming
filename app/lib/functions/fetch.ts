@@ -32,7 +32,7 @@ export const fetchJams: FetchFeedFunc = async ({
       .select(
         `
         *,
-        jamEntry ( id, userId )
+        jamentry ( id, user_id )
       `
       )
       .gte(
@@ -57,7 +57,7 @@ export const fetchJams: FetchFeedFunc = async ({
       .range(pageParam * 6, pageParam * 6 + 5);
 
     if (convertedParam.location)
-      query = query.in("location", [
+      query = query.contains("location", [
         MapLocationToData[convertedParam.location],
       ]);
     if (convertedParam.genre)
@@ -69,11 +69,20 @@ export const fetchJams: FetchFeedFunc = async ({
     if (convertedParam.level)
       query = query.contains("level", [MapLevelToData[convertedParam.level]]);
 
-    await query.then(({ data, error }) => {
+    await query.then(async ({ data, error }) => {
       if (error) throw CustomError.GetJamFeed;
 
+      if (convertedParam.myJam) {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        data = data.filter(
+          (row) => row.user_id === user.id || row.jamentry.length > 0
+        );
+      }
+
       data = data.map((row) => {
-        row.curHeadCnt = row.jamEntry.length;
+        row.curHeadCnt = row.jamentry.length;
         return row;
       });
 

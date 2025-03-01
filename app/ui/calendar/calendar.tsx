@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import moment, { locales } from "moment";
+import moment from "moment";
 import CalendarImage from "@/app/ui/images/jamsession/calendar";
 import { PickersCalendarHeader } from "@mui/x-date-pickers/PickersCalendarHeader";
 import {
@@ -26,23 +26,22 @@ const MapDateToKor = {
 };
 
 export default function CalendarComponent({
-  selectedDate,
-  setSelectedDate,
   filter,
   setFilter,
+  setSelectedDate,
 }: {
-  selectedDate: moment.Moment;
-  setSelectedDate: (input: moment.Moment) => void;
   filter: Filter_JamSessionFeed;
   setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
+  setSelectedDate: (input: moment.Moment) => void;
 }) {
   // PREVENT HYDRATION FAIL
   // STATES & MEMOS
   const today = useMemo(() => moment(), []);
 
   const [isClient, setIsClient] = useState(false);
-  const [localSelectedDate, setLocalSelectedDate] =
-    useState<moment.Moment>(selectedDate);
+  const [localSelectedDate, setLocalSelectedDate] = useState<moment.Moment>(
+    filter.selectedDate
+  );
   //
 
   const handleSelectedDate = (input: moment.Moment) => {
@@ -55,8 +54,9 @@ export default function CalendarComponent({
   }, []);
 
   useEffect(() => {
-    if (localSelectedDate !== selectedDate) setLocalSelectedDate(selectedDate);
-  }, [selectedDate]);
+    if (localSelectedDate !== filter.selectedDate)
+      setLocalSelectedDate(filter.selectedDate);
+  }, [filter]);
 
   if (!isClient) {
     return null; // 클라이언트에서만 렌더링
@@ -283,7 +283,7 @@ export default function CalendarComponent({
               style={{
                 width: "100%",
               }}
-              isActive={!!selectedDate}
+              isActive={!!filter.selectedDate}
             />
           </div>
         </LocalizationProvider>
