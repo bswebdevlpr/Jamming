@@ -1,6 +1,14 @@
+"use client";
+
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { ImageWithTxt } from "@/app/ui/templates/images";
+import { useEffect, useState } from "react";
+import { initialize } from "./functions/initialize";
+import { useParams, useRouter } from "next/navigation";
+import FullScreenLoading from "@/app/ui/loading/fullscreen";
+import { CustomError } from "@/app/lib/errors/error";
+import { Entity_User } from "@/app/lib/interfaces/entity.interface";
 
 const MemberRow = () => {
   return (
@@ -28,7 +36,47 @@ const MemberRow = () => {
 };
 
 export default function JamSession() {
-  return (
+  // validation
+  const { id: jamId } = useParams();
+
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  const [leader, setLeader] = useState<Entity_User>(null);
+  const [members, setMembers] = useState<Entity_User[]>([]);
+  const [appliers, setAppliers] = useState<Entity_User[]>([]);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    try {
+      (async () => {
+        const {
+          leader: foundLeader,
+          members: foundMembers,
+          appliers: foundAppliers,
+        } = await initialize(Number(jamId as string));
+
+        setLeader(foundLeader);
+        setMembers(foundMembers);
+        setAppliers(foundAppliers);
+
+        setIsInitializing(false);
+      })();
+    } catch (e) {
+      const errToShow = e instanceof CustomError ? e : CustomError.UnExpected;
+      // TODO: 에러팝업
+      console.error(errToShow);
+      router.back();
+    }
+  }, [jamId]);
+
+  useEffect(() => {
+    console.log(leader, members, appliers);
+  }, [leader, members, appliers]);
+
+  return isInitializing ? (
+    <FullScreenLoading />
+  ) : (
     <div className="grow flex flex-col px-4">
       <ImageWithTxt
         image={<LeftArrowWhite />}

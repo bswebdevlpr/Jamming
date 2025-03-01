@@ -7,8 +7,8 @@ export type BottomSheetHeight =
   | null
   | "high"
   | "middle"
-  | "low"
-  | "superLow"
+  | "row-2"
+  | "row-1"
   | number
   | "hidden";
 
@@ -23,8 +23,8 @@ interface Props {
 
 export const BOTTOMSHEET_HEIGHT_HIGH = 94.35;
 export const BOTTOMSHEET_HEIGHT_MIDDLE = 59.95;
-export const BOTTOMSHEET_HEIGHT_LOW = 16.7;
-export const BOTTOMSHEET_HEIGHT_SUPER_LOW = 10.5;
+export const BOTTOMSHEET_HEIGHT_ROW_2 = 21.6;
+export const BOTTOMSHEET_HEIGHT_ROW_1 = 10.5;
 
 const Wrapper = ({ children, width, height, pullUp }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -61,25 +61,25 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             750
           );
           break;
-        case "low":
+        case "row-2":
           ref.current?.style.setProperty("display", "flex");
           ref.current?.style.setProperty(
             "transform",
-            `translateY(-${BOTTOMSHEET_HEIGHT_LOW}%)`
+            `translateY(-${BOTTOMSHEET_HEIGHT_ROW_2}%)`
           );
-          setPrevDist(BOTTOMSHEET_HEIGHT_LOW);
+          setPrevDist(BOTTOMSHEET_HEIGHT_ROW_2);
           _.debounce(
             () => ref.current!.style.setProperty("user-select", "auto"),
             750
           );
           break;
-        case "superLow":
+        case "row-1":
           ref.current?.style.setProperty("display", "flex");
           ref.current?.style.setProperty(
             "transform",
-            `translateY(-${BOTTOMSHEET_HEIGHT_SUPER_LOW}%)`
+            `translateY(-${BOTTOMSHEET_HEIGHT_ROW_1}%)`
           );
-          setPrevDist(BOTTOMSHEET_HEIGHT_SUPER_LOW);
+          setPrevDist(BOTTOMSHEET_HEIGHT_ROW_1);
           _.debounce(
             () => ref.current!.style.setProperty("user-select", "auto"),
             750

@@ -2,8 +2,9 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import { CSSProperties, Fragment, useEffect, useMemo } from "react";
+import { CSSProperties, Fragment, useContext, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { globalContext } from "@/app/(pages)/layout";
 
 export type FetchFeedFunc = ({
   pageParam,
@@ -37,6 +38,7 @@ export default function FeedTemplate({
   });
 
   const router = useRouter();
+  const { bottomSheet } = useContext(globalContext);
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -55,7 +57,9 @@ export default function FeedTemplate({
     >
       {data?.pages.map((page, pageIndex) => (
         <Fragment key={pageIndex}>
-          {page.data.map((data, idx) => feedItem({ idx, ...data, router }))}
+          {page.data.map((data, idx) =>
+            feedItem({ idx, ...data, router, bottomSheet })
+          )}
         </Fragment>
       ))}
       <div ref={ref} style={{ height: 20, background: "lightgray" }} />

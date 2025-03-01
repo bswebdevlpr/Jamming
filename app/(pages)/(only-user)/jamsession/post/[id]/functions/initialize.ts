@@ -1,7 +1,7 @@
 "use server";
 
 import { CustomError } from "@/app/lib/errors/error";
-import { Entity_JamSession } from "./../../../../../lib/interfaces/entity.interface";
+import { Entity_JamSession } from "../../../../../../lib/interfaces/entity.interface";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
 import { createClient } from "@/app/util/supabase/server";
 import { getJam } from "@/app/api/functions/read";
@@ -34,7 +34,7 @@ export const initialize = async (jamId: number) => {
 
     if (jam && user) {
       const isAuthor = user.id === jam.userId;
-      const isAlreadyRegistered = jam.jamEntry
+      const isAlreadyRegistered = jam.jamentry
         .map((je) => je.userId)
         .includes(user.id);
 
