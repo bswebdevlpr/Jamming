@@ -31,7 +31,7 @@ export async function createJamEntry(
 
     const supabase = await createClient();
 
-    const { error } = await supabase.from("jamEntry").insert(input);
+    const { error } = await supabase.from("jamentry").insert(input);
 
     ret = !!error;
   } catch (e) {

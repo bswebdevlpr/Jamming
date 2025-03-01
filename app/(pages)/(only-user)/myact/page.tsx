@@ -1,18 +1,51 @@
 "use client";
 
-import JamNow from "@/app/ui/buttons/jam-now";
 import TopNavBar from "@/app/ui/navbar/myact/top";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Popup from "./[id]/popup";
+import moment from "moment";
+import { Filter_JamSessionFeed } from "../jamsession/page";
+import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
+import JamFeed from "@/app/ui/feeds/jam-feed";
 
 export default function JamSession() {
+  // STATES
   const [isPopupOn, setIsPopupOn] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
+
+  const [filter, setFilter] = useState<Filter_JamSessionFeed>({
+    selectedDate,
+    myJam: true,
+    location: null,
+    genre: null,
+    position: null,
+    level: null,
+  });
+  //
+
+  // HOOKS
+  useEffect(() => {
+    setFilter({
+      ...filter,
+      selectedDate,
+    });
+  }, [selectedDate]);
+  //
 
   return (
     <div className="grow flex flex-col">
-      <TopNavBar />
-      {/* 슬라이드 캘린더 */}
-      <p className="py-8 text-center">Slide Calendarrrrrrrrrrrr</p>
+      <TopNavBar
+        filter={filter}
+        setFilter={setFilter}
+        setSelectedDate={setSelectedDate}
+      />
+      {/* 슬라이드 */}
+      <div className="p-5">
+        <SlideCalendarComponent
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+      </div>
       {/* 잼세션 피드 */}
       <div className="flex flex-row justify-between px-5 pb-4">
         <p
@@ -25,14 +58,10 @@ export default function JamSession() {
           My Jam
         </p>
       </div>
-      <div
-        className="grow flex justify-center items-center px-5"
-        onClick={() => setIsPopupOn(!isPopupOn)}
-      >
-        Jam Session Feeeddddddddd
+      <div className="grow overflow-hidden flex justify-center items-center px-5">
+        <JamFeed filter={filter} />
       </div>
       <Popup isTurnedOn={isPopupOn} turnOff={() => setIsPopupOn(false)} />
-      <JamNow />
     </div>
   );
 }

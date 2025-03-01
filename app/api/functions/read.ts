@@ -15,7 +15,7 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
         `
             *,
             user ( nickname, pos, genre, level, bpm ),
-            jamEntry ( id, jamId, userId )
+            jamentry ( id, jamId, userId )
         `
       )
       .eq("id", id)

@@ -18,7 +18,7 @@ export default function DigitalClockComponent({
   //
 
   React.useEffect(() => {
-    if (localDate)
+    if (localDate && selectedDate)
       setSelectedDate(
         selectedDate
           .clone()

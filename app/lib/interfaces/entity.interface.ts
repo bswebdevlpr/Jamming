@@ -21,12 +21,12 @@ export interface Entity_JamSession {
   genre?: GenreEnum;
   level?: LevelEnum;
   location?: LocationEnum;
-  maxHeadCnt?: number;
+  max_head_cnt?: number;
   date?: string;
   created_at?: string;
 
   user?: Entity_User;
-  jamEntry?: Entity_JamEntry[];
+  jamentry?: Entity_JamEntry[];
 }
 
 export interface Entity_JamEntry {

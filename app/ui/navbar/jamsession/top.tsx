@@ -17,19 +17,15 @@ import CalendarComponent from "../../calendar/calendar";
 import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
 
 export default function TopNavBar({
-  location,
-  selectedDate,
-  setLocation,
-  setSelectedDate,
   filter,
   setFilter,
+  setLocation,
+  setSelectedDate,
 }: {
-  location: LocationEnum;
-  selectedDate: moment.Moment;
-  setLocation: (location: LocationEnum) => void;
-  setSelectedDate: (input: moment.Moment) => void;
   filter: Filter_JamSessionFeed;
   setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
+  setLocation: (location: LocationEnum) => void;
+  setSelectedDate: (input: moment.Moment) => void;
 }) {
   // GLOBAL
   const { bottomSheet } = useContext(globalContext);
@@ -55,7 +51,7 @@ export default function TopNavBar({
             color: "#FFF",
           }}
         >
-          {LocationEnum[location] ?? "지역"}
+          {LocationEnum[filter.location] ?? "지역"}
         </p>
         <DownArrow />
       </div>
@@ -68,7 +64,6 @@ export default function TopNavBar({
               location: "high",
               children: (
                 <CalendarComponent
-                  selectedDate={selectedDate}
                   setSelectedDate={setSelectedDate}
                   filter={filter}
                   setFilter={setFilter}

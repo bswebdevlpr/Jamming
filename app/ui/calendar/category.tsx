@@ -12,7 +12,8 @@ export function CalendarCategoryList({
     <div className="flex flex-wrap gap-2">
       {Object.entries(filter).map(
         ([key, val], idx) =>
-          val && (
+          val &&
+          key !== "selectedDate" && (
             <CalendarCategoryItem
               key={idx}
               text={val}
