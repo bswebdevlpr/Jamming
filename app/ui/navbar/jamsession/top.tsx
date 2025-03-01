@@ -14,21 +14,22 @@ import {
 import { LocationEnum } from "@/app/lib/enums/location.enum";
 import { globalContext } from "@/app/(pages)/layout";
 import CalendarComponent from "../../calendar/calendar";
+import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
 
 export default function TopNavBar({
   location,
   selectedDate,
   setLocation,
   setSelectedDate,
-  filters,
-  setFilters,
+  filter,
+  setFilter,
 }: {
   location: LocationEnum;
   selectedDate: moment.Moment;
   setLocation: (location: LocationEnum) => void;
   setSelectedDate: (input: moment.Moment) => void;
-  filters: any[];
-  setFilters: Dispatch<SetStateAction<any[]>>;
+  filter: Filter_JamSessionFeed;
+  setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
 }) {
   // GLOBAL
   const { bottomSheet } = useContext(globalContext);
@@ -69,8 +70,8 @@ export default function TopNavBar({
                 <CalendarComponent
                   selectedDate={selectedDate}
                   setSelectedDate={setSelectedDate}
-                  filters={filters}
-                  setFilters={setFilters}
+                  filter={filter}
+                  setFilter={setFilter}
                 />
               ),
             })

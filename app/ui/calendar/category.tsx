@@ -1,23 +1,22 @@
+import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
 import X from "../images/common/x";
 
 export function CalendarCategoryList({
-  filters,
+  filter,
   onClick,
 }: {
-  filters: any[];
-  onClick: (input: any[]) => any;
+  filter: Filter_JamSessionFeed;
+  onClick: (input: Filter_JamSessionFeed) => any;
 }) {
   return (
     <div className="flex flex-wrap gap-2">
-      {filters.map(
-        (val, idx) =>
+      {Object.entries(filter).map(
+        ([key, val], idx) =>
           val && (
             <CalendarCategoryItem
               key={idx}
               text={val}
-              onClick={() =>
-                onClick(onClick(filters.filter((filter) => filter !== val)))
-              }
+              onClick={() => onClick({ ...filter, [key]: null })}
             />
           )
       )}

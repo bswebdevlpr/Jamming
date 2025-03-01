@@ -15,6 +15,14 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import JamFeed from "@/app/ui/feeds/jam-feed";
 
+export interface Filter_JamSessionFeed {
+  location: LocationEnum;
+  selectedDate: moment.Moment;
+  genre: GenreEnum;
+  position: PositionEnum;
+  level: LevelEnum;
+}
+
 export default function JamSession() {
   // GLOBAL
   const { bottomSheet } = useContext(globalContext);
@@ -27,22 +35,24 @@ export default function JamSession() {
   const [location, setLocation] = useState<LocationEnum>();
   const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
 
-  const [filters, setFilters] = useState<any[]>([
+  const [filter, setFilter] = useState<Filter_JamSessionFeed>({
+    location,
+    selectedDate,
     genre,
     position,
     level,
-    location,
-  ]);
+  });
   //
 
   useEffect(() => {
-    setFilters([
-      LocationEnum[location],
-      GenreEnum[genre],
-      PositionEnum[position],
-      LevelEnum[level],
-    ]);
-  }, [location, genre, position, level]);
+    setFilter({
+      location: LocationEnum[location],
+      selectedDate,
+      genre: GenreEnum[genre],
+      position: PositionEnum[position],
+      level: LevelEnum[level],
+    });
+  }, [location, selectedDate, genre, position, level]);
 
   return (
     <div className="h-full flex flex-col">
@@ -51,8 +61,8 @@ export default function JamSession() {
         selectedDate={selectedDate}
         setLocation={setLocation}
         setSelectedDate={setSelectedDate}
-        filters={filters}
-        setFilters={setFilters}
+        filter={filter}
+        setFilter={setFilter}
       />
       <div className="p-5">
         <SlideCalendarComponent
@@ -104,7 +114,7 @@ export default function JamSession() {
         </div>
         {/* 잼세션 피드 */}
         <div className="grow overflow-hidden flex justify-center items-center px-5">
-          <JamFeed selectedDate={selectedDate} />
+          <JamFeed filter={filter} />
         </div>
         <Fragment>
           <JamNow

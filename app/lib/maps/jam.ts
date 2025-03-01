@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { GenreEnum } from "../enums/genre.enum";
 import { LevelEnum } from "../enums/level.enum";
 import { LocationEnum } from "../enums/location.enum";
@@ -11,6 +12,7 @@ export const MapDataToPosition = {
   k: PositionEnum.Keyboard,
   e: PositionEnum.ETC,
 };
+export const MapPositionToData = _.invert(MapDataToPosition);
 
 export const MapDataToGenre = {
   a: GenreEnum.All,
@@ -21,6 +23,7 @@ export const MapDataToGenre = {
   pu: GenreEnum.Punk,
   m: GenreEnum.Metal,
 };
+export const MapGenreToData = _.invert(MapDataToGenre);
 
 export const MapDataToLevel = {
   p: LevelEnum.Pro,
@@ -28,6 +31,7 @@ export const MapDataToLevel = {
   s: LevelEnum.Study,
   h: LevelEnum.Hobby,
 };
+export const MapLevelToData = _.invert(MapDataToLevel);
 
 export const MapDataToLocation = {
   e: LocationEnum.Everywhere,
@@ -49,3 +53,4 @@ export const MapDataToLocation = {
   gn: LocationEnum.GyeongNam,
   jj: LocationEnum.JeJu,
 };
+export const MapLocationToData = _.invert(MapDataToLocation);

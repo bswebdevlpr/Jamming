@@ -13,6 +13,7 @@ import {
 } from "@mui/x-date-pickers/PickersDay/PickersDay";
 import SelectButton from "../buttons/select";
 import { CalendarCategoryList } from "./category";
+import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
 
 const MapDateToKor = {
   0: "일",
@@ -27,13 +28,13 @@ const MapDateToKor = {
 export default function CalendarComponent({
   selectedDate,
   setSelectedDate,
-  filters,
-  setFilters,
+  filter,
+  setFilter,
 }: {
   selectedDate: moment.Moment;
   setSelectedDate: (input: moment.Moment) => void;
-  filters: any[];
-  setFilters: Dispatch<SetStateAction<any[]>>;
+  filter: Filter_JamSessionFeed;
+  setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
 }) {
   // PREVENT HYDRATION FAIL
   // STATES & MEMOS
@@ -67,7 +68,7 @@ export default function CalendarComponent({
       <div>
         <PickersCalendarHeader {...props} />
         <div style={{ marginBottom: "24px" }}>
-          <CalendarCategoryList filters={filters} onClick={setFilters} />
+          <CalendarCategoryList filter={filter} onClick={setFilter} />
         </div>
       </div>
     );
