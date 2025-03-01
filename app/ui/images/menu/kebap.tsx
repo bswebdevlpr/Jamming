@@ -1,11 +1,7 @@
 import Image from "next/image";
 import { CSSProperties } from "react";
 
-const Kebap = ({
-  onClick,
-}: {
-  onClick?: () => any;
-}) => {
+const Kebap = ({ onClick }: { onClick?: (e?: any) => any }) => {
   return (
     <Image
       src={"/menu/kebap.svg"}
