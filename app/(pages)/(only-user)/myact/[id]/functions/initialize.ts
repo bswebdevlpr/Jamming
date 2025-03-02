@@ -36,7 +36,7 @@ export const initialize = async (jamId: number) => {
 
     ret.leader = jam.leader as any;
     ret.memberEntries = jam.jamentry.filter((je) => je.is_allowed);
-    ret.applierEntries = jam.jamentry.filter((je) => !je.is_allowed);
+    ret.applierEntries = jam.jamentry.filter((je) => je.is_allowed === null);
   } catch (e) {
     if (e instanceof CustomError) throw e;
     else throw CustomError.UnExpected;

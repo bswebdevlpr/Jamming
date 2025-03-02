@@ -4,9 +4,8 @@ import TopNavBar from "@/app/ui/navbar/myact/top";
 import { useEffect, useState } from "react";
 import Popup from "./[id]/popup";
 import moment from "moment";
-import { Filter_JamSessionFeed } from "../jamsession/page";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
-import JamFeed from "@/app/ui/feeds/jam-feed";
+import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 
 export default function JamSession() {
   // STATES

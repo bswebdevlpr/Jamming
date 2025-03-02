@@ -3,16 +3,19 @@
 import { CustomError } from "@/app/lib/errors/error";
 import { createClient } from "@/app/util/supabase/server";
 
-const allowEntry = async (entryId: number) => {
+export const allowEntry = async (entryId: number) => {
   let ret: boolean = false;
 
   try {
+    console.log("entryId:", entryId);
+
     const supabase = await createClient();
 
     const { error } = await supabase
       .from("jamentry")
       .update({ is_allowed: true })
-      .eq("id", entryId);
+      .eq("id", entryId)
+      .select();
     if (error) throw CustomError.UnExpected;
     else ret = true;
   } catch (e) {
@@ -23,7 +26,7 @@ const allowEntry = async (entryId: number) => {
   return ret;
 };
 
-const refuseEntry = async (entryId: number) => {
+export const refuseEntry = async (entryId: number) => {
   let ret: boolean = false;
 
   try {

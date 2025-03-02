@@ -2,7 +2,7 @@
 
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { initialize } from "./functions/initialize";
 import { useParams, useRouter } from "next/navigation";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
@@ -13,20 +13,25 @@ import {
 } from "@/app/lib/interfaces/entity.interface";
 import { ApplierComponent } from "./components/applier.component";
 import { MemberComponent } from "./components/member.component";
+import { globalContext } from "@/app/(pages)/layout";
 
-export default function JamSession() {
-  // validation
+export default function MyAct() {
   const { id } = useParams();
   const jamId = Number(id as string);
 
+  const router = useRouter();
+
+  const { bottomSheet } = useContext(globalContext);
+
+  // STATES
   const [isInitializing, setIsInitializing] = useState(true);
 
   const [leader, setLeader] = useState<Entity_User>(null);
   const [memberEntries, setMemberEntries] = useState<Entity_JamEntry[]>([]);
   const [applierEntries, setApplierEntries] = useState<Entity_JamEntry[]>([]);
+  //
 
-  const router = useRouter();
-
+  // HOOKS
   useEffect(() => {
     try {
       (async () => {
@@ -50,10 +55,22 @@ export default function JamSession() {
       router.back();
     }
   }, [jamId]);
+  //
 
-  useEffect(() => {
-    console.log(leader, memberEntries, applierEntries);
-  }, [leader, memberEntries, applierEntries]);
+  // HANDLERS
+  const refuseEntryState = () => {
+    setApplierEntries(applierEntries.slice(1, applierEntries.length));
+  };
+  const allowEntryState = () => {
+    const newMember = applierEntries[0];
+
+    setApplierEntries(applierEntries.slice(1, applierEntries.length));
+    setMemberEntries([newMember, ...memberEntries]);
+  };
+  const letOutMember = (entryId: number) => {
+    setMemberEntries(memberEntries.filter((entry) => entry.id !== entryId));
+  };
+  //
 
   return isInitializing ? (
     <FullScreenLoading />
@@ -82,7 +99,7 @@ export default function JamSession() {
         멤버 요청
       </p>
       {applierEntries.length > 0 &&
-        ApplierComponent(applierEntries[0], setApplierEntries)}
+        ApplierComponent(applierEntries[0], refuseEntryState, allowEntryState)}
       <p
         style={{
           fontFamily: "SBAggroM",
@@ -92,13 +109,14 @@ export default function JamSession() {
           letterSpacing: "-0.384px",
 
           marginTop: "32px",
+          marginBottom: "4px",
         }}
       >
         참여중인 멤버
       </p>
-      <div className="grow overflow-without-scroll flex justify-center items-center">
+      <div className="grow overflow-without-scroll flex flex-col items-center">
         {memberEntries.map((entry, idx) =>
-          MemberComponent(idx, entry, setMemberEntries)
+          MemberComponent(idx, bottomSheet, entry, letOutMember)
         )}
         {/* <MyAct_MemberFeed jamId={jamId} /> */}
       </div>

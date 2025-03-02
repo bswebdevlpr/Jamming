@@ -1,7 +1,7 @@
-import {
-  Entity_JamEntry,
-  Entity_User,
-} from "@/app/lib/interfaces/entity.interface";
+"use client";
+
+import { Entity_JamEntry } from "@/app/lib/interfaces/entity.interface";
+import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import Kebap from "@/app/ui/images/menu/kebap";
 import {
   GenreTag,
@@ -10,21 +10,23 @@ import {
   PositionTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
-import { Dispatch, SetStateAction } from "react";
+import BottomSheetContentTemplate_List from "@/app/ui/templates/bottom-sheet/contents/list";
+import { refuseEntry } from "../functions/fetch";
 
 export const MemberComponent = (
   idx: number,
+  bottomSheet: BottomSheetContext,
   entry: Entity_JamEntry,
-  setMembers: Dispatch<SetStateAction<Entity_JamEntry[]>>
+  letOutMember: (entryId: number) => void
 ) => {
   const { nickname, bpm, location, pos, genre, level } = entry.user;
 
   return (
     <div
       key={idx}
-      className="flex py-4 gap-3 items-center"
+      className="w-full flex py-4 gap-3 items-center"
       style={{
-        borderBottom: "var(--border)",
+        borderBottom: "1px solid #323234",
       }}
     >
       <div
@@ -71,7 +73,40 @@ export const MemberComponent = (
             ]}
           />
         </div>
-        <Kebap />
+        <Kebap
+          onClick={() =>
+            bottomSheet.set({
+              location: "row-1",
+              children: (
+                <BottomSheetContentTemplate_List
+                  btnTxt="닫기"
+                  onClose={() =>
+                    bottomSheet.set({
+                      location: "hidden",
+                    })
+                  }
+                >
+                  <p
+                    className="text-center px-3 py-3.5"
+                    style={{
+                      color: "#FF3E2F",
+                    }}
+                    onClick={() =>
+                      refuseEntry(entry.id).then(() => {
+                        letOutMember(entry.id);
+                        bottomSheet.set({
+                          location: "hidden",
+                        });
+                      })
+                    }
+                  >
+                    내보내기
+                  </p>
+                </BottomSheetContentTemplate_List>
+              ),
+            })
+          }
+        />
       </div>
     </div>
   );

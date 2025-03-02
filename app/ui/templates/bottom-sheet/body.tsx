@@ -24,7 +24,7 @@ interface Props {
 export const BOTTOMSHEET_HEIGHT_HIGH = 94.35;
 export const BOTTOMSHEET_HEIGHT_MIDDLE = 59.95;
 export const BOTTOMSHEET_HEIGHT_ROW_2 = 21.6;
-export const BOTTOMSHEET_HEIGHT_ROW_1 = 10.5;
+export const BOTTOMSHEET_HEIGHT_ROW_1 = 14;
 
 const Wrapper = ({ children, width, height, pullUp }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
