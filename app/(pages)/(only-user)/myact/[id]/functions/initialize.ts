@@ -22,7 +22,7 @@ export const initialize = async (jamId: number) => {
   try {
     const supabase = await createClient();
 
-    const { data: jam, error } = await supabase
+    const { data: jam, error: err1 } = await supabase
       .from("jamsession")
       .select(
         `
@@ -32,11 +32,19 @@ export const initialize = async (jamId: number) => {
       )
       .eq("id", jamId)
       .single();
-    if (error) throw CustomError.UnExpected;
+    if (err1) throw CustomError.UnExpected;
 
     ret.leader = jam.leader as any;
     ret.memberEntries = jam.jamentry.filter((je) => je.is_allowed);
-    ret.applierEntries = jam.jamentry.filter((je) => je.is_allowed === null);
+
+    const {
+      data: { user },
+      error: err2,
+    } = await supabase.auth.getUser();
+    if (err2) throw CustomError.UnExpected;
+
+    if ((jam.leader as any).id === user.id)
+      ret.applierEntries = jam.jamentry.filter((je) => je.is_allowed === null);
   } catch (e) {
     if (e instanceof CustomError) throw e;
     else throw CustomError.UnExpected;

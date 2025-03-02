@@ -5,8 +5,8 @@ import Bell from "@/app/ui/images/jamsession/bell";
 import CalendarImage from "@/app/ui/images/jamsession/calendar";
 import { Dispatch, SetStateAction, useContext } from "react";
 import CalendarComponent from "../../calendar/calendar";
-import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
 import { MapDateToKor } from "@/app/lib/maps/moment";
+import { Filter_JamSessionFeed } from "../../feeds/jam-feed";
 
 export default function TopNavBar({
   filter,

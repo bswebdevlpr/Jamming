@@ -1,4 +1,4 @@
-import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
+import { Filter_JamSessionFeed } from "../feeds/jam-feed";
 import X from "../images/common/x";
 
 export function CalendarCategoryList({

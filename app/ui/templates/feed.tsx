@@ -30,12 +30,13 @@ export default function FeedTemplate({
 }) {
   const { ref, inView } = useInView();
 
-  const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    initialPageParam: 0,
-    queryKey: ["data", queryFnParam],
-    queryFn: (args) => queryFn({ ...args, queryFnParam }),
-    getNextPageParam: (lastPage, pages) => lastPage.nextPage ?? undefined,
-  });
+  const { data, isLoading, fetchNextPage, hasNextPage, refetch } =
+    useInfiniteQuery({
+      initialPageParam: 0,
+      queryKey: ["data", queryFnParam],
+      queryFn: (args) => queryFn({ ...args, queryFnParam }),
+      getNextPageParam: (lastPage, pages) => lastPage.nextPage ?? undefined,
+    });
 
   const router = useRouter();
   const { bottomSheet } = useContext(globalContext);
@@ -58,7 +59,7 @@ export default function FeedTemplate({
       {data?.pages.map((page, pageIndex) => (
         <Fragment key={pageIndex}>
           {page.data.map((data, idx) =>
-            feedItem({ idx, ...data, router, bottomSheet })
+            feedItem({ idx, data, router, bottomSheet, refetch })
           )}
         </Fragment>
       ))}

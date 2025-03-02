@@ -13,6 +13,7 @@ import Slider from "react-slick";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const MapDateToKor = {
   0: "일",
@@ -33,7 +34,29 @@ export default function SlideCalendarComponent({
 }) {
   let sliderRef = useRef(null);
 
+  // NAVIGATION
+  const pathname = usePathname();
+
+  const searchParams = useSearchParams();
+  const dateIdx = Number(searchParams.get("dateIdx"));
+
+  const router = useRouter();
+  //
+
   // STATES & MEMOS
+  const { startOfPeriod, endOfPeriod } = useMemo(() => {
+    let startOfPeriod = moment();
+    if (pathname === "/myact")
+      startOfPeriod = startOfPeriod.subtract(2, "week");
+
+    const endOfPeriod = moment().add(2, "week").subtract(1, "day");
+
+    return {
+      startOfPeriod,
+      endOfPeriod,
+    };
+  }, []);
+
   const settings = useMemo(() => {
     return {
       dots: false,
@@ -41,19 +64,16 @@ export default function SlideCalendarComponent({
       speed: 500,
       slidesToShow: 7,
       slidesToScroll: 7,
-      // vertical: false,
+      initialSlide:
+        dateIdx && typeof dateIdx === "number"
+          ? dateIdx > 3
+            ? dateIdx - 3
+            : 0
+          : pathname === "/myact"
+          ? Math.ceil(Math.abs(startOfPeriod.diff(endOfPeriod, "day")) / 2) - 3
+          : 0,
     };
-  }, []);
-
-  const { today, endOfPeriod } = useMemo(() => {
-    const today = moment();
-    const endOfPeriod = today.clone().add(2, "week").subtract(1, "day");
-
-    return {
-      today,
-      endOfPeriod,
-    };
-  }, []);
+  }, [startOfPeriod, endOfPeriod, dateIdx]);
 
   const [dates, setDates] = useState<moment.Moment[]>(null);
   //
@@ -63,7 +83,7 @@ export default function SlideCalendarComponent({
     const dates: moment.Moment[] = [];
 
     for (
-      let now = today.clone();
+      let now = startOfPeriod.clone();
       now.isSameOrBefore(endOfPeriod);
       now.add(1, "days")
     ) {
@@ -71,7 +91,7 @@ export default function SlideCalendarComponent({
     }
 
     setDates(dates);
-  }, [today, endOfPeriod]);
+  }, [startOfPeriod, endOfPeriod]);
 
   useEffect(() => {
     if (dates && dates.length > 0) {
@@ -81,8 +101,12 @@ export default function SlideCalendarComponent({
           : acc;
       }, 0);
 
+      const params = new URLSearchParams();
+      params.set("dateIdx", idx.toString());
+      router.push(`${pathname}?${params.toString()}`, { scroll: false });
+
       // @ts-expect-error: refer to react-slick api
-      sliderRef.slickGoTo(idx);
+      sliderRef.slickGoTo(idx > 3 ? idx - 3 : 0);
     }
   }, [selectedDate]);
   //

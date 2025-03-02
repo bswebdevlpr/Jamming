@@ -72,6 +72,10 @@ export const fetchJams: FetchFeedFunc = async ({
     await query.then(async ({ data, error }) => {
       if (error) throw CustomError.GetJamFeed;
 
+      data.forEach((row) => {
+        row.curHeadCnt = row.jamentry.length;
+      });
+
       if (convertedParam.atMyAct) {
         const {
           data: { user },
@@ -80,14 +84,10 @@ export const fetchJams: FetchFeedFunc = async ({
           .filter((row) => row.user_id === user.id || row.jamentry.length > 0)
           .map((row) => {
             row.isMyJam = row.user_id === user.id;
+
             return row;
           });
       }
-
-      data = data.map((row) => {
-        row.curHeadCnt = row.jamentry.length;
-        return row;
-      });
 
       ret.data = data;
       ret.nextPage = data.length < 6 ? null : pageParam + 1;
@@ -99,40 +99,3 @@ export const fetchJams: FetchFeedFunc = async ({
 
   return ret;
 };
-
-// export const fetchJamMembers: FetchFeedFunc = async ({
-//   pageParam = 0,
-//   queryFnParam,
-// }) => {
-//   let ret = { data: null, nextPage: null };
-
-//   try {
-//     const { jamId } = JSON.parse(queryFnParam);
-
-//     const supabase = await createClient();
-
-//     let query = supabase
-//       .from("user")
-//       .select(
-//         `
-//         *,
-//         jamentry!inner(isAllowed)
-//       `
-//       )
-//       .eq("jamentry.jam_id", jamId)
-//       .order("created_at", { ascending: false, referencedTable: "jamentry" })
-//       .range(pageParam * 4, pageParam * 4 + 3);
-
-//     await query.then(async ({ data, error }) => {
-//       if (error) throw CustomError.GetJamFeed;
-
-//       ret.data = data;
-//       ret.nextPage = data.length < 4 ? null : pageParam + 1;
-//     });
-//   } catch (e) {
-//     if (e instanceof CustomError) throw e;
-//     else throw CustomError.UnExpected;
-//   }
-
-//   return ret;
-// };

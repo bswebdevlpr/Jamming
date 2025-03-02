@@ -37,4 +37,6 @@ export const deleteJamEntry = async (entryId: number) => {
     if (e instanceof CustomError) throw e;
     else throw CustomError.UnExpected;
   }
+
+  return ret;
 };

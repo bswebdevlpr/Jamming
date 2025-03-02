@@ -6,11 +6,15 @@ import Popup from "./[id]/popup";
 import moment from "moment";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
+import { useSearchParams } from "next/navigation";
 
 export default function JamSession() {
+  const searchParams = useSearchParams();
+  const dateIdx = Number(searchParams.get("dateIdx"));
+
   // STATES
   const [isPopupOn, setIsPopupOn] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
+  const [selectedDate, setSelectedDate] = useState<moment.Moment>(dateIdx ? moment(). moment());
 
   const [filter, setFilter] = useState<Filter_JamSessionFeed>({
     selectedDate,

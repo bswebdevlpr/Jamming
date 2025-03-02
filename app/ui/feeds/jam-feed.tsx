@@ -30,17 +30,3 @@ export function JamFeed({ filter }: { filter: Filter_JamSessionFeed }) {
 
   return <>{JamFeedComponent}</>;
 }
-
-// export function MyAct_MemberFeed({ jamId }: { jamId: number }) {
-//   const MemberFeedComponent = useMemo(() => {
-//     return (
-//       <FeedTemplate
-//         queryFn={fetchJamMembers}
-//         queryFnParam={JSON.stringify({ jamId })}
-//         feedItem={FeedItem_UserProfile}
-//       />
-//     );
-//   }, [jamId]);
-
-//   return <>{MemberFeedComponent}</>;
-// }
