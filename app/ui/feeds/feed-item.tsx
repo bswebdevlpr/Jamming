@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import Kebap from "../images/menu/kebap";
 import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import ButtonTemplate from "../templates/buttons";
+import { ReactNode } from "react";
 
 export interface FeedItemProps_Jam {
   idx: number;
