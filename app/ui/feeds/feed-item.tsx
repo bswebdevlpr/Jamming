@@ -17,40 +17,39 @@ import Kebap from "../images/menu/kebap";
 import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import ButtonTemplate from "../templates/buttons";
 import { deleteJamEntry, deleteJamSession } from "@/app/api/functions/delete";
-import { Entity_JamEntry } from "@/app/lib/interfaces/entity.interface";
+import {
+  Entity_JamEntry,
+  Entity_JamSession,
+} from "@/app/lib/interfaces/entity.interface";
 
 export interface FeedItemProps_Jam {
   idx: number;
-  id: number;
-  title: string;
-  location: string;
-  pos: string;
-  genre: string;
-  level: string;
-  curHeadCnt: number;
-  max_head_cnt: number;
-  isMyJam?: boolean;
-  jamentry?: Entity_JamEntry;
-
+  data: Entity_JamSession & { isMyJam: boolean; curHeadCnt: number };
   router: AppRouterInstance;
   bottomSheet: BottomSheetContext;
+  refetch: any;
 }
 
 export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
   idx,
-  id,
-  title,
-  isMyJam,
-  location,
-  pos,
-  genre,
-  level,
-  curHeadCnt,
-  max_head_cnt,
-  jamentry,
+  data,
   router,
   bottomSheet,
+  refetch,
 }) => {
+  const {
+    id,
+    title,
+    location,
+    pos,
+    genre,
+    level,
+    jamentry,
+    isMyJam,
+    curHeadCnt,
+    max_head_cnt: maxHeadCnt,
+  } = data;
+
   const tags = [];
   if (location) tags.push(<LocationTag text={location} />);
   tags.push(<PositionTag text={pos} />);
@@ -115,7 +114,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
               >
                 {curHeadCnt}
               </span>
-              /{max_head_cnt}
+              /{maxHeadCnt}
             </p>
           }
         />
@@ -133,7 +132,6 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
         {isMyAct && (
           <Kebap
             onClick={(e) => {
-              console.log("is clicked!");
               e.stopPropagation();
 
               bottomSheet.set({
@@ -155,7 +153,11 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                       }}
                       onClick={() => {
                         if (isMyJam) deleteJamSession(id);
-                        else deleteJamEntry(jamentry.id);
+                        else deleteJamEntry(jamentry[0].id);
+                        refetch();
+                        bottomSheet.set({
+                          location: "hidden",
+                        });
                       }}
                     >
                       {isMyJam ? "삭제하기" : "나가기"}

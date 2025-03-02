@@ -14,6 +14,7 @@ import {
 import { ApplierComponent } from "./components/applier.component";
 import { MemberComponent } from "./components/member.component";
 import { globalContext } from "@/app/(pages)/layout";
+import { createClient } from "@/app/util/supabase/client";
 
 export default function MyAct() {
   const { id } = useParams();
@@ -26,6 +27,8 @@ export default function MyAct() {
   // STATES
   const [isInitializing, setIsInitializing] = useState(true);
 
+  const [userId, setUserId] = useState<string>(null);
+
   const [leader, setLeader] = useState<Entity_User>(null);
   const [memberEntries, setMemberEntries] = useState<Entity_JamEntry[]>([]);
   const [applierEntries, setApplierEntries] = useState<Entity_JamEntry[]>([]);
@@ -35,6 +38,14 @@ export default function MyAct() {
   useEffect(() => {
     try {
       (async () => {
+        const {
+          data: { user },
+          error,
+        } = await createClient().auth.getUser();
+        if (!user || error) throw CustomError.InvalidUserSession;
+
+        setUserId(user.id);
+
         const {
           leader: foundLeader,
           memberEntries: foundMemberEntries,
@@ -77,7 +88,7 @@ export default function MyAct() {
   ) : (
     <div className="grow flex flex-col px-5">
       <ImageWithTxt
-        image={<LeftArrowWhite />}
+        image={<LeftArrowWhite onClick={router.back} />}
         text="멤버 관리"
         className="py-3 gap-2 mb-3"
         style={{
@@ -87,19 +98,27 @@ export default function MyAct() {
           lineHeight: "140%",
         }}
       />
-      <p
-        style={{
-          fontFamily: "SBAggroM",
-          fontSize: "1rem",
-          color: "#9F9FA2",
-          lineHeight: "132%",
-          letterSpacing: "-0.384px",
-        }}
-      >
-        멤버 요청
-      </p>
-      {applierEntries.length > 0 &&
-        ApplierComponent(applierEntries[0], refuseEntryState, allowEntryState)}
+      {userId === leader.id && (
+        <>
+          <p
+            style={{
+              fontFamily: "SBAggroM",
+              fontSize: "1rem",
+              color: "#9F9FA2",
+              lineHeight: "132%",
+              letterSpacing: "-0.384px",
+            }}
+          >
+            멤버 요청
+          </p>
+          {applierEntries.length > 0 &&
+            ApplierComponent(
+              applierEntries[0],
+              refuseEntryState,
+              allowEntryState
+            )}
+        </>
+      )}
       <p
         style={{
           fontFamily: "SBAggroM",
