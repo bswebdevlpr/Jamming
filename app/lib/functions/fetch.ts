@@ -5,13 +5,13 @@ import { createClient } from "@/app/util/supabase/server";
 import { CustomError } from "../errors/error";
 import moment from "moment";
 import _ from "lodash";
-import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
 import {
   MapGenreToData,
   MapLevelToData,
   MapLocationToData,
   MapPositionToData,
 } from "../maps/jam";
+import { Filter_JamSessionFeed } from "@/app/ui/feeds/jam-feed";
 
 export const fetchJams: FetchFeedFunc = async ({
   pageParam = 0,
@@ -99,3 +99,40 @@ export const fetchJams: FetchFeedFunc = async ({
 
   return ret;
 };
+
+// export const fetchJamMembers: FetchFeedFunc = async ({
+//   pageParam = 0,
+//   queryFnParam,
+// }) => {
+//   let ret = { data: null, nextPage: null };
+
+//   try {
+//     const { jamId } = JSON.parse(queryFnParam);
+
+//     const supabase = await createClient();
+
+//     let query = supabase
+//       .from("user")
+//       .select(
+//         `
+//         *,
+//         jamentry!inner(isAllowed)
+//       `
+//       )
+//       .eq("jamentry.jam_id", jamId)
+//       .order("created_at", { ascending: false, referencedTable: "jamentry" })
+//       .range(pageParam * 4, pageParam * 4 + 3);
+
+//     await query.then(async ({ data, error }) => {
+//       if (error) throw CustomError.GetJamFeed;
+
+//       ret.data = data;
+//       ret.nextPage = data.length < 4 ? null : pageParam + 1;
+//     });
+//   } catch (e) {
+//     if (e instanceof CustomError) throw e;
+//     else throw CustomError.UnExpected;
+//   }
+
+//   return ret;
+// };

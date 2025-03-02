@@ -6,10 +6,14 @@ import { PositionEnum } from "../enums/position.enum";
 export interface Entity_User {
   id?: string;
   nickname?: string;
+  location?: LocationEnum;
   pos?: PositionEnum;
   genre?: GenreEnum;
   level?: LevelEnum;
   bpm?: number;
+
+  // myact - 멤버관리
+  isRejam?: boolean;
 }
 
 export interface Entity_JamSession {
@@ -33,4 +37,8 @@ export interface Entity_JamEntry {
   id: number;
   jamId: number;
   userId: string;
+  is_allowed: boolean;
+  is_rejam: boolean;
+
+  user?: Entity_User;
 }

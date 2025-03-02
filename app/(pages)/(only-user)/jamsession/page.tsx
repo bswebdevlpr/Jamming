@@ -13,16 +13,7 @@ import moment from "moment";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
-import JamFeed from "@/app/ui/feeds/jam-feed";
-
-export interface Filter_JamSessionFeed {
-  selectedDate: moment.Moment;
-  myJam?: boolean;
-  location?: LocationEnum;
-  genre?: GenreEnum;
-  position?: PositionEnum;
-  level?: LevelEnum;
-}
+import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 
 export default function JamSession() {
   // GLOBAL
