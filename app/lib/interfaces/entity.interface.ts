@@ -37,6 +37,8 @@ export interface Entity_JamEntry {
   id: number;
   jamId: number;
   userId: string;
+  appeal: string;
+  applied_pos: string;
   is_allowed: boolean;
   is_rejam: boolean;
 

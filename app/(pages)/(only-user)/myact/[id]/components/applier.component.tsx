@@ -1,4 +1,5 @@
 import { Entity_JamEntry } from "@/app/lib/interfaces/entity.interface";
+import { MapDataToPosition } from "@/app/lib/maps/jam";
 import {
   GenreTag,
   LevelTag,
@@ -7,11 +8,12 @@ import {
   TagList,
 } from "@/app/ui/tags/category-tag";
 import ButtonTemplate from "@/app/ui/templates/buttons";
-import { Dispatch, SetStateAction } from "react";
+import { allowEntry, refuseEntry } from "../functions/fetch";
 
 export const ApplierComponent = (
   entry: Entity_JamEntry,
-  setAppliers: Dispatch<SetStateAction<Entity_JamEntry[]>>
+  refuseEntryState: () => void,
+  allowEntryState: () => void
 ) => {
   const user = entry.user;
 
@@ -78,7 +80,7 @@ export const ApplierComponent = (
             letterSpacing: "-0.336px",
           }}
         >
-          지원 포지션 : 기타
+          지원 포지션 : {MapDataToPosition[entry.applied_pos]}
         </p>
         <p
           style={{
@@ -87,8 +89,7 @@ export const ApplierComponent = (
             color: "#9F9FA2",
           }}
         >
-          한줄 소개가 들어갑니다. 한줄 소개가 들어갑니다.한줄 소개가
-          들어갑니다.한줄 소개가 들어갑니다.
+          {entry.appeal}
         </p>
       </div>
       <div className="flex flex-row gap-3">
@@ -103,7 +104,11 @@ export const ApplierComponent = (
             background: "#323234",
             border: "1px solid #444447",
           }}
-          onClick={() => {}}
+          onClick={async () => {
+            await refuseEntry(entry.id).then(() => {
+              refuseEntryState();
+            });
+          }}
         />
         <ButtonTemplate
           text="수락"
@@ -114,6 +119,12 @@ export const ApplierComponent = (
             color: "#A3FF0C",
 
             border: "1px solid #A3FF0C",
+            background: "rgba(163, 255, 12, 0.12)",
+          }}
+          onClick={async () => {
+            await allowEntry(entry.id).then(() => {
+              allowEntryState();
+            });
           }}
         />
       </div>
