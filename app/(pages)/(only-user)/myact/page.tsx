@@ -14,7 +14,7 @@ export default function JamSession() {
 
   const [filter, setFilter] = useState<Filter_JamSessionFeed>({
     selectedDate,
-    myJam: true,
+    atMyAct: true,
     location: null,
     genre: null,
     position: null,
