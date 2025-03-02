@@ -16,7 +16,8 @@ import { motion } from "framer-motion";
 import Kebap from "../images/menu/kebap";
 import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import ButtonTemplate from "../templates/buttons";
-import { ReactNode } from "react";
+import { deleteJamEntry, deleteJamSession } from "@/app/api/functions/delete";
+import { Entity_JamEntry } from "@/app/lib/interfaces/entity.interface";
 
 export interface FeedItemProps_Jam {
   idx: number;
@@ -28,8 +29,10 @@ export interface FeedItemProps_Jam {
   level: string;
   curHeadCnt: number;
   max_head_cnt: number;
-  router: AppRouterInstance;
   isMyJam?: boolean;
+  jamentry?: Entity_JamEntry;
+
+  router: AppRouterInstance;
   bottomSheet: BottomSheetContext;
 }
 
@@ -44,6 +47,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
   level,
   curHeadCnt,
   max_head_cnt,
+  jamentry,
   router,
   bottomSheet,
 }) => {
@@ -133,7 +137,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
               e.stopPropagation();
 
               bottomSheet.set({
-                location: "row-2",
+                location: "row-1",
                 children: (
                   <div
                     className="flex flex-col px-4 pt-2 pb-3"
@@ -147,19 +151,14 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                     <p
                       className="text-center px-3 py-3.5"
                       style={{
-                        color: "#F2F2F4",
-                        borderBottom: "1px solid var(--border)",
-                      }}
-                    >
-                      참여 멤버 보기
-                    </p>
-                    <p
-                      className="text-center px-3 py-3.5"
-                      style={{
                         color: "#FF3E2F",
                       }}
+                      onClick={() => {
+                        if (isMyJam) deleteJamSession(id);
+                        else deleteJamEntry(jamentry.id);
+                      }}
                     >
-                      기록 삭제하기
+                      {isMyJam ? "삭제하기" : "나가기"}
                     </p>
                     <ButtonTemplate
                       text="취소"

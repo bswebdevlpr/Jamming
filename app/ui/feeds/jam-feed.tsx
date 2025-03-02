@@ -10,11 +10,11 @@ import { useMemo } from "react";
 
 export interface Filter_JamSessionFeed {
   selectedDate: moment.Moment;
-  myJam?: boolean;
   location?: LocationEnum;
   genre?: GenreEnum;
   position?: PositionEnum;
   level?: LevelEnum;
+  atMyAct?: boolean;
 }
 
 export function JamFeed({ filter }: { filter: Filter_JamSessionFeed }) {

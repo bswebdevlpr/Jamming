@@ -72,7 +72,7 @@ export const fetchJams: FetchFeedFunc = async ({
     await query.then(async ({ data, error }) => {
       if (error) throw CustomError.GetJamFeed;
 
-      if (convertedParam.myJam) {
+      if (convertedParam.atMyAct) {
         const {
           data: { user },
         } = await supabase.auth.getUser();
