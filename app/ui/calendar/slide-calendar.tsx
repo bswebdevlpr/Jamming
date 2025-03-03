@@ -38,7 +38,7 @@ export default function SlideCalendarComponent({
   const pathname = usePathname();
 
   const searchParams = useSearchParams();
-  const dateIdx = Number(searchParams.get("dateIdx"));
+  const dateParam = moment(searchParams.get("date"));
 
   const router = useRouter();
   //
@@ -64,16 +64,15 @@ export default function SlideCalendarComponent({
       speed: 500,
       slidesToShow: 7,
       slidesToScroll: 7,
-      initialSlide:
-        dateIdx && typeof dateIdx === "number"
-          ? dateIdx > 3
-            ? dateIdx - 3
-            : 0
-          : pathname === "/myact"
-          ? Math.ceil(Math.abs(startOfPeriod.diff(endOfPeriod, "day")) / 2) - 3
-          : 0,
+      initialSlide: dateParam.isValid()
+        ? dateParam.diff(startOfPeriod, "day") > 3
+          ? Math.abs(startOfPeriod.diff(dateParam, "day")) - 2
+          : 0
+        : pathname === "/myact"
+        ? Math.ceil(Math.abs(startOfPeriod.diff(endOfPeriod, "day")) / 2) - 3
+        : 0,
     };
-  }, [startOfPeriod, endOfPeriod, dateIdx]);
+  }, [startOfPeriod, endOfPeriod, dateParam]);
 
   const [dates, setDates] = useState<moment.Moment[]>(null);
   //
@@ -94,15 +93,15 @@ export default function SlideCalendarComponent({
   }, [startOfPeriod, endOfPeriod]);
 
   useEffect(() => {
-    if (dates && dates.length > 0) {
+    if (selectedDate.isAfter(endOfPeriod)) setSelectedDate(endOfPeriod.clone());
+    else if (dates && dates.length > 0) {
       const idx = dates.reduce((acc, cur, idx) => {
         return cur.format("YYYYMMDD") === selectedDate.format("YYYYMMDD")
           ? idx
           : acc;
       }, 0);
-
       const params = new URLSearchParams();
-      params.set("dateIdx", idx.toString());
+      params.set("date", selectedDate.format("YYYYMMDD"));
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
 
       // @ts-expect-error: refer to react-slick api

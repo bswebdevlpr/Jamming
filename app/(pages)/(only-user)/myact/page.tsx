@@ -6,15 +6,20 @@ import Popup from "./[id]/popup";
 import moment from "moment";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function JamSession() {
+export default function MyAct() {
   const searchParams = useSearchParams();
-  const dateIdx = Number(searchParams.get("dateIdx"));
+  const dateParam = moment(searchParams.get("date"));
 
-  // STATES
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // MEMO & STATES
   const [isPopupOn, setIsPopupOn] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<moment.Moment>(dateIdx ? moment(). moment());
+  const [selectedDate, setSelectedDate] = useState<moment.Moment>(
+    dateParam.isValid() ? dateParam : moment()
+  );
 
   const [filter, setFilter] = useState<Filter_JamSessionFeed>({
     selectedDate,
@@ -28,6 +33,10 @@ export default function JamSession() {
 
   // HOOKS
   useEffect(() => {
+    const params = new URLSearchParams();
+    params.set("date", selectedDate.format("YYYYMMDD"));
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+
     setFilter({
       ...filter,
       selectedDate,

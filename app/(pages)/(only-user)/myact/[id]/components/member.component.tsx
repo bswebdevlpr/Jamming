@@ -1,6 +1,9 @@
 "use client";
 
-import { Entity_JamEntry } from "@/app/lib/interfaces/entity.interface";
+import {
+  Entity_JamEntry,
+  Entity_JamSession,
+} from "@/app/lib/interfaces/entity.interface";
 import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import Kebap from "@/app/ui/images/menu/kebap";
 import {
@@ -12,14 +15,20 @@ import {
 } from "@/app/ui/tags/category-tag";
 import BottomSheetContentTemplate_List from "@/app/ui/templates/bottom-sheet/contents/list";
 import { refuseEntry } from "../functions/fetch";
+import moment from "moment";
 
 export const MemberComponent = (
   idx: number,
-  bottomSheet: BottomSheetContext,
+  jam: Entity_JamSession,
   entry: Entity_JamEntry,
-  letOutMember: (entryId: number) => void
+  isMyJam: boolean,
+  letOutMember: (entryId: number) => void,
+  bottomSheet: BottomSheetContext
 ) => {
   const { nickname, bpm, location, pos, genre, level } = entry.user;
+
+  const isPast = moment(jam.created_at).isBefore(moment());
+  console.log(isPast);
 
   return (
     <div
@@ -73,40 +82,49 @@ export const MemberComponent = (
             ]}
           />
         </div>
-        <Kebap
-          onClick={() =>
-            bottomSheet.set({
-              location: "row-1",
-              children: (
-                <BottomSheetContentTemplate_List
-                  btnTxt="닫기"
-                  onClose={() =>
-                    bottomSheet.set({
-                      location: "hidden",
-                    })
-                  }
-                >
-                  <p
-                    className="text-center px-3 py-3.5"
-                    style={{
-                      color: "#FF3E2F",
-                    }}
-                    onClick={() =>
-                      refuseEntry(entry.id).then(() => {
-                        letOutMember(entry.id);
-                        bottomSheet.set({
-                          location: "hidden",
-                        });
+        {isMyJam && (
+          <Kebap
+            onClick={() =>
+              bottomSheet.set({
+                location: isPast ? "row-2" : "row-1",
+                children: (
+                  <BottomSheetContentTemplate_List
+                    btnTxt="닫기"
+                    onClose={() =>
+                      bottomSheet.set({
+                        location: "hidden",
                       })
                     }
                   >
-                    내보내기
-                  </p>
-                </BottomSheetContentTemplate_List>
-              ),
-            })
-          }
-        />
+                    {isPast ? (
+                      <>
+                        <p className="text-center px-3 py-3.5">REJAM!</p>
+                        <p className="text-center px-3 py-3.5">노쇼 체크</p>
+                      </>
+                    ) : (
+                      <p
+                        className="text-center px-3 py-3.5"
+                        style={{
+                          color: "#FF3E2F",
+                        }}
+                        onClick={() =>
+                          refuseEntry(entry.id).then(() => {
+                            letOutMember(entry.id);
+                            bottomSheet.set({
+                              location: "hidden",
+                            });
+                          })
+                        }
+                      >
+                        내보내기
+                      </p>
+                    )}
+                  </BottomSheetContentTemplate_List>
+                ),
+              })
+            }
+          />
+        )}
       </div>
     </div>
   );

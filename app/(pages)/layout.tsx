@@ -114,6 +114,7 @@ function GlobalLayout({
           width={width}
           height={height}
           pullUp={globalState.bottomSheet.location}
+          setPullUp={globalState.bottomSheet.set}
           header={globalState.bottomSheet.header}
         >
           {globalState.bottomSheet.children}
