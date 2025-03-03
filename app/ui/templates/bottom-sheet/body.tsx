@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from "react";
 import BottomSheetHeader from "./header";
 import { motion } from "framer-motion";
 import _ from "lodash";
+import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 
 export type BottomSheetHeight =
   | null
@@ -17,6 +18,7 @@ interface Props {
   width: number;
   height: number;
   pullUp: BottomSheetHeight;
+  setPullUp?: (input: Partial<BottomSheetContext>) => void;
   header?: boolean;
   // ref: RefObject<HTMLDivElement>;
 }
@@ -115,7 +117,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
   return (
     <motion.div
       ref={ref}
-      className="flex flex-col absolute z-20"
+      className="flex flex-col absolute z-30"
       style={{
         width: `${width}px`,
         height: `${height}px`,
@@ -153,15 +155,29 @@ const BottomSheet = ({
   width,
   height,
   pullUp,
+  setPullUp,
   header = false,
 }: Props) => {
   // const { sheet, content } = useBottomSheet();
 
   return (
-    <Wrapper width={width} height={height} pullUp={pullUp}>
-      {header && <BottomSheetHeader />}
-      <BottomSheetContent>{children}</BottomSheetContent>
-    </Wrapper>
+    <>
+      {pullUp && pullUp !== "hidden" && (
+        <div
+          id="hola"
+          className="absolute w-full h-full top-0 left-0 bg-[rgba(0,0,0,0.5)] z-20"
+          onClick={() =>
+            setPullUp({
+              location: "hidden",
+            })
+          }
+        />
+      )}
+      <Wrapper width={width} height={height} pullUp={pullUp}>
+        {header && <BottomSheetHeader />}
+        <BottomSheetContent>{children}</BottomSheetContent>
+      </Wrapper>
+    </>
   );
 };
 export default BottomSheet;

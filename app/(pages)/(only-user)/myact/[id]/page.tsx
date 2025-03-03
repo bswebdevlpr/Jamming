@@ -9,6 +9,7 @@ import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { CustomError } from "@/app/lib/errors/error";
 import {
   Entity_JamEntry,
+  Entity_JamSession,
   Entity_User,
 } from "@/app/lib/interfaces/entity.interface";
 import { ApplierComponent } from "./components/applier.component";
@@ -29,6 +30,7 @@ export default function MyAct() {
 
   const [userId, setUserId] = useState<string>(null);
 
+  const [jam, setJam] = useState<Entity_JamSession>(null);
   const [leader, setLeader] = useState<Entity_User>(null);
   const [memberEntries, setMemberEntries] = useState<Entity_JamEntry[]>([]);
   const [applierEntries, setApplierEntries] = useState<Entity_JamEntry[]>([]);
@@ -47,11 +49,13 @@ export default function MyAct() {
         setUserId(user.id);
 
         const {
+          jam: foundJam,
           leader: foundLeader,
           memberEntries: foundMemberEntries,
           applierEntries: foundApplierEntries,
         } = await initialize(jamId);
 
+        setJam(foundJam);
         setLeader(foundLeader);
         if (foundMemberEntries.length > 0) setMemberEntries(foundMemberEntries);
         if (foundApplierEntries.length > 0)
@@ -135,9 +139,15 @@ export default function MyAct() {
       </p>
       <div className="grow overflow-without-scroll flex flex-col items-center">
         {memberEntries.map((entry, idx) =>
-          MemberComponent(idx, bottomSheet, entry, letOutMember)
+          MemberComponent(
+            idx,
+            jam,
+            entry,
+            userId === leader.id,
+            letOutMember,
+            bottomSheet
+          )
         )}
-        {/* <MyAct_MemberFeed jamId={jamId} /> */}
       </div>
     </div>
   );

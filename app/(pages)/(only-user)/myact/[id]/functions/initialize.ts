@@ -3,10 +3,12 @@
 import { CustomError } from "@/app/lib/errors/error";
 import {
   Entity_JamEntry,
+  Entity_JamSession,
   Entity_User,
 } from "@/app/lib/interfaces/entity.interface";
 import { createClient } from "@/app/util/supabase/server";
 interface RetType {
+  jam: Entity_JamSession;
   leader: Entity_User;
   memberEntries: Entity_JamEntry[];
   applierEntries: Entity_JamEntry[];
@@ -14,6 +16,7 @@ interface RetType {
 
 export const initialize = async (jamId: number) => {
   let ret: RetType = {
+    jam: null,
     leader: null,
     memberEntries: [],
     applierEntries: [],
@@ -26,6 +29,7 @@ export const initialize = async (jamId: number) => {
       .from("jamsession")
       .select(
         `
+          created_at,
           leader:user!inner (*),
           jamentry!inner (*, user!inner (*))
         `
@@ -34,6 +38,7 @@ export const initialize = async (jamId: number) => {
       .single();
     if (err1) throw CustomError.UnExpected;
 
+    ret.jam = jam;
     ret.leader = jam.leader as any;
     ret.memberEntries = jam.jamentry.filter((je) => je.is_allowed);
 
