@@ -16,6 +16,7 @@ import {
 import BottomSheetContentTemplate_List from "@/app/ui/templates/bottom-sheet/contents/list";
 import { refuseEntry } from "../functions/fetch";
 import moment from "moment";
+import { Dispatch, SetStateAction } from "react";
 
 export const MemberComponent = (
   idx: number,
@@ -23,12 +24,13 @@ export const MemberComponent = (
   entry: Entity_JamEntry,
   isMyJam: boolean,
   letOutMember: (entryId: number) => void,
-  bottomSheet: BottomSheetContext
+  bottomSheet: BottomSheetContext,
+  onClickRejam: Dispatch<SetStateAction<boolean>>,
+  handleNoShow: (noShowState: boolean, entryId: number) => void
 ) => {
   const { nickname, bpm, location, pos, genre, level } = entry.user;
 
   const isPast = moment(jam.created_at).isBefore(moment());
-  console.log(isPast);
 
   return (
     <div
@@ -98,17 +100,45 @@ export const MemberComponent = (
                   >
                     {isPast ? (
                       <>
-                        <p className="text-center px-3 py-3.5">REJAM!</p>
-                        <p className="text-center px-3 py-3.5">노쇼 체크</p>
+                        <p
+                          className="text-center px-3 py-3.5"
+                          style={{
+                            borderBottom: "1px solid var(--border)",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            onClickRejam(true);
+                            bottomSheet.set({
+                              location: "hidden",
+                            });
+                          }}
+                        >
+                          REJAM!
+                        </p>
+                        <p
+                          className="text-center px-3 py-3.5 mb-2"
+                          style={{
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            handleNoShow(true, entry.id);
+                            bottomSheet.set({
+                              location: "hidden",
+                            });
+                          }}
+                        >
+                          노쇼 체크
+                        </p>
                       </>
                     ) : (
                       <p
                         className="text-center px-3 py-3.5"
                         style={{
                           color: "#FF3E2F",
+                          cursor: "pointer",
                         }}
                         onClick={() =>
-                          refuseEntry(entry.id).then(() => {
+                          refuseEntry(jam.id, entry.id).then(() => {
                             letOutMember(entry.id);
                             bottomSheet.set({
                               location: "hidden",
