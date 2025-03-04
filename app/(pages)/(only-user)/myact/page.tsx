@@ -2,7 +2,6 @@
 
 import TopNavBar from "@/app/ui/navbar/myact/top";
 import { useEffect, useState } from "react";
-import Popup from "./[id]/popup";
 import moment from "moment";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
@@ -73,7 +72,6 @@ export default function MyAct() {
       <div className="grow overflow-hidden flex justify-center items-center px-5">
         <JamFeed filter={filter} />
       </div>
-      <Popup isTurnedOn={isPopupOn} turnOff={() => setIsPopupOn(false)} />
     </div>
   );
 }

@@ -16,6 +16,8 @@ import { ApplierComponent } from "./components/applier.component";
 import { MemberComponent } from "./components/member.component";
 import { globalContext } from "@/app/(pages)/layout";
 import { createClient } from "@/app/util/supabase/client";
+import NoshowPopup from "./popup/noshow";
+import RejamPopup from "./popup/rejam";
 
 export default function MyAct() {
   const { id } = useParams();
@@ -34,6 +36,11 @@ export default function MyAct() {
   const [leader, setLeader] = useState<Entity_User>(null);
   const [memberEntries, setMemberEntries] = useState<Entity_JamEntry[]>([]);
   const [applierEntries, setApplierEntries] = useState<Entity_JamEntry[]>([]);
+
+  const [isRejamOn, setIsRejamOn] = useState(false);
+
+  const [isNoshowOn, setIsNoshowOn] = useState(false);
+  const [noShowEntryId, setNoShowEntryId] = useState<number>(null);
   //
 
   // HOOKS
@@ -85,6 +92,11 @@ export default function MyAct() {
   const letOutMember = (entryId: number) => {
     setMemberEntries(memberEntries.filter((entry) => entry.id !== entryId));
   };
+
+  const handleNoShow = (val: boolean, entryId: number) => {
+    setIsNoshowOn(val);
+    setNoShowEntryId(entryId);
+  };
   //
 
   return isInitializing ? (
@@ -117,6 +129,7 @@ export default function MyAct() {
           </p>
           {applierEntries.length > 0 &&
             ApplierComponent(
+              jam,
               applierEntries[0],
               refuseEntryState,
               allowEntryState
@@ -145,10 +158,19 @@ export default function MyAct() {
             entry,
             userId === leader.id,
             letOutMember,
-            bottomSheet
+            bottomSheet,
+            setIsRejamOn,
+            setIsNoshowOn
           )
         )}
       </div>
+      <NoshowPopup
+        isTurnedOn={isNoshowOn}
+        jam={jam}
+        entryId={noShowEntryId}
+        turnOff={() => setIsNoshowOn(false)}
+      />
+      <RejamPopup isTurnedOn={isRejamOn} turnOff={() => setIsRejamOn(false)} />
     </div>
   );
 }

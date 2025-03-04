@@ -29,6 +29,7 @@ export const initialize = async (jamId: number) => {
       .from("jamsession")
       .select(
         `
+          date,
           created_at,
           leader:user!inner (*),
           jamentry!inner (*, user!inner (*))

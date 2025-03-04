@@ -1,4 +1,7 @@
-import { Entity_JamEntry } from "@/app/lib/interfaces/entity.interface";
+import {
+  Entity_JamEntry,
+  Entity_JamSession,
+} from "@/app/lib/interfaces/entity.interface";
 import { MapDataToPosition } from "@/app/lib/maps/jam";
 import {
   GenreTag,
@@ -11,6 +14,7 @@ import ButtonTemplate from "@/app/ui/templates/buttons";
 import { allowEntry, refuseEntry } from "../functions/fetch";
 
 export const ApplierComponent = (
+  jam: Entity_JamSession,
   entry: Entity_JamEntry,
   refuseEntryState: () => void,
   allowEntryState: () => void
@@ -105,7 +109,7 @@ export const ApplierComponent = (
             border: "1px solid #444447",
           }}
           onClick={async () => {
-            await refuseEntry(entry.id).then(() => {
+            await refuseEntry(jam.id, entry.id).then(() => {
               refuseEntryState();
             });
           }}
@@ -122,7 +126,7 @@ export const ApplierComponent = (
             background: "rgba(163, 255, 12, 0.12)",
           }}
           onClick={async () => {
-            await allowEntry(entry.id).then(() => {
+            await allowEntry(jam.id, entry.id).then(() => {
               allowEntryState();
             });
           }}
