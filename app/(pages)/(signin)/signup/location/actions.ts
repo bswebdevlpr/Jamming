@@ -1,6 +1,6 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/error";
+import { CustomError } from "@/app/lib/errors/client.error";
 import { UserProfile } from "@/app/lib/interfaces/global.interface";
 import { createClient } from "@/app/util/supabase/server";
 

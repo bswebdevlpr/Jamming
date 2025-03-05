@@ -1,6 +1,6 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/error";
+import { CustomError } from "@/app/lib/errors/client.error";
 import { createClient } from "@/app/util/supabase/server";
 
 export async function isNicknameUnique(nickname: string): Promise<boolean> {

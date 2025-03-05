@@ -1,6 +1,6 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/error";
+import { CustomError } from "@/app/lib/errors/client.error";
 import { Entity_JamSession } from "../../../../../../lib/interfaces/entity.interface";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
 import { createClient } from "@/app/util/supabase/server";

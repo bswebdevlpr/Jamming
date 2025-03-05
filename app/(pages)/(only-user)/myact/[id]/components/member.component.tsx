@@ -138,7 +138,7 @@ export const MemberComponent = (
                           cursor: "pointer",
                         }}
                         onClick={() =>
-                          refuseEntry(jam.id, entry.id).then(() => {
+                          refuseEntry(entry.id).then(() => {
                             letOutMember(entry.id);
                             bottomSheet.set({
                               location: "hidden",

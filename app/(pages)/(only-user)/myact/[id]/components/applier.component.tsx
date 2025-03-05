@@ -14,7 +14,6 @@ import ButtonTemplate from "@/app/ui/templates/buttons";
 import { allowEntry, refuseEntry } from "../functions/fetch";
 
 export const ApplierComponent = (
-  jam: Entity_JamSession,
   entry: Entity_JamEntry,
   refuseEntryState: () => void,
   allowEntryState: () => void
@@ -109,7 +108,7 @@ export const ApplierComponent = (
             border: "1px solid #444447",
           }}
           onClick={async () => {
-            await refuseEntry(jam.id, entry.id).then(() => {
+            await refuseEntry(entry.id).then(() => {
               refuseEntryState();
             });
           }}
@@ -126,7 +125,7 @@ export const ApplierComponent = (
             background: "rgba(163, 255, 12, 0.12)",
           }}
           onClick={async () => {
-            await allowEntry(jam.id, entry.id).then(() => {
+            await allowEntry(entry.id).then(() => {
               allowEntryState();
             });
           }}
