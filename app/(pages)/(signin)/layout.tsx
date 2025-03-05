@@ -7,7 +7,7 @@ import { createClient } from "@/app/util/supabase/client";
 import { redirect, usePathname } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { globalContext } from "../layout";
-import { CustomError } from "@/app/lib/errors/error";
+import { CustomError } from "@/app/lib/errors/client.error";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

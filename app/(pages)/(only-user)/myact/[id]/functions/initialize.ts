@@ -1,6 +1,6 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/error";
+import { CustomError } from "@/app/lib/errors/client.error";
 import {
   Entity_JamEntry,
   Entity_JamSession,
@@ -29,6 +29,7 @@ export const initialize = async (jamId: number) => {
       .from("jamsession")
       .select(
         `
+          id,
           date,
           created_at,
           leader:user!inner (*),

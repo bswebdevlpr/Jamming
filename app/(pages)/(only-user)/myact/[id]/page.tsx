@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { initialize } from "./functions/initialize";
 import { useParams, useRouter } from "next/navigation";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
-import { CustomError } from "@/app/lib/errors/error";
+import { CustomError } from "@/app/lib/errors/client.error";
 import {
   Entity_JamEntry,
   Entity_JamSession,
@@ -129,7 +129,6 @@ export default function MyAct() {
           </p>
           {applierEntries.length > 0 &&
             ApplierComponent(
-              jam,
               applierEntries[0],
               refuseEntryState,
               allowEntryState
@@ -160,7 +159,7 @@ export default function MyAct() {
             letOutMember,
             bottomSheet,
             setIsRejamOn,
-            setIsNoshowOn
+            handleNoShow
           )
         )}
       </div>

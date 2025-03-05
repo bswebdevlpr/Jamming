@@ -30,7 +30,7 @@ import {
   TagList,
 } from "@/app/ui/tags/category-tag";
 import { initialize } from "./functions/initialize";
-import { CustomError } from "@/app/lib/errors/error";
+import { CustomError } from "@/app/lib/errors/client.error";
 
 const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
   return (

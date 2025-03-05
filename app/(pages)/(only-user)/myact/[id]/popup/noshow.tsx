@@ -36,6 +36,7 @@ export default function NoshowPopup({
         top: 0,
         left: 0,
       }}
+      onClick={turnOff}
     >
       <div
         className="grow flex flex-col px-5 pt-7 pb-5 relative mx-8"
@@ -106,7 +107,10 @@ export default function NoshowPopup({
                     color: "#FFF",
                     border: "1px solid #444447",
                   }}
-                  onClick={() => setNoShow(jam.id, entryId, true)}
+                  onClick={() => {
+                    setNoShow(entryId, true);
+                    turnOff();
+                  }}
                 />
                 <ButtonTemplate
                   text="참여 했어요!"

@@ -1,6 +1,6 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/error";
+import { CustomError } from "@/app/lib/errors/client.error";
 import { FormData_Post } from "@/app/lib/zod";
 import { createClient } from "@/app/util/supabase/server";
 import { CreateJamEntryDto } from "../dtos/create";

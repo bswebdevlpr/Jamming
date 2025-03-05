@@ -5,19 +5,9 @@ import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import Profile from "@/app/ui/images/navbar/profile";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import { ReactNode, useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { getJamSchedule } from "../functions/fetch";
 
-// {
-//     title,
-//     tags,
-//     headCnt,
-//     date,
-//   }: {
-//     title: string;
-//     tags: ReactNode;
-//     headCnt: number;
-//     date: string;
-//   }
 const Tag = ({ text }: { text: string }) => {
   return (
     <div
@@ -102,6 +92,12 @@ export default function RejamPopup({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
+  const jams = useMemo(async () => {
+    const ret = await getJamSchedule();
+    console.log(ret);
+    return ret;
+  }, []);
+
   useEffect(() => {
     if (ref.current) {
       ref.current.style.display = isTurnedOn ? "flex" : "none";
@@ -111,7 +107,7 @@ export default function RejamPopup({
   return (
     <div
       ref={ref}
-      className="absolute z-10 hidden w-full h-full flex flex-col justify-between left-0 top-0 px-4"
+      className="absolute z-10 hidden w-full h-full flex flex-col justify-between left-0 top-0 px-5"
       style={{
         backgroundColor: "var(--background)",
       }}
@@ -185,7 +181,7 @@ export default function RejamPopup({
                 paddingBottom: "8px",
               }}
             >
-              마지막으로 어필 한마디!
+              어필 한마디!
             </p>
             <textarea
               placeholder="입력"
