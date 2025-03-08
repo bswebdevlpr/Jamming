@@ -10,7 +10,9 @@ export interface Entity_User {
   pos?: PositionEnum;
   genre?: GenreEnum;
   level?: LevelEnum;
+  tags?: string[];
   bpm?: number;
+  is_bpm_public?: boolean;
 
   // myact - 멤버관리
   isRejam?: boolean;

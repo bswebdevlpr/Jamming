@@ -12,14 +12,25 @@ export const EditLightGrayIcon = () => {
   );
 };
 
-export const EditGrayIcon = ({ style }: { style: CSSProperties }) => {
+export const EditGrayIcon = ({
+  width,
+  height,
+  style,
+  onClick,
+}: {
+  width?: number;
+  height?: number;
+  style: CSSProperties;
+  onClick?: () => void;
+}) => {
   return (
     <Image
       src={"/mypage/edit/edit-gray.svg"}
       alt="edit"
-      width={28}
-      height={28}
+      width={width ?? 28}
+      height={height ?? 28}
       style={style}
+      onClick={onClick}
     />
   );
 };
