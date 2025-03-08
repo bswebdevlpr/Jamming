@@ -26,7 +26,8 @@ export const MemberComponent = (
   letOutMember: (entryId: number) => void,
   bottomSheet: BottomSheetContext,
   onClickRejam: Dispatch<SetStateAction<boolean>>,
-  handleNoShow: (noShowState: boolean, entryId: number) => void
+  handleNoShow: (noShowState: boolean, entryId: number) => void,
+  setRejamTargetUserId: (targetUserId: string) => void
 ) => {
   const { nickname, bpm, location, pos, genre, level } = entry.user;
 
@@ -86,7 +87,8 @@ export const MemberComponent = (
         </div>
         {isMyJam && (
           <Kebap
-            onClick={() =>
+            onClick={() => {
+              setRejamTargetUserId(entry.user_id);
               bottomSheet.set({
                 location: isPast ? "row-2" : "row-1",
                 children: (
@@ -151,8 +153,8 @@ export const MemberComponent = (
                     )}
                   </BottomSheetContentTemplate_List>
                 ),
-              })
-            }
+              });
+            }}
           />
         )}
       </div>

@@ -5,29 +5,27 @@ import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import Profile from "@/app/ui/images/navbar/profile";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getJamSchedule } from "../functions/fetch";
+import {
+  GenreTag,
+  LevelTag,
+  LocationTag,
+  PositionTag,
+  TagList,
+} from "@/app/ui/tags/category-tag";
+import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
+import moment from "moment";
 
-const Tag = ({ text }: { text: string }) => {
-  return (
-    <div
-      className="px-2 py-1"
-      style={{
-        backgroundColor: "#323234",
-        borderRadius: "100px",
-        textAlign: "center",
-
-        fontFamily: "SUIT-BODY",
-        fontSize: "0.75rem",
-        color: "#F2F2F4",
-      }}
-    >
-      {text}
-    </div>
-  );
-};
-
-const FlexRow = () => {
+const FlexRow = ({
+  jam,
+  checkedJamIds,
+  setCheckedJamIds,
+}: {
+  jam: Entity_JamSession;
+  checkedJamIds: number[];
+  setCheckedJamIds: any;
+}) => {
   return (
     <div
       className="flex flex-col py-3"
@@ -36,7 +34,15 @@ const FlexRow = () => {
       }}
     >
       <div className="flex flex-row gap-2 items-center mb-2">
-        <SquaredCheckbox />
+        <SquaredCheckbox
+          onClick={() => {
+            setCheckedJamIds(
+              checkedJamIds.includes(jam.id)
+                ? checkedJamIds.filter((jamId) => jamId !== jam.id)
+                : [...checkedJamIds, jam.id]
+            );
+          }}
+        />
         <p
           style={{
             fontFamily: "SUIT-BODY",
@@ -44,15 +50,18 @@ const FlexRow = () => {
             color: "#FFF",
           }}
         >
-          내가 만든 혹은 참여할 잼세션
+          {jam.title}
         </p>
       </div>
       <div className="flex flex-row gap-1 pl-7 mb-5">
-        <Tag text="시흥동" />
-        <Tag text="락" />
-        <Tag text="건반" />
-        <Tag text="아마추어" />
-        <Tag text="30대" />
+        <TagList
+          tags={[
+            <LocationTag key="location" text={jam.location} />,
+            <PositionTag key="pos" text={jam.pos} />,
+            <GenreTag key="genre" text={jam.genre} />,
+            <LevelTag key="level" text={jam.level} />,
+          ]}
+        />
       </div>
       <div className="w-full flex flex-row justify-between pl-7">
         <ImageWithTxt
@@ -65,7 +74,7 @@ const FlexRow = () => {
                 color: "#9F9FA2",
               }}
             >
-              <span style={{ color: "#A3FF0C" }}>5</span>/7
+              <span style={{ color: "#A3FF0C" }}>{jam.curHeadCnt}</span>/7
             </p>
           }
         />
@@ -76,7 +85,7 @@ const FlexRow = () => {
             color: "#9F9FA2",
           }}
         >
-          2024.12.24
+          {moment(jam.date).format("YYYY.MM.DD")}
         </p>
       </div>
     </div>
@@ -86,23 +95,34 @@ const FlexRow = () => {
 export default function RejamPopup({
   isTurnedOn,
   turnOff,
+  rejamTargetUserId,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
+  rejamTargetUserId: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const jams = useMemo(async () => {
-    const ret = await getJamSchedule();
-    console.log(ret);
-    return ret;
-  }, []);
+  const [jams, setJams] = useState<Entity_JamSession[]>([]);
+  const [appeal, setAppeal] = useState<string>("");
+
+  const [checkedJamIds, setCheckedJamIds] = useState<number[]>([]);
 
   useEffect(() => {
     if (ref.current) {
       ref.current.style.display = isTurnedOn ? "flex" : "none";
     }
   }, [isTurnedOn]);
+  useEffect(() => {
+    if (rejamTargetUserId)
+      (async () => {
+        setJams(await getJamSchedule(rejamTargetUserId));
+      })();
+  }, [rejamTargetUserId]);
+
+  useEffect(() => {
+    console.log(appeal);
+  }, [appeal]);
 
   return (
     <div
@@ -165,12 +185,14 @@ export default function RejamPopup({
             overflow: "auto",
           }}
         >
-          <FlexRow />
-          <FlexRow />
-          <FlexRow />
-          <FlexRow />
-          <FlexRow />
-          <FlexRow />
+          {jams.map((jam, idx) => (
+            <FlexRow
+              key={idx}
+              jam={jam}
+              checkedJamIds={checkedJamIds}
+              setCheckedJamIds={setCheckedJamIds}
+            />
+          ))}
           <div className="mt-6 mb-9 relative">
             <p
               style={{
@@ -183,9 +205,15 @@ export default function RejamPopup({
             >
               어필 한마디!
             </p>
+            <style jsx>{`
+              textarea::placeholder {
+                color: "#767678";
+              }
+            `}</style>
             <textarea
               placeholder="입력"
               className="w-full px-3 py-2"
+              maxLength={50}
               style={{
                 height: "72px",
 
@@ -195,8 +223,9 @@ export default function RejamPopup({
 
                 fontFamily: "SUIT-BODY",
                 fontSize: "0.875rem",
-                color: "#767678",
+                color: "#FFF",
               }}
+              onChange={(e) => setAppeal(e.currentTarget.value)}
             />
             <p
               className="absolute right-2 bottom-2"
@@ -206,7 +235,7 @@ export default function RejamPopup({
                 color: "#767678",
               }}
             >
-              0/200
+              {appeal.length}/50
             </p>
           </div>
         </div>
@@ -215,14 +244,12 @@ export default function RejamPopup({
         text="LET'S JAM!"
         className="px-3 py-2.5 my-2"
         style={{
-          width: "100%",
-
-          borderRadius: "8px",
-          border: "1px solid #A3FF0C",
-
           fontFamily: "SBAggroM",
-          color: "#A3FF0C",
         }}
+        styleActivated={{
+          fontFamily: "SBAggroM",
+        }}
+        isActive={checkedJamIds.length > 0}
       />
     </div>
   );

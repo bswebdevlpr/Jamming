@@ -29,6 +29,9 @@ export interface Entity_JamSession {
   date?: string;
   created_at?: string;
 
+  // NOT COLUMNS
+  curHeadCnt?: number;
+
   user?: Entity_User;
   jamentry?: Entity_JamEntry[];
 }
@@ -36,7 +39,7 @@ export interface Entity_JamSession {
 export interface Entity_JamEntry {
   id: number;
   jamId: number;
-  userId: string;
+  user_id: string;
   appeal: string;
   applied_pos: string;
   is_allowed: boolean;

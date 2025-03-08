@@ -17,10 +17,7 @@ import Kebap from "../images/menu/kebap";
 import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import ButtonTemplate from "../templates/buttons";
 import { deleteJamEntry, deleteJamSession } from "@/app/api/functions/delete";
-import {
-  Entity_JamEntry,
-  Entity_JamSession,
-} from "@/app/lib/interfaces/entity.interface";
+import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
 
 export interface FeedItemProps_Jam {
   idx: number;
@@ -50,11 +47,11 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
     max_head_cnt: maxHeadCnt,
   } = data;
 
-  const tags = [];
-  if (location) tags.push(<LocationTag text={location} />);
-  tags.push(<PositionTag text={pos} />);
-  tags.push(<GenreTag text={genre} />);
-  tags.push(<LevelTag text={level} />);
+  const tags = [
+    <PositionTag key="position" text={pos} />,
+    <GenreTag key="genre" text={genre} />,
+    <LevelTag key="level" text={level} />,
+  ];
 
   const isMyAct = isMyJam !== undefined;
 
@@ -93,7 +90,13 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
           </p>
           {isMyAct && isMyJam && <CrownImage />}
         </div>
-        <TagList tags={tags} />
+        <TagList
+          tags={
+            location
+              ? [<LocationTag key="location" text={location} />, ...tags]
+              : tags
+          }
+        />
         <ImageWithTxt
           className="gap-1"
           image={<Profile width={10.7} height={12} />}

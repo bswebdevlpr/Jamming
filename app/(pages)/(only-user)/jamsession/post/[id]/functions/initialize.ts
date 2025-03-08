@@ -49,6 +49,7 @@ export const initialize = async (jamId: number) => {
       ret.isApplyBtnActive = !isAuthor && !isAlreadyRegistered;
     }
   } catch (e) {
+    if (process.env.NODE_ENV === "development") console.error(e);
     throw CustomError.UnExpected;
   }
 

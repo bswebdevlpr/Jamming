@@ -38,6 +38,7 @@ export default function MyAct() {
   const [applierEntries, setApplierEntries] = useState<Entity_JamEntry[]>([]);
 
   const [isRejamOn, setIsRejamOn] = useState(false);
+  const [rejamTargetUserId, setRejamTargetUserId] = useState<string>(null);
 
   const [isNoshowOn, setIsNoshowOn] = useState(false);
   const [noShowEntryId, setNoShowEntryId] = useState<number>(null);
@@ -159,7 +160,8 @@ export default function MyAct() {
             letOutMember,
             bottomSheet,
             setIsRejamOn,
-            handleNoShow
+            handleNoShow,
+            setRejamTargetUserId
           )
         )}
       </div>
@@ -169,7 +171,11 @@ export default function MyAct() {
         entryId={noShowEntryId}
         turnOff={() => setIsNoshowOn(false)}
       />
-      <RejamPopup isTurnedOn={isRejamOn} turnOff={() => setIsRejamOn(false)} />
+      <RejamPopup
+        isTurnedOn={isRejamOn}
+        turnOff={() => setIsRejamOn(false)}
+        rejamTargetUserId={rejamTargetUserId}
+      />
     </div>
   );
 }

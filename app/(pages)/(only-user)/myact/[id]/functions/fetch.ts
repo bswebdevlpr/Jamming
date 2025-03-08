@@ -59,11 +59,10 @@ export const setNoShow = async (entryId: number, noshow: boolean) => {
 
     await validateAuth(supabase, "entry", entryId);
 
-    const { error, status, statusText } = await supabase
+    const { error } = await supabase
       .from("jamentry")
       .update({ noshow })
       .eq("id", entryId);
-    console.log(error, status, statusText);
     if (error) throw CustomError.UnExpected;
     else ret = true;
   } catch (e) {
@@ -107,7 +106,7 @@ const validateAuth = async (
   }
 };
 
-export const getJamSchedule = async () => {
+export const getJamSchedule = async (targetUserId: string) => {
   let ret = [];
 
   try {
@@ -116,20 +115,45 @@ export const getJamSchedule = async () => {
     const user = await getUser(supabase);
 
     const now = moment();
-    const { data, error } = await supabase
+    ret = await supabase
       .from("jamentry")
       .select(
         `
           *,
-          jamsession (id, date)
+          jamsession (
+            id, 
+            title,
+            location, 
+            genre, 
+            pos, 
+            level, 
+            date, 
+            max_head_cnt,
+            user ( id ),
+            jamentry ( id )
+          )
         `
       )
       .eq("user_id", user.id)
+      .neq("jamsession.user.id", targetUserId)
       .eq("is_allowed", true)
       .gt("jamsession.date", now.toISOString())
-      .lte("jamsession.date", now.clone().add(2, "week").toISOString());
-    if (error) throw CustomError.UnExpected;
-    else ret = data.filter((row) => row.jamsession);
+      .lte("jamsession.date", now.clone().add(2, "week").toISOString())
+      .then(({ data, error }) => {
+        if (error) throw CustomError.UnExpected;
+
+        if (data.length > 0) {
+          data = data
+            .filter((row) => row.jamsession)
+            .map((row) => row.jamsession)
+            .map((row) => {
+              row.curHeadCnt = row.jamentry.length;
+              return row;
+            });
+        }
+
+        return data;
+      });
   } catch (e) {
     if (process.env.NODE_ENV === "development") console.error(e);
     if (e instanceof CustomError) throw e;
