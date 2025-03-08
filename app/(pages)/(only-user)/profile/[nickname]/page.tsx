@@ -2,17 +2,22 @@
 
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import Love from "@/app/ui/images/love";
-import SettingIcon from "@/app/ui/images/mypage/setting";
 import RadixAvatar from "@/app/ui/templates/avatar";
 import {
   GenreTag,
   LevelTag,
   LocationTag,
   PositionTag,
+  TagList,
 } from "@/app/ui/tags/category-tag";
 import BPMPopup from "./popup";
-import { useState } from "react";
-import { redirect, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { Entity_User } from "@/app/lib/interfaces/entity.interface";
+import { getUserByNickname } from "./functions/fetch";
+import { convertBPMToTempo } from "@/app/lib/functions/convert";
+import { PositionEnum } from "@/app/lib/enums/position.enum";
+import { MapDataToPosition, MapPositionToData } from "@/app/lib/maps/jam";
 
 const FlexRow = () => {
   return (
@@ -59,9 +64,43 @@ const FlexRow = () => {
 };
 
 export default function MyPage() {
+  const { nickname } = useParams();
+
+  // STATES
   const [isBPMPopupOn, setIsBPMPopupOn] = useState(false);
 
-  const pathname = usePathname();
+  const [targetUser, setTargetUser] = useState<Entity_User>(null);
+  const [defaultProfileImagePath, setDefaultProfileImagePath] =
+    useState<string>(null);
+  //
+
+  useEffect(() => {
+    (async () => {
+      const foundTargetUser = await getUserByNickname(nickname as string);
+      setTargetUser(foundTargetUser);
+
+      // TODO: 만약 유저 프로필 이미지가 있다면 하단 로직 생략
+      const convertedPos = MapDataToPosition[foundTargetUser.pos];
+      let imagePath = null;
+      switch (convertedPos) {
+        case PositionEnum.Guitar:
+        case PositionEnum.Base:
+          imagePath = "guitar-base";
+          break;
+        case PositionEnum.Drum:
+          imagePath = "drum";
+          break;
+        case PositionEnum.Keyboard:
+          imagePath = "keyboard";
+          break;
+        case PositionEnum.Vocal:
+          imagePath = "vocal";
+          break;
+      }
+      if (imagePath) imagePath += ".svg";
+      setDefaultProfileImagePath(imagePath);
+    })();
+  }, []);
 
   return (
     <div className="grow flex flex-col items-center overflow-without-scroll">
@@ -78,7 +117,7 @@ export default function MyPage() {
         </p>
         <div className="w-5 h-5" />
       </div>
-      <RadixAvatar src={null} />
+      <RadixAvatar src={defaultProfileImagePath} />
       <div
         className="flex gap-1.5"
         style={{
@@ -90,31 +129,29 @@ export default function MyPage() {
           marginBottom: "16px",
         }}
       >
-        <p>{"TEMP"}</p>
+        <p>{targetUser?.nickname ?? "닉네임"}</p>
         <p>|</p>
         <p
           style={{
             color: "var(--highlight)",
           }}
         >
-          Moderato
+          {convertBPMToTempo(targetUser?.bpm) ?? "빠르기"}
         </p>
       </div>
-      <div
-        className="flex flex-row gap-1"
-        style={{
-          marginBottom: "23px",
-        }}
-      >
-        <PositionTag text="기타" />
-        <GenreTag text="헤비메탈" />
-        <LocationTag text="분당" />
-        <LevelTag text="프로" />
-      </div>
+      <TagList
+        tags={[
+          <LocationTag key="l" text={targetUser?.location ?? "지역"} />,
+          <PositionTag key="p" text={targetUser?.pos ?? "포지션"} />,
+          <GenreTag key="g" text={targetUser?.genre ?? "장르"} />,
+          <LevelTag key="lv" text={targetUser?.level ?? "레벨"} />,
+        ]}
+      />
       <div
         className="w-full flex flex-col"
         style={{
           padding: "0px 38px",
+          marginTop: "23px",
           marginBottom: "22px",
         }}
       >
@@ -207,17 +244,7 @@ export default function MyPage() {
           >
             연주 목록
           </p>
-          <p
-            style={{
-              fontSize: "0.75rem",
-              color: "#C0C0C5",
-            }}
-            onClick={() => redirect("/mypage/playlist")}
-          >
-            더 보기
-          </p>
         </div>
-
         <div>
           <FlexRow />
           <FlexRow />
