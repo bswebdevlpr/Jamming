@@ -45,11 +45,11 @@ export const RoundedCheckbox = ({
 
 export const SquaredCheckbox = ({
   style,
-}: // onClick,
-// thisState,
+  onClick,
+}: // thisState,
 // className,
 {
-  // onClick: (() => void) | ((newVal: boolean) => void);
+  onClick: () => void;
   // thisState: boolean;
   style?: CSSProperties;
   className?: string;
@@ -62,6 +62,7 @@ export const SquaredCheckbox = ({
         borderRadius: "5px",
         ...style,
       }}
+      onClick={() => onClick()}
     >
       <Checkbox.CheckboxIndicator>
         <div

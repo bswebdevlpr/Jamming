@@ -87,6 +87,10 @@ export const LevelTag = ({ text, className, style }: TagProp) => {
   );
 };
 
+/**
+ *
+ * @param tags location - position - genre - level
+ */
 export const TagList = ({ tags }: { tags: ReactNode[] }) => {
   return <div className="flex gap-1">{tags}</div>;
 };
