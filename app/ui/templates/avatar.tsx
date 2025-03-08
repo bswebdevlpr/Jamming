@@ -15,33 +15,33 @@ export default function RadixAvatar({
       <div
         className="inline-flex justify-center items-center align-middle overflow-hidden rounded-full"
         style={{
-          width: width ?? "80px",
-          height: height ?? "80px",
+          width: width ?? "140px",
+          height: height ?? "140px",
+
+          border: "1px solid var(--highlight)",
+          borderRadius: "50%",
+          padding: "5px",
         }}
       >
         <Avatar.Image
-          src={src ?? undefined}
+          src={src}
           alt="Avatar"
           style={{
-            width: width ?? "80px",
-            height: height ?? "80px",
+            width: width ? Number(width) - 40 : "100px",
+            height: height ? Number(height) - 40 : "100px",
           }}
         />
         <Avatar.Fallback
           className="flex justify-center items-center"
           style={{
-            width: width ?? "80px",
-            height: height ?? "80px",
-
-            border: "2px solid var(--highlight)",
-            borderRadius: "50%",
-            padding: "5px",
+            width: width ?? "140px",
+            height: height ?? "140px",
           }}
           delayMs={600}
         >
           <Logo
-            width={width ? Number(width) - 20 : 60}
-            height={height ? Number(height) - 20 : 60}
+            width={width ? Number(width) - 20 : 100}
+            height={height ? Number(height) - 20 : 100}
           />
         </Avatar.Fallback>
       </div>
