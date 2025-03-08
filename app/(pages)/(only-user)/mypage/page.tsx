@@ -1,7 +1,6 @@
 "use client";
 
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
-import Love from "@/app/ui/images/love";
 import SettingIcon from "@/app/ui/images/mypage/setting";
 import RadixAvatar from "@/app/ui/templates/avatar";
 import {
@@ -9,225 +8,168 @@ import {
   LevelTag,
   LocationTag,
   PositionTag,
+  TagList,
 } from "@/app/ui/tags/category-tag";
-import BPMPopup from "./popup";
-import { useState } from "react";
-import { redirect, usePathname } from "next/navigation";
-
-const FlexRow = () => {
-  return (
-    <div
-      className="flex flex-row items-center px-4 py-4 gap-3.5"
-      style={{
-        borderBottom: "1px solid #323234",
-      }}
-    >
-      <div
-        style={{
-          width: "112px",
-          height: "77px",
-          backgroundColor: "#E5E5E9",
-        }}
-      />
-      <div
-        className="flex flex-col"
-        style={{
-          gap: "5px",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "1rem",
-            color: "#FFF",
-          }}
-        >
-          영상 제목
-        </p>
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            color: "#C0C0C5",
-          }}
-        >
-          업로드 날짜 2024.09.25
-        </p>
-      </div>
-    </div>
-  );
-};
+import { useEffect, useState } from "react";
+import { redirect, usePathname, useRouter } from "next/navigation";
+import { EditGrayIcon } from "@/app/ui/images/mypage/edit/edits";
+import { Entity_User } from "@/app/lib/interfaces/entity.interface";
+import { initialize } from "./functions/fetch";
+import { ImageWithTxt } from "@/app/ui/templates/images";
+import MyListIcon from "@/app/ui/images/mypage/note";
+import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
+import ButtonTemplate from "@/app/ui/templates/buttons";
+import BPMBar from "@/app/ui/bpm/bpm-bar";
 
 export default function MyPage() {
-  const session = useSession();
-  const user = session.data?.user;
-
-  const [isBPMPopupOn, setIsBPMPopupOn] = useState(false);
-
+  // HOOOKS
   const pathname = usePathname();
+  const router = useRouter();
+  //
+
+  // STATES
+  const [user, setUser] = useState<Entity_User>(null);
+
+  const [feedback, setFeedback] = useState<string>("");
+  //
+
+  // HANDLERS
+  useEffect(() => {
+    (async () => {
+      setUser(await initialize());
+    })();
+  }, []);
+  //
 
   return (
-    <div className="grow flex flex-col items-center overflow-without-scroll">
-      <div className="w-full flex justify-between py-5 px-4 mb-1">
-        <LeftArrowWhite />
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "1rem",
-            color: "#FFF",
-          }}
-        >
-          프로필
-        </p>
-        <SettingIcon onClick={() => redirect(pathname + "/setting")} />
-      </div>
-      <RadixAvatar src={user?.image} />
-      <div
-        className="flex gap-1.5"
-        style={{
-          fontFamily: "SUIT-BODY",
-          fontSize: "1rem",
-          color: "#FFF",
-
-          marginTop: "22px",
-          marginBottom: "16px",
-        }}
-      >
-        <p>{user?.name ?? "Jammer"}</p>
-        <p>|</p>
-        <p
-          style={{
-            color: "var(--highlight)",
-          }}
-        >
-          Moderato
-        </p>
-      </div>
-      <div
-        className="flex flex-row gap-1"
-        style={{
-          marginBottom: "23px",
-        }}
-      >
-        <PositionTag text="기타" />
-        <GenreTag text="헤비메탈" />
-        <LocationTag text="분당" />
-        <LevelTag text="프로" />
-      </div>
-      <div
-        className="w-full flex flex-col"
-        style={{
-          padding: "0px 38px",
-          marginBottom: "22px",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "1rem",
-            color: "#FFF",
-
-            marginBottom: "5px",
-          }}
-        >
-          BPM&nbsp;&nbsp;
-          <span
-            style={{
-              color: "var(--highlight)",
-            }}
-          >
-            114
-          </span>
-        </p>
-        <div className="h-2 flex relative mb-2.5">
-          <div
-            className="w-1/2 h-full"
-            style={{
-              backgroundColor: "var(--highlight)",
-            }}
-          />
-          <div
-            className="w-1/2 h-full"
-            style={{
-              backgroundColor: "#E5E5E9",
-            }}
-          />
-          <Love
-            className="absolute"
-            style={{
-              transform: "translate(140px, -10px) rotate(-20deg)",
-            }}
-          />
-        </div>
-        <div className="flex justify-end">
-          <div
-            className="grow-0 inline-flex gap-1 items-center"
-            style={{
-              fontFamily: "SUIT-BODY",
-              color: "#C0C0C5",
-              cursor: "pointer",
-            }}
-          >
-            <p
-              style={{
-                width: "14px",
-                height: "14px",
-
-                fontSize: "0.625rem",
-
-                border: "1.5px solid #9F9FA2",
-                borderRadius: "50%",
-
-                textAlign: "center",
-                lineHeight: "14px",
-              }}
-            >
-              ?
-            </p>
-            <p
-              style={{
-                fontSize: "0.75rem",
-              }}
-              onClick={() => setIsBPMPopupOn(true)}
-            >
-              what is BPM
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="w-full flex flex-col">
-        <div
-          className="flex justify-between px-4"
-          style={{
-            fontFamily: "SUIT-BODY",
-          }}
-        >
+    <div className="grow flex flex-col overflow-without-scroll px-5">
+      <div className="w-full flex justify-between items-center py-3">
+        <div className="flex gap-2">
+          <LeftArrowWhite onClick={() => router.back()} />
           <p
             style={{
+              fontFamily: "SBAggroM",
               fontSize: "1rem",
               color: "#FFF",
+              lineHeight: "140%",
             }}
           >
-            연주 목록
+            User Profile
           </p>
+        </div>
+        <SettingIcon onClick={() => redirect(pathname + "/setting")} />
+      </div>
+      <div className="flex items-center gap-5 pt-3 pb-5">
+        <div className="relative">
+          <RadixAvatar src={null} />
+          <EditGrayIcon
+            width={25}
+            height={25}
+            style={{
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+            }}
+            onClick={() => router.push("/mypage/edit")}
+          />
+        </div>
+        <div className="flex flex-col gap-3.5">
           <p
             style={{
-              fontSize: "0.75rem",
-              color: "#C0C0C5",
+              color: "#FFF",
+              fontFamily: "SUIT-TITLE",
+              fontSize: "1rem",
+              lineHeight: "150%",
+            }}
+          >
+            {user?.nickname ?? "닉네임"}
+          </p>
+          <TagList
+            tags={[
+              <LocationTag key="l" text={user?.location} />,
+              <PositionTag key="p" text={user?.pos} />,
+              <GenreTag key="g" text={user?.genre} />,
+              <LevelTag key="lv" text={user?.level} />,
+            ]}
+          />
+        </div>
+      </div>
+      {user && user.tags && (
+        <div
+          className="flex gap-2"
+          style={{
+            color: "#F2F2F4",
+            fontFamily: "SUIT-BODY",
+            fontSize: "0.875rem",
+            lineHeight: "140%",
+          }}
+        >
+          {user.tags.map(
+            (tag, idx) =>
+              tag && (
+                <p key={idx}>
+                  <span style={{ color: "#767678", marginRight: "2px" }}>
+                    #
+                  </span>
+                  {tag}
+                </p>
+              )
+          )}
+        </div>
+      )}
+      <BPMBar user={user} className="mt-9" />
+      <div className="w-full flex flex-col">
+        <div
+          className="flex justify-between mb-4"
+          style={{
+            fontFamily: "SUIT-BODY",
+          }}
+        >
+          <ImageWithTxt
+            image={<MyListIcon />}
+            text={"My list"}
+            style={{
+              color: "#767678",
+              fontFamily: "SBAggroB",
+              fontSize: "0.875rem",
+              lineHeight: "150%",
+            }}
+          />
+          <p
+            style={{
+              fontFamily: "SUIT-TITLE",
+              fontSize: "0.875rem",
+              color: "#9F9FA2",
+              lineHeight: "150%",
             }}
             onClick={() => redirect("/mypage/playlist")}
           >
-            더 보기
+            편집
           </p>
         </div>
-
-        <div>
-          <FlexRow />
-          <FlexRow />
-          <FlexRow />
-        </div>
+        <Grid_PlayList>
+          {[
+            <GridItem_PlayList
+              key={1}
+              title="Boogie on & on"
+              author="Beenzino"
+              created_at="3 months ago"
+            />,
+            <GridItem_PlayList
+              key={1}
+              title="Halo"
+              author="Adele"
+              created_at="1 months ago"
+            />,
+            <GridItem_PlayList
+              key={1}
+              title="Ditto Cover (acoustic live ver.)"
+              author="Baek yerin"
+              created_at="3 months ago"
+            />,
+          ]}
+        </Grid_PlayList>
         <div
-          className="px-4"
           style={{
             paddingTop: "20px",
             paddingBottom: "7px",
@@ -238,26 +180,36 @@ export default function MyPage() {
               fontFamily: "SUIT-BODY",
               fontSize: "1rem",
               color: "#FFF",
+              lineHeight: "150%",
+              letterSpacing: "-0.4px",
             }}
           >
             피드백 보내기
           </p>
-          <div className="relative">
+          <div className="relative mt-2.5 mb-4">
+            <style jsx>{`
+              textarea::placeholder {
+                color: "#9F9FA2";
+              }
+            `}</style>
             <textarea
-              name=""
-              id=""
               placeholder="재밍에 대한 의견을 자유롭게 입력해주세요"
-              className="w-full mt-2.5 p-2.5"
+              maxLength={100}
+              className="w-full p-2.5"
               style={{
-                height: "165px",
+                height: "104px",
 
                 fontFamily: "SUIT-BODY",
                 fontSize: "0.75rem",
-                color: "#9F9FA2",
+                color: "#FFF",
+
+                lineHeight: "150%",
+                letterSpacing: "-0.3px",
 
                 backgroundColor: "#323234",
-                borderRadius: "3px",
+                borderRadius: "5px",
               }}
+              onChange={(e) => setFeedback(e.currentTarget.value)}
             />
             <p
               className="absolute"
@@ -270,15 +222,20 @@ export default function MyPage() {
                 bottom: "10px",
               }}
             >
-              0 / 100
+              {feedback.length} / 100
             </p>
           </div>
+          <ButtonTemplate
+            text="보내기"
+            style={{
+              backgroundColor: "#242426",
+              border: "1px solid #333335",
+            }}
+            isActive={feedback.length > 0}
+            // TODO: 메일전송 연동
+          />
         </div>
       </div>
-      <BPMPopup
-        isTurnedOn={isBPMPopupOn}
-        turnOff={() => setIsBPMPopupOn(false)}
-      />
     </div>
   );
 }

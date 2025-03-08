@@ -1,12 +1,15 @@
 import * as Select from "@radix-ui/react-select";
 import { DownArrowOnEditPage } from "../images/mypage/edit/arrow";
+import { useEffect } from "react";
 
 export default function RadixSelect({
   items,
   color,
+  placeholder,
 }: {
   items: string[];
   color: string;
+  placeholder: string;
 }) {
   return (
     <Select.Root>
@@ -27,7 +30,7 @@ export default function RadixSelect({
         }}
         aria-label=""
       >
-        <Select.Value placeholder="-" />
+        <Select.Value placeholder={placeholder ?? "-"} />
         <Select.Icon
           style={{
             position: "absolute",
