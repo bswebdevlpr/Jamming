@@ -14,6 +14,8 @@ export interface Entity_User {
   bpm?: number;
   is_bpm_public?: boolean;
 
+  playlist: Entity_Playlist[];
+
   // myact - 멤버관리
   isRejam?: boolean;
 }
@@ -48,4 +50,14 @@ export interface Entity_JamEntry {
   is_rejam: boolean;
 
   user?: Entity_User;
+}
+
+export interface Entity_Playlist {
+  id: number;
+  user_id: string;
+  title: string;
+  thumbnailPath: string;
+  author: string;
+  date: string;
+  is_public: boolean;
 }

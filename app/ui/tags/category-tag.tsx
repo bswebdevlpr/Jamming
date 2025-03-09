@@ -23,9 +23,10 @@ function Tag({ text, className, style }: TagProp) {
 
         borderRadius: "2px",
 
+        whiteSpace: "nowrap",
+
         ...style,
-      }}
-    >
+      }}>
       {text}
     </p>
   );
@@ -67,6 +68,9 @@ export const LocationTag = ({ text, className, style }: TagProp) => {
       style={{
         color: "#3994FF",
         background: "rgba(12, 124, 255, 0.20)",
+
+        flexShrink: 0,
+
         ...style,
       }}
     />
