@@ -14,9 +14,15 @@ export const initialize = async () => {
 
     const { data, error } = await supabase
       .from("user")
-      .select(`*`)
+      .select(
+        `
+        *,
+        playlist ( * )
+      `
+      )
       .eq("id", user.id)
       .single();
+    console.log(data, error);
     if (error) throw CustomError.UnExpected;
     else if (!data) throw CustomError.InvalidUserSession;
 

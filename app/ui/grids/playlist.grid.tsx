@@ -1,28 +1,40 @@
-import { ReactNode } from "react";
+"use client";
+
+import moment from "moment";
+import Image from "next/image";
+import { ReactNode, useEffect, useState } from "react";
 
 export const GridItem_PlayList = ({
+  thumbnailPath,
   title,
   author,
   created_at,
 }: {
+  thumbnailPath: string;
   title: string;
   author: string;
   created_at: string;
 }) => {
+  const [itemWidth, setItemWidth] = useState<number>(0);
+  const [itemHeight, setItemHeight] = useState<number>(0);
+
+  useEffect(() => {
+    const width = document.body.offsetWidth;
+    const height = document.body.offsetWidth;
+
+    setItemWidth(width);
+    setItemHeight(height * 0.1328);
+  }, []);
+
   return (
     <div className="flex flex-col">
-      <div
-        style={{
-          width: "100%",
-          height: "100px",
-
-          backgroundColor: "pink",
-
-          marginBottom: "8px",
-        }}
-      >
-        이미지
-      </div>
+      <Image
+        src={thumbnailPath}
+        width={itemWidth / 2}
+        height={itemHeight}
+        alt="Image"
+        className="mb-2"
+      />
       <p
         style={{
           width: "100%",
@@ -35,8 +47,7 @@ export const GridItem_PlayList = ({
           whiteSpace: "nowrap",
           textOverflow: "ellipsis",
           overflow: "hidden",
-        }}
-      >
+        }}>
         {title}
       </p>
       <p
@@ -49,15 +60,13 @@ export const GridItem_PlayList = ({
           whiteSpace: "nowrap",
           textOverflow: "ellipsis",
           overflow: "hidden",
-        }}
-      >
+        }}>
         {author} •{" "}
         <span
           style={{
             fontSize: "0.625rem",
-          }}
-        >
-          {created_at}
+          }}>
+          {moment(created_at).fromNow()}
         </span>
       </p>
     </div>
