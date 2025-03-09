@@ -29,8 +29,8 @@ import moment from "moment";
 import { FormData_Post, FormSchema_Post } from "@/app/lib/zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createJam } from "@/app/api/functions/create";
 import { convertFormData } from "@/app/lib/functions/convert";
+import { createJam } from "../functions/fetch";
 
 const FlexRow = ({
   left,
@@ -129,7 +129,7 @@ export default function CreateJam({
       genre: [genre],
       pos: [position],
       level: [level],
-      headCnt: headCnts.reduce((acc, cur) => acc + cur, 0),
+      max_head_cnt: headCnts.reduce((acc, cur) => acc + cur, 0),
       date: selectedDate?.format("YYYY-MM-DD"),
     },
     resolver: zodResolver(FormSchema_Post),
@@ -159,7 +159,7 @@ export default function CreateJam({
   }, [level]);
   useEffect(() => {
     setValue(
-      "headCnt",
+      "max_head_cnt",
       headCnts.reduce((acc, cur) => acc + cur, 0)
     );
   }, [headCnts]);
@@ -195,7 +195,7 @@ export default function CreateJam({
         backgroundColor: "var(--background)",
       }}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
         <div
           className="flex flex-row justify-between py-3 px-5"
           style={{
@@ -217,6 +217,7 @@ export default function CreateJam({
               fontFamily: "SUIT-TITLE",
               fontSize: "1rem",
               color: "#A3FF0C",
+              cursor: "pointer",
             }}
             type="submit"
           >

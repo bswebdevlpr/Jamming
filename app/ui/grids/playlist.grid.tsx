@@ -1,20 +1,12 @@
 "use client";
 
+import { Entity_Playlist } from "@/app/lib/interfaces/entity.interface";
 import moment from "moment";
 import Image from "next/image";
+import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 
-export const GridItem_PlayList = ({
-  thumbnailPath,
-  title,
-  author,
-  created_at,
-}: {
-  thumbnailPath: string;
-  title: string;
-  author: string;
-  created_at: string;
-}) => {
+export const GridItem_PlayList = ({ item }: { item: Entity_Playlist }) => {
   const [itemWidth, setItemWidth] = useState<number>(0);
   const [itemHeight, setItemHeight] = useState<number>(0);
 
@@ -27,9 +19,14 @@ export const GridItem_PlayList = ({
   }, []);
 
   return (
-    <div className="flex flex-col">
+    <Link
+      href={item.origin}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex flex-col"
+    >
       <Image
-        src={thumbnailPath}
+        src={item.thumbnail_path}
         width={itemWidth / 2}
         height={itemHeight}
         alt="Image"
@@ -47,8 +44,9 @@ export const GridItem_PlayList = ({
           whiteSpace: "nowrap",
           textOverflow: "ellipsis",
           overflow: "hidden",
-        }}>
-        {title}
+        }}
+      >
+        {item.title}
       </p>
       <p
         style={{
@@ -60,16 +58,18 @@ export const GridItem_PlayList = ({
           whiteSpace: "nowrap",
           textOverflow: "ellipsis",
           overflow: "hidden",
-        }}>
-        {author} •{" "}
+        }}
+      >
+        {item.author} •{" "}
         <span
           style={{
             fontSize: "0.625rem",
-          }}>
-          {moment(created_at).fromNow()}
+          }}
+        >
+          {moment(item.date).fromNow()}
         </span>
       </p>
-    </div>
+    </Link>
   );
 };
 

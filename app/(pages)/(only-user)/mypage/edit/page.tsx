@@ -22,6 +22,7 @@ import {
   MapDataToLocation,
   MapDataToPosition,
 } from "@/app/lib/maps/jam";
+import { useRouter } from "next/navigation";
 
 const FlexRow = ({
   tag,
@@ -55,6 +56,8 @@ const FlexRow = ({
 };
 
 export default function Edit() {
+  const router = useRouter();
+
   // STATES
   const [isBPMChecked, setIsBPMChecked] = useState(false);
   const [user, setUser] = useState<Entity_User>(null);
@@ -74,7 +77,7 @@ export default function Edit() {
   return (
     <div className="grow flex flex-col items-center px-5">
       <div className="w-full flex justify-between py-3 mb-1">
-        <LeftArrowWhite />
+        <LeftArrowWhite onClick={() => router.back()} />
         <p
           style={{
             fontFamily: "SUIT-BODY",

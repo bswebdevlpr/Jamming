@@ -52,7 +52,8 @@ export default function MyPage() {
               fontSize: "1rem",
               color: "#FFF",
               lineHeight: "140%",
-            }}>
+            }}
+          >
             User Profile
           </p>
         </div>
@@ -79,7 +80,8 @@ export default function MyPage() {
               fontFamily: "SUIT-TITLE",
               fontSize: "1rem",
               lineHeight: "150%",
-            }}>
+            }}
+          >
             {user?.nickname ?? "닉네임"}
           </p>
           <TagList
@@ -100,7 +102,8 @@ export default function MyPage() {
             fontFamily: "SUIT-BODY",
             fontSize: "0.875rem",
             lineHeight: "140%",
-          }}>
+          }}
+        >
           {user.tags.map(
             (tag, idx) =>
               tag && (
@@ -120,7 +123,8 @@ export default function MyPage() {
           className="flex justify-between mb-4"
           style={{
             fontFamily: "SUIT-BODY",
-          }}>
+          }}
+        >
           <ImageWithTxt
             image={<MyListIcon />}
             text={"My list"}
@@ -137,28 +141,26 @@ export default function MyPage() {
               fontSize: "0.875rem",
               color: "#9F9FA2",
               lineHeight: "150%",
+
+              cursor: "pointer",
             }}
-            onClick={() => redirect("/mypage/playlist")}>
+            onClick={() => redirect("/mypage/playlist")}
+          >
             편집
           </p>
         </div>
         <Grid_PlayList>
           {user &&
             user.playlist.map((row, idx) => (
-              <GridItem_PlayList
-                key={idx}
-                thumbnailPath={row.thumbnailPath}
-                title={row.title}
-                author={row.author}
-                created_at={row.date}
-              />
+              <GridItem_PlayList key={idx} item={row} />
             ))}
         </Grid_PlayList>
         <div
           style={{
             paddingTop: "20px",
             paddingBottom: "7px",
-          }}>
+          }}
+        >
           <p
             style={{
               fontFamily: "SUIT-BODY",
@@ -166,7 +168,8 @@ export default function MyPage() {
               color: "#FFF",
               lineHeight: "150%",
               letterSpacing: "-0.4px",
-            }}>
+            }}
+          >
             피드백 보내기
           </p>
           <div className="relative mt-2.5 mb-4">
@@ -203,7 +206,8 @@ export default function MyPage() {
 
                 right: "10px",
                 bottom: "10px",
-              }}>
+              }}
+            >
               {feedback.length} / 100
             </p>
           </div>
