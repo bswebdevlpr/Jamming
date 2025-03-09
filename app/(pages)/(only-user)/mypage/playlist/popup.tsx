@@ -5,16 +5,19 @@ import ButtonTemplate, {
   ButtonBasicActiveStyle,
 } from "@/app/ui/templates/buttons";
 import PopupTemplate from "@/app/ui/templates/popup";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
+import { uploadPlaylistItem } from "./functions/fetch";
 
 export default function Popup({
   isTurnedOn,
   turnOff,
+  setIsRefetch,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
+  setIsRefetch: Dispatch<SetStateAction<boolean>>;
 }) {
-  const [isButtonActive, setIsButtonActive] = useState(false);
+  const [videoPath, setVideoPath] = useState<string>("");
 
   return (
     <PopupTemplate
@@ -22,7 +25,8 @@ export default function Popup({
       className="flex items-center"
       style={{
         backgroundColor: "rgb(0, 0, 0, 0.5)",
-      }}>
+      }}
+    >
       <div
         className="w-full mx-4"
         style={{
@@ -34,7 +38,8 @@ export default function Popup({
           paddingRight: "16px",
           paddingBottom: "24px",
           paddingLeft: "25px",
-        }}>
+        }}
+      >
         <div className="flex justify-end mb-3.5">
           <X onClick={turnOff} />
         </div>
@@ -44,9 +49,15 @@ export default function Popup({
             fontSize: "1rem",
             color: "#FFF",
             paddingBottom: "6px",
-          }}>
+          }}
+        >
           링크
         </p>
+        <style jsx>{`
+          input::placeholder {
+            color: #767678;
+          }
+        `}</style>
         <input
           type="text"
           placeholder="영상 링크를 입력해주세요"
@@ -59,16 +70,13 @@ export default function Popup({
 
             fontFamily: "SUIT-BODY",
             fontSize: "0.75rem",
-            color: "#767678",
+            color: "#FFF",
           }}
-          onChange={(e) => {
-            if (!isButtonActive && e.target.value) setIsButtonActive(true);
-            else if (!e.target.value) setIsButtonActive(false);
-          }}
+          onChange={(e) => setVideoPath(e.currentTarget.value)}
         />
         <ButtonTemplate
           text="업로드 하기"
-          isActive={isButtonActive}
+          isActive={videoPath.length > 0}
           styleActivated={ButtonBasicActiveStyle}
           className="w-full"
           style={{
@@ -78,8 +86,14 @@ export default function Popup({
 
             fontFamily: "SUIT-BODY",
             fontSize: "1rem",
-            color: "#767678",
+            color: "#FFF",
           }}
+          onClick={() =>
+            uploadPlaylistItem(videoPath).then(() => {
+              setIsRefetch(true);
+              turnOff();
+            })
+          }
         />
       </div>
     </PopupTemplate>

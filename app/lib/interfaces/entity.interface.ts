@@ -56,8 +56,9 @@ export interface Entity_Playlist {
   id: number;
   user_id: string;
   title: string;
-  thumbnailPath: string;
+  thumbnail_path: string;
   author: string;
   date: string;
   is_public: boolean;
+  origin: string;
 }

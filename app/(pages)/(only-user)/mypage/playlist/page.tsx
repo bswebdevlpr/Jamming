@@ -1,68 +1,63 @@
 "use client";
 
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
-import MeatballMenu from "@/app/ui/images/menu/meatball";
 import PlusPinkIcon from "@/app/ui/images/mypage/playlist/plus";
-import SettingIcon from "@/app/ui/images/mypage/setting";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Popup from "./popup";
 import { globalContext } from "../../../layout";
 import ButtonTemplate from "@/app/ui/templates/buttons";
+import { List_PlayList, ListItem_PlayList } from "@/app/ui/lists/playlist.list";
+import {
+  Entity_Playlist,
+  Entity_User,
+} from "@/app/lib/interfaces/entity.interface";
+import { initialize } from "../functions/fetch";
 
-const FlexRow = ({ menuOnClick }: { menuOnClick: () => void }) => {
-  return (
-    <div
-      className="relative flex flex-row items-center px-4 py-4 gap-3.5 overflow-without-scroll"
-      style={{
-        borderBottom: "1px solid #323234",
-      }}
-    >
-      <div
-        style={{
-          width: "112px",
-          height: "77px",
-          backgroundColor: "#E5E5E9",
-        }}
-      />
-      <div
-        className="flex flex-col"
-        style={{
-          gap: "5px",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "1rem",
-            color: "#FFF",
-          }}
-        >
-          영상 제목
-        </p>
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            color: "#C0C0C5",
-          }}
-        >
-          업로드 날짜 2024.09.25
-        </p>
-      </div>
-      <MeatballMenu
-        style={{
-          marginLeft: "auto",
-        }}
-        onClick={menuOnClick}
-      />
-    </div>
-  );
-};
+import { motion } from "framer-motion";
+import { deletePlaylistItem, updatePlaylistItem } from "./functions/fetch";
+import { useRouter } from "next/navigation";
 
 export default function Playlist() {
   const { bottomSheet } = useContext(globalContext);
-  const bottomSheetHandler = () =>
+
+  const router = useRouter();
+
+  // STATES
+  const [isPopupOn, setIsPopupOn] = useState(false);
+
+  const [user, setUser] = useState<Entity_User>(null);
+  const [isPublic, setIsPublic] = useState<boolean>(true);
+
+  const [publicPlaylistToShow, setPublicPlaylistToShow] = useState<
+    Entity_Playlist[]
+  >([]);
+  const [privatePlaylistToShow, setPrivatePlistToShow] = useState<
+    Entity_Playlist[]
+  >([]);
+
+  const [isRefetch, setIsRefetch] = useState<boolean>(true);
+  //
+
+  // HANDLERS
+  useEffect(() => {
+    if (isRefetch)
+      (async () => {
+        const foundUser = await initialize();
+        setUser(foundUser);
+
+        setPublicPlaylistToShow(
+          foundUser.playlist.filter((row) => row.is_public)
+        );
+        setPrivatePlistToShow(
+          foundUser.playlist.filter((row) => !row.is_public)
+        );
+
+        setIsRefetch(false);
+      })();
+  }, [isRefetch]);
+
+  const bottomSheetHandler = (playlistItemId) =>
     bottomSheet.set({
       location: 24,
       header: false,
@@ -78,10 +73,15 @@ export default function Playlist() {
               borderBottom: "1px solid #323234",
             }}
             onClick={() => {
-              bottomSheet.set({ location: "hidden" });
+              updatePlaylistItem(playlistItemId, isPublic ? false : true).then(
+                () => {
+                  bottomSheet.set({ location: "hidden" });
+                  setIsRefetch(true);
+                }
+              );
             }}
           >
-            공개로 전환
+            {isPublic ? "비" : ""}공개로 전환
           </p>
           <p
             className="w-full px-3 py-3.5 text-center"
@@ -91,7 +91,10 @@ export default function Playlist() {
               color: "#FF380C",
             }}
             onClick={() => {
-              bottomSheet.set({ location: "hidden" });
+              deletePlaylistItem(playlistItemId).then(() => {
+                bottomSheet.set({ location: "hidden" });
+                setIsRefetch(true);
+              });
             }}
           >
             삭제
@@ -110,13 +113,12 @@ export default function Playlist() {
         </div>
       ),
     });
-
-  const [isPopupOn, setIsPopupOn] = useState(false);
+  //
 
   return (
-    <div className="grow flex flex-col items-center overflow-without-scroll">
-      <div className="w-full flex justify-between py-5 px-4 mb-1">
-        <LeftArrowWhite />
+    <div className="grow flex flex-col items-center overflow-without-scroll px-5">
+      <div className="w-full flex justify-between py-5 mb-1">
+        <LeftArrowWhite onClick={() => router.back()} />
         <p
           style={{
             fontFamily: "SUIT-BODY",
@@ -126,10 +128,10 @@ export default function Playlist() {
         >
           내 연주 목록
         </p>
-        <SettingIcon />
+        <div className="w-5 h-6" />
       </div>
       <div
-        className="w-full flex flex-row px-4"
+        className="w-full flex flex-row"
         style={{
           fontFamily: "SUIT-BODY",
           fontSize: "0.875rem",
@@ -145,6 +147,9 @@ export default function Playlist() {
             paddingTop: "18px",
             paddingBottom: "8px",
           }}
+          onClick={() => {
+            setIsPublic(true);
+          }}
         >
           공개
         </p>
@@ -158,37 +163,62 @@ export default function Playlist() {
             paddingTop: "20px",
             paddingBottom: "8px",
           }}
+          onClick={() => {
+            setIsPublic(false);
+          }}
         >
           비공개
         </p>
       </div>
-      <div className="w-full flex flex-row px-4 mb-6">
-        <hr
+      <div className="w-full flex flex-row">
+        <motion.hr
           className="basis-1/2"
           style={{
             width: "100%",
             border: "none",
             borderTop: "4px solid var(--highlight)",
-            borderRadius: "5px",
+            borderRadius: isPublic ? "5px" : 0,
           }}
+          animate={{
+            opacity: isPublic ? 1 : 0,
+          }}
+          transition={{ duration: 0.3 }}
         />
-        <hr
+        <motion.hr
           className="basis-1/2"
           style={{
             width: "100%",
             border: "none",
-            borderBottom: "1px solid var(--border)",
+            borderTop: "4px solid var(--highlight)",
+            opacity: 0,
+            borderRadius: !isPublic ? "5px" : 0,
           }}
+          animate={{
+            opacity: !isPublic ? 1 : 0,
+          }}
+          transition={{ duration: 0.3 }}
         />
       </div>
-      <div className="w-full">
-        <FlexRow menuOnClick={bottomSheetHandler} />
-        <FlexRow menuOnClick={bottomSheetHandler} />
-        <FlexRow menuOnClick={bottomSheetHandler} />
-        <FlexRow menuOnClick={bottomSheetHandler} />
-        <FlexRow menuOnClick={bottomSheetHandler} />
-        <FlexRow menuOnClick={bottomSheetHandler} />
-      </div>
+      <hr
+        style={{
+          width: "100%",
+          borderTop: "1px solid var(--border)",
+          marginBottom: "20px",
+        }}
+      />
+      <List_PlayList>
+        {(isPublic ? publicPlaylistToShow : privatePlaylistToShow).length > 0 &&
+          (isPublic ? publicPlaylistToShow : privatePlaylistToShow).map(
+            (row, idx) => (
+              <ListItem_PlayList
+                key={idx}
+                item={row}
+                isOptionOn={true}
+                onOptionClick={() => bottomSheetHandler(row.id)}
+              />
+            )
+          )}
+      </List_PlayList>
       <ImageWithTxt
         image={<PlusPinkIcon />}
         text="업로드 하기"
@@ -209,7 +239,11 @@ export default function Playlist() {
           setIsPopupOn(true);
         }}
       />
-      <Popup isTurnedOn={isPopupOn} turnOff={() => setIsPopupOn(false)} />
+      <Popup
+        isTurnedOn={isPopupOn}
+        turnOff={() => setIsPopupOn(false)}
+        setIsRefetch={setIsRefetch}
+      />
     </div>
   );
 }

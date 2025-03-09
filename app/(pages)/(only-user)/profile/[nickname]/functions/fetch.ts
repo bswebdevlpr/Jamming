@@ -14,7 +14,12 @@ export const getUserByNickname = async (nickname: string) => {
 
     const { data, error } = await supabase
       .from("user")
-      .select()
+      .select(
+        `
+          *,
+          playlist(*)
+        `
+      )
       .eq("nickname", nickname)
       .single();
     if (error) throw CustomError.UnExpected;

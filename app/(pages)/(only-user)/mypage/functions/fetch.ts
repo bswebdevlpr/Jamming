@@ -22,7 +22,6 @@ export const initialize = async () => {
       )
       .eq("id", user.id)
       .single();
-    console.log(data, error);
     if (error) throw CustomError.UnExpected;
     else if (!data) throw CustomError.InvalidUserSession;
 

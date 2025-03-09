@@ -101,26 +101,6 @@ export default function JamSession_Post() {
         if (isApplyBtnActiveFromFunc !== undefined)
           setIsApplyBtnActive(isApplyBtnActiveFromFunc);
 
-        moment.updateLocale("en", {
-          relativeTime: {
-            future: "in %s",
-            past: "%s 전",
-            s: "방금",
-            ss: "%d초",
-            m: "1분",
-            mm: "%d분",
-            h: "1시간",
-            hh: "%d시간",
-            d: "1일",
-            dd: "%d일",
-            w: "한주",
-            ww: "%d주",
-            M: "한달",
-            MM: "%d달",
-            y: "1년",
-            yy: "%d년",
-          },
-        });
         setDateDiff(moment(foundJam.created_at).fromNow());
 
         const tagsToRender = [];

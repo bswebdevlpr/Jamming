@@ -1,6 +1,6 @@
 "use client";
 
-const postfix = " 문제가 지속적으로 발생한다면 피드백을 전송해주세요.";
+const postfix = " 문제가 지속적으로 발생한다면 피드백으로 전송해주세요.";
 
 export class CustomErrMsg {
   static NicknameNotUnique = "이미 존재하는 닉네임입니다.";
@@ -24,6 +24,12 @@ export class CustomError extends Error {
     "잼세션 목록을 불러오는 데에 실패했습니다." + postfix
   );
   static InvalidJam = new CustomError("유효하지 않은 잼세션입니다.");
+  static CreateJamSession = new CustomError(
+    "잼세션을 생성하는데에 실패했습니다." + postfix
+  );
+  static UpdatePlaylistItem = new CustomError(
+    "연주목록 항목 업데이트에 실패했습니다." + postfix
+  );
   // SignIn: {
   //   code: 1,
   //   msg: "로그인 도중 에러가 발생했습니다. 잠시 후 다시 시도해주세요.",

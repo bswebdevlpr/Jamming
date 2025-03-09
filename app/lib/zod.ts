@@ -45,7 +45,7 @@ export const FormSchema_Post = z.object({
   pos: z.array(z.enum(Object.keys(PositionEnum) as [string, ...string[]])),
   genre: z.array(z.enum(Object.keys(GenreEnum) as [string, ...string[]])),
   level: z.array(z.enum(Object.keys(LevelEnum) as [string, ...string[]])),
-  headCnt: z.number().max(100, {
+  max_head_cnt: z.number().max(100, {
     message: "최대 인원수는 100명을 초과할 수 없습니다.",
   }),
   date: z.string().date(),
