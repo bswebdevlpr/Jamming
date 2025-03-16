@@ -6,13 +6,13 @@ import { useEffect, useRef, useState } from "react";
 export default function Modal({
   isTurnedOn,
   turnOff,
-  userId,
-  jamId,
+  user_id,
+  jam_id,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
-  userId: string;
-  jamId: number;
+  user_id: string;
+  jam_id: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -130,7 +130,7 @@ export default function Modal({
               border: "1px solid #A3FF0C",
               backgroundColor: "#304313",
             }}
-            onClick={() => createJamEntry({ userId, jamId, appeal })}
+            onClick={() => createJamEntry({ user_id, jam_id, appeal })}
           >
             전송
           </button>

@@ -68,7 +68,7 @@ const FlexRow = ({ tag, content }: { tag: string; content: any }) => {
 
 export default function JamSession_Post() {
   // validation
-  const { id: jamId } = useParams();
+  const { id: jam_id } = useParams();
   const router = useRouter();
 
   const [isInitializing, setIsInitializing] = useState(true);
@@ -90,7 +90,7 @@ export default function JamSession_Post() {
           user: foundUser,
           isApplyBtnActive: isApplyBtnActiveFromFunc,
           applyBtnTxt: applyBtnTxtFromFunc,
-        } = await initialize(Number(jamId as string));
+        } = await initialize(Number(jam_id as string));
         if (!foundJam) throw CustomError.InvalidJam;
         else if (!foundUser) throw CustomError.InvalidUserSession;
 
@@ -119,7 +119,7 @@ export default function JamSession_Post() {
       console.error(errToShow);
       router.back();
     }
-  }, [jamId]);
+  }, [jam_id]);
   //
 
   // GLOBAL
@@ -145,7 +145,7 @@ export default function JamSession_Post() {
         />
         <Kebap
           onClick={
-            user.id === jam.userId
+            user.id === jam.user_id
               ? // 작성자
                 () =>
                   bottomSheet.set({
@@ -397,8 +397,8 @@ export default function JamSession_Post() {
       <Modal
         isTurnedOn={isModalOn}
         turnOff={() => setIsModalOn(!isModalOn)}
-        userId={user.id}
-        jamId={jam.id}
+        user_id={user.id}
+        jam_id={jam.id}
       />
     </div>
   );

@@ -21,7 +21,7 @@ import RejamPopup from "./popup/rejam";
 
 export default function MyAct() {
   const { id } = useParams();
-  const jamId = Number(id as string);
+  const jam_id = Number(id as string);
 
   const router = useRouter();
 
@@ -30,7 +30,7 @@ export default function MyAct() {
   // STATES
   const [isInitializing, setIsInitializing] = useState(true);
 
-  const [userId, setUserId] = useState<string>(null);
+  const [user_id, setUserId] = useState<string>(null);
 
   const [jam, setJam] = useState<Entity_JamSession>(null);
   const [leader, setLeader] = useState<Entity_User>(null);
@@ -61,7 +61,7 @@ export default function MyAct() {
           leader: foundLeader,
           memberEntries: foundMemberEntries,
           applierEntries: foundApplierEntries,
-        } = await initialize(jamId);
+        } = await initialize(jam_id);
 
         setJam(foundJam);
         setLeader(foundLeader);
@@ -77,7 +77,7 @@ export default function MyAct() {
       console.error(errToShow);
       router.back();
     }
-  }, [jamId]);
+  }, [jam_id]);
   //
 
   // HANDLERS
@@ -115,7 +115,7 @@ export default function MyAct() {
           lineHeight: "140%",
         }}
       />
-      {userId === leader.id && (
+      {user_id === leader.id && (
         <>
           <p
             style={{
@@ -156,7 +156,7 @@ export default function MyAct() {
             idx,
             jam,
             entry,
-            userId === leader.id,
+            user_id === leader.id,
             letOutMember,
             bottomSheet,
             setIsRejamOn,

@@ -7,9 +7,11 @@ import { Dispatch, SetStateAction, useState } from "react";
 export default function JamNow({
   selectedDate,
   setSelectedDate,
+  refetch,
 }: {
   selectedDate: moment.Moment;
   setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
+  refetch;
 }) {
   const [isTurnedOn, setIsTurnedOn] = useState(false);
   const turnOff = () => {
@@ -49,6 +51,7 @@ export default function JamNow({
         turnOff={turnOff}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
+        refetch={refetch}
       />
     </div>
   );

@@ -3,7 +3,7 @@
 import { CustomError } from "@/app/lib/errors/client.error";
 import { createClient } from "@/app/util/supabase/server";
 
-export const deleteJamSession = async (jamId: number) => {
+export const deleteJamSession = async (jam_id: number) => {
   let ret: boolean = false;
 
   try {
@@ -12,7 +12,7 @@ export const deleteJamSession = async (jamId: number) => {
     const { error } = await supabase
       .from("jamsession")
       .delete()
-      .eq("id", jamId);
+      .eq("id", jam_id);
     if (error) throw CustomError.UnExpected;
     else ret = true;
   } catch (e) {
