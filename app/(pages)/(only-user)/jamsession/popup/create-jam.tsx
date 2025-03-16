@@ -31,6 +31,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { convertFormData } from "@/app/lib/functions/convert";
 import { createJam } from "../functions/fetch";
+import SearchSongPopup from "./search-song";
 
 const FlexRow = ({
   left,
@@ -85,11 +86,13 @@ export default function CreateJam({
   turnOff,
   selectedDate,
   setSelectedDate,
+  refetch,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
   selectedDate: moment.Moment;
   setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
+  refetch;
 }) {
   // GLOBAL
   const { bottomSheet } = useContext(globalContext);
@@ -104,6 +107,8 @@ export default function CreateJam({
   const [isHeadCountPopupTurnedOn, setIsHeadCountPopupTurnedOn] =
     useState(false);
   const [isClockPopupTurnedOn, setIsClockPopupTurnedOn] = useState(false);
+  const [isSearchSongPopupTurnedOn, setIsSearchSongPopupTurnedOn] =
+    useState(false);
 
   const [genre, setGenre] = useState<GenreEnum>(null);
   const [position, setPosition] = useState<PositionEnum>(null);
@@ -171,7 +176,10 @@ export default function CreateJam({
   // HANDLERS
   const onSubmit = async (data: FormData_Post) => {
     await createJam(convertFormData(data)).then((res) => {
-      if (res) turnOff();
+      if (res) {
+        refetch();
+        turnOff();
+      }
       // TODO: 실패 팝업
       else {
       }
@@ -349,6 +357,7 @@ export default function CreateJam({
             image={<MusicNote />}
             text="합주곡"
             style={{ opacity: 0.6 }}
+            onClick={() => setIsSearchSongPopupTurnedOn(true)}
           />
           <ImageWithTxt
             image={<Gallery />}
@@ -379,6 +388,10 @@ export default function CreateJam({
           turnOff={() => setIsClockPopupTurnedOn(false)}
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+        />
+        <SearchSongPopup
+          isTurnedOn={isSearchSongPopupTurnedOn}
+          turnOff={() => setIsSearchSongPopupTurnedOn(false)}
         />
       </form>
     </div>

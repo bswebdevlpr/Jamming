@@ -17,10 +17,17 @@ export interface Filter_JamSessionFeed {
   atMyAct?: boolean;
 }
 
-export function JamFeed({ filter }: { filter: Filter_JamSessionFeed }) {
+export function JamFeed({
+  filter,
+  ref,
+}: {
+  filter: Filter_JamSessionFeed;
+  ref;
+}) {
   const JamFeedComponent = useMemo(() => {
     return (
       <FeedTemplate
+        ref={ref}
         queryFn={fetchJams}
         queryFnParam={JSON.stringify(filter)}
         feedItem={FeedItem_Jam}

@@ -14,7 +14,7 @@ interface RetType {
   applierEntries: Entity_JamEntry[];
 }
 
-export const initialize = async (jamId: number) => {
+export const initialize = async (jam_id: number) => {
   let ret: RetType = {
     jam: null,
     leader: null,
@@ -36,7 +36,7 @@ export const initialize = async (jamId: number) => {
           jamentry!inner (*, user!inner (*))
         `
       )
-      .eq("id", jamId)
+      .eq("id", jam_id)
       .single();
     if (err1) throw CustomError.UnExpected;
 

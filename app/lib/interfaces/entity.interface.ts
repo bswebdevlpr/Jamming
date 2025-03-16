@@ -22,7 +22,7 @@ export interface Entity_User {
 
 export interface Entity_JamSession {
   id?: number;
-  userId?: string;
+  user_id?: string;
   title?: string;
   body?: string;
   pos?: PositionEnum;
@@ -42,7 +42,7 @@ export interface Entity_JamSession {
 
 export interface Entity_JamEntry {
   id: number;
-  jamId: number;
+  jam_id: number;
   user_id: string;
   appeal: string;
   applied_pos: string;

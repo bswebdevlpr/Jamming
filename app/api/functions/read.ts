@@ -30,22 +30,28 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
 
   try {
     const supabase = await createClient();
-    await supabase
+
+    const user = await getUser(supabase);
+
+    const { data, error } = await supabase
       .from("jamsession")
       .select(
         `
             *,
             user ( nickname, pos, genre, level, bpm ),
-            jamentry ( id, jamId, userId )
+            jamentry ( id, jam_id, user_id )
         `
       )
       .eq("id", id)
-      .single()
-      .then(({ data }) => {
-        if (data) ret = data;
-      });
+      .single();
+    if (error) throw CustomError.UnExpected;
+    if (!data) throw CustomError.InvalidJam;
+
+    ret = data;
   } catch (e) {
-    throw CustomError.InvalidJam;
+    if (process.env.NODE_ENV === "development") console.error(e);
+    if (e instanceof CustomError) throw e;
+    else throw CustomError.UnExpected;
   }
 
   return ret;

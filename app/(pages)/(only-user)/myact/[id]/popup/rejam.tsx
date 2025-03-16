@@ -38,7 +38,7 @@ const FlexRow = ({
           onClick={() => {
             setCheckedJamIds(
               checkedJamIds.includes(jam.id)
-                ? checkedJamIds.filter((jamId) => jamId !== jam.id)
+                ? checkedJamIds.filter((jam_id) => jam_id !== jam.id)
                 : [...checkedJamIds, jam.id]
             );
           }}
@@ -119,10 +119,6 @@ export default function RejamPopup({
         setJams(await getJamSchedule(rejamTargetUserId));
       })();
   }, [rejamTargetUserId]);
-
-  useEffect(() => {
-    console.log(appeal);
-  }, [appeal]);
 
   return (
     <div

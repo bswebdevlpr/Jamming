@@ -18,7 +18,6 @@ export const createJam = async (input: FormData_Post) => {
       .insert(Object.assign(input, { user_id: user.id }))
       .eq("id", user.id)
       .select();
-    console.log(data, error);
     if (error || data.length === 0) throw CustomError.UnExpected;
 
     ret = data;

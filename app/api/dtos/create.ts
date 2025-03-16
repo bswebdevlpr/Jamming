@@ -16,8 +16,8 @@ export interface CreateJamDto {
 }
 
 export interface CreateJamEntryDto {
-  userId: number | string;
-  jamId: number | string;
+  user_id: number | string;
+  jam_id: number | string;
   appeal: string;
 }
 

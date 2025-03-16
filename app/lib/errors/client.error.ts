@@ -30,6 +30,7 @@ export class CustomError extends Error {
   static UpdatePlaylistItem = new CustomError(
     "연주목록 항목 업데이트에 실패했습니다." + postfix
   );
+  static SearchSong = new CustomError("곡 검색에 실패했습니다." + postfix);
   // SignIn: {
   //   code: 1,
   //   msg: "로그인 도중 에러가 발생했습니다. 잠시 후 다시 시도해주세요.",

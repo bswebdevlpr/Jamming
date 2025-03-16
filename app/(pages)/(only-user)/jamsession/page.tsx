@@ -1,7 +1,7 @@
 "use client";
 
 import Filter from "@/app/ui/images/filter";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import BottomSheetContent from "./bottom-sheet/content";
 import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
@@ -14,10 +14,15 @@ import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
+import { FeedMethods } from "@/app/ui/templates/feed";
 
 export default function JamSession() {
   // GLOBAL
   const { bottomSheet } = useContext(globalContext);
+  //
+
+  // REF
+  const childRef = useRef<FeedMethods>(null);
   //
 
   // STATES
@@ -105,12 +110,13 @@ export default function JamSession() {
         </div>
         {/* 잼세션 피드 */}
         <div className="grow overflow-hidden flex justify-center items-center px-5">
-          <JamFeed filter={filter} />
+          <JamFeed ref={childRef} filter={filter} />
         </div>
         <Fragment>
           <JamNow
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
+            refetch={childRef && childRef.current && childRef.current.refetch}
           />
           <BottomNavBar />
         </Fragment>

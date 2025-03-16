@@ -13,7 +13,7 @@ interface RetType {
   applyBtnTxt: string;
 }
 
-export const initialize = async (jamId: number) => {
+export const initialize = async (jam_id: number) => {
   let ret: RetType = {
     user: null,
     jam: null,
@@ -24,7 +24,7 @@ export const initialize = async (jamId: number) => {
   try {
     const supabase = await createClient();
 
-    const jam = await getJam(jamId);
+    const jam = await getJam(jam_id);
     if (jam) ret.jam = jam;
 
     const {
@@ -33,9 +33,9 @@ export const initialize = async (jamId: number) => {
     if (user) ret.user = user as unknown as Entity_User;
 
     if (jam && user) {
-      const isAuthor = user.id === jam.userId;
+      const isAuthor = user.id === jam.user_id;
       const isAlreadyRegistered = jam.jamentry
-        .map((je) => je.userId)
+        .map((je) => je.user_id)
         .includes(user.id);
 
       ret.applyBtnTxt = isAuthor
