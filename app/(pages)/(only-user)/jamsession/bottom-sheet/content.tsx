@@ -19,6 +19,7 @@ const BottomSheetContent = ({
   setGenre,
   setPosition,
   setLevel,
+  isCreatePopup = false,
 }: {
   genre: GenreEnum;
   position: PositionEnum;
@@ -26,6 +27,7 @@ const BottomSheetContent = ({
   setGenre: (input: GenreEnum) => void;
   setPosition: (input: PositionEnum) => void;
   setLevel: (input: LevelEnum) => void;
+  isCreatePopup?: boolean;
 }) => {
   // STATES
   const [localGenre, setLocalGenre] = useState<GenreEnum>(genre);
@@ -69,7 +71,7 @@ const BottomSheetContent = ({
       </p>
       <div
         className="flex flex-col gap-6"
-        style={{ marginBottom: "12.875rem" }}
+        style={{ marginBottom: !isCreatePopup ? "12.875rem" : "22.75rem" }}
       >
         <div className="flex flex-col gap-3">
           <CategoryFilterItem text="장르">
@@ -93,28 +95,30 @@ const BottomSheetContent = ({
             // }}
           />
         </div>
-        <div className="flex flex-col gap-3">
-          <CategoryFilterItem text="포지션">
-            <Position />
-          </CategoryFilterItem>
-          <Grid
-            colNum={4}
-            items={Object.values(PositionEnum)}
-            values={Object.keys(PositionEnum)}
-            itemStyle={{ height: "2.5rem", color: "#F2F2F4" }}
-            itemStyleActivated={{
-              color: "#FF3773",
-              border: "1px solid #FF3773",
-              background: "rgba(255, 55, 115, 0.12)",
-            }}
-            state={localPosition}
-            handleState={handlePosition}
-            // useInitState={{
-            //   initState: isInit,
-            //   setInitState: setIsInit,
-            // }}
-          />
-        </div>
+        {!isCreatePopup && (
+          <div className="flex flex-col gap-3">
+            <CategoryFilterItem text="포지션">
+              <Position />
+            </CategoryFilterItem>
+            <Grid
+              colNum={4}
+              items={Object.values(PositionEnum)}
+              values={Object.keys(PositionEnum)}
+              itemStyle={{ height: "2.5rem", color: "#F2F2F4" }}
+              itemStyleActivated={{
+                color: "#FF3773",
+                border: "1px solid #FF3773",
+                background: "rgba(255, 55, 115, 0.12)",
+              }}
+              state={localPosition}
+              handleState={handlePosition}
+              // useInitState={{
+              //   initState: isInit,
+              //   setInitState: setIsInit,
+              // }}
+            />
+          </div>
+        )}
         <div className="flex flex-col gap-3">
           <CategoryFilterItem text="레벨">
             <Level />

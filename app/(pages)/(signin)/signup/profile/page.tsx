@@ -18,7 +18,7 @@ import { isNicknameUnique } from "@/app/api/functions/validation";
 import { CustomErrMsg } from "@/app/lib/errors/client.error";
 import { redirect, usePathname, useSearchParams } from "next/navigation";
 import { FormData_User, FormSchema_User } from "@/app/lib/zod";
-import { ImageFile } from "@/app/lib/interfaces/zod.interface";
+import { ImageFile } from "@/app/lib/interfaces/dto.interface";
 
 const TextBox = ({
   upTxt,

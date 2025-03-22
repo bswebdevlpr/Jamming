@@ -3,6 +3,7 @@
 import { RightArrow } from "@/app/ui/images/arrows";
 import X from "@/app/ui/images/common/x";
 import {
+  CreateJam_ImageRemoveIcon,
   Gallery,
   Location,
   MusicNote,
@@ -32,6 +33,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { convertFormData } from "@/app/lib/functions/convert";
 import { createJam } from "../functions/fetch";
 import SearchSongPopup from "./search-song";
+import { DTO_Song, ImageFile } from "@/app/lib/interfaces/dto.interface";
+import Image from "next/image";
 
 const FlexRow = ({
   left,
@@ -70,7 +73,7 @@ const FlexRow = ({
             fontFamily: "SUIT-BODY",
             fontSize: "0.875rem",
             color: "#DCDCDD",
-            opacity: right === "선택" ? 0.6 : 1,
+            opacity: 1,
           }}
         >
           {right}
@@ -116,6 +119,9 @@ export default function CreateJam({
 
   const [headCnts, setHeadCnts] = useState<number[]>(new Array(6).fill(0));
   const [anyone, setAnyone] = useState<boolean>(false);
+
+  const [songsToPlay, setSongsToPlay] = useState<DTO_Song[]>([]);
+  const [images, setImages] = useState<ImageFile[]>([]);
   //
 
   // FORM
@@ -171,6 +177,11 @@ export default function CreateJam({
   useEffect(() => {
     if (selectedDate) setValue("date", selectedDate.format("YYYY-MM-DD"));
   }, [selectedDate]);
+
+  useEffect(() => {
+    console.log("songsToPlay", songsToPlay);
+    console.log("images", images);
+  }, [songsToPlay, images]);
   //
 
   // HANDLERS
@@ -184,6 +195,19 @@ export default function CreateJam({
       else {
       }
     });
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files;
+
+    if (fileList) {
+      const newFiles = Array.from(fileList).map((row) => ({
+        id: Date.now(), // 고유한 ID 생성
+        name: row?.name,
+        url: URL.createObjectURL(row), // 미리보기 URL 생성
+      }));
+      setImages(newFiles);
+    }
   };
   //
 
@@ -249,7 +273,9 @@ export default function CreateJam({
                 </p>
               )
             }
-            right="선택"
+            right={[GenreEnum[genre], LevelEnum[level]]
+              .filter((elem) => elem)
+              .join(" ")}
             onClick={() =>
               bottomSheet.set({
                 location: "high",
@@ -261,6 +287,7 @@ export default function CreateJam({
                     setGenre={setGenre}
                     setPosition={setPosition}
                     setLevel={setLevel}
+                    isCreatePopup={true}
                   />
                 ),
               })
@@ -335,6 +362,51 @@ export default function CreateJam({
               }}
               {...register("body")}
             />
+            {images.length > 0 && (
+              <div
+                className="flex flex-col gap-3"
+                style={{
+                  color: "#9F9FA2",
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "0.75rem",
+                  lineHeight: "140%",
+                  letterSpacing: "-0.288px",
+                }}
+              >
+                <div className="flex flex-wrap gap-4">
+                  {images.map((image, idx) => (
+                    <div key={idx} className="relative">
+                      <div
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                          position: "relative",
+                        }}
+                      >
+                        <Image
+                          src={image.url}
+                          alt=""
+                          fill
+                          style={{ objectFit: "cover" }}
+                        />
+                      </div>
+
+                      <CreateJam_ImageRemoveIcon
+                        style={{
+                          position: "absolute",
+                          top: -8,
+                          right: -8,
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <p>*첫번째 사진은 게시글의 대표사진으로 지정됩니다.</p>
+                  <p>사진은 최대 5개까지 첨부 가능합니다.</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <div
@@ -356,23 +428,35 @@ export default function CreateJam({
           <ImageWithTxt
             image={<MusicNote />}
             text="합주곡"
-            style={{ opacity: 0.6 }}
+            style={{ opacity: 0.6, cursor: "pointer" }}
             onClick={() => setIsSearchSongPopupTurnedOn(true)}
           />
-          <ImageWithTxt
-            image={<Gallery />}
-            text="사진"
-            style={{ opacity: 0.6 }}
-          />
+          <div className="relative flex items-center">
+            <ImageWithTxt
+              image={<Gallery />}
+              text="사진"
+              style={{ opacity: 0.6 }}
+            />
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full h-full absolute opacity-0 z-20 top-0 left-0"
+              style={{
+                cursor: "pointer",
+              }}
+            />
+          </div>
           <ImageWithTxt
             image={<Location />}
             text="장소"
-            style={{ opacity: 0.6 }}
+            style={{ opacity: 0.6, cursor: "pointer" }}
           />
           <ImageWithTxt
             image={<OpenChat />}
             text="채팅방링크"
-            style={{ opacity: 0.6 }}
+            style={{ opacity: 0.6, cursor: "pointer" }}
           />
         </div>
         <SelectHeadCountPopup
@@ -392,6 +476,9 @@ export default function CreateJam({
         <SearchSongPopup
           isTurnedOn={isSearchSongPopupTurnedOn}
           turnOff={() => setIsSearchSongPopupTurnedOn(false)}
+          addNewSong={(newSong: DTO_Song) => {
+            setSongsToPlay([...songsToPlay, newSong]);
+          }}
         />
       </form>
     </div>

@@ -1,6 +1,13 @@
 import Image from "next/image";
+import { CSSProperties } from "react";
 
-export const SearchIcon = ({ onClick }: { onClick?: () => void }) => {
+export const SearchIcon = ({
+  onClick,
+  style,
+}: {
+  onClick?: () => void;
+  style?: CSSProperties;
+}) => {
   return (
     <Image
       src="/jamsession/popup/search.svg"
@@ -9,6 +16,8 @@ export const SearchIcon = ({ onClick }: { onClick?: () => void }) => {
       height={20}
       style={{
         cursor: "pointer",
+
+        ...style,
       }}
       onClick={onClick}
     />
