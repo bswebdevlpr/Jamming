@@ -2,8 +2,8 @@ import { z } from "zod";
 import { PositionEnum } from "./enums/position.enum";
 import { GenreEnum } from "./enums/genre.enum";
 import { LevelEnum } from "./enums/level.enum";
-import { ImageFile } from "./interfaces/zod.interface";
 import { LocationEnum } from "./enums/location.enum";
+import { ImageFile } from "./interfaces/dto.interface";
 
 export const FormSchema_User = z.object({
   acceptMarketing: z.boolean(),

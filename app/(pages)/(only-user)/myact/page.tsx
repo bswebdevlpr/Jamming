@@ -1,11 +1,12 @@
 "use client";
 
 import TopNavBar from "@/app/ui/navbar/myact/top";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { FeedMethods } from "@/app/ui/templates/feed";
 
 export default function MyAct() {
   const searchParams = useSearchParams();
@@ -13,6 +14,10 @@ export default function MyAct() {
 
   const pathname = usePathname();
   const router = useRouter();
+
+  // REF
+  const childRef = useRef<FeedMethods>(null);
+  //
 
   // MEMO & STATES
   const [isPopupOn, setIsPopupOn] = useState(false);
@@ -70,7 +75,7 @@ export default function MyAct() {
         </p>
       </div>
       <div className="grow overflow-hidden flex justify-center items-center px-5">
-        <JamFeed filter={filter} />
+        <JamFeed filter={filter} ref={childRef} />
       </div>
     </div>
   );

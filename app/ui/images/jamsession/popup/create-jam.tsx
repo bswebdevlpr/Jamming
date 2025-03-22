@@ -44,4 +44,23 @@ const OpenChat = () => {
   );
 };
 
-export { MusicNote, Gallery, Location, OpenChat };
+const CreateJam_ImageRemoveIcon = ({
+  onClick,
+  style,
+}: {
+  onClick?;
+  style?;
+}) => {
+  return (
+    <Image
+      src="/jamsession/popup/remove-image.svg"
+      alt="X"
+      width={20}
+      height={20}
+      onClick={onClick}
+      style={style}
+    />
+  );
+};
+
+export { MusicNote, Gallery, Location, OpenChat, CreateJam_ImageRemoveIcon };

@@ -46,24 +46,15 @@ export async function POST(req: NextRequest) {
                 /&nbsp;/g,
                 " "
               );
-              const albumTitle = row["maniadb:album"][0].title[0].replace(
-                /&nbsp;/g,
-                " "
-              );
               const albumCoverUrl = row["maniadb:album"][0].image[0];
 
               return {
                 title,
                 artist,
-                albumTitle,
                 albumCoverUrl,
                 titleSimiliarity: !title ? 0 : compare(songName, title),
-                albumTitleSimiliarity: !albumTitle
-                  ? 0
-                  : compare(songName, albumTitle),
               };
             })
-            .filter((row) => row.title.length >= songName.length)
             .filter((row) => !/inst\./i.test(row.title))
             .sort((b, a) =>
               a.titleSimiliarity !== b.titleSimiliarity
