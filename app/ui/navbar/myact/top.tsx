@@ -1,23 +1,23 @@
 "use client";
 
-import { globalContext } from "@/app/(pages)/layout";
+// import { globalContext } from "@/app/(pages)/layout";
 import Bell from "@/app/ui/images/jamsession/bell";
-import CalendarImage from "@/app/ui/images/jamsession/calendar";
-import { Dispatch, SetStateAction, useContext } from "react";
-import CalendarComponent from "../../calendar/calendar";
+// import CalendarImage from "@/app/ui/images/jamsession/calendar";
+// import { Dispatch, SetStateAction, useContext } from "react";
+// import CalendarComponent from "../../calendar/calendar";
 import { MapDateToKor } from "@/app/lib/maps/moment";
 import { Filter_JamSessionFeed } from "../../feeds/jam-feed";
 
 export default function TopNavBar({
   filter,
-  setFilter,
-  setSelectedDate,
-}: {
+}: // setFilter,
+// setSelectedDate,
+{
   filter: Filter_JamSessionFeed;
-  setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
-  setSelectedDate: (input: moment.Moment) => void;
+  // setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
+  // setSelectedDate: (input: moment.Moment) => void;
 }) {
-  const { bottomSheet } = useContext(globalContext);
+  // const { bottomSheet } = useContext(globalContext);
 
   return (
     <div className="flex flex-row justify-between px-5 py-3">
@@ -26,8 +26,7 @@ export default function TopNavBar({
           fontFamily: "SUIT-TITLE",
           fontSize: "1.125rem",
           color: "#FFF",
-        }}
-      >
+        }}>
         {`${
           filter.selectedDate.month() + 1
         }월 ${filter.selectedDate.date()}일 ${
@@ -36,7 +35,7 @@ export default function TopNavBar({
       </p>
       <div className="flex flex-row gap-5">
         <Bell />
-        <CalendarImage
+        {/* <CalendarImage
           onClick={() =>
             bottomSheet.set({
               header: false,
@@ -50,7 +49,7 @@ export default function TopNavBar({
               ),
             })
           }
-        />
+        /> */}
       </div>
     </div>
   );

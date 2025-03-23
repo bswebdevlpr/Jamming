@@ -55,9 +55,9 @@ export default function JamSession() {
     <div className="h-full flex flex-col">
       <TopNavBar
         filter={filter}
-        setFilter={setFilter}
+        // setFilter={setFilter}
         setLocation={setLocation}
-        setSelectedDate={setSelectedDate}
+        // setSelectedDate={setSelectedDate}
       />
       {/* 슬라이드 캘린더 */}
       <div className="p-5">
@@ -73,8 +73,7 @@ export default function JamSession() {
               fontFamily: "SBAggroB",
               fontSize: "0.875rem",
               color: "#9F9FA2",
-            }}
-          >
+            }}>
             JAM SESSION
           </p>
           <span className="flex flex-row gap-1 justify-center items-center">
@@ -83,8 +82,7 @@ export default function JamSession() {
                 fontFamily: "SUIT-TITLE",
                 fontSize: "0.875rem",
                 color: "#9F9FA2",
-              }}
-            >
+              }}>
               필터
             </p>
             <div
@@ -102,8 +100,7 @@ export default function JamSession() {
                     />
                   ),
                 })
-              }
-            >
+              }>
               <Filter />
             </div>
           </span>

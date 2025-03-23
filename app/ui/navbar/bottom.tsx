@@ -10,12 +10,11 @@ export default function BottomNavBar() {
 
   return (
     <div
-      className="w-full flex flex-row"
+      className="w-full flex flex-row relative"
       style={{
         height: "6.93vh", // 52px
         background: "var(--background)",
-      }}
-    >
+      }}>
       <div
         className="grow flex justify-center items-center"
         style={{
@@ -26,18 +25,18 @@ export default function BottomNavBar() {
 
           cursor: "pointer",
         }}
-        onClick={() => redirect("/myact")}
-      >
+        onClick={() => redirect("/myact")}>
         <MyActivity focused={path.startsWith("/myact")} />
       </div>
       <div
         style={{
-          transform: "translate(0vh, -2.13vh)", // 16px
+          position: "absolute",
+          left: "calc(50% - 28px)",
+          bottom: "2.13vh",
 
           cursor: "pointer",
         }}
-        onClick={() => redirect("/jamsession")}
-      >
+        onClick={() => redirect("/jamsession")}>
         <HomeButton />
       </div>
       <div
@@ -50,8 +49,7 @@ export default function BottomNavBar() {
 
           cursor: "pointer",
         }}
-        onClick={() => redirect("/mypage")}
-      >
+        onClick={() => redirect("/mypage")}>
         <span className="flex flex-col items-center">
           <Profile focused={path.startsWith("/mypage")} />
           <p
@@ -59,8 +57,7 @@ export default function BottomNavBar() {
               fontFamily: "SUIT-BODY",
               fontSize: "12px",
               color: path.startsWith("/mypage") ? "#A3FF0C" : "#9F9FA2",
-            }}
-          >
+            }}>
             프로필
           </p>
         </span>

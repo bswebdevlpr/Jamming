@@ -1,7 +1,7 @@
 export interface DTO_Song {
   title: string;
   artist: string;
-  albumCoverUrl: string;
+  album_cover_url: string;
 }
 
 export interface ImageFile {

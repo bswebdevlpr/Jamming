@@ -52,8 +52,8 @@ export default function MyAct() {
     <div className="grow flex flex-col">
       <TopNavBar
         filter={filter}
-        setFilter={setFilter}
-        setSelectedDate={setSelectedDate}
+        // setFilter={setFilter}
+        // setSelectedDate={setSelectedDate}
       />
       {/* 슬라이드 */}
       <div className="p-5">
@@ -69,8 +69,7 @@ export default function MyAct() {
             fontFamily: "SBAggroB",
             fontSize: "0.875rem",
             color: "#9F9FA2",
-          }}
-        >
+          }}>
           My Jam
         </p>
       </div>

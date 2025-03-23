@@ -67,8 +67,7 @@ const FeedTemplate = forwardRef<FeedMethods, FeedProps>(
         className="w-full h-full overflow-without-scroll"
         style={{
           ...style,
-        }}
-      >
+        }}>
         {data?.pages.map((page, pageIndex) => (
           <Fragment key={pageIndex}>
             {page.data.map((data, idx) =>
@@ -76,61 +75,11 @@ const FeedTemplate = forwardRef<FeedMethods, FeedProps>(
             )}
           </Fragment>
         ))}
-        <div ref={innerRef} style={{ height: 20, background: "lightgray" }} />
+        <div ref={innerRef} style={{ height: 20, background: "transparent" }} />
       </div>
     );
   }
 );
 FeedTemplate.displayName = "FeedTemplate";
 
-// export default function FeedTemplate({
-//   queryFn,
-//   queryFnParam,
-//   feedItem,
-//   style,
-// }: {
-//   queryFn: FetchFeedFunc;
-//   queryFnParam: any;
-//   feedItem: React.FC<any>;
-//   style?: CSSProperties;
-// }) {
-//   const { ref, inView } = useInView();
-
-//   const { data, isLoading, fetchNextPage, hasNextPage, refetch } =
-//     useInfiniteQuery({
-//       initialPageParam: 0,
-//       queryKey: ["data", queryFnParam],
-//       queryFn: ({ pageParam = 0 }) => queryFn({ pageParam, queryFnParam }),
-//       getNextPageParam: (lastPage, pages) => lastPage.nextPage ?? pages.length,
-//     });
-
-//   const router = useRouter();
-//   const { bottomSheet } = useContext(globalContext);
-
-//   useEffect(() => {
-//     if (inView && hasNextPage && !isLoading) {
-//       fetchNextPage();
-//     }
-//   }, [inView, hasNextPage, isLoading, fetchNextPage]);
-
-//   return isLoading ? (
-//     "loading..."
-//   ) : (
-//     <div
-//       className="w-full h-full overflow-without-scroll"
-//       style={{
-//         ...style,
-//       }}
-//     >
-//       {data?.pages.map((page, pageIndex) => (
-//         <Fragment key={pageIndex}>
-//           {page.data.map((data, idx) =>
-//             feedItem({ idx, data, router, bottomSheet, refetch })
-//           )}
-//         </Fragment>
-//       ))}
-//       <div ref={ref} style={{ height: 20, background: "lightgray" }} />
-//     </div>
-//   );
-// }
 export default FeedTemplate;

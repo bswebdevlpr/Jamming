@@ -1,35 +1,35 @@
 "use client";
 
 import Bell from "@/app/ui/images/jamsession/bell";
-import CalendarImage from "@/app/ui/images/jamsession/calendar";
+// import CalendarImage from "@/app/ui/images/jamsession/calendar";
 import { DownArrow } from "../../images/arrows";
 import LocationPopup from "@/app/(pages)/(only-user)/jamsession/popup/location";
 import {
   Dispatch,
   SetStateAction,
-  useContext,
-  useEffect,
+  // useContext,
+  // useEffect,
   useState,
 } from "react";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
-import { globalContext } from "@/app/(pages)/layout";
-import CalendarComponent from "../../calendar/calendar";
-import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
+// import { globalContext } from "@/app/(pages)/layout";
+// import CalendarComponent from "../../calendar/calendar";
+import { Filter_JamSessionFeed } from "../../feeds/jam-feed";
 
 export default function TopNavBar({
   filter,
-  setFilter,
+  // setFilter,
   setLocation,
-  setSelectedDate,
-}: {
+}: // setSelectedDate,
+{
   filter: Filter_JamSessionFeed;
-  setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
+  // setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
   setLocation: (location: LocationEnum) => void;
-  setSelectedDate: (input: moment.Moment) => void;
+  // setSelectedDate: (input: moment.Moment) => void;
 }) {
-  // GLOBAL
-  const { bottomSheet } = useContext(globalContext);
-  //
+  // // GLOBAL
+  // const { bottomSheet } = useContext(globalContext);
+  // //
 
   // STATES
   const [isLocationClicked, setIsLocationClicked] = useState(false);
@@ -49,15 +49,14 @@ export default function TopNavBar({
             fontFamily: "SUIT-TITLE",
             fontSize: "1.125rem",
             color: "#FFF",
-          }}
-        >
+          }}>
           {LocationEnum[filter.location] ?? "지역"}
         </p>
         <DownArrow />
       </div>
       <div className="flex flex-row gap-5">
         <Bell />
-        <CalendarImage
+        {/* <CalendarImage
           onClick={() =>
             bottomSheet.set({
               header: false,
@@ -71,7 +70,7 @@ export default function TopNavBar({
               ),
             })
           }
-        />
+        /> */}
       </div>
       <LocationPopup
         turnOn={isLocationClicked}

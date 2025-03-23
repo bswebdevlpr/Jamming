@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 const FlexRow = ({
   title,
   artist,
-  albumCoverUrl,
+  album_cover_url,
   onClick,
 }: DTO_Song & { onClick }) => {
   return (
@@ -21,10 +21,9 @@ const FlexRow = ({
       style={{
         cursor: "pointer",
       }}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       <Image
-        src={albumCoverUrl}
+        src={album_cover_url}
         alt="cover image"
         width={52}
         height={52}
@@ -38,8 +37,7 @@ const FlexRow = ({
             fontSize: "1rem",
             lineHeight: "normal",
             letterSpacing: "-0.384px",
-          }}
-        >
+          }}>
           {title}
         </p>
         <p
@@ -49,8 +47,7 @@ const FlexRow = ({
             fontSize: "0.875rem",
             lineHeight: "normal",
             letterSpacing: "-0.336px",
-          }}
-        >
+          }}>
           {artist}
         </p>
       </div>
@@ -90,8 +87,7 @@ export default function SearchSongPopup({
   return (
     <PopupTemplate
       isTurnedOn={isTurnedOn}
-      className="flex flex-col justify-between px-5"
-    >
+      className="flex flex-col justify-between px-5">
       <div className="w-full flex justify-between py-3">
         <div className="grow flex gap-3">
           <LeftArrow onClick={turnOff} />
@@ -127,7 +123,7 @@ export default function SearchSongPopup({
             data.map((row, idx) => (
               <FlexRow
                 key={idx}
-                albumCoverUrl={row.albumCoverUrl}
+                album_cover_url={row.album_cover_url}
                 title={row.title}
                 artist={row.artist}
                 onClick={addNewSong(row)}
@@ -143,8 +139,7 @@ export default function SearchSongPopup({
                 letterSpacing: "-0.408px",
                 textAlign: "center",
                 marginTop: "24px",
-              }}
-            >
+              }}>
               검색 결과가 없습니다.
             </p>
           ))}
