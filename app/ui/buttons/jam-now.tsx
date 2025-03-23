@@ -21,7 +21,7 @@ export default function JamNow({
   return (
     <div>
       <span
-        className="flex flex-row jusify-center items-center w-fit h-11 gap-1 pl-2.5 pr-4"
+        className="flex jusify-center items-center w-fit h-11 gap-1 pl-2.5 pr-4"
         style={{
           backgroundColor: "#242426",
           border: "1px solid #A3FF0C",
@@ -33,16 +33,18 @@ export default function JamNow({
 
           cursor: "pointer",
         }}
-        onClick={() => setIsTurnedOn(true)}
-      >
+        onClick={() => setIsTurnedOn(true)}>
         <Plus />
         <p
           style={{
             fontFamily: "SBAggroM",
             fontSize: "0.875rem",
             color: "#A3FF0C",
-          }}
-        >
+            textAlign: "center",
+            lineHeight: "normal",
+            letterSpacing: "-0.336px",
+            transform: "translateY(0.075rem)",
+          }}>
           JAM NOW!
         </p>
       </span>

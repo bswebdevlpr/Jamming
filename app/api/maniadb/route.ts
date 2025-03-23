@@ -46,12 +46,12 @@ export async function POST(req: NextRequest) {
                 /&nbsp;/g,
                 " "
               );
-              const albumCoverUrl = row["maniadb:album"][0].image[0];
+              const album_cover_url = row["maniadb:album"][0].image[0];
 
               return {
                 title,
                 artist,
-                albumCoverUrl,
+                album_cover_url,
                 titleSimiliarity: !title ? 0 : compare(songName, title),
               };
             })

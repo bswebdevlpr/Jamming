@@ -35,6 +35,7 @@ import { createJam } from "../functions/fetch";
 import SearchSongPopup from "./search-song";
 import { DTO_Song, ImageFile } from "@/app/lib/interfaces/dto.interface";
 import Image from "next/image";
+import RegisterOpenchatPopup from "./register-openchat";
 
 const FlexRow = ({
   left,
@@ -55,15 +56,13 @@ const FlexRow = ({
         borderBottom: "1px solid #333335",
         cursor: "pointer",
       }}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       <p
         style={{
           fontFamily: "SUIT-TITLE",
           fontSize: "0.875rem",
           color: "#DCDCDD",
-        }}
-      >
+        }}>
         {left}
       </p>
       <span className="flex flex-row items-center gap-2 cursor-pointer">
@@ -74,8 +73,7 @@ const FlexRow = ({
             fontSize: "0.875rem",
             color: "#DCDCDD",
             opacity: 1,
-          }}
-        >
+          }}>
           {right}
         </p>
         <RightArrow className="ml-auto" />
@@ -112,6 +110,8 @@ export default function CreateJam({
   const [isClockPopupTurnedOn, setIsClockPopupTurnedOn] = useState(false);
   const [isSearchSongPopupTurnedOn, setIsSearchSongPopupTurnedOn] =
     useState(false);
+  const [isRegisterOpenchatPopupTurnedOn, setIsRegisterOpenchatPopupTurnedOn] =
+    useState(false);
 
   const [genre, setGenre] = useState<GenreEnum>(null);
   const [position, setPosition] = useState<PositionEnum>(null);
@@ -120,8 +120,9 @@ export default function CreateJam({
   const [headCnts, setHeadCnts] = useState<number[]>(new Array(6).fill(0));
   const [anyone, setAnyone] = useState<boolean>(false);
 
-  const [songsToPlay, setSongsToPlay] = useState<DTO_Song[]>([]);
+  const [songs, setSongs] = useState<DTO_Song[]>([]);
   const [images, setImages] = useState<ImageFile[]>([]);
+  const [openchat, setOpenchat] = useState<string>("");
   //
 
   // FORM
@@ -179,9 +180,9 @@ export default function CreateJam({
   }, [selectedDate]);
 
   useEffect(() => {
-    console.log("songsToPlay", songsToPlay);
+    console.log("songs", songs);
     console.log("images", images);
-  }, [songsToPlay, images]);
+  }, [songs, images]);
   //
 
   // HANDLERS
@@ -201,13 +202,23 @@ export default function CreateJam({
     const fileList = event.target.files;
 
     if (fileList) {
-      const newFiles = Array.from(fileList).map((row) => ({
-        id: Date.now(), // 고유한 ID 생성
-        name: row?.name,
-        url: URL.createObjectURL(row), // 미리보기 URL 생성
-      }));
-      setImages(newFiles);
+      const newImages = Array.from(fileList)
+        .slice(0, 5)
+        .map((row) => ({
+          id: Date.now(), // 고유한 ID 생성
+          name: row?.name,
+          url: URL.createObjectURL(row), // 미리보기 URL 생성
+        }));
+
+      if (newImages.length + images.length <= 5)
+        setImages([...images, ...newImages]);
+      else setImages(newImages);
     }
+  };
+
+  const handleFileRemove = (idx: number) => {
+    console.log("remove clicked");
+    setImages(images.filter((_, innerIdx) => innerIdx !== idx));
   };
   //
 
@@ -225,23 +236,20 @@ export default function CreateJam({
         overflow: "auto",
 
         backgroundColor: "var(--background)",
-      }}
-    >
+      }}>
       <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
         <div
           className="flex flex-row justify-between py-3 px-5"
           style={{
             borderBottom: "1px solid #333335",
-          }}
-        >
+          }}>
           <X onClick={turnOff} />
           <p
             style={{
               fontFamily: "SUIT-TITLE",
               fontSize: "1rem",
               color: "#FFF",
-            }}
-          >
+            }}>
             JAM NOW!
           </p>
           <button
@@ -251,8 +259,7 @@ export default function CreateJam({
               color: "#A3FF0C",
               cursor: "pointer",
             }}
-            type="submit"
-          >
+            type="submit">
             완료
           </button>
         </div>
@@ -267,8 +274,7 @@ export default function CreateJam({
                   style={{
                     color: "red",
                     fontSize: "10px",
-                  }}
-                >
+                  }}>
                   {"카테고리를 선택해주세요."}
                 </p>
               )
@@ -341,8 +347,7 @@ export default function CreateJam({
                   style={{
                     color: "red",
                     fontSize: "10px",
-                  }}
-                >
+                  }}>
                   {formState.errors.title.message}
                 </p>
               )}
@@ -371,8 +376,7 @@ export default function CreateJam({
                   fontSize: "0.75rem",
                   lineHeight: "140%",
                   letterSpacing: "-0.288px",
-                }}
-              >
+                }}>
                 <div className="flex flex-wrap gap-4">
                   {images.map((image, idx) => (
                     <div key={idx} className="relative">
@@ -381,8 +385,7 @@ export default function CreateJam({
                           width: "80px",
                           height: "80px",
                           position: "relative",
-                        }}
-                      >
+                        }}>
                         <Image
                           src={image.url}
                           alt=""
@@ -390,13 +393,13 @@ export default function CreateJam({
                           style={{ objectFit: "cover" }}
                         />
                       </div>
-
                       <CreateJam_ImageRemoveIcon
                         style={{
                           position: "absolute",
                           top: -8,
                           right: -8,
                         }}
+                        onClick={() => handleFileRemove(idx)}
                       />
                     </div>
                   ))}
@@ -423,8 +426,7 @@ export default function CreateJam({
 
             borderTop: "1px solid #333335",
             borderBottom: "1px solid #333335",
-          }}
-        >
+          }}>
           <ImageWithTxt
             image={<MusicNote />}
             text="합주곡"
@@ -457,6 +459,7 @@ export default function CreateJam({
             image={<OpenChat />}
             text="채팅방링크"
             style={{ opacity: 0.6, cursor: "pointer" }}
+            onClick={() => setIsRegisterOpenchatPopupTurnedOn(true)}
           />
         </div>
         <SelectHeadCountPopup
@@ -477,8 +480,13 @@ export default function CreateJam({
           isTurnedOn={isSearchSongPopupTurnedOn}
           turnOff={() => setIsSearchSongPopupTurnedOn(false)}
           addNewSong={(newSong: DTO_Song) => {
-            setSongsToPlay([...songsToPlay, newSong]);
+            setSongs([...songs, newSong]);
           }}
+        />
+        <RegisterOpenchatPopup
+          isTurnedOn={isRegisterOpenchatPopupTurnedOn}
+          turnOff={() => setIsRegisterOpenchatPopupTurnedOn(false)}
+          setOpenchat={setOpenchat}
         />
       </form>
     </div>
