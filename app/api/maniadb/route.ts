@@ -3,12 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import xml2js from "xml2js";
 import { JaroWinklerDistance } from "natural";
-
-interface FetchResult {
-  status: number;
-  msg: string;
-  data: any;
-}
+import { FetchResult } from "../types/response.interface";
 
 export async function POST(req: NextRequest) {
   const { songName } = await req.json();

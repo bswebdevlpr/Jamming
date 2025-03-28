@@ -11,13 +11,12 @@ export default function TestPage() {
   useEffect(() => {
     (async () => {
       const response = await axios
-        .post("/api/maniadb", {
-          songName: "tik tak tok",
+        .post("/api/tmap", {
+          location: "언더그라운드 미금",
         })
         .then((res) => res.data.data)
         .catch((e) => {
-          //TODO: 에러모달
-          throw CustomError.SearchSong;
+          console.log(e);
         });
       console.log(response);
       setSearchResult(response);
