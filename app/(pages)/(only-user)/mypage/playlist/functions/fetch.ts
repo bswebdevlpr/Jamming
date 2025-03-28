@@ -77,7 +77,7 @@ const getVideoInfo = async (
     //
 
     // AXIOS
-    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${process.env.YOUTUBE_API_KEY}`;
+    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${process.env.YOUTUBE_KEY}`;
 
     const video = await axios.get(url).then((res) => res?.data?.items[0]);
     if (!video)
