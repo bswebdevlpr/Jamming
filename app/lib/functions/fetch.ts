@@ -36,7 +36,7 @@ export const fetchJams: FetchFeedFunc = async ({
       `
       )
       .gte(
-        "date",
+        "datetime",
         date
           .clone()
           .set("hour", 0)
@@ -45,7 +45,7 @@ export const fetchJams: FetchFeedFunc = async ({
           .toISOString()
       )
       .lte(
-        "date",
+        "datetime",
         date
           .clone()
           .set("hour", 23)
@@ -73,7 +73,12 @@ export const fetchJams: FetchFeedFunc = async ({
       if (error) throw CustomError.GetJamFeed;
 
       data.forEach((row) => {
+        console.log("hola", row, row.headcnt_by_pos);
         row.curHeadCnt = row.jamentry.length;
+        row.maxHeadCnt = row.headcnt_by_pos.reduce(
+          (acc, cur) => acc + cur.headcnt,
+          0
+        );
       });
 
       if (convertedParam.atMyAct) {
@@ -93,6 +98,7 @@ export const fetchJams: FetchFeedFunc = async ({
       ret.nextPage = data.length < 6 ? null : pageParam + 1;
     });
   } catch (e) {
+    if (process.env.NODE_ENV === "development") console.error(e);
     if (e instanceof CustomError) throw e;
     else throw CustomError.UnExpected;
   }

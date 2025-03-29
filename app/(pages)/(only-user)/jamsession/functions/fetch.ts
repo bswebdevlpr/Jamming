@@ -2,10 +2,15 @@
 
 import { getUser } from "@/app/api/functions/read";
 import { CustomError } from "@/app/lib/errors/client.error";
-import { FormData_Post } from "@/app/lib/zod";
+import {
+  MapGenreToData,
+  MapLevelToData,
+  MapLocationToData,
+} from "@/app/lib/maps/jam";
+import { ZodType_Post } from "@/app/lib/zod";
 import { createClient } from "@/app/util/supabase/server";
 
-export const createJam = async (input: FormData_Post) => {
+export const createJam = async (input: ZodType_Post) => {
   let ret = null;
 
   try {
@@ -15,7 +20,14 @@ export const createJam = async (input: FormData_Post) => {
 
     const { data, error } = await supabase
       .from("jamsession")
-      .insert(Object.assign(input, { user_id: user.id }))
+      .insert({
+        ...input,
+        user_id: user.id,
+        pos: ["v"],
+        location: input.location.map((row) => MapLocationToData[row]),
+        genre: input.genre.map((row) => MapGenreToData[row]),
+        level: input.level.map((row) => MapLevelToData[row]),
+      })
       .eq("id", user.id)
       .select();
     if (error || data.length === 0) throw CustomError.UnExpected;

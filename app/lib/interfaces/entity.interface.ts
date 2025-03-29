@@ -2,6 +2,7 @@ import { GenreEnum } from "../enums/genre.enum";
 import { LevelEnum } from "../enums/level.enum";
 import { LocationEnum } from "../enums/location.enum";
 import { PositionEnum } from "../enums/position.enum";
+import { ZodType_HeadCnt } from "../zod";
 
 export interface Entity_User {
   id?: string;
@@ -29,12 +30,13 @@ export interface Entity_JamSession {
   genre?: GenreEnum;
   level?: LevelEnum;
   location?: LocationEnum;
-  max_head_cnt?: number;
+  headcnt_by_pos?: ZodType_HeadCnt[];
   date?: string;
   created_at?: string;
 
   // NOT COLUMNS
   curHeadCnt?: number;
+  maxHeadCnt?: number;
 
   user?: Entity_User;
   jamentry?: Entity_JamEntry[];

@@ -32,6 +32,7 @@ export interface ButtonTemplateProps {
   style?: CSSProperties;
   isActive?: boolean;
   styleActivated?: CSSProperties;
+  type?: "button" | "reset" | "submit";
 }
 
 const ButtonTemplate = ({
@@ -41,6 +42,7 @@ const ButtonTemplate = ({
   style,
   isActive,
   styleActivated,
+  type = "submit",
 }: ButtonTemplateProps) => {
   return (
     <button
@@ -58,7 +60,9 @@ const ButtonTemplate = ({
             }
       }
       className={className}
-      onClick={isActive === undefined || isActive ? onClick : null}>
+      onClick={isActive === undefined || isActive ? onClick : null}
+      type={type}
+    >
       {text}
     </button>
   );

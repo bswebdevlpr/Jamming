@@ -3,7 +3,7 @@ import { GenreEnum } from "../enums/genre.enum";
 import { LevelEnum } from "../enums/level.enum";
 import { LocationEnum } from "../enums/location.enum";
 import { PositionEnum } from "../enums/position.enum";
-import { ImageFile } from "./zod.interface";
+import { ZodType_Image } from "./zod.interface";
 import { BottomSheetHeight } from "@/app/ui/templates/bottom-sheet/body";
 
 export interface BottomSheetContext {
@@ -32,7 +32,7 @@ export interface GlobalContext {
 export interface UserProfile {
   isLoaded: undefined | boolean;
   acceptMarketing: undefined | boolean;
-  profileImage: undefined | null | ImageFile;
+  profileImage: undefined | null | ZodType_Image;
   nickname: undefined | string;
   tags: undefined | string[];
   position: undefined | PositionEnum;

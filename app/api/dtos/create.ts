@@ -12,7 +12,7 @@ export interface CreateJamDto {
   genre: GenreEnum[];
   level: LevelEnum[];
   date: string;
-  max_head_cnt: number;
+  headcnt_by_pos: number;
 }
 
 export interface CreateJamEntryDto {

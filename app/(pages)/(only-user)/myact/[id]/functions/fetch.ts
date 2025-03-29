@@ -128,7 +128,7 @@ export const getJamSchedule = async (targetUserId: string) => {
             pos, 
             level, 
             date, 
-            max_head_cnt,
+            headcnt_by_pos,
             user ( id ),
             jamentry ( id )
           )

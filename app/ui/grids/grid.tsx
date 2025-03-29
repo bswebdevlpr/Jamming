@@ -25,7 +25,6 @@ const gridCols: { [key: number]: string } = {
  */
 const Grid = ({
   items,
-  values,
   colNum,
   itemStyle,
   itemStyleActivated,
@@ -50,12 +49,12 @@ const Grid = ({
   // };
 }) => {
   const [itemStateList, setItemStateList] = useState<boolean[]>(
-    values.map((val) => val === state)
+    items.map((val) => val === state)
   );
 
   useEffect(() => {
-    setItemStateList(values.map((val) => val === state));
-  }, [state, values]);
+    setItemStateList(items.map((val) => val === state));
+  }, [state, items]);
 
   // useEffect(() => {
   //   if (useInitState?.initState) {
@@ -71,7 +70,7 @@ const Grid = ({
     handleState(value);
   };
 
-  const createItems = (texts: string[], values: any[]) => {
+  const createItems = (texts: string[]) => {
     return (
       <>
         {texts.map((text, idx) => (
@@ -79,7 +78,6 @@ const Grid = ({
             key={idx}
             idx={idx}
             text={text}
-            value={values[idx]}
             isFocused={itemStateList[idx]}
             onClick={handleItemClick}
             style={itemStyle}
@@ -92,7 +90,7 @@ const Grid = ({
 
   return (
     <div className={`grid ${gridCols[colNum ?? 3]} gap-1`}>
-      {createItems(items, values)}
+      {createItems(items)}
     </div>
   );
 };

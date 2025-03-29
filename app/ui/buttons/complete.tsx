@@ -6,6 +6,7 @@ const CompleteButton = ({
   style,
   isActive,
   styleActivated,
+  type,
 }: Partial<ButtonTemplateProps>) => {
   return (
     <ButtonTemplate
@@ -26,6 +27,7 @@ const CompleteButton = ({
           background: "rgba(163, 255, 12, 0.12)",
         }
       }
+      type={type}
     />
   );
 };

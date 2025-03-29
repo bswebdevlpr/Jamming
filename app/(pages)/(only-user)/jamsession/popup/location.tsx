@@ -9,21 +9,19 @@ import { ListItemProp } from "@/app/ui/lists/item";
 import VerticalList from "@/app/ui/lists/list";
 import { useEffect, useRef, useState } from "react";
 
-const locations: Partial<ListItemProp>[] = Object.keys(LocationEnum).map(
-  (key) => {
-    const typeForcedKey: keyof typeof LocationEnum =
-      key as keyof typeof LocationEnum;
+const locations: ListItemProp[] = Object.keys(LocationEnum).map((key) => {
+  const typeForcedKey: keyof typeof LocationEnum =
+    key as keyof typeof LocationEnum;
 
-    return {
-      text: LocationEnum[typeForcedKey],
-      value: typeForcedKey,
-      backgroundUrl: LocationBackgroundURL[typeForcedKey],
-      style: {
-        backgroundColor: "var(--background)",
-      },
-    };
-  }
-);
+  return {
+    text: LocationEnum[typeForcedKey],
+    backgroundUrl: LocationBackgroundURL[typeForcedKey],
+    onClick: null,
+    style: {
+      backgroundColor: "var(--background)",
+    },
+  };
+});
 
 export default function LocationPopup({
   turnOn,
@@ -32,7 +30,7 @@ export default function LocationPopup({
 }: {
   turnOn: boolean;
   turnOff: any;
-  setLocation: (location: LocationEnum) => void;
+  setLocation;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -86,7 +84,7 @@ export default function LocationPopup({
       <VerticalList
         props={locations.map((prop) => {
           prop.onClick = () => {
-            setLocation(prop.value);
+            setLocation(prop.text);
             turnOff();
           };
           return prop;

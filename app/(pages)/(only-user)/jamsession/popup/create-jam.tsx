@@ -27,15 +27,34 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import ClockPopup from "./clock";
 import moment from "moment";
-import { FormData_Post, FormSchema_Post } from "@/app/lib/zod";
+import {
+  ZodType_Song,
+  ZodSchema_Post,
+  ZodType_LocationDetail,
+  ZodType_Image,
+  ZodType_Post,
+} from "@/app/lib/zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { convertFormData } from "@/app/lib/functions/convert";
 import { createJam } from "../functions/fetch";
 import SearchSongPopup from "./search-song";
-import { DTO_Song, ImageFile } from "@/app/lib/interfaces/dto.interface";
 import Image from "next/image";
 import RegisterOpenchatPopup from "./register-openchat";
+import SearchLocationPopup from "./search-location";
+import _ from "lodash";
+import {
+  MapDataToGenre,
+  MapDataToLevel,
+  MapDataToLocation,
+  MapDataToPosition,
+  MapGenreToData,
+  MapLevelToData,
+  MapLocationToData,
+  MapPositionToData,
+} from "@/app/lib/maps/jam";
+import LocationPopup from "./location";
+import { fallbackModeToStaticPathsResult } from "next/dist/lib/fallback";
 
 const FlexRow = ({
   left,
@@ -56,13 +75,15 @@ const FlexRow = ({
         borderBottom: "1px solid #333335",
         cursor: "pointer",
       }}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       <p
         style={{
           fontFamily: "SUIT-TITLE",
           fontSize: "0.875rem",
           color: "#DCDCDD",
-        }}>
+        }}
+      >
         {left}
       </p>
       <span className="flex flex-row items-center gap-2 cursor-pointer">
@@ -73,7 +94,8 @@ const FlexRow = ({
             fontSize: "0.875rem",
             color: "#DCDCDD",
             opacity: 1,
-          }}>
+          }}
+        >
           {right}
         </p>
         <RightArrow className="ml-auto" />
@@ -105,24 +127,18 @@ export default function CreateJam({
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
+  const [isLocationPopupClicked, setIsLocationPopupClicked] = useState(false);
   const [isHeadCountPopupTurnedOn, setIsHeadCountPopupTurnedOn] =
     useState(false);
   const [isClockPopupTurnedOn, setIsClockPopupTurnedOn] = useState(false);
   const [isSearchSongPopupTurnedOn, setIsSearchSongPopupTurnedOn] =
     useState(false);
+  const [isSearchLocationPopupTurnedOn, setIsSearchLocationPopupTurnedOn] =
+    useState(false);
   const [isRegisterOpenchatPopupTurnedOn, setIsRegisterOpenchatPopupTurnedOn] =
     useState(false);
 
-  const [genre, setGenre] = useState<GenreEnum>(null);
-  const [position, setPosition] = useState<PositionEnum>(null);
-  const [level, setLevel] = useState<LevelEnum>(null);
-
-  const [headCnts, setHeadCnts] = useState<number[]>(new Array(6).fill(0));
-  const [anyone, setAnyone] = useState<boolean>(false);
-
-  const [songs, setSongs] = useState<DTO_Song[]>([]);
-  const [images, setImages] = useState<ImageFile[]>([]);
-  const [openchat, setOpenchat] = useState<string>("");
+  const [headTotal, setHeadTotal] = useState<number>(0);
   //
 
   // FORM
@@ -134,18 +150,35 @@ export default function CreateJam({
     setValue,
     getValues,
     setError,
-  } = useForm<FormData_Post>({
+    clearErrors,
+  } = useForm<ZodType_Post>({
     defaultValues: {
       title: "",
       body: "",
-      genre: [genre],
-      pos: [position],
-      level: [level],
-      max_head_cnt: headCnts.reduce((acc, cur) => acc + cur, 0),
-      date: selectedDate?.format("YYYY-MM-DD"),
+      location: [],
+      genre: [],
+      level: [],
+      headcnt_by_pos: Object.keys(MapDataToPosition).map((key) => ({
+        pos: key,
+        headcnt: 0,
+      })),
+      datetime: selectedDate && selectedDate?.format("YYYY-MM-DD"),
+      songs: [],
+      images: [],
+      location_detail: null,
+      openchat: "",
     },
-    resolver: zodResolver(FormSchema_Post),
+    resolver: zodResolver(ZodSchema_Post),
   });
+
+  const location = watch("location"),
+    genre = watch("genre"),
+    level = watch("level"),
+    headcnt_by_pos = watch("headcnt_by_pos"),
+    location_detail = watch("location_detail"),
+    songs = watch("songs"),
+    images = watch("images"),
+    openchat = watch("openchat");
   //
 
   // HOOKS
@@ -161,33 +194,22 @@ export default function CreateJam({
   }, [isTurnedOn]);
 
   useEffect(() => {
-    setValue("pos", [position]);
-  }, [position]);
-  useEffect(() => {
-    setValue("genre", [genre]);
-  }, [genre]);
-  useEffect(() => {
-    setValue("level", [level]);
-  }, [level]);
-  useEffect(() => {
-    setValue(
-      "max_head_cnt",
-      headCnts.reduce((acc, cur) => acc + cur, 0)
-    );
-  }, [headCnts]);
-  useEffect(() => {
-    if (selectedDate) setValue("date", selectedDate.format("YYYY-MM-DD"));
+    if (selectedDate) {
+      setValue("datetime", selectedDate.toISOString(), {
+        shouldValidate: false,
+      });
+      clearErrors();
+    }
   }, [selectedDate]);
 
   useEffect(() => {
-    console.log("songs", songs);
-    console.log("images", images);
-  }, [songs, images]);
+    setHeadTotal(headcnt_by_pos.reduce((acc, cur) => acc + cur.headcnt, 0));
+  }, [headcnt_by_pos]);
   //
 
   // HANDLERS
-  const onSubmit = async (data: FormData_Post) => {
-    await createJam(convertFormData(data)).then((res) => {
+  const onSubmit = async (data: ZodType_Post) => {
+    await createJam(data).then((res) => {
       if (res) {
         refetch();
         turnOff();
@@ -211,14 +233,19 @@ export default function CreateJam({
         }));
 
       if (newImages.length + images.length <= 5)
-        setImages([...images, ...newImages]);
-      else setImages(newImages);
+        setValue("images", [...images, ...newImages], {
+          shouldValidate: false,
+        });
+      else setValue("images", newImages, { shouldValidate: false });
     }
   };
 
   const handleFileRemove = (idx: number) => {
-    console.log("remove clicked");
-    setImages(images.filter((_, innerIdx) => innerIdx !== idx));
+    setValue(
+      "images",
+      images.filter((_, innerIdx) => innerIdx !== idx),
+      { shouldValidate: false }
+    );
   };
   //
 
@@ -236,20 +263,23 @@ export default function CreateJam({
         overflow: "auto",
 
         backgroundColor: "var(--background)",
-      }}>
+      }}
+    >
       <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
         <div
           className="flex flex-row justify-between py-3 px-5"
           style={{
             borderBottom: "1px solid #333335",
-          }}>
+          }}
+        >
           <X onClick={turnOff} />
           <p
             style={{
               fontFamily: "SUIT-TITLE",
               fontSize: "1rem",
               color: "#FFF",
-            }}>
+            }}
+          >
             JAM NOW!
           </p>
           <button
@@ -259,40 +289,59 @@ export default function CreateJam({
               color: "#A3FF0C",
               cursor: "pointer",
             }}
-            type="submit">
+            type="submit"
+          >
             완료
           </button>
         </div>
         <div className="grow flex flex-col">
           <FlexRow
-            left="카테고리"
+            left="지역"
             err={
-              (formState.errors.genre ||
-                formState.errors.pos ||
-                formState.errors.level) && (
+              formState.errors.location && (
                 <p
                   style={{
                     color: "red",
                     fontSize: "10px",
-                  }}>
+                  }}
+                >
+                  {"지역을 선택해주세요."}
+                </p>
+              )
+            }
+            right={location[0]}
+            onClick={() => setIsLocationPopupClicked(true)}
+          />
+          <FlexRow
+            left="카테고리"
+            err={
+              (formState.errors.genre || formState.errors.level) && (
+                <p
+                  style={{
+                    color: "red",
+                    fontSize: "10px",
+                  }}
+                >
                   {"카테고리를 선택해주세요."}
                 </p>
               )
             }
-            right={[GenreEnum[genre], LevelEnum[level]]
-              .filter((elem) => elem)
-              .join(" ")}
+            right={[genre[0], level[0]].filter((elem) => elem).join(" ")}
             onClick={() =>
               bottomSheet.set({
                 location: "high",
                 children: (
                   <BottomSheetContent
-                    genre={genre}
-                    position={position}
-                    level={level}
-                    setGenre={setGenre}
-                    setPosition={setPosition}
-                    setLevel={setLevel}
+                    genre={MapDataToGenre[genre[0]]}
+                    level={MapDataToLevel[level[0]]}
+                    setGenre={(val) => {
+                      setValue("genre", [val], { shouldValidate: false });
+                      clearErrors();
+                    }}
+                    setLevel={(val) => {
+                      setValue("level", [val], { shouldValidate: false });
+                      clearErrors();
+                    }}
                     isCreatePopup={true}
                   />
                 ),
@@ -301,11 +350,8 @@ export default function CreateJam({
           />
           <FlexRow
             left="참여 인원"
-            right={
-              anyone
-                ? "상관없음"
-                : headCnts.reduce((acc, cur) => acc + cur, 0).toString()
-            }
+            right={(() =>
+              headTotal > 0 ? headTotal.toString() : "상관없음")()}
             onClick={() => setIsHeadCountPopupTurnedOn(true)}
           />
           <FlexRow
@@ -347,7 +393,8 @@ export default function CreateJam({
                   style={{
                     color: "red",
                     fontSize: "10px",
-                  }}>
+                  }}
+                >
                   {formState.errors.title.message}
                 </p>
               )}
@@ -364,6 +411,10 @@ export default function CreateJam({
 
                 lineHeight: "normal",
                 letterSpacing: "-0.336px",
+
+                marginBottom: "2px",
+
+                resize: "none",
               }}
               {...register("body")}
             />
@@ -376,7 +427,8 @@ export default function CreateJam({
                   fontSize: "0.75rem",
                   lineHeight: "140%",
                   letterSpacing: "-0.288px",
-                }}>
+                }}
+              >
                 <div className="flex flex-wrap gap-4">
                   {images.map((image, idx) => (
                     <div key={idx} className="relative">
@@ -385,7 +437,8 @@ export default function CreateJam({
                           width: "80px",
                           height: "80px",
                           position: "relative",
-                        }}>
+                        }}
+                      >
                         <Image
                           src={image.url}
                           alt=""
@@ -426,7 +479,8 @@ export default function CreateJam({
 
             borderTop: "1px solid #333335",
             borderBottom: "1px solid #333335",
-          }}>
+          }}
+        >
           <ImageWithTxt
             image={<MusicNote />}
             text="합주곡"
@@ -454,6 +508,7 @@ export default function CreateJam({
             image={<Location />}
             text="장소"
             style={{ opacity: 0.6, cursor: "pointer" }}
+            onClick={() => setIsSearchLocationPopupTurnedOn(true)}
           />
           <ImageWithTxt
             image={<OpenChat />}
@@ -462,13 +517,20 @@ export default function CreateJam({
             onClick={() => setIsRegisterOpenchatPopupTurnedOn(true)}
           />
         </div>
+        <LocationPopup
+          turnOn={isLocationPopupClicked}
+          turnOff={() => setIsLocationPopupClicked(false)}
+          setLocation={(val) =>
+            setValue("location", [val], { shouldValidate: false })
+          }
+        />
         <SelectHeadCountPopup
           isTurnedOn={isHeadCountPopupTurnedOn}
           turnOff={() => setIsHeadCountPopupTurnedOn(false)}
-          headCnts={headCnts}
-          setHeadCnts={setHeadCnts}
-          anyone={anyone}
-          setAnyone={setAnyone}
+          headCnts={headcnt_by_pos}
+          setHeadCnts={(val) =>
+            setValue("headcnt_by_pos", val, { shouldValidate: false })
+          }
         />
         <ClockPopup
           isTurnedOn={isClockPopupTurnedOn}
@@ -479,14 +541,23 @@ export default function CreateJam({
         <SearchSongPopup
           isTurnedOn={isSearchSongPopupTurnedOn}
           turnOff={() => setIsSearchSongPopupTurnedOn(false)}
-          addNewSong={(newSong: DTO_Song) => {
-            setSongs([...songs, newSong]);
-          }}
+          addNewSong={(newSong: ZodType_Song) =>
+            setValue("songs", [...songs, newSong], { shouldValidate: false })
+          }
+        />
+        <SearchLocationPopup
+          isTurnedOn={isSearchLocationPopupTurnedOn}
+          turnOff={() => setIsSearchLocationPopupTurnedOn(false)}
+          setLocation={(val) =>
+            setValue("location_detail", val, { shouldValidate: false })
+          }
         />
         <RegisterOpenchatPopup
           isTurnedOn={isRegisterOpenchatPopupTurnedOn}
           turnOff={() => setIsRegisterOpenchatPopupTurnedOn(false)}
-          setOpenchat={setOpenchat}
+          setOpenchat={(val) =>
+            setValue("openchat", val, { shouldValidate: false })
+          }
         />
       </form>
     </div>
