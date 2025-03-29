@@ -1,9 +1,8 @@
 "use client";
 
-import { DTO_Song } from "@/app/lib/interfaces/dto.interface";
+import { ZodType_Song } from "@/app/lib/zod";
 import { LeftArrow } from "@/app/ui/images/arrows";
 import { SearchIcon } from "@/app/ui/images/jamsession/popup/search";
-import ButtonTemplate from "@/app/ui/templates/buttons";
 import PopupTemplate from "@/app/ui/templates/popup";
 import axios from "axios";
 import Image from "next/image";
@@ -14,17 +13,18 @@ const FlexRow = ({
   artist,
   album_cover_url,
   onClick,
-}: DTO_Song & { onClick }) => {
+}: ZodType_Song & { onClick }) => {
   return (
     <div
       className="flex items-center py-3 gap-4"
       style={{
         cursor: "pointer",
       }}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       <Image
         src={album_cover_url}
-        alt="cover image"
+        alt="cover"
         width={52}
         height={52}
         priority={true}
@@ -37,7 +37,8 @@ const FlexRow = ({
             fontSize: "1rem",
             lineHeight: "normal",
             letterSpacing: "-0.384px",
-          }}>
+          }}
+        >
           {title}
         </p>
         <p
@@ -47,7 +48,8 @@ const FlexRow = ({
             fontSize: "0.875rem",
             lineHeight: "normal",
             letterSpacing: "-0.336px",
-          }}>
+          }}
+        >
           {artist}
         </p>
       </div>
@@ -62,10 +64,10 @@ export default function SearchSongPopup({
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
-  addNewSong: (input: DTO_Song) => void;
+  addNewSong: (input: ZodType_Song) => void;
 }) {
   const [searchTxt, setSearchTxt] = useState<string>("");
-  const [data, setData] = useState<DTO_Song[]>([]);
+  const [data, setData] = useState<ZodType_Song[]>([]);
   const [isSearched, setIsSearched] = useState<boolean>(false);
 
   const handleSearch = async () => {
@@ -75,19 +77,29 @@ export default function SearchSongPopup({
           songName: searchTxt,
         })
         .then((res) => {
-          setIsSearched(true);
-          setData(res.data.data);
+          if (res.data?.data) {
+            setIsSearched(true);
+            setData(res.data.data);
+          }
+        })
+        .catch(() => {
+          //TODO - 에러팝업
+          console.error("ㅜㅜ");
         });
   };
 
   useEffect(() => {
-    if (searchTxt.length === 0) setData([]);
+    if (searchTxt.length === 0) {
+      setData([]);
+      setIsSearched(false);
+    }
   }, [searchTxt]);
 
   return (
     <PopupTemplate
       isTurnedOn={isTurnedOn}
-      className="flex flex-col justify-between px-5">
+      className="flex flex-col justify-between px-5"
+    >
       <div className="w-full flex justify-between py-3">
         <div className="grow flex gap-3">
           <LeftArrow onClick={turnOff} />
@@ -111,7 +123,10 @@ export default function SearchSongPopup({
             }}
             onChange={(e) => setSearchTxt(e.currentTarget.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSearch();
+              }
             }}
           />
         </div>
@@ -126,7 +141,10 @@ export default function SearchSongPopup({
                 album_cover_url={row.album_cover_url}
                 title={row.title}
                 artist={row.artist}
-                onClick={addNewSong(row)}
+                onClick={() => {
+                  addNewSong(row);
+                  turnOff();
+                }}
               />
             ))
           ) : (
@@ -139,7 +157,8 @@ export default function SearchSongPopup({
                 letterSpacing: "-0.408px",
                 textAlign: "center",
                 marginTop: "24px",
-              }}>
+              }}
+            >
               검색 결과가 없습니다.
             </p>
           ))}

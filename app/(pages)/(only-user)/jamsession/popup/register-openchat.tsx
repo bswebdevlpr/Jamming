@@ -17,10 +17,24 @@ export default function RegisterOpenchatPopup({
 }) {
   const [localOpenchat, setLocalOpenchat] = useState<string>("");
 
+  const handleSubmit = () => {
+    if (
+      localOpenchat.length > 0 &&
+      /^https:\/\/open\.kakao\.com/.test(localOpenchat)
+    ) {
+      setOpenchat(localOpenchat);
+      turnOff();
+    } else {
+      // TODO: 카카오톡 오픈채팅방 링크만 입력 가능하다고 경고메세지 띄우기
+      console.error("멈춰!");
+    }
+  };
+
   return (
     <PopupTemplate
       isTurnedOn={isTurnedOn}
-      className="flex flex-col justify-between px-5">
+      className="flex flex-col justify-between px-5"
+    >
       <ImageWithTxt
         image={<LeftArrowWhite onClick={turnOff} />}
         text="오픈채팅방 링크"
@@ -51,21 +65,21 @@ export default function RegisterOpenchatPopup({
             lineHeight: "152%",
             letterSpacing: "-0.336px",
           }}
+          onChange={(e) => setLocalOpenchat(e.currentTarget.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleSubmit();
+            }
+          }}
         />
       </div>
       <ButtonTemplate
         text="완료"
         className="mb-2"
-        onClick={() => {
-          if (
-            localOpenchat.length > 0 &&
-            /^https:\/\/open\.kakao\.com/.test(localOpenchat)
-          ) {
-            setOpenchat(localOpenchat);
-          } else {
-            // TODO: 카카오톡 오픈채팅방 링크만 입력 가능하다고 경고메세지 띄우기
-          }
-        }}
+        isActive={localOpenchat.length > 0}
+        onClick={() => handleSubmit()}
+        type="button"
       />
     </PopupTemplate>
   );

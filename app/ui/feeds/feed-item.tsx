@@ -18,10 +18,15 @@ import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import ButtonTemplate from "../templates/buttons";
 import { deleteJamEntry, deleteJamSession } from "@/app/api/functions/delete";
 import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
+import { useEffect } from "react";
 
 export interface FeedItemProps_Jam {
   idx: number;
-  data: Entity_JamSession & { isMyJam: boolean; curHeadCnt: number };
+  data: Entity_JamSession & {
+    isMyJam: boolean;
+    curHeadCnt: number;
+    maxHeadCnt: number;
+  };
   router: AppRouterInstance;
   bottomSheet: BottomSheetContext;
   refetch: any;
@@ -44,7 +49,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
     jamentry,
     isMyJam,
     curHeadCnt,
-    max_head_cnt: maxHeadCnt,
+    maxHeadCnt,
   } = data;
 
   const tags = [

@@ -19,7 +19,6 @@ const deactivatedStyle: CSSProperties = {
 const GridItem = ({
   idx,
   text,
-  value,
   isFocused,
   onClick,
   style,
@@ -27,7 +26,6 @@ const GridItem = ({
 }: {
   idx: number;
   text: string;
-  value: any;
   isFocused: boolean;
   onClick: (idx: number, value: any) => void;
   style?: CSSProperties;
@@ -62,7 +60,7 @@ const GridItem = ({
     <div
       className="flex justify-center items-center"
       style={innerStyle}
-      onClick={() => onClick(idx, value)}
+      onClick={() => onClick(idx, text)}
     >
       {text}
     </div>

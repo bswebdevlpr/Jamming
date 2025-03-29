@@ -22,10 +22,10 @@ const BottomSheetContent = ({
   isCreatePopup = false,
 }: {
   genre: GenreEnum;
-  position: PositionEnum;
+  position?: PositionEnum;
   level: LevelEnum;
   setGenre: (input: GenreEnum) => void;
-  setPosition: (input: PositionEnum) => void;
+  setPosition?: (input: PositionEnum) => void;
   setLevel: (input: LevelEnum) => void;
   isCreatePopup?: boolean;
 }) => {
@@ -80,7 +80,7 @@ const BottomSheetContent = ({
           <Grid
             colNum={4}
             items={Object.values(GenreEnum)}
-            values={Object.keys(GenreEnum)}
+            values={Object.values(GenreEnum)}
             itemStyle={{ height: "2.5rem", color: "#F2F2F4" }}
             itemStyleActivated={{
               color: "#A3FF0C",
@@ -103,7 +103,7 @@ const BottomSheetContent = ({
             <Grid
               colNum={4}
               items={Object.values(PositionEnum)}
-              values={Object.keys(PositionEnum)}
+              values={Object.values(PositionEnum)}
               itemStyle={{ height: "2.5rem", color: "#F2F2F4" }}
               itemStyleActivated={{
                 color: "#FF3773",
@@ -126,7 +126,7 @@ const BottomSheetContent = ({
           <Grid
             colNum={4}
             items={Object.values(LevelEnum)}
-            values={Object.keys(LevelEnum)}
+            values={Object.values(LevelEnum)}
             itemStyle={{ height: "2.5rem", color: "#F2F2F4" }}
             itemStyleActivated={{
               color: "#6DB0FF",

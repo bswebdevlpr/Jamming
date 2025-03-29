@@ -1,12 +1,14 @@
 "use client";
 
 import { PositionEnum } from "@/app/lib/enums/position.enum";
+import { MapDataToPosition } from "@/app/lib/maps/jam";
+import { ZodType_HeadCnt } from "@/app/lib/zod";
 import CompleteButton from "@/app/ui/buttons/complete";
-import { RoundedCheckbox } from "@/app/ui/checkbox";
 import { LeftArrow } from "@/app/ui/images/arrows";
 import { Plus, Minus } from "@/app/ui/images/jamsession/popup/select-headcount";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import PopupTemplate from "@/app/ui/templates/popup";
+import _ from "lodash";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const FlexRow = ({
@@ -58,19 +60,15 @@ export default function SelectHeadCountPopup({
   turnOff,
   headCnts,
   setHeadCnts,
-  anyone,
-  setAnyone,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
-  headCnts: number[];
-  setHeadCnts: Dispatch<SetStateAction<number[]>>;
-  anyone: boolean;
-  setAnyone: Dispatch<SetStateAction<boolean>>;
+  headCnts: ZodType_HeadCnt[];
+  setHeadCnts;
 }) {
-  useEffect(() => {
-    setHeadCnts(new Array(6).fill(0));
-  }, [anyone]);
+  const [localHeadCnts, setLocalHeadCnts] = useState<ZodType_HeadCnt[]>(
+    headCnts.map((row) => _.cloneDeep(row))
+  );
 
   return (
     <PopupTemplate isTurnedOn={isTurnedOn}>
@@ -84,7 +82,10 @@ export default function SelectHeadCountPopup({
               fontFamily: "SUIT-TITLE",
               fontSize: "1.06rem",
             }}
-            onClick={turnOff}
+            onClick={() => {
+              setLocalHeadCnts(headCnts.map((row) => _.cloneDeep(row)));
+              turnOff();
+            }}
           />
           <p
             className="pt-2 pb-4"
@@ -98,47 +99,36 @@ export default function SelectHeadCountPopup({
           </p>
         </div>
         <div className="grow flex flex-col">
-          {Object.values(PositionEnum).map((position, idx) => (
+          {localHeadCnts.map((row, idx) => (
             <FlexRow
               key={idx}
-              left={position}
-              right={headCnts[idx].toString()}
+              left={MapDataToPosition[row.pos]}
+              right={row.headcnt.toString()}
               onClickPlus={() => {
-                if (!anyone) {
-                  const newArr = [...headCnts];
-                  newArr[idx] += 1;
-                  setHeadCnts(newArr);
-                }
+                const newArr = [...localHeadCnts];
+                newArr[idx].headcnt += 1;
+                setLocalHeadCnts(newArr);
               }}
               onClickMinus={() => {
-                if (headCnts[idx] > 0 && !anyone) {
-                  const newArr = [...headCnts];
-                  newArr[idx] -= 1;
-                  setHeadCnts(newArr);
+                if (row.headcnt > 0) {
+                  const newArr = [...localHeadCnts];
+                  newArr[idx].headcnt -= 1;
+                  setLocalHeadCnts(newArr);
                 }
               }}
             />
           ))}
         </div>
         <div className="flex flex-col px-5">
-          <ImageWithTxt
-            image={
-              <RoundedCheckbox
-                thisState={anyone}
-                onClick={() => setAnyone(!anyone)}
-              />
-            }
-            text="상관없음"
-            className="py-3.5"
-            style={{
-              fontFamily: "SUIT-BODY",
-              fontSize: "0.875rem",
-              gap: "8px",
-            }}
-          />
           <CompleteButton
-            isActive={anyone || headCnts.reduce((acc, cur) => acc + cur, 0) > 0}
-            onClick={turnOff}
+            isActive={
+              headCnts.reduce((acc, cur) => acc + cur.headcnt, 0) !==
+              localHeadCnts.reduce((acc, cur) => acc + cur.headcnt, 0)
+            }
+            onClick={() => {
+              setHeadCnts(localHeadCnts);
+              turnOff();
+            }}
             className="my-2"
             style={{
               width: "100%",
@@ -146,6 +136,7 @@ export default function SelectHeadCountPopup({
               background: "#242426",
               color: "#767678",
             }}
+            type="button"
           />
         </div>
       </div>

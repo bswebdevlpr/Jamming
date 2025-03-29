@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 
 export interface ListItemProp {
   text: string;
-  value: any;
   backgroundUrl?: string;
   onClick: () => void;
   style?: CSSProperties;
@@ -48,7 +47,8 @@ const VerticalListItem = ({
         onClick={() => {
           setIsFocused();
           onClick();
-        }}>
+        }}
+      >
         {text}
       </motion.div>
     </motion.div>

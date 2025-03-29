@@ -1,13 +1,19 @@
-import { z } from "zod";
+import { z, ZodSchema } from "zod";
 import { PositionEnum } from "./enums/position.enum";
 import { GenreEnum } from "./enums/genre.enum";
 import { LevelEnum } from "./enums/level.enum";
 import { LocationEnum } from "./enums/location.enum";
-import { ImageFile } from "./interfaces/dto.interface";
 
-export const FormSchema_User = z.object({
+const ZodSchema_Image = z.object({
+  id: z.number(),
+  name: z.string(),
+  url: z.string(),
+});
+export type ZodType_Image = z.infer<typeof ZodSchema_Image>;
+
+export const ZodSchema_User = z.object({
   acceptMarketing: z.boolean(),
-  profileImage: z.custom<ImageFile>().nullable(),
+  profileImage: z.custom<ZodType_Image>().nullable(),
   nickname: z
     .string()
     .min(1, { message: "닉네임을 입력해주세요" })
@@ -28,9 +34,26 @@ export const FormSchema_User = z.object({
     .enum(Object.keys(LocationEnum) as [string, ...string[]])
     .optional(),
 });
-export type FormData_User = z.infer<typeof FormSchema_User>;
+export type FormData_User = z.infer<typeof ZodSchema_User>;
 
-export const FormSchema_Post = z.object({
+const ZodSchema_HeadCnt = z.object({
+  pos: z.string(),
+  headcnt: z.number(),
+});
+const ZodSchema_Song = z.object({
+  title: z.string(),
+  artist: z.string(),
+  album_cover_url: z.string(),
+});
+const ZodSchema_LocationDetail = z
+  .object({
+    name: z.string(),
+    address: z.string(),
+    category: z.string(),
+  })
+  .optional()
+  .nullable();
+export const ZodSchema_Post = z.object({
   title: z
     .string()
     .min(5, {
@@ -42,12 +65,17 @@ export const FormSchema_Post = z.object({
   body: z.string().max(1000, {
     message: "내용은 1000글자를 초과할 수 없습니다.",
   }),
-  pos: z.array(z.enum(Object.keys(PositionEnum) as [string, ...string[]])),
-  genre: z.array(z.enum(Object.keys(GenreEnum) as [string, ...string[]])),
-  level: z.array(z.enum(Object.keys(LevelEnum) as [string, ...string[]])),
-  max_head_cnt: z.number().max(100, {
-    message: "최대 인원수는 100명을 초과할 수 없습니다.",
-  }),
-  date: z.string().date(),
+  location: z.array(z.nativeEnum(LocationEnum)).nonempty(),
+  genre: z.array(z.nativeEnum(GenreEnum)).nonempty(),
+  level: z.array(z.nativeEnum(LevelEnum)).nonempty(),
+  headcnt_by_pos: z.array(ZodSchema_HeadCnt),
+  datetime: z.string().datetime(),
+  songs: z.array(ZodSchema_Song),
+  images: z.array(ZodSchema_Image),
+  location_detail: ZodSchema_LocationDetail,
+  openchat: z.string().optional(),
 });
-export type FormData_Post = z.infer<typeof FormSchema_Post>;
+export type ZodType_HeadCnt = z.infer<typeof ZodSchema_HeadCnt>;
+export type ZodType_Song = z.infer<typeof ZodSchema_Song>;
+export type ZodType_LocationDetail = z.infer<typeof ZodSchema_LocationDetail>;
+export type ZodType_Post = z.infer<typeof ZodSchema_Post>;

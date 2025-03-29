@@ -9,7 +9,8 @@ export const RoundedCheckbox = ({
   thisState,
   className,
 }: {
-  onClick: (() => void) | ((newVal: boolean) => void);
+  onClick: any;
+  // onClick: (() => void) | ((newVal: boolean) => void);
   thisState: boolean;
   className?: string;
 }) => {
@@ -28,7 +29,8 @@ export const RoundedCheckbox = ({
             borderColor: "#9F9FA2",
           }}
           checked={thisState}
-          onChange={() => onClick(!thisState)}
+          onChange={onClick}
+          // onChange={() => onClick(!thisState)}
         />
       ) : (
         <Image
@@ -36,7 +38,8 @@ export const RoundedCheckbox = ({
           alt="note"
           width={20}
           height={20}
-          onClick={() => onClick(!thisState)}
+          onClick={onClick}
+          // onClick={() => onClick(!thisState)}
         />
       )}
     </>

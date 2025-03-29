@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import xml2js from "xml2js";
 import { JaroWinklerDistance } from "natural";
 import { FetchResult } from "../types/response.interface";
+import _ from "lodash";
 
 export async function POST(req: NextRequest) {
   const { songName } = await req.json();
@@ -55,7 +56,11 @@ export async function POST(req: NextRequest) {
               a.titleSimiliarity !== b.titleSimiliarity
                 ? a.titleSimiliarity - b.titleSimiliarity
                 : a.albumTitleSimiliarity - b.albumTitleSimiliarity
-            );
+            )
+            .map((row) => {
+              _.unset(row, "titleSimiliarity");
+              return row;
+            });
 
           return {
             status: 200,
