@@ -39,13 +39,29 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
         `
             *,
             user ( nickname, pos, genre, level, bpm ),
-            jamentry ( id, jam_id, user_id )
+            jamentry ( id, jam_id, user_id, applied_pos )
         `
       )
       .eq("id", id)
       .single();
     if (error) throw CustomError.UnExpected;
     if (!data) throw CustomError.InvalidJam;
+
+    data.curHeadCnt = data.jamentry.length;
+    data.maxHeadCnt = data.headcnt_by_pos.reduce(
+      (acc, cur) => acc + cur.headcnt,
+      0
+    );
+    data.appliedPosDict = data.jamentry.reduce(
+      (acc, cur) => {
+        acc[cur.pos].headcnt++;
+        return acc;
+      },
+      data.headcnt_by_pos.reduce((acc, cur) => {
+        if (cur.headcnt > 0) acc[cur.pos] = 0;
+        return acc;
+      }, {})
+    );
 
     ret = data;
   } catch (e) {

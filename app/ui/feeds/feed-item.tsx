@@ -18,7 +18,6 @@ import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import ButtonTemplate from "../templates/buttons";
 import { deleteJamEntry, deleteJamSession } from "@/app/api/functions/delete";
 import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
-import { useEffect } from "react";
 
 export interface FeedItemProps_Jam {
   idx: number;
@@ -43,7 +42,6 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
     id,
     title,
     location,
-    pos,
     genre,
     level,
     jamentry,
@@ -53,7 +51,6 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
   } = data;
 
   const tags = [
-    <PositionTag key="position" text={pos} />,
     <GenreTag key="genre" text={genre} />,
     <LevelTag key="level" text={level} />,
   ];
@@ -78,8 +75,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
       }}
       whileTap={{
         background: "rgba(163, 255, 12, 0.12)",
-      }}
-    >
+      }}>
       <div className="flex flex-col gap-1.5">
         <div className="flex gap-1">
           <p
@@ -89,8 +85,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
               fontStyle: "normal",
               lineHeight: "140%",
               letterSpacing: "-0.384px",
-            }}
-          >
+            }}>
             {title}
           </p>
           {isMyAct && isMyJam && <CrownImage />}
@@ -113,13 +108,11 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                 fontSize: "0.875rem",
                 fontStyle: "normal",
                 lineHeight: "140%",
-              }}
-            >
+              }}>
               <span
                 style={{
                   color: "var(--highlight)",
-                }}
-              >
+                }}>
                 {curHeadCnt}
               </span>
               /{maxHeadCnt}
@@ -133,8 +126,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
             width: "72px",
             height: "100%",
             backgroundColor: "pink",
-          }}
-        >
+          }}>
           Image
         </div>
         {isMyAct && (
@@ -152,8 +144,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                       fontSize: "0.9375rem",
                       lineHeight: "132%",
                       letterSpacing: "-0.36px",
-                    }}
-                  >
+                    }}>
                     <p
                       className="text-center px-3 py-3.5"
                       style={{
@@ -166,8 +157,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                         bottomSheet.set({
                           location: "hidden",
                         });
-                      }}
-                    >
+                      }}>
                       {isMyJam ? "삭제하기" : "나가기"}
                     </p>
                     <ButtonTemplate
