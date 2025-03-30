@@ -128,13 +128,11 @@ export default function SlideCalendarComponent({
               borderRadius: "4px",
               border: highlight ? "1px solid var(--highlight)" : undefined,
               background: highlight ? "rgba(163, 255, 12, 0.12)" : undefined,
-              opacity: !highlight && (idx + 1) % 7 === 0 ? 0.5 : 1,
 
               fontFamily: "SUIT-TITLE",
 
               cursor: "pointer",
-            }}
-          >
+            }}>
             <span
               style={{
                 color: highlight ? "var(--highlight)" : "#FFF",
@@ -143,8 +141,7 @@ export default function SlideCalendarComponent({
                 letterSpacing: "-0.3px",
 
                 marginBottom: "2px",
-              }}
-            >
+              }}>
               {MapDateToKor[thisDay]}
             </span>
             <span
@@ -155,8 +152,7 @@ export default function SlideCalendarComponent({
                 letterSpacing: "-0.35px",
 
                 marginBottom: "6px",
-              }}
-            >
+              }}>
               {date.date()}
             </span>
             <span
@@ -180,8 +176,7 @@ export default function SlideCalendarComponent({
         {...settings}
         ref={(slider) => {
           sliderRef = slider;
-        }}
-      >
+        }}>
         {sliders()}
       </Slider>
     </div>

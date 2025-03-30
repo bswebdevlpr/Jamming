@@ -32,14 +32,20 @@ export const DownArrow = () => {
     />
   );
 };
-export const DownArrowWhite = ({ onClick }: { onClick: () => void }) => {
+export const DownArrowWhite = ({
+  onClick,
+  style,
+}: {
+  onClick: () => void;
+  style?: CSSProperties;
+}) => {
   return (
     <Image
       src="/common/arrows/arrow-down-white.svg"
       alt="arrow down"
       width={16}
       height={16}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: "pointer", ...style }}
       onClick={onClick}
     />
   );

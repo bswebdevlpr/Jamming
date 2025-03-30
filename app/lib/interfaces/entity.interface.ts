@@ -2,7 +2,7 @@ import { GenreEnum } from "../enums/genre.enum";
 import { LevelEnum } from "../enums/level.enum";
 import { LocationEnum } from "../enums/location.enum";
 import { PositionEnum } from "../enums/position.enum";
-import { ZodType_HeadCnt } from "../zod";
+import { ZodType_HeadCnt, ZodType_LocationDetail, ZodType_Song } from "../zod";
 
 export interface Entity_User {
   id?: string;
@@ -26,17 +26,21 @@ export interface Entity_JamSession {
   user_id?: string;
   title?: string;
   body?: string;
-  pos?: PositionEnum;
+  location?: LocationEnum;
   genre?: GenreEnum;
   level?: LevelEnum;
-  location?: LocationEnum;
+  datetime?: string;
+  location_detail?: ZodType_LocationDetail;
   headcnt_by_pos?: ZodType_HeadCnt[];
-  date?: string;
+  songs?: ZodType_Song[];
   created_at?: string;
 
   // NOT COLUMNS
   curHeadCnt?: number;
   maxHeadCnt?: number;
+  appliedPosDict: {
+    [key: string]: number;
+  };
 
   user?: Entity_User;
   jamentry?: Entity_JamEntry[];

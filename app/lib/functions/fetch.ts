@@ -73,7 +73,6 @@ export const fetchJams: FetchFeedFunc = async ({
       if (error) throw CustomError.GetJamFeed;
 
       data.forEach((row) => {
-        console.log("hola", row, row.headcnt_by_pos);
         row.curHeadCnt = row.jamentry.length;
         row.maxHeadCnt = row.headcnt_by_pos.reduce(
           (acc, cur) => acc + cur.headcnt,
