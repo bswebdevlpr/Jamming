@@ -30,10 +30,10 @@ export const initialize = async (jam_id: number) => {
       .select(
         `
           id,
-          date,
+          datetime,
           created_at,
           leader:user!inner (*),
-          jamentry!inner (*, user!inner (*))
+          jamentry (*, user (*))
         `
       )
       .eq("id", jam_id)
@@ -53,6 +53,7 @@ export const initialize = async (jam_id: number) => {
     if ((jam.leader as any).id === user.id)
       ret.applierEntries = jam.jamentry.filter((je) => je.is_allowed === null);
   } catch (e) {
+    if (process.env.NODE_ENV === "development") console.error(e);
     if (e instanceof CustomError) throw e;
     else throw CustomError.UnExpected;
   }

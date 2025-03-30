@@ -3,8 +3,8 @@ import { GenreEnum } from "../enums/genre.enum";
 import { LevelEnum } from "../enums/level.enum";
 import { LocationEnum } from "../enums/location.enum";
 import { PositionEnum } from "../enums/position.enum";
-import { ZodType_Image } from "./zod.interface";
 import { BottomSheetHeight } from "@/app/ui/templates/bottom-sheet/body";
+import { ZodType_Image } from "../zod";
 
 export interface BottomSheetContext {
   children: ReactNode;
@@ -31,7 +31,7 @@ export interface GlobalContext {
 
 export interface UserProfile {
   isLoaded: undefined | boolean;
-  acceptMarketing: undefined | boolean;
+  accept_marketing: undefined | boolean;
   profileImage: undefined | null | ZodType_Image;
   nickname: undefined | string;
   tags: undefined | string[];

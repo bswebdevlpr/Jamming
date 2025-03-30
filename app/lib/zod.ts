@@ -12,7 +12,7 @@ const ZodSchema_Image = z.object({
 export type ZodType_Image = z.infer<typeof ZodSchema_Image>;
 
 export const ZodSchema_User = z.object({
-  acceptMarketing: z.boolean(),
+  accept_marketing: z.boolean(),
   profileImage: z.custom<ZodType_Image>().nullable(),
   nickname: z
     .string()

@@ -168,7 +168,7 @@ export default function SignUp_Policy() {
         isActive={isButtonActivated}
         onClick={() =>
           debouncedRedirect(pathname + "/profile", undefined, {
-            acceptMarketing: termCons[termCons.length - 1],
+            accept_marketing: termCons[termCons.length - 1],
           })
         }
       />

@@ -34,10 +34,10 @@ export default function SignUp_Location() {
   // FORM
   const { handleSubmit, setValue, getValues } = useForm<FormData_User>({
     defaultValues: {
-      acceptMarketing:
-        queries.acceptMarketing === "true"
+      accept_marketing:
+        queries.accept_marketing === "true"
           ? true
-          : queries.acceptMarketing === "false"
+          : queries.accept_marketing === "false"
           ? false
           : undefined,
       nickname: queries.nickname,
@@ -85,8 +85,7 @@ export default function SignUp_Location() {
       className="flex flex-col justify-between"
       style={{
         height: "93.79%",
-      }}
-    >
+      }}>
       <div>
         <p
           style={{
@@ -95,8 +94,7 @@ export default function SignUp_Location() {
             color: "#C0C0C5",
 
             marginBottom: "18px",
-          }}
-        >
+          }}>
           활동 가능한 지역을 선택해주세요
         </p>
         <hr
@@ -112,8 +110,7 @@ export default function SignUp_Location() {
         style={{
           height: "84.92%",
           margin: "0 -20px 0 -20px",
-        }}
-      >
+        }}>
         <VerticalList
           props={Object.keys(LocationEnum).map((key) => {
             const typeForcedKey: keyof typeof LocationEnum =
@@ -134,8 +131,7 @@ export default function SignUp_Location() {
         onSubmit={handleSubmit(onSubmit, (prop) => {
           // TODO: 에러모달 - 잘못된 데이터가 입력되었습니다. 처음부터 다시 진행해주세요.
           redirect("/signup");
-        })}
-      >
+        })}>
         <CompleteButton style={{ width: "100%" }} isActive={!!location} />
       </form>
     </div>
