@@ -14,6 +14,7 @@ export interface Entity_User {
   tags?: string[];
   bpm?: number;
   is_bpm_public?: boolean;
+  allow_noti?: boolean;
 
   playlist: Entity_Playlist[];
 
@@ -38,7 +39,7 @@ export interface Entity_JamSession {
   // NOT COLUMNS
   curHeadCnt?: number;
   maxHeadCnt?: number;
-  appliedPosDict: {
+  appliedPosDict?: {
     [key: string]: number;
   };
 

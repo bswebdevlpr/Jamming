@@ -39,15 +39,13 @@ const TextBox = ({
         transform: `translate(0px, ${moveTo})`,
         cursor: "pointer",
       }}
-      onClick={onClick}
-    >
+      onClick={onClick}>
       <p
         style={{
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
-        }}
-      >
+        }}>
         {upTxt}
       </p>
       <p
@@ -55,8 +53,7 @@ const TextBox = ({
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
-        }}
-      >
+        }}>
         {downTxt}
       </p>
     </div>
@@ -88,7 +85,7 @@ export default function SignUp_Profile() {
     setError,
   } = useForm<FormData_User>({
     defaultValues: {
-      acceptMarketing: undefined,
+      accept_marketing: undefined,
       nickname: "",
       tags: new Array(4).fill(""),
       position,
@@ -105,10 +102,10 @@ export default function SignUp_Profile() {
 
   // USE-EFFECT
   useEffect(() => {
-    const query = searchParams.get("acceptMarketing");
+    const query = searchParams.get("accept_marketing");
     if (query === null) redirect("/signup");
 
-    setValue("acceptMarketing", Boolean(query));
+    setValue("accept_marketing", Boolean(query));
   }, []);
 
   useEffect(() => {
@@ -158,15 +155,13 @@ export default function SignUp_Profile() {
           fontSize: "24px",
           color: "#C0C0C5",
           marginBottom: "18px",
-        }}
-      >
+        }}>
         프로필을 설정해주세요
       </p>
       <form
         name="profile_form"
         className="grow flex flex-col justify-between"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+        onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col">
           <div className="flex flex-row justify-between min-w-full">
             <div
@@ -178,8 +173,7 @@ export default function SignUp_Profile() {
 
                 position: "relative",
                 flexShrink: 0,
-              }}
-            >
+              }}>
               <input
                 type="file"
                 accept="image/*"
@@ -202,16 +196,14 @@ export default function SignUp_Profile() {
                 style={{
                   marginTop: "35.69%", // "66px",
                   marginLeft: "30.72%", // "54px",
-                }}
-              >
+                }}>
                 <div className="flex flex-col items-center">
                   <Camera style={{ marginBottom: "6px" }} />
                   <p
                     style={{
                       fontFamily: "SUIT-BODY",
                       fontSize: "12px",
-                    }}
-                  >
+                    }}>
                     프로필 사진
                   </p>
                 </div>
@@ -238,8 +230,7 @@ export default function SignUp_Profile() {
                   // clipPath:
                   //   "polygon(0% 0%, 0% 10.09vh, 42.66vw 10.09vh, 42.66vw 0vh)",
                   // "polygon(0px 0px, 0px 76px, 160px 76px, 160px 0px)",
-                }}
-              >
+                }}>
                 <div
                   className="flex flex-col justify-between"
                   style={{
@@ -249,8 +240,7 @@ export default function SignUp_Profile() {
 
                     fontFamily: "SUIT-BODY",
                     fontSize: "14px",
-                  }}
-                >
+                  }}>
                   <p>
                     <span style={{ color: "#A3FF0C" }}>*</span>닉네임
                   </p>
@@ -277,8 +267,7 @@ export default function SignUp_Profile() {
                         fontFamily: "SUIT-BODY",
                         fontSize: "12px",
                         color: "#767678",
-                      }}
-                    >
+                      }}>
                       {nickname?.length ?? 0}/8
                     </p>
                   </div>
@@ -290,22 +279,19 @@ export default function SignUp_Profile() {
                   width: "110%", //"171px",
                   height: "55.24%", //"100px",
                   padding: "14px 8px",
-                }}
-              >
+                }}>
                 <p
                   style={{
                     fontFamily: "SUIT-BODY",
                     fontSize: "14px",
                     color: "#E5E5E9",
-                  }}
-                >
+                  }}>
                   나를 나타내는 태그
                   <span
                     style={{
                       fontSize: "12px",
                       color: "#9F9FA2",
-                    }}
-                  >
+                    }}>
                     (최대 4개)
                   </span>
                 </p>
@@ -315,8 +301,7 @@ export default function SignUp_Profile() {
                     fontFamily: "SUIT-BODY",
                     fontSize: "12px",
                     color: "#9F9FA2",
-                  }}
-                >
+                  }}>
                   {tags.map((tag, idx) => (
                     <>
                       <style jsx key={idx}>{`

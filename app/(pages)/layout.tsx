@@ -31,7 +31,7 @@ const defaultContext: GlobalContext = {
   session: {
     userProfile: {
       isLoaded: undefined,
-      acceptMarketing: undefined,
+      accept_marketing: undefined,
       profileImage: undefined,
       nickname: undefined,
       tags: undefined,

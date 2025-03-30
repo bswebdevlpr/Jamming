@@ -1,10 +1,40 @@
 "use client";
 
+import { Entity_User } from "@/app/lib/interfaces/entity.interface";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import RadixSwitch from "@/app/ui/templates/switch";
+import { createClient } from "@/app/util/supabase/client";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { initialize } from "./functions/fetch";
+import { updateNotiAccept } from "./functions/update";
 
 export default function Setting() {
+  const [supabase, setSupabase] =
+    useState<SupabaseClient<any, "public", any>>(null);
+  const [user, setUser] = useState<Entity_User>(null);
+  const [acceptNoti, setAcceptNoti] = useState<boolean>(null);
+
+  useEffect(() => {
+    (async () => {
+      const supabase = await createClient();
+      setSupabase(supabase);
+
+      const user = await initialize();
+      setUser(user);
+
+      setAcceptNoti(user.allow_noti);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (user && acceptNoti !== null && user.allow_noti !== acceptNoti) {
+      updateNotiAccept(acceptNoti);
+      user.allow_noti = acceptNoti;
+    }
+  }, [user, acceptNoti]);
+
   return (
     <div className="grow flex flex-col">
       <div
@@ -44,10 +74,10 @@ export default function Setting() {
               fontSize: "0.75rem",
               color: "#9F9FA2",
             }}>
-            잼 세션 일정 및 참여 제안 알림을 허용합니다.
+            카카오톡으로 잼 세션 일정 및 참여 제안 알림을 보내드려요{" "}
           </p>
         </div>
-        <RadixSwitch />
+        <RadixSwitch value={acceptNoti} setValue={setAcceptNoti} />
       </div>
       <div
         className="px-4 py-5"
@@ -65,7 +95,7 @@ export default function Setting() {
             cursor: "pointer",
           }}
           onClick={() => {
-            signOut();
+            supabase.auth.signOut();
             redirect("/");
           }}>
           로그아웃
@@ -89,7 +119,7 @@ export default function Setting() {
               fontSize: "0.75rem",
               color: "#A2A2A2",
             }}>
-            재밍과 헤어지는건가요? 너무 아쉽습니다!
+            재밍과 헤어지는건가요? 너무 아쉬워요!
           </p>
           <p
             style={{

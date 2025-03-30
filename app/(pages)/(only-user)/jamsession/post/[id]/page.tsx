@@ -90,7 +90,7 @@ export default function JamSession_Post() {
   const [isInitializing, setIsInitializing] = useState(true);
 
   const [jam, setJam] = useState<Entity_JamSession>(null);
-  const [user, setUser] = useState<Entity_User>();
+  const [user, setUser] = useState<Entity_User>(null);
   const [tags, setTags] = useState<ReactNode[]>(null);
 
   const [applyBtnTxt, setApplyBtnTxt] = useState<string>("Loading..");

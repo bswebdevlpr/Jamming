@@ -127,7 +127,7 @@ export const getJamSchedule = async (targetUserId: string) => {
             genre, 
             pos, 
             level, 
-            date, 
+            datetime, 
             headcnt_by_pos,
             user ( id ),
             jamentry ( id )
@@ -137,8 +137,8 @@ export const getJamSchedule = async (targetUserId: string) => {
       .eq("user_id", user.id)
       .neq("jamsession.user.id", targetUserId)
       .eq("is_allowed", true)
-      .gt("jamsession.date", now.toISOString())
-      .lte("jamsession.date", now.clone().add(2, "week").toISOString())
+      .gt("jamsession.datetime", now.toISOString())
+      .lte("jamsession.datetime", now.clone().add(2, "week").toISOString())
       .then(({ data, error }) => {
         if (error) throw CustomError.UnExpected;
 

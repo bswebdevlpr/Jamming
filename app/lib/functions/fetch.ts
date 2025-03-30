@@ -2,7 +2,7 @@
 
 import { FetchFeedFunc } from "@/app/ui/templates/feed";
 import { createClient } from "@/app/util/supabase/server";
-import { CustomError } from "../errors/client.error";
+import { CustomError } from "../errors/server.error";
 import moment from "moment";
 import _ from "lodash";
 import {
