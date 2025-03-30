@@ -19,6 +19,7 @@ export interface CreateJamEntryDto {
   user_id: number | string;
   jam_id: number | string;
   appeal: string;
+  applied_pos: string;
 }
 
 export interface CreatePlaylistItemDto {

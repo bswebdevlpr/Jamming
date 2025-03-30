@@ -49,14 +49,16 @@ const FlexRow = ({
       style={{
         height: "fit-content",
         borderBottom: "1px solid #333335",
-      }}>
+      }}
+    >
       <p
         style={{
           width: "19.2%",
           fontFamily: "SUIT-TITLE",
           fontSize: "0.875rem",
           color: "#9F9FA2",
-        }}>
+        }}
+      >
         {tag}
       </p>
       <div
@@ -66,7 +68,8 @@ const FlexRow = ({
           fontFamily: "SUIT-BODY",
           fontSize: "0.875rem",
           color: "#FFF",
-        }}>
+        }}
+      >
         {mainConent}
         {isSpreaded && subContent}
       </div>
@@ -111,15 +114,18 @@ export default function JamSession_Post() {
         setJam(foundJam);
         setUser(foundUser);
 
+
         if (applyBtnTxtFromFunc) setApplyBtnTxt(applyBtnTxtFromFunc);
         if (isApplyBtnActiveFromFunc !== undefined)
           setIsApplyBtnActive(isApplyBtnActiveFromFunc);
 
         const tagsToRender = [];
         if (location)
-          tagsToRender.push(<LocationTag text={foundJam.location} />);
-        tagsToRender.push(<GenreTag text={foundJam.genre} />);
-        tagsToRender.push(<LevelTag text={foundJam.level} />);
+          tagsToRender.push(
+            <LocationTag key={"location"} text={foundJam.location} />
+          );
+        tagsToRender.push(<GenreTag key={"genre"} text={foundJam.genre} />);
+        tagsToRender.push(<LevelTag key={"level"} text={foundJam.level} />);
         setTags(tagsToRender);
 
         setIsInitializing(false);
@@ -250,7 +256,8 @@ export default function JamSession_Post() {
         className="flex flex-row px-4 py-2 gap-3"
         style={{
           borderBottom: "1px solid #333335",
-        }}>
+        }}
+      >
         <div
           style={{
             width: "44px",
@@ -266,7 +273,8 @@ export default function JamSession_Post() {
                 fontFamily: "SUIT-BODY",
                 fontSize: "0.875rem",
                 color: "#FFF",
-              }}>
+              }}
+            >
               {jam.user.nickname ?? "-"}
             </p>
             <p
@@ -274,7 +282,8 @@ export default function JamSession_Post() {
                 fontFamily: "SUIT-TITLE",
                 fontSize: "0.875rem",
                 color: "#A3FF0C",
-              }}>
+              }}
+            >
               {jam.user.bpm ?? 0}BPM
             </p>
           </div>
@@ -284,7 +293,8 @@ export default function JamSession_Post() {
                 fontFamily: "SUIT-BODY",
                 fontSize: "0.75rem",
                 color: "#9F9FA2",
-              }}>
+              }}
+            >
               {jam.user.genre ? MapDataToGenre[jam.user.genre] : "-"} •{" "}
               {jam.user.level ? MapDataToLevel[jam.user.level] : "-"} •{" "}
               {jam.user.pos ? MapDataToPosition[jam.user.pos] : "-"}
@@ -296,11 +306,11 @@ export default function JamSession_Post() {
       <FlexRow
         tag="참여 인원"
         mainConent={
-          jam.maxHeadCnt > 0 ? (
-            <p>{`총 인원: ${jam.curHeadCnt ?? 0}/${jam.maxHeadCnt}`}</p>
-          ) : (
-            "상관없음"
-          )
+          <p>{`총 인원: ${
+            jam.maxHeadCnt > 0
+              ? `${jam.curHeadCnt ?? 0}/${jam.maxHeadCnt}`
+              : "상관없음"
+          }`}</p>
         }
         subContent={
           jam.maxHeadCnt > 0 && (
@@ -335,7 +345,8 @@ export default function JamSession_Post() {
                 fontFamily: "SUIT-BODY",
                 fontSize: "0.75rem",
                 color: "#9F9FA2",
-              }}>
+              }}
+            >
               {jam.location_detail.address}
             </p>
           )
@@ -352,7 +363,8 @@ export default function JamSession_Post() {
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-              }}>
+              }}
+            >
               {`${row.title} - ${row.artist}`}
             </p>
           ))
@@ -366,7 +378,8 @@ export default function JamSession_Post() {
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-              }}>
+              }}
+            >
               {`${row.title} - ${row.artist}`}
             </p>
           ))
@@ -384,14 +397,16 @@ export default function JamSession_Post() {
           width: "100%",
           // height: "5%", //"51.77%",
           overflow: "auto",
-        }}>
+        }}
+      >
         <p
           className="pt-8"
           style={{
             fontFamily: "SUIT-BODY",
             fontSize: "1.125rem",
             color: "#FFF",
-          }}>
+          }}
+        >
           {jam.title}
         </p>
         <p
@@ -402,7 +417,8 @@ export default function JamSession_Post() {
             color: "#F2F2F4",
 
             whiteSpace: "pre-line",
-          }}>
+          }}
+        >
           {jam.body ?? ""}
         </p>
       </div>
@@ -412,7 +428,8 @@ export default function JamSession_Post() {
           backgroundColor: "#111113",
           borderTop: "1px solid #333335",
           boxShadow: "0 -10px 10px rgba(0, 0, 0, 0.3)",
-        }}>
+        }}
+      >
         <ButtonTemplate
           text={applyBtnTxt}
           styleActivated={{
