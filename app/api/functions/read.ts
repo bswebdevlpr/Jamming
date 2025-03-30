@@ -54,7 +54,8 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
     );
     data.appliedPosDict = data.jamentry.reduce(
       (acc, cur) => {
-        acc[cur.pos].headcnt++;
+        if (typeof acc[cur.pos] === "number") acc[cur.pos].headcnt++;
+        else acc[cur.pos] = 0;
         return acc;
       },
       data.headcnt_by_pos.reduce((acc, cur) => {

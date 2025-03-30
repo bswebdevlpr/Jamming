@@ -44,7 +44,7 @@ export const initialize = async (jam_id: number) => {
         ? "인원이 전부 찼어요"
         : isAlreadyRegistered
         ? "신청완료!"
-        : null;
+        : "신청하기";
 
       ret.isApplyBtnActive = !isAuthor && !isAlreadyRegistered;
     }

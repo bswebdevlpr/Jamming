@@ -1,6 +1,9 @@
 "use client";
 
 import { createJamEntry } from "@/app/api/functions/create";
+import { PositionEnum } from "@/app/lib/enums/position.enum";
+import { MapPositionToData } from "@/app/lib/maps/jam";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 export default function Modal({
@@ -16,7 +19,10 @@ export default function Modal({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
+  const router = useRouter();
+
   // STATES
+  const [pos, setPos] = useState<PositionEnum>(null);
   const [appeal, setAppeal] = useState<string>("");
   //
 
@@ -37,13 +43,56 @@ export default function Modal({
       <div
         className="grow flex flex-col px-5 py-4"
         style={{
-          height: "30.56%",
+          height: "40.56%",
 
           backgroundColor: "#242426",
           border: "1px solid #444447",
           borderRadius: "12px",
         }}
       >
+        <p
+          style={{
+            fontFamily: "SUIT-TITLE",
+            fontSize: "1rem",
+            color: "#FFF",
+            marginBottom: "12px",
+          }}
+        >
+          포지션 선택
+        </p>
+        <div className="flex gap-1.75 mb-6.25">
+          {Object.values(PositionEnum).map((val, idx) => (
+            <p
+              key={idx}
+              className="px-2 py-1.25"
+              style={{
+                fontFamily: "SUIT-BODY",
+                fontSize: "0.75rem",
+                lineHeight: "140%",
+                textAlign: "center",
+
+                borderRadius: "50px",
+
+                whiteSpace: "nowrap",
+
+                ...(val === pos
+                  ? {
+                      color: "#FF3773",
+                      border: "1px solid #FF3773",
+                      background: "rgba(255, 55, 115, 0.12)",
+                    }
+                  : {
+                      color: "#FFF",
+                      background: "#535355",
+                      border: "1px solid #535355",
+                    }),
+              }}
+              onClick={() => setPos(val)}
+            >
+              {val}
+            </p>
+          ))}
+        </div>
         <p
           className="mb-3"
           style={{
@@ -130,7 +179,16 @@ export default function Modal({
               border: "1px solid #A3FF0C",
               backgroundColor: "#304313",
             }}
-            onClick={() => createJamEntry({ user_id, jam_id, appeal })}
+            onClick={() => {
+              createJamEntry({
+                user_id,
+                jam_id,
+                appeal,
+                applied_pos: MapPositionToData[pos],
+              }).then(() => {
+                router.push("/jamsession");
+              });
+            }}
           >
             전송
           </button>
