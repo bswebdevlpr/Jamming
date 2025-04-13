@@ -3,8 +3,8 @@
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { createClient } from "@/app/util/supabase/client";
 import { useContext, useEffect, useState } from "react";
-import { globalContext } from "../layout";
 import { useRouter } from "next/navigation";
+import { globalContext } from "../context";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const {

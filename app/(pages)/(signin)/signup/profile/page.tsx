@@ -5,7 +5,6 @@ import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BottomSheetContent from "./(bottom-sheet)/content";
-import { globalContext } from "../../../layout";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
@@ -20,6 +19,7 @@ import { redirect, usePathname, useSearchParams } from "next/navigation";
 import { FormData_User, ZodSchema_User, ZodType_Image } from "@/app/lib/zod";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { readFileAsBase64 } from "@/app/util/convert/file";
+import { globalContext } from "@/app/(pages)/context";
 
 const TextBox = ({
   upTxt,

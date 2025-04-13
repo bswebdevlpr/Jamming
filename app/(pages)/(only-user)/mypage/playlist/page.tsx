@@ -5,7 +5,6 @@ import PlusPinkIcon from "@/app/ui/images/mypage/playlist/plus";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import { useContext, useEffect, useState } from "react";
 import Popup from "./popup";
-import { globalContext } from "../../../layout";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { List_PlayList, ListItem_PlayList } from "@/app/ui/lists/playlist.list";
 import {
@@ -17,6 +16,7 @@ import { initialize } from "../functions/fetch";
 import { motion } from "framer-motion";
 import { deletePlaylistItem, updatePlaylistItem } from "./functions/fetch";
 import { useRouter } from "next/navigation";
+import { globalContext } from "@/app/(pages)/context";
 
 export default function Playlist() {
   const { bottomSheet } = useContext(globalContext);

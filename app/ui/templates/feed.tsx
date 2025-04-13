@@ -11,7 +11,7 @@ import {
   useImperativeHandle,
 } from "react";
 import { useRouter } from "next/navigation";
-import { globalContext } from "@/app/(pages)/layout";
+import { globalContext } from "@/app/(pages)/context";
 
 export type FetchFeedFunc = ({
   pageParam,
@@ -67,7 +67,8 @@ const FeedTemplate = forwardRef<FeedMethods, FeedProps>(
         className="w-full h-full overflow-without-scroll"
         style={{
           ...style,
-        }}>
+        }}
+      >
         {data?.pages.map((page, pageIndex) => (
           <Fragment key={pageIndex}>
             {page.data.map((data, idx) =>

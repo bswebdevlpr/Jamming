@@ -9,7 +9,6 @@ import DeleteIcon from "@/app/ui/images/jamsession/post/delete";
 import ReportIcon from "@/app/ui/images/jamsession/post/report";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import Modal from "./modal";
-import { globalContext } from "@/app/(pages)/layout";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -33,6 +32,7 @@ import { initialize } from "./functions/initialize";
 import { CustomError } from "@/app/lib/errors/client.error";
 import Image from "next/image";
 import { deleteJamSession } from "@/app/api/functions/delete";
+import { globalContext } from "@/app/(pages)/context";
 
 const FlexRow = ({
   tag,

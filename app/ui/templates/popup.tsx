@@ -1,6 +1,6 @@
 "use client";
 
-import { globalContext } from "@/app/(pages)/layout";
+import { globalContext } from "@/app/(pages)/context";
 import React, {
   CSSProperties,
   ReactNode,

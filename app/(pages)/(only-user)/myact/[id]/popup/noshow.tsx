@@ -19,7 +19,7 @@ export default function NoshowPopup({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const isActive = useMemo(() => moment().isAfter(moment(jam.date)), [jam]);
+  const isActive = useMemo(() => moment().isAfter(moment(jam.datetime)), [jam]);
 
   useEffect(() => {
     if (ref.current) {

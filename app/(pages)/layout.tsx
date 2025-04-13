@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import BottomSheet from "../ui/templates/bottom-sheet/body";
 
 import SmallLoading from "../ui/loading/small";
@@ -11,40 +11,8 @@ import {
 } from "../lib/interfaces/global.interface";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import moment from "moment";
-
-// CONTEXTS
-const defaultContext: GlobalContext = {
-  bodyWidth: 0,
-  bodyHeight: 0,
-
-  isSmallLoadingOn: false,
-  setSmallLoading: () => {},
-
-  bottomSheet: {
-    children: null,
-    location: null,
-    set: () => {},
-    header: false,
-    setHeader: null,
-  },
-
-  session: {
-    userProfile: {
-      isLoaded: undefined,
-      accept_marketing: undefined,
-      profile_image: undefined,
-      nickname: undefined,
-      tags: undefined,
-      position: undefined,
-      genre: undefined,
-      level: undefined,
-      location: undefined,
-    },
-    setUserProfile: () => {},
-  },
-};
-export const globalContext = createContext<GlobalContext>(defaultContext);
-//
+import { globalContext, initialContext } from "./context";
+import _ from "lodash";
 
 // EXTERNAL PACKAGES
 const queryClient = new QueryClient();
@@ -56,7 +24,9 @@ function GlobalLayout({
   children: ReactNode;
 }>) {
   // INIT
-  const [globalState, setGlobalState] = useState<GlobalContext>(defaultContext);
+  const [globalState, setGlobalState] = useState<GlobalContext>(
+    _.cloneDeep(initialContext)
+  );
 
   moment.updateLocale("en", {
     relativeTime: {

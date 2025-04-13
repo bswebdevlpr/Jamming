@@ -13,7 +13,7 @@ import {
 } from "@mui/x-date-pickers/PickersDay/PickersDay";
 import SelectButton from "../buttons/select";
 import { CalendarCategoryList } from "./category";
-import { Filter_JamSessionFeed } from "@/app/(pages)/(only-user)/jamsession/page";
+import { Filter_JamSessionFeed } from "../feeds/jam-feed";
 
 const MapDateToKor = {
   0: "일",

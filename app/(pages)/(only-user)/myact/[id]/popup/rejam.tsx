@@ -57,7 +57,6 @@ const FlexRow = ({
         <TagList
           tags={[
             <LocationTag key="location" text={jam.location} />,
-            <PositionTag key="pos" text={jam.pos} />,
             <GenreTag key="genre" text={jam.genre} />,
             <LevelTag key="level" text={jam.level} />,
           ]}
@@ -85,7 +84,7 @@ const FlexRow = ({
             color: "#9F9FA2",
           }}
         >
-          {moment(jam.date).format("YYYY.MM.DD")}
+          {moment(jam.datetime).format("YYYY.MM.DD")}
         </p>
       </div>
     </div>
