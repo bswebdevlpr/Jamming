@@ -1,25 +1,57 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/client.error";
+import { getUser } from "@/app/api/functions/read";
+import { CustomError } from "@/app/lib/errors/server.error";
 import { UserProfile } from "@/app/lib/interfaces/global.interface";
+import {
+  MapGenreToData,
+  MapLevelToData,
+  MapLocationToData,
+  MapPositionToData,
+} from "@/app/lib/maps/jam";
 import { createClient } from "@/app/util/supabase/server";
-
-const supabase = await createClient();
 
 export default async function createUser(input: any): Promise<UserProfile> {
   let ret: UserProfile = null;
 
   try {
+    const supabase = await createClient();
+
+    const user = await getUser(supabase);
+
+    let profile_image =
+      input.profile_image &&
+      (await supabase.storage
+        .from(process.env.SUPABASE_STORAGE_NAME)
+        .upload(
+          `${user.id}/profile-image/${input.profile_image.name}`,
+          input.profile_image
+        )
+        .then(async (res) =>
+          supabase.storage
+            .from(process.env.SUPABASE_STORAGE_NAME)
+            .getPublicUrl(res.data.path)
+        ));
+
     const { data, error } = await supabase
       .from("user")
-      .insert(input)
+      .insert({
+        ...input,
+        pos: MapPositionToData[input.pos],
+        genre: MapGenreToData[input.genre],
+        level: MapLevelToData[input.level],
+        location: MapLocationToData[input.location],
+        profile_image,
+      })
       .select()
       .single();
-    if (error) throw new Error();
+    if (error || !data) throw CustomError.SignUp;
 
     ret = data;
   } catch (e) {
-    throw CustomError.SignUp;
+    if (process.env.NODE_ENV === "development") console.error(e);
+    if (e instanceof CustomError) throw e;
+    else throw CustomError.UnExpected;
   }
 
   return ret;

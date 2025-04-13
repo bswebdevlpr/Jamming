@@ -32,7 +32,7 @@ const defaultContext: GlobalContext = {
     userProfile: {
       isLoaded: undefined,
       accept_marketing: undefined,
-      profileImage: undefined,
+      profile_image: undefined,
       nickname: undefined,
       tags: undefined,
       position: undefined,
@@ -138,7 +138,8 @@ function GlobalLayout({
           height={height}
           pullUp={globalState.bottomSheet.location}
           setPullUp={globalState.bottomSheet.set}
-          header={globalState.bottomSheet.header}>
+          header={globalState.bottomSheet.header}
+        >
           {globalState.bottomSheet.children}
         </BottomSheet>
       </QueryClientProvider>

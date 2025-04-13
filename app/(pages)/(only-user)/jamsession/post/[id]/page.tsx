@@ -31,6 +31,8 @@ import {
 } from "@/app/ui/tags/category-tag";
 import { initialize } from "./functions/initialize";
 import { CustomError } from "@/app/lib/errors/client.error";
+import Image from "next/image";
+import { deleteJamSession } from "@/app/api/functions/delete";
 
 const FlexRow = ({
   tag,
@@ -114,7 +116,6 @@ export default function JamSession_Post() {
         setJam(foundJam);
         setUser(foundUser);
 
-
         if (applyBtnTxtFromFunc) setApplyBtnTxt(applyBtnTxtFromFunc);
         if (isApplyBtnActiveFromFunc !== undefined)
           setIsApplyBtnActive(isApplyBtnActiveFromFunc);
@@ -194,6 +195,15 @@ export default function JamSession_Post() {
                             fontFamily: "SUIT-BODY",
                             fontSize: "13px",
                             color: "#FF3E2F",
+                          }}
+                          onClick={() => {
+                            if (jam)
+                              deleteJamSession(jam.id).then(() => {
+                                bottomSheet.set({
+                                  location: "hidden",
+                                });
+                                router.push("/jamsession");
+                              });
                           }}
                         />
                         <ButtonTemplate
@@ -421,6 +431,27 @@ export default function JamSession_Post() {
         >
           {jam.body ?? ""}
         </p>
+        <div className="flex flex-wrap gap-4">
+          {jam &&
+            jam.images.map((image, idx) => (
+              <div key={idx} className="relative">
+                <div
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    position: "relative",
+                  }}
+                >
+                  <Image
+                    src={image}
+                    alt=""
+                    fill
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+              </div>
+            ))}
+        </div>
       </div>
       <div
         className="w-full flex justify-center items-center px-4 py-2"

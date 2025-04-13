@@ -14,7 +14,10 @@ import { useForm } from "react-hook-form";
 import { FormData_User, ZodSchema_User } from "@/app/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { globalContext } from "@/app/(pages)/layout";
-import { convertFormData } from "@/app/lib/functions/convert";
+import { PositionEnum } from "@/app/lib/enums/position.enum";
+import { GenreEnum } from "@/app/lib/enums/genre.enum";
+import { LevelEnum } from "@/app/lib/enums/level.enum";
+import { base64ToFile } from "@/app/util/convert/file";
 
 export default function SignUp_Location() {
   // INIT
@@ -28,24 +31,24 @@ export default function SignUp_Location() {
   //
 
   // STATES
-  const [location, setLocation] = useState<keyof typeof LocationEnum>();
+  const [location, setLocation] = useState<LocationEnum>();
   //
 
   // FORM
   const { handleSubmit, setValue, getValues } = useForm<FormData_User>({
     defaultValues: {
+      nickname: queries.nickname,
+      tags: queries.tags.split(","),
+      pos: queries.pos as PositionEnum,
+      genre: queries.genre as GenreEnum,
+      level: queries.level as LevelEnum,
+      location,
       accept_marketing:
         queries.accept_marketing === "true"
           ? true
           : queries.accept_marketing === "false"
           ? false
           : undefined,
-      nickname: queries.nickname,
-      tags: queries.tags.split(","),
-      position: queries.position,
-      genre: queries.genre,
-      level: queries.level,
-      location,
     },
     resolver: zodResolver(ZodSchema_User),
   });
@@ -61,22 +64,26 @@ export default function SignUp_Location() {
   const onSubmit = async (data: FormData_User) => {
     if (!location) return;
 
-    // DATA REFINING
-    const createDto = convertFormData(data);
-    //
+    let profile_image = null;
 
-    _.set(createDto, "pos", createDto.position);
-    _.unset(createDto, "position");
+    const profile_image_from_session = sessionStorage.getItem("profile_image");
+    if (profile_image_from_session) {
+      const { name, type, content } = JSON.parse(profile_image_from_session);
+      profile_image = base64ToFile(content, name, type);
+    }
 
-    await createUser(createDto)
+    const ret = await createUser(Object.assign(data, { profile_image }))
       .then((newUserProfile) => {
         session.setUserProfile(newUserProfile);
-        redirect("/jamsession");
+        return true;
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
         // TODO: 에러모달 - SignUp 에러
-        redirect("/signup");
+        return false;
       });
+    if (ret) redirect("/jamsession");
+    else redirect("/signup");
   };
   //
 
@@ -85,7 +92,8 @@ export default function SignUp_Location() {
       className="flex flex-col justify-between"
       style={{
         height: "93.79%",
-      }}>
+      }}
+    >
       <div>
         <p
           style={{
@@ -94,7 +102,8 @@ export default function SignUp_Location() {
             color: "#C0C0C5",
 
             marginBottom: "18px",
-          }}>
+          }}
+        >
           활동 가능한 지역을 선택해주세요
         </p>
         <hr
@@ -110,7 +119,8 @@ export default function SignUp_Location() {
         style={{
           height: "84.92%",
           margin: "0 -20px 0 -20px",
-        }}>
+        }}
+      >
         <VerticalList
           props={Object.keys(LocationEnum).map((key) => {
             const typeForcedKey: keyof typeof LocationEnum =
@@ -122,16 +132,17 @@ export default function SignUp_Location() {
               style: {
                 backgroundColor: "var(--background)",
               },
-              onClick: () => setLocation(typeForcedKey),
+              onClick: () => setLocation(LocationEnum[typeForcedKey]),
             };
           })}
         />
       </div>
       <form
-        onSubmit={handleSubmit(onSubmit, (prop) => {
+        onSubmit={handleSubmit(onSubmit, (e) => {
           // TODO: 에러모달 - 잘못된 데이터가 입력되었습니다. 처음부터 다시 진행해주세요.
           redirect("/signup");
-        })}>
+        })}
+      >
         <CompleteButton style={{ width: "100%" }} isActive={!!location} />
       </form>
     </div>

@@ -32,7 +32,7 @@ export interface GlobalContext {
 export interface UserProfile {
   isLoaded: undefined | boolean;
   accept_marketing: undefined | boolean;
-  profileImage: undefined | null | ZodType_Image;
+  profile_image: undefined | null | ZodType_Image;
   nickname: undefined | string;
   tags: undefined | string[];
   position: undefined | PositionEnum;

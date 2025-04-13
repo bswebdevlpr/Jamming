@@ -20,6 +20,7 @@ import MyListIcon from "@/app/ui/images/mypage/note";
 import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import BPMBar from "@/app/ui/bpm/bpm-bar";
+import { createClient } from "@/app/util/supabase/client";
 
 export default function MyPage() {
   // HOOOKS
@@ -36,7 +37,13 @@ export default function MyPage() {
   // HANDLERS
   useEffect(() => {
     (async () => {
-      setUser(await initialize());
+      const initedUser = await initialize();
+
+      if (!initedUser.profile_image)
+        initedUser.profile_image = await (
+          await createClient().auth.getUser()
+        ).data.user.user_metadata.avatar_url;
+      setUser(initedUser);
     })();
   }, []);
   //
@@ -61,7 +68,7 @@ export default function MyPage() {
       </div>
       <div className="flex items-center gap-5 pt-3 pb-5">
         <div className="relative">
-          <RadixAvatar src={null} />
+          <RadixAvatar src={user?.profile_image} />
           <EditGrayIcon
             width={25}
             height={25}
