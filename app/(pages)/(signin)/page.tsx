@@ -31,7 +31,8 @@ export default function SignIn() {
       <div
         style={{
           height: "11.42%",
-        }}></div>{" "}
+        }}
+      ></div>{" "}
       {/* 빈칸 */}
       <div className="grow flex flex-col items-center">
         <div className="relative">
@@ -69,7 +70,8 @@ export default function SignIn() {
             color: "#A3FF0C",
             fontSize: "50px",
           }}
-          className="">
+          className=""
+        >
           JAMMING
         </p>
         <p
@@ -77,7 +79,8 @@ export default function SignIn() {
             fontFamily: "SBAggroM",
             fontSize: "24px",
           }}
-          className="">
+          className=""
+        >
           놀기 위해 모였다!
         </p>
         <p
@@ -85,7 +88,8 @@ export default function SignIn() {
             fontFamily: "SUIT-BODY",
             fontSize: "14px",
             color: "#C0C0C5",
-          }}>
+          }}
+        >
           음악인을 위한 합주 플랫폼
         </p>
       </div>
