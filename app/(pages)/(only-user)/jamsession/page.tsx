@@ -6,7 +6,6 @@ import BottomSheetContent from "./bottom-sheet/content";
 import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
 import JamNow from "@/app/ui/buttons/jam-now";
-import { globalContext } from "../../layout";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import moment from "moment";
@@ -15,6 +14,7 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 import { FeedMethods } from "@/app/ui/templates/feed";
+import { globalContext } from "../../context";
 
 export default function JamSession() {
   // GLOBAL
@@ -73,7 +73,8 @@ export default function JamSession() {
               fontFamily: "SBAggroB",
               fontSize: "0.875rem",
               color: "#9F9FA2",
-            }}>
+            }}
+          >
             JAM SESSION
           </p>
           <span className="flex flex-row gap-1 justify-center items-center">
@@ -82,7 +83,8 @@ export default function JamSession() {
                 fontFamily: "SUIT-TITLE",
                 fontSize: "0.875rem",
                 color: "#9F9FA2",
-              }}>
+              }}
+            >
               필터
             </p>
             <div
@@ -100,7 +102,8 @@ export default function JamSession() {
                     />
                   ),
                 })
-              }>
+              }
+            >
               <Filter />
             </div>
           </span>

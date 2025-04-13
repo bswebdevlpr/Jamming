@@ -21,7 +21,6 @@ import {
 import BottomSheetContent from "../bottom-sheet/content";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import SelectHeadCountPopup from "./select-headcount";
-import { globalContext } from "@/app/(pages)/layout";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
@@ -54,6 +53,7 @@ import {
 } from "@/app/lib/maps/jam";
 import LocationPopup from "./location";
 import { fallbackModeToStaticPathsResult } from "next/dist/lib/fallback";
+import { globalContext } from "@/app/(pages)/context";
 
 const FlexRow = ({
   left,

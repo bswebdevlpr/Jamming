@@ -8,11 +8,11 @@ import sanitizeHtml from "sanitize-html";
 export async function POST(req: NextRequest) {
   const { location } = await req.json();
   if (!location)
-    return {
+    return NextResponse.json({
       status: 500,
       msg: "Failed to get the name of song.",
       data: null,
-    };
+    });
 
   const url = `https://openapi.naver.com/v1/search/local.json?query=${location}`;
 

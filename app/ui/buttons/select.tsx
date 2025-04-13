@@ -1,6 +1,6 @@
 "use client";
 
-import { globalContext } from "@/app/(pages)/layout";
+import { globalContext } from "@/app/(pages)/context";
 import { CSSProperties, useContext, useEffect } from "react";
 
 const commonStyle = {

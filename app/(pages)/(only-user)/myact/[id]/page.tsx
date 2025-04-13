@@ -14,10 +14,10 @@ import {
 } from "@/app/lib/interfaces/entity.interface";
 import { ApplierComponent } from "./components/applier.component";
 import { MemberComponent } from "./components/member.component";
-import { globalContext } from "@/app/(pages)/layout";
 import { createClient } from "@/app/util/supabase/client";
 import NoshowPopup from "./popup/noshow";
 import RejamPopup from "./popup/rejam";
+import { globalContext } from "@/app/(pages)/context";
 
 export default function MyAct() {
   const { id } = useParams();

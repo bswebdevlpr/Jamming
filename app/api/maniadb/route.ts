@@ -9,11 +9,11 @@ import _ from "lodash";
 export async function POST(req: NextRequest) {
   const { songName } = await req.json();
   if (!songName)
-    return {
+    return NextResponse.json({
       status: 500,
       msg: "Failed to get the name of song.",
       data: null,
-    };
+    });
 
   const parser = new xml2js.Parser();
   const compare = JaroWinklerDistance;

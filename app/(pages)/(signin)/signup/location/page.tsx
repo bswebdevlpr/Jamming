@@ -13,11 +13,11 @@ import _ from "lodash";
 import { useForm } from "react-hook-form";
 import { FormData_User, ZodSchema_User } from "@/app/lib/zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { globalContext } from "@/app/(pages)/layout";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { base64ToFile } from "@/app/util/convert/file";
+import { globalContext } from "@/app/(pages)/context";
 
 export default function SignUp_Location() {
   // INIT
