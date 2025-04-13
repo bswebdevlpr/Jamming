@@ -163,7 +163,7 @@ export default function SignUp_Profile() {
   //
 
   return (
-    <div className="h-full flex flex-col relative">
+    <div className="h-full flex flex-col relative overflow-without-scroll">
       <p
         style={{
           fontFamily: "SBAggroM",

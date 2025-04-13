@@ -52,7 +52,7 @@ export default function JamSession() {
   }, [location, selectedDate, genre, position, level]);
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col overflow-without-scroll">
       <TopNavBar
         filter={filter}
         // setFilter={setFilter}

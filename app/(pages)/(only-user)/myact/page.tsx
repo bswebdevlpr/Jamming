@@ -49,7 +49,7 @@ export default function MyAct() {
   //
 
   return (
-    <div className="grow flex flex-col">
+    <div className="grow flex flex-col overflow-without-scroll">
       <TopNavBar
         filter={filter}
         // setFilter={setFilter}
@@ -69,7 +69,8 @@ export default function MyAct() {
             fontFamily: "SBAggroB",
             fontSize: "0.875rem",
             color: "#9F9FA2",
-          }}>
+          }}
+        >
           My Jam
         </p>
       </div>
