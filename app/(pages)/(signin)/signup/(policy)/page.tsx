@@ -80,7 +80,7 @@ export default function SignUp_Policy() {
   //
 
   return (
-    <div className="grow flex flex-col justify-between">
+    <div className="grow flex flex-col justify-between overflow-without-scroll">
       <div className="flex flex-col mb-5">
         <p
           style={{
