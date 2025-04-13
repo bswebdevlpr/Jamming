@@ -92,6 +92,8 @@
   --max-height: 1080px;
 
   --font-size: 14px;
+
+  --vh: 1vh;
 }
 
 html,
