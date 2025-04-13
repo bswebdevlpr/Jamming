@@ -2,6 +2,7 @@
 
 import { CustomError } from "@/app/lib/errors/client.error";
 import { createClient } from "@/app/util/supabase/server";
+import { getUser } from "./read";
 
 export const deleteJamSession = async (jam_id: number) => {
   let ret: boolean = false;
@@ -9,12 +10,26 @@ export const deleteJamSession = async (jam_id: number) => {
   try {
     const supabase = await createClient();
 
-    const { error } = await supabase
+    const user = await getUser(supabase);
+
+    const { data, error } = await supabase
       .from("jamsession")
       .delete()
-      .eq("id", jam_id);
+      .eq("id", jam_id)
+      .select();
     if (error) throw CustomError.UnExpected;
-    else ret = true;
+    else {
+      if (data[0].images.length > 0)
+        await supabase.storage
+          .from(process.env.SUPABASE_STORAGE_NAME)
+          .remove(
+            data[0].images.map(
+              (image) => `${user.id}/jamsession/${jam_id}/${image}`
+            )
+          );
+
+      ret = true;
+    }
   } catch (e) {
     if (e instanceof CustomError) throw e;
     else throw CustomError.UnExpected;

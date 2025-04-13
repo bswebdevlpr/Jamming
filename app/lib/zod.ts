@@ -1,19 +1,17 @@
-import { z, ZodSchema } from "zod";
+import { z } from "zod";
 import { PositionEnum } from "./enums/position.enum";
 import { GenreEnum } from "./enums/genre.enum";
 import { LevelEnum } from "./enums/level.enum";
 import { LocationEnum } from "./enums/location.enum";
 
 const ZodSchema_Image = z.object({
-  id: z.number(),
-  name: z.string(),
-  url: z.string(),
+  file: z.any(),
+  thumbnail: z.string(),
 });
 export type ZodType_Image = z.infer<typeof ZodSchema_Image>;
 
 export const ZodSchema_User = z.object({
   accept_marketing: z.boolean(),
-  profileImage: z.custom<ZodType_Image>().nullable(),
   nickname: z
     .string()
     .min(1, { message: "닉네임을 입력해주세요" })
@@ -27,12 +25,10 @@ export const ZodSchema_User = z.object({
     .refine((arr) => arr.every((item) => /^#[가-힣a-zA-Z]+$|^$/.test(item)), {
       message: "올바른 태그를 입력해주세요",
     }),
-  position: z.enum(Object.keys(PositionEnum) as [string, ...string[]]),
-  genre: z.enum(Object.keys(GenreEnum) as [string, ...string[]]),
-  level: z.enum(Object.keys(LevelEnum) as [string, ...string[]]),
-  location: z
-    .enum(Object.keys(LocationEnum) as [string, ...string[]])
-    .optional(),
+  pos: z.nativeEnum(PositionEnum),
+  genre: z.nativeEnum(GenreEnum),
+  level: z.nativeEnum(LevelEnum),
+  location: z.nativeEnum(LocationEnum).optional(),
 });
 export type FormData_User = z.infer<typeof ZodSchema_User>;
 

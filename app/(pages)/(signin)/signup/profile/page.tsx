@@ -12,13 +12,14 @@ import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { SignUp_Profile_Background_Genre } from "@/app/ui/images/signup/genre";
 import { SignUp_Profile_Background_Level } from "@/app/ui/images/signup/level";
 import { SignUp_Profile_Background_Position } from "@/app/ui/images/signup/position";
-import NextButton_SignUp, { debouncedRedirect } from "../buttons/next-button";
+import { debouncedRedirect } from "../buttons/next-button";
 import Image from "next/image";
 import { isNicknameUnique } from "@/app/api/functions/validation";
 import { CustomErrMsg } from "@/app/lib/errors/client.error";
 import { redirect, usePathname, useSearchParams } from "next/navigation";
-import { FormData_User, ZodSchema_User } from "@/app/lib/zod";
-import { ZodType_Image } from "@/app/lib/interfaces/dto.interface";
+import { FormData_User, ZodSchema_User, ZodType_Image } from "@/app/lib/zod";
+import ButtonTemplate from "@/app/ui/templates/buttons";
+import { readFileAsBase64 } from "@/app/util/convert/file";
 
 const TextBox = ({
   upTxt,
@@ -39,13 +40,15 @@ const TextBox = ({
         transform: `translate(0px, ${moveTo})`,
         cursor: "pointer",
       }}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       <p
         style={{
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
-        }}>
+        }}
+      >
         {upTxt}
       </p>
       <p
@@ -53,7 +56,8 @@ const TextBox = ({
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
-        }}>
+        }}
+      >
         {downTxt}
       </p>
     </div>
@@ -72,6 +76,8 @@ export default function SignUp_Profile() {
   const [position, setPosition] = useState<PositionEnum>();
   const [genre, setGenre] = useState<GenreEnum>();
   const [level, setLevel] = useState<LevelEnum>();
+
+  const [profile_image, setProfileImage] = useState<ZodType_Image>(null);
   //
 
   // FORM
@@ -88,15 +94,14 @@ export default function SignUp_Profile() {
       accept_marketing: undefined,
       nickname: "",
       tags: new Array(4).fill(""),
-      position,
+      pos: position,
       genre,
       level,
     },
     resolver: zodResolver(ZodSchema_User),
   });
 
-  const profileImage = watch("profileImage"),
-    nickname = watch("nickname"),
+  const nickname = watch("nickname"),
     tags = watch("tags");
   //
 
@@ -109,7 +114,7 @@ export default function SignUp_Profile() {
   }, []);
 
   useEffect(() => {
-    if (position) setValue("position", position);
+    if (position) setValue("pos", position);
   }, [position]);
   useEffect(() => {
     if (genre) setValue("genre", genre);
@@ -127,23 +132,33 @@ export default function SignUp_Profile() {
       const file = Array.from(fileList)[0];
 
       const newImage: ZodType_Image = {
-        id: Date.now(), // 고유한 ID 생성
-        name: file?.name,
-        url: URL.createObjectURL(file), // 미리보기 URL 생성
+        file,
+        thumbnail: URL.createObjectURL(file), // 미리보기 URL 생성
       };
-      setValue("profileImage", newImage);
+      setProfileImage(newImage);
     }
   };
 
   const onSubmit = async (data: FormData_User) => {
     if (!(await isNicknameUnique(data.nickname)))
       setError("nickname", { message: CustomErrMsg.NicknameNotUnique });
-    else
+    else {
+      if (profile_image)
+        sessionStorage.setItem(
+          "profile_image",
+          JSON.stringify({
+            name: profile_image.file.name,
+            type: profile_image.file.type,
+            content: await readFileAsBase64(profile_image.file),
+          })
+        );
+
       debouncedRedirect(
         pathname.split("/").slice(0, 2).join("/") + "/location",
         searchParams.toString(),
         getValues()
       );
+    }
   };
   //
 
@@ -155,13 +170,18 @@ export default function SignUp_Profile() {
           fontSize: "24px",
           color: "#C0C0C5",
           marginBottom: "18px",
-        }}>
+        }}
+      >
         프로필을 설정해주세요
       </p>
       <form
         name="profile_form"
         className="grow flex flex-col justify-between"
-        onSubmit={handleSubmit(onSubmit)}>
+        onSubmit={handleSubmit(onSubmit, (e) => {
+          console.error("validation failed");
+          // TODO: validation FAIL popup
+        })}
+      >
         <div className="flex flex-col">
           <div className="flex flex-row justify-between min-w-full">
             <div
@@ -173,7 +193,8 @@ export default function SignUp_Profile() {
 
                 position: "relative",
                 flexShrink: 0,
-              }}>
+              }}
+            >
               <input
                 type="file"
                 accept="image/*"
@@ -183,12 +204,16 @@ export default function SignUp_Profile() {
                   cursor: "pointer",
                 }}
               />
-              {profileImage && (
+              {profile_image && (
                 <Image
-                  src={profileImage.url}
-                  alt="background"
+                  src={profile_image.thumbnail}
+                  alt="profile image"
                   fill={true}
                   className="absolute z-10"
+                  style={{
+                    objectFit: "contain",
+                  }}
+                  sizes="100vw"
                 />
               )}
               <span
@@ -196,14 +221,16 @@ export default function SignUp_Profile() {
                 style={{
                   marginTop: "35.69%", // "66px",
                   marginLeft: "30.72%", // "54px",
-                }}>
+                }}
+              >
                 <div className="flex flex-col items-center">
                   <Camera style={{ marginBottom: "6px" }} />
                   <p
                     style={{
                       fontFamily: "SUIT-BODY",
                       fontSize: "12px",
-                    }}>
+                    }}
+                  >
                     프로필 사진
                   </p>
                 </div>
@@ -230,7 +257,8 @@ export default function SignUp_Profile() {
                   // clipPath:
                   //   "polygon(0% 0%, 0% 10.09vh, 42.66vw 10.09vh, 42.66vw 0vh)",
                   // "polygon(0px 0px, 0px 76px, 160px 76px, 160px 0px)",
-                }}>
+                }}
+              >
                 <div
                   className="flex flex-col justify-between"
                   style={{
@@ -240,7 +268,8 @@ export default function SignUp_Profile() {
 
                     fontFamily: "SUIT-BODY",
                     fontSize: "14px",
-                  }}>
+                  }}
+                >
                   <p>
                     <span style={{ color: "#A3FF0C" }}>*</span>닉네임
                   </p>
@@ -267,7 +296,8 @@ export default function SignUp_Profile() {
                         fontFamily: "SUIT-BODY",
                         fontSize: "12px",
                         color: "#767678",
-                      }}>
+                      }}
+                    >
                       {nickname?.length ?? 0}/8
                     </p>
                   </div>
@@ -279,19 +309,22 @@ export default function SignUp_Profile() {
                   width: "110%", //"171px",
                   height: "55.24%", //"100px",
                   padding: "14px 8px",
-                }}>
+                }}
+              >
                 <p
                   style={{
                     fontFamily: "SUIT-BODY",
                     fontSize: "14px",
                     color: "#E5E5E9",
-                  }}>
+                  }}
+                >
                   나를 나타내는 태그
                   <span
                     style={{
                       fontSize: "12px",
                       color: "#9F9FA2",
-                    }}>
+                    }}
+                  >
                     (최대 4개)
                   </span>
                 </p>
@@ -301,39 +334,38 @@ export default function SignUp_Profile() {
                     fontFamily: "SUIT-BODY",
                     fontSize: "12px",
                     color: "#9F9FA2",
-                  }}>
+                  }}
+                >
+                  <style jsx>{`
+                    input::placeholder {
+                      font-size: 12px;
+                    }
+                  `}</style>
                   {tags.map((tag, idx) => (
-                    <>
-                      <style jsx key={idx}>{`
-                        input::placeholder {
-                          font-size: 12px;
-                        }
-                      `}</style>
-                      <input
-                        type="text"
-                        key={idx}
-                        value={tag}
-                        placeholder={idx === 2 ? "# 입력" : ""}
-                        className="max-w-fit"
-                        style={{
-                          background: "var(--background)",
-                          color: "var(--highlight)",
-                          fontSize: "14px",
-                        }}
-                        onChange={(e) =>
-                          setValue(
-                            "tags",
-                            tags.map((tag, innerIdx) =>
-                              idx === innerIdx
-                                ? e.target.value.startsWith("#")
-                                  ? e.target.value
-                                  : "#" + e.target.value
-                                : tag
-                            )
+                    <input
+                      type="text"
+                      key={idx}
+                      value={tag}
+                      placeholder={idx === 2 ? "# 입력" : ""}
+                      className="max-w-fit"
+                      style={{
+                        background: "var(--background)",
+                        color: "var(--highlight)",
+                        fontSize: "14px",
+                      }}
+                      onChange={(e) =>
+                        setValue(
+                          "tags",
+                          tags.map((tag, innerIdx) =>
+                            idx === innerIdx
+                              ? e.target.value.startsWith("#")
+                                ? e.target.value
+                                : "#" + e.target.value
+                              : tag
                           )
-                        }
-                      />
-                    </>
+                        )
+                      }
+                    />
                   ))}
                 </div>
               </div>
@@ -343,7 +375,7 @@ export default function SignUp_Profile() {
             <div className="relative w-full h-auto">
               <TextBox
                 upTxt="포지션"
-                downTxt="선택"
+                downTxt={position ?? "선택"}
                 moveTo="2.16vh"
                 onClick={() =>
                   bottomSheet.set({
@@ -363,7 +395,7 @@ export default function SignUp_Profile() {
             <div className="relative w-full h-auto">
               <TextBox
                 upTxt="선호장르"
-                downTxt="선택"
+                downTxt={genre ?? "선택"}
                 moveTo="0px"
                 onClick={() =>
                   bottomSheet.set({
@@ -387,7 +419,7 @@ export default function SignUp_Profile() {
             <div className="relative w-full h-auto">
               <TextBox
                 upTxt="레벨"
-                downTxt="선택"
+                downTxt={level ?? "선택"}
                 moveTo="-2.25vh" //"-17px"
                 onClick={() =>
                   bottomSheet.set({
@@ -410,7 +442,8 @@ export default function SignUp_Profile() {
             </div>
           </div>
         </div>
-        <NextButton_SignUp
+        <ButtonTemplate
+          text="다음"
           isActive={
             !!(
               nickname &&

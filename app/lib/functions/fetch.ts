@@ -78,6 +78,14 @@ export const fetchJams: FetchFeedFunc = async ({
           (acc, cur) => acc + cur.headcnt,
           0
         );
+
+        row.thumbnail =
+          row.images.length > 0 &&
+          supabase.storage
+            .from(process.env.SUPABASE_STORAGE_NAME)
+            .getPublicUrl(
+              `${row.user_id}/jamsession/${row.id}/${row.images[0]}`
+            ).data.publicUrl;
       });
 
       if (convertedParam.atMyAct) {

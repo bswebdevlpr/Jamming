@@ -36,7 +36,6 @@ import {
 } from "@/app/lib/zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { convertFormData } from "@/app/lib/functions/convert";
 import { createJam } from "../functions/fetch";
 import SearchSongPopup from "./search-song";
 import Image from "next/image";
@@ -210,6 +209,8 @@ export default function CreateJam({
   // HANDLERS
   const onSubmit = async (data: ZodType_Post) => {
     await createJam(data).then((res) => {
+      setValue("images", [], { shouldValidate: false });
+
       if (res) {
         refetch();
         turnOff();
@@ -227,9 +228,8 @@ export default function CreateJam({
       const newImages = Array.from(fileList)
         .slice(0, 5)
         .map((row) => ({
-          id: Date.now(), // 고유한 ID 생성
-          name: row?.name,
-          url: URL.createObjectURL(row), // 미리보기 URL 생성
+          file: row,
+          thumbnail: URL.createObjectURL(row), // 미리보기 URL 생성
         }));
 
       if (newImages.length + images.length <= 5)
@@ -440,7 +440,7 @@ export default function CreateJam({
                         }}
                       >
                         <Image
-                          src={image.url}
+                          src={image.thumbnail}
                           alt=""
                           fill
                           style={{ objectFit: "cover" }}

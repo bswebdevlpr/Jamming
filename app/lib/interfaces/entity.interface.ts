@@ -7,6 +7,7 @@ import { ZodType_HeadCnt, ZodType_LocationDetail, ZodType_Song } from "../zod";
 export interface Entity_User {
   id?: string;
   nickname?: string;
+  profile_image?: string;
   location?: LocationEnum;
   pos?: PositionEnum;
   genre?: GenreEnum;
@@ -34,6 +35,7 @@ export interface Entity_JamSession {
   location_detail?: ZodType_LocationDetail;
   headcnt_by_pos?: ZodType_HeadCnt[];
   songs?: ZodType_Song[];
+  images?: string[];
   created_at?: string;
 
   // NOT COLUMNS

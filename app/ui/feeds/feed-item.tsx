@@ -18,6 +18,8 @@ import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import ButtonTemplate from "../templates/buttons";
 import { deleteJamEntry, deleteJamSession } from "@/app/api/functions/delete";
 import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
+import Image from "next/image";
+import Logo from "../images/logo";
 
 export interface FeedItemProps_Jam {
   idx: number;
@@ -25,6 +27,7 @@ export interface FeedItemProps_Jam {
     isMyJam: boolean;
     curHeadCnt: number;
     maxHeadCnt: number;
+    thumbnail: string;
   };
   router: AppRouterInstance;
   bottomSheet: BottomSheetContext;
@@ -48,6 +51,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
     isMyJam,
     curHeadCnt,
     maxHeadCnt,
+    thumbnail,
   } = data;
 
   const tags = [
@@ -75,7 +79,8 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
       }}
       whileTap={{
         background: "rgba(163, 255, 12, 0.12)",
-      }}>
+      }}
+    >
       <div className="flex flex-col gap-1.5">
         <div className="flex gap-1">
           <p
@@ -85,7 +90,8 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
               fontStyle: "normal",
               lineHeight: "140%",
               letterSpacing: "-0.384px",
-            }}>
+            }}
+          >
             {title}
           </p>
           {isMyAct && isMyJam && <CrownImage />}
@@ -108,11 +114,13 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                 fontSize: "0.875rem",
                 fontStyle: "normal",
                 lineHeight: "140%",
-              }}>
+              }}
+            >
               <span
                 style={{
                   color: "var(--highlight)",
-                }}>
+                }}
+              >
                 {curHeadCnt}
               </span>
               /{maxHeadCnt}
@@ -121,14 +129,19 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
         />
       </div>
       <div className="flex gap-4 justify-end items-center">
-        <div
-          style={{
-            width: "72px",
-            height: "100%",
-            backgroundColor: "pink",
-          }}>
-          Image
-        </div>
+        {thumbnail ? (
+          <div
+            style={{
+              width: "72px",
+              height: "72px",
+              position: "relative",
+            }}
+          >
+            <Image src={thumbnail} alt="" fill style={{ objectFit: "cover" }} />
+          </div>
+        ) : (
+          <Logo width={72} height={72} />
+        )}
         {isMyAct && (
           <Kebap
             onClick={(e) => {
@@ -144,7 +157,8 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                       fontSize: "0.9375rem",
                       lineHeight: "132%",
                       letterSpacing: "-0.36px",
-                    }}>
+                    }}
+                  >
                     <p
                       className="text-center px-3 py-3.5"
                       style={{
@@ -157,7 +171,8 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                         bottomSheet.set({
                           location: "hidden",
                         });
-                      }}>
+                      }}
+                    >
                       {isMyJam ? "삭제하기" : "나가기"}
                     </p>
                     <ButtonTemplate

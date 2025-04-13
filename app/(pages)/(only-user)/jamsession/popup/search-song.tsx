@@ -84,7 +84,6 @@ export default function SearchSongPopup({
         })
         .catch(() => {
           //TODO - 에러팝업
-          console.error("ㅜㅜ");
         });
   };
 

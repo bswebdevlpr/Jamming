@@ -26,7 +26,6 @@ export default function RegisterOpenchatPopup({
       turnOff();
     } else {
       // TODO: 카카오톡 오픈채팅방 링크만 입력 가능하다고 경고메세지 띄우기
-      console.error("멈춰!");
     }
   };
 
