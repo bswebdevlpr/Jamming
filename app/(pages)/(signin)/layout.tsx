@@ -1,6 +1,5 @@
 "use client";
 
-import ContentArea from "@/app/ui/layouts/content-area";
 import WorkSpace from "@/app/ui/layouts/workspace";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { createClient } from "@/app/util/supabase/client";
@@ -50,13 +49,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <WorkSpace>
-      <ContentArea>
         {pathname === "/" || goToSignUp ? (
           children
         ) : (
           <FullScreenLoading isTurnedOn={true} />
         )}
-      </ContentArea>
     </WorkSpace>
   );
 }
