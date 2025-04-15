@@ -27,7 +27,7 @@ export default function SignIn() {
   }, []);
 
   return (
-    <div className="flex flex-col justify-between items-center h-full min-h-(--min-height) overflow-without-scroll">
+    <div className="flex flex-col justify-between items-center h-full min-h-(--min-height)">
       <div
         style={{
           height: "11.42%",
