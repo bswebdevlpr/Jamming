@@ -2,13 +2,12 @@
 
 import { usePathname } from "next/navigation";
 import { BlueNote, GrayNote, GreenNote, PinkNote } from "@/app/ui/images/note";
-import WorkSpace from "@/app/ui/layouts/workspace";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const splitedPath = usePathname().split("/");
 
   return (
-    <div className="grow flex flex-col pt-9 pb-2 max-h-full">
+    <div className="grow flex flex-col pt-9 px-5 pb-2 max-h-full">
       <span className="inline-block pb-5">
         <span className="flex flex-row basis-auto grow-0 shrink-0 gap-2.5 ">
           <GreenNote />
