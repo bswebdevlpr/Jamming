@@ -346,7 +346,7 @@ export default function SignUp_Profile() {
                       type="text"
                       key={idx}
                       value={tag}
-                      placeholder={idx === 2 ? "# 입력" : ""}
+                      placeholder={"# 입력"}
                       className="max-w-fit"
                       style={{
                         background: "var(--background)",

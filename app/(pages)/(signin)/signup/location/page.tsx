@@ -6,7 +6,7 @@ import {
 } from "@/app/lib/enums/location.enum";
 import CompleteButton from "@/app/ui/buttons/complete";
 import VerticalList from "@/app/ui/lists/list";
-import { redirect, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import createUser from "./actions";
 import _ from "lodash";
@@ -28,6 +28,8 @@ export default function SignUp_Location() {
   }, {} as { [key: string]: string });
 
   const { session } = useContext(globalContext);
+
+  const router = useRouter();
   //
 
   // STATES
@@ -82,8 +84,9 @@ export default function SignUp_Location() {
         // TODO: 에러모달 - SignUp 에러
         return false;
       });
-    if (ret) redirect("/jamsession");
-    else redirect("/signup");
+
+    if (ret) router.push("/jamsession");
+    else router.push("/signup");
   };
   //
 
@@ -140,7 +143,7 @@ export default function SignUp_Location() {
       <form
         onSubmit={handleSubmit(onSubmit, (e) => {
           // TODO: 에러모달 - 잘못된 데이터가 입력되었습니다. 처음부터 다시 진행해주세요.
-          redirect("/signup");
+          router.push("/signup");
         })}
       >
         <CompleteButton style={{ width: "100%" }} isActive={!!location} />
