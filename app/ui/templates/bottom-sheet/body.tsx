@@ -39,7 +39,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         case null:
           break;
         case "high":
-          ref.current?.style.setProperty("display", "flex");
+          ref.current?.style.setProperty("visibility", "visible");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
@@ -52,7 +52,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
 
           break;
         case "middle":
-          ref.current?.style.setProperty("display", "flex");
+          ref.current?.style.setProperty("visibility", "visible");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
@@ -64,7 +64,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
           );
           break;
         case "row-2":
-          ref.current?.style.setProperty("display", "flex");
+          ref.current?.style.setProperty("visibility", "visible");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_ROW_2}%)`
@@ -76,7 +76,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
           );
           break;
         case "row-1":
-          ref.current?.style.setProperty("display", "flex");
+          ref.current?.style.setProperty("visibility", "visible");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_ROW_1}%)`
@@ -95,12 +95,12 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
           );
           setPrevDist(0);
           _.debounce(
-            () => ref.current?.style.setProperty("display", "none"),
+            () => ref.current?.style.setProperty("visibility", "hidden"),
             750
           );
           break;
         default:
-          ref.current?.style.setProperty("display", "flex");
+          ref.current?.style.setProperty("visibility", "visible");
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${pullUp}%)`
@@ -130,6 +130,8 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
 
         transition: "transform 0.75s ease-out",
+
+        visibility: "hidden",
       }}
     >
       {children}

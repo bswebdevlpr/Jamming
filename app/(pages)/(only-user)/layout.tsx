@@ -75,5 +75,5 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return <>{isLoading ? <FullScreenLoading /> : children}</>;
+  return isLoading ? <FullScreenLoading /> : children;
 }
