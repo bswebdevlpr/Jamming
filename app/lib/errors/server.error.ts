@@ -1,5 +1,3 @@
-"use server";
-
 const postfix = " 문제가 지속적으로 발생한다면 피드백을 전송해주세요.";
 
 export class CustomErrMsg {
