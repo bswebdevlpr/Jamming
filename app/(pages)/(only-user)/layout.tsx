@@ -29,7 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       let redirectUrl = null;
 
       try {
-        if (!userProfile.isLoaded) {
+        if (!userProfile.isLoaded)
           await supabase.auth
             .getUser()
             .then(async ({ data: { user }, error }) => {
@@ -42,7 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   .from("user")
                   .select()
                   .eq("id", user.id)
-                  .single()
+                  .maybeSingle()
                   .then(async ({ data, error }) => {
                     if (!data || error) {
                       await supabase.auth.signOut();
@@ -52,7 +52,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   });
               }
             });
-        }
       } catch (e) {
         redirectUrl = "/";
       }
