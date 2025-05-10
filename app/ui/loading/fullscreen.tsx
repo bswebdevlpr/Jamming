@@ -9,7 +9,7 @@ export default function FullScreenLoading({
   return (
     <PopupTemplate
       isTurnedOn={isTurnedOn}
-      className="flex justify-center items-center"
+      className="h-full flex justify-center items-center"
     >
       <style jsx>{`
         @keyframes infinite_rotate {

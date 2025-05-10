@@ -9,7 +9,7 @@ export default function WorkSpace({
 }) {
   return (
     <div
-      className="flex flex-col justify-between w-full h-full min-w-full relative overflow-without-scroll"
+      className="w-full h-full flex flex-col justify-between relative overflow-without-scroll"
       style={style}
     >
       {children}
