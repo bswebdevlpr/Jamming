@@ -1,7 +1,7 @@
 "use server";
 
 import sanitizeHtml from "sanitize-html";
-import { CustomError } from "../errors/client.error";
+import { CustomError } from "../errors/server.error";
 import { createClient } from "@/app/util/supabase/server";
 import { UserStatus } from "../enums/supabase.enum";
 

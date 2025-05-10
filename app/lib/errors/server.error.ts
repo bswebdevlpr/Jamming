@@ -1,3 +1,5 @@
+"use server";
+
 const postfix = " 문제가 지속적으로 발생한다면 피드백을 전송해주세요.";
 
 export class CustomErrMsg {
@@ -24,6 +26,9 @@ export class CustomError extends Error {
   );
   static InvalidJam = new CustomError("유효하지 않은 잼세션입니다.");
   static InvalidUser = new CustomError("일치하는 유저를 찾을 수 없습니다.");
+  static UpdatePlaylistItem = new CustomError(
+    "연주목록 항목 업데이트에 실패했습니다." + postfix
+  );
   // SignIn: {
   //   code: 1,
   //   msg: "로그인 도중 에러가 발생했습니다. 잠시 후 다시 시도해주세요.",
