@@ -2,7 +2,7 @@
 
 import { CreatePlaylistItemDto } from "@/app/api/dtos/create";
 import { getUser } from "@/app/api/functions/read";
-import { CustomError } from "@/app/lib/errors/client.error";
+import { CustomError } from "@/app/lib/errors/server.error";
 import { createClient } from "@/app/util/supabase/server";
 import axios from "axios";
 

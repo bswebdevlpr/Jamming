@@ -143,6 +143,7 @@ export default function SignUp_Location() {
       <form
         onSubmit={handleSubmit(onSubmit, (e) => {
           // TODO: 에러모달 - 잘못된 데이터가 입력되었습니다. 처음부터 다시 진행해주세요.
+          console.log(e);
           router.push("/signup");
         })}
       >

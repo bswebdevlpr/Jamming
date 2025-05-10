@@ -27,9 +27,6 @@ export class CustomError extends Error {
   static CreateJamSession = new CustomError(
     "잼세션을 생성하는데에 실패했습니다." + postfix
   );
-  static UpdatePlaylistItem = new CustomError(
-    "연주목록 항목 업데이트에 실패했습니다." + postfix
-  );
   static SearchSong = new CustomError("곡 검색에 실패했습니다." + postfix);
   // SignIn: {
   //   code: 1,
