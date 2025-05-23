@@ -82,29 +82,31 @@ function GlobalLayout({
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    const setVh = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    };
-    setVh();
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const setVh = () => {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      };
+      setVh();
 
-    window.addEventListener("resize", setVh);
+      window.addEventListener("resize", setVh);
 
-    const width = document.body.offsetWidth;
-    const height = document.body.offsetHeight;
+      const width = document.body.offsetWidth;
+      const height = document.body.offsetHeight;
 
-    setWidth(width);
-    setHeight(height);
+      setWidth(width);
+      setHeight(height);
 
-    setGlobalState({
-      ...globalState,
-      ...{
-        bodyWidth: width,
-        bodyHeight: height,
-      },
-    });
+      setGlobalState({
+        ...globalState,
+        ...{
+          bodyWidth: width,
+          bodyHeight: height,
+        },
+      });
 
-    return () => window.removeEventListener("resize", setVh);
+      return () => window.removeEventListener("resize", setVh);
+    }
   }, []);
   //
 
