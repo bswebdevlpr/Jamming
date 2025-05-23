@@ -36,12 +36,9 @@ export default function CalendarComponent({
 }) {
   // PREVENT HYDRATION FAIL
   // STATES & MEMOS
-  const today = useMemo(() => moment(), []);
-
+  const [today, setToday] = useState<moment.Moment>(null);
   const [isClient, setIsClient] = useState(false);
-  const [localSelectedDate, setLocalSelectedDate] = useState<moment.Moment>(
-    filter.selectedDate
-  );
+  const [localSelectedDate, setLocalSelectedDate] = useState<moment.Moment>(null);
   //
 
   const handleSelectedDate = (input: moment.Moment) => {
@@ -51,14 +48,17 @@ export default function CalendarComponent({
 
   useEffect(() => {
     setIsClient(true);
+    setToday(moment());
+    setLocalSelectedDate(filter.selectedDate);
   }, []);
 
   useEffect(() => {
-    if (localSelectedDate !== filter.selectedDate)
+    if (localSelectedDate && filter.selectedDate && !localSelectedDate.isSame(filter.selectedDate)) {
       setLocalSelectedDate(filter.selectedDate);
+    }
   }, [filter]);
 
-  if (!isClient) {
+  if (!isClient || !today || !localSelectedDate) {
     return null; // 클라이언트에서만 렌더링
   }
   //
