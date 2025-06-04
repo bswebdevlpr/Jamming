@@ -49,7 +49,6 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             () => ref.current!.style.setProperty("user-select", "auto"),
             750
           );
-
           break;
         case "middle":
           ref.current?.style.setProperty("visibility", "visible");
@@ -130,7 +129,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
 
         transition: "transform 0.75s ease-out",
-
+        
         visibility: "hidden",
       }}
     >
