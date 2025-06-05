@@ -176,7 +176,7 @@ export default function SignUp_Policy() {
         text="다음"
         isActive={isButtonActivated}
         onClick={() =>
-          debouncedRedirect(pathname + "/user-profile", undefined, {
+          debouncedRedirect(pathname + "/profile", undefined, {
             accept_marketing: termCons[termCons.length - 1],
           })
         }

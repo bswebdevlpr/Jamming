@@ -178,6 +178,7 @@ export default function SignUp_Profile() {
         name="profile_form"
         className="grow flex flex-col justify-between"
         onSubmit={handleSubmit(onSubmit, (e) => {
+          console.log(e, getValues());
           console.error("validation failed");
           // TODO: validation FAIL popup
         })}

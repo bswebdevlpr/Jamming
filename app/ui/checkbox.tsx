@@ -38,8 +38,8 @@ export const RoundedCheckbox = ({
           alt="note"
           width={20}
           height={20}
-          onClick={onClick}
-          // onClick={() => onClick(!thisState)}
+          // onClick={onClick}
+          onClick={() => onClick(!thisState)}
         />
       )}
     </>
