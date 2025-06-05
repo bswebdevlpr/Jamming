@@ -23,7 +23,7 @@ export const ZodSchema_User = z.object({
   tags: z
     .array(z.string())
     .refine((arr) => arr.every((item) => /^#[가-힣a-zA-Z]+$|^$/.test(item)), {
-      message: "올바른 태그를 입력해주세요",
+      message: "태그에는 올바른 문장을 입력해야해요",
     }),
   pos: z.nativeEnum(PositionEnum),
   genre: z.nativeEnum(GenreEnum),
