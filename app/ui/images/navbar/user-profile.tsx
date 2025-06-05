@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function Profile({
+export default function UserProfile({
   width,
   height,
   focused,
@@ -13,10 +13,10 @@ export default function Profile({
     <Image
       src={
         focused
-          ? "/navbar/bottom/profile-green.svg"
-          : "/navbar/bottom/profile.svg"
+          ? "/navbar/bottom/user-profile--green.svg"
+          : "/navbar/bottom/user-profile.svg"
       }
-      alt="profile"
+      alt="user profile"
       width={width ?? 18.34}
       height={height ?? 20.57}
     />

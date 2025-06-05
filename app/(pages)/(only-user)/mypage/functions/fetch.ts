@@ -16,7 +16,6 @@ export const initialize = async () => {
       .from("user")
       .select(
         `
-        *,
         playlist ( * )
       `
       )

@@ -2,7 +2,7 @@
 
 import { SquaredCheckbox } from "@/app/ui/checkbox";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
-import Profile from "@/app/ui/images/navbar/profile";
+import UserProfile from "@/app/ui/images/navbar/user-profile";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import { useEffect, useRef, useState } from "react";
@@ -64,7 +64,7 @@ const FlexRow = ({
       </div>
       <div className="w-full flex flex-row justify-between pl-7">
         <ImageWithTxt
-          image={<Profile width={10.7} height={12} />}
+          image={<UserProfile width={10.7} height={12} />}
           text={
             <p
               style={{

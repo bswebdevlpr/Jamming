@@ -24,7 +24,7 @@ export const initialContext: GlobalContext = {
       profile_image: undefined,
       nickname: undefined,
       tags: undefined,
-      position: undefined,
+      pos: undefined,
       genre: undefined,
       level: undefined,
       location: undefined,

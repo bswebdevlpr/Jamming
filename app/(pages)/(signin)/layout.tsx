@@ -35,7 +35,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             .single();
 
           if (data) {
-            session.setUserProfile({ ...data, isLoaded: true });
+            session.setUserProfile({
+              ...data,
+              isLoaded: true,
+            });
             redirect("/jamsession");
           } else setGoToSignUp(true);
         }
@@ -49,11 +52,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <WorkSpace>
-        {pathname === "/" || goToSignUp ? (
-          children
-        ) : (
-          <FullScreenLoading isTurnedOn={true} />
-        )}
+      {pathname === "/" || goToSignUp ? (
+        children
+      ) : (
+        <FullScreenLoading isTurnedOn={true} />
+      )}
     </WorkSpace>
   );
 }
