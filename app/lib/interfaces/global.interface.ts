@@ -4,7 +4,6 @@ import { LevelEnum } from "../enums/level.enum";
 import { LocationEnum } from "../enums/location.enum";
 import { PositionEnum } from "../enums/position.enum";
 import { BottomSheetHeight } from "@/app/ui/templates/bottom-sheet/body";
-import { ZodType_Image } from "../zod";
 
 export interface BottomSheetContext {
   children: ReactNode;
@@ -32,10 +31,10 @@ export interface GlobalContext {
 export interface UserProfile {
   isLoaded: undefined | boolean;
   accept_marketing: undefined | boolean;
-  profile_image: undefined | null | ZodType_Image;
+  profile_image: undefined | null | string;
   nickname: undefined | string;
   tags: undefined | string[];
-  position: undefined | PositionEnum;
+  pos: undefined | PositionEnum;
   genre: undefined | GenreEnum;
   level: undefined | LevelEnum;
   location: undefined | LocationEnum;

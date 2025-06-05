@@ -3,7 +3,7 @@
 import { redirect, usePathname } from "next/navigation";
 import HomeButton from "../buttons/home";
 import MyActivity from "../images/navbar/my-activity";
-import Profile from "../images/navbar/profile";
+import UserProfile from "../images/navbar/user-profile";
 
 export default function BottomNavBar() {
   const path = usePathname();
@@ -14,7 +14,8 @@ export default function BottomNavBar() {
       style={{
         height: "6.93vh", // 52px
         background: "var(--background)",
-      }}>
+      }}
+    >
       <div
         className="grow flex justify-center items-center"
         style={{
@@ -25,7 +26,8 @@ export default function BottomNavBar() {
 
           cursor: "pointer",
         }}
-        onClick={() => redirect("/myact")}>
+        onClick={() => redirect("/myact")}
+      >
         <MyActivity focused={path.startsWith("/myact")} />
       </div>
       <div
@@ -36,7 +38,8 @@ export default function BottomNavBar() {
 
           cursor: "pointer",
         }}
-        onClick={() => redirect("/jamsession")}>
+        onClick={() => redirect("/jamsession")}
+      >
         <HomeButton />
       </div>
       <div
@@ -49,15 +52,17 @@ export default function BottomNavBar() {
 
           cursor: "pointer",
         }}
-        onClick={() => redirect("/mypage")}>
+        onClick={() => redirect("/mypage")}
+      >
         <span className="flex flex-col items-center">
-          <Profile focused={path.startsWith("/mypage")} />
+          <UserProfile focused={path.startsWith("/mypage")} />
           <p
             style={{
               fontFamily: "SUIT-BODY",
               fontSize: "12px",
               color: path.startsWith("/mypage") ? "#A3FF0C" : "#9F9FA2",
-            }}>
+            }}
+          >
             프로필
           </p>
         </span>

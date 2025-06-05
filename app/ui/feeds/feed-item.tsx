@@ -1,14 +1,8 @@
 "use client";
 
 import { CrownImage } from "../images/myact/crown";
-import Profile from "../images/navbar/profile";
-import {
-  GenreTag,
-  LevelTag,
-  LocationTag,
-  PositionTag,
-  TagList,
-} from "../tags/category-tag";
+import UserProfile from "../images/navbar/user-profile";
+import { GenreTag, LevelTag, LocationTag, TagList } from "../tags/category-tag";
 import { ImageWithTxt } from "../templates/images";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
@@ -105,7 +99,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
         />
         <ImageWithTxt
           className="gap-1"
-          image={<Profile width={10.7} height={12} />}
+          image={<UserProfile width={10.7} height={12} />}
           text={
             <p
               style={{

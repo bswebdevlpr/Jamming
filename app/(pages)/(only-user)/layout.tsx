@@ -41,7 +41,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         if (!data || error) {
                           await supabase.auth.signOut();
                           redirectUrl = "/";
-                        } else setUserProfile({ ...data, isLoaded: true });
+                        } else
+                          setUserProfile({
+                            ...data,
+                            isLoaded: true,
+                          });
                       });
                 });
           } catch (e) {

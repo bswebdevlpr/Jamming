@@ -10,7 +10,7 @@ import {
   PositionTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { EditGrayIcon } from "@/app/ui/images/mypage/edit/edits";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
@@ -21,12 +21,18 @@ import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import BPMBar from "@/app/ui/bpm/bpm-bar";
 import { createClient } from "@/app/util/supabase/client";
+import { globalContext } from "../../context";
 
 export default function MyPage() {
   // HOOOKS
   const pathname = usePathname();
   const router = useRouter();
   //
+
+  const {
+    session: { userProfile },
+  } = useContext(globalContext);
+  console.log(userProfile);
 
   // STATES
   const [user, setUser] = useState<Entity_User>(null);
@@ -39,10 +45,11 @@ export default function MyPage() {
     (async () => {
       const initedUser = await initialize();
 
-      if (!initedUser.profile_image)
-        initedUser.profile_image = await (
-          await createClient().auth.getUser()
-        ).data.user.user_metadata.avatar_url;
+      // // 프로필 이미지 없을 시 카카오톡 프로필 이미지로 설정
+      // if (!initedUser.profile_image)
+      //   initedUser.profile_image = await (
+      //     await createClient().auth.getUser()
+      //   ).data.user.user_metadata.avatar_url;
       setUser(initedUser);
     })();
   }, []);
@@ -68,7 +75,10 @@ export default function MyPage() {
       </div>
       <div className="flex items-center gap-5 pt-3 pb-5">
         <div className="relative">
-          <RadixAvatar src={user?.profile_image} />
+          <RadixAvatar
+            src={userProfile?.profile_image}
+            pos={userProfile?.pos}
+          />
           <EditGrayIcon
             width={25}
             height={25}
@@ -89,19 +99,19 @@ export default function MyPage() {
               lineHeight: "150%",
             }}
           >
-            {user?.nickname ?? "닉네임"}
+            {userProfile?.nickname ?? "닉네임"}
           </p>
           <TagList
             tags={[
-              <LocationTag key="l" text={user?.location} />,
-              <PositionTag key="p" text={user?.pos} />,
-              <GenreTag key="g" text={user?.genre} />,
-              <LevelTag key="lv" text={user?.level} />,
+              <LocationTag key="l" text={userProfile?.location} />,
+              <PositionTag key="p" text={userProfile?.pos} />,
+              <GenreTag key="g" text={userProfile?.genre} />,
+              <LevelTag key="lv" text={userProfile?.level} />,
             ]}
           />
         </div>
       </div>
-      {user && user.tags && (
+      {userProfile && userProfile.tags && (
         <div
           className="flex gap-2"
           style={{
@@ -111,7 +121,7 @@ export default function MyPage() {
             lineHeight: "140%",
           }}
         >
-          {user.tags.map(
+          {userProfile.tags.map(
             (tag, idx) =>
               tag && (
                 <p key={idx}>
