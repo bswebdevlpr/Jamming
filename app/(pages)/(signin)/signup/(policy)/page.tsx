@@ -3,7 +3,7 @@
 import { RoundedCheckbox } from "@/app/ui/checkbox";
 import { useEffect, useRef, useState } from "react";
 import { RightArrow } from "@/app/ui/images/arrows";
-import { debouncedRedirect } from "../buttons/next-button";
+import { useDebouncedRedirect } from "../buttons/next-button";
 import { usePathname } from "next/navigation";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 
@@ -67,6 +67,8 @@ export default function SignUp_Policy() {
   // STATES
   const [isButtonActivated, setIsButtonActivated] = useState(false);
   //
+
+  const debouncedRedirect = useDebouncedRedirect(300);
 
   // USE-EFFECTS
   useEffect(() => {
