@@ -140,24 +140,30 @@ export default function SignUp_Profile() {
   };
 
   const onSubmit = async (data: FormData_User) => {
-    if (!(await isNicknameUnique(data.nickname)))
-      setError("nickname", { message: CustomErrMsg.NicknameNotUnique });
-    else {
-      if (profile_image)
-        sessionStorage.setItem(
-          "profile_image",
-          JSON.stringify({
-            name: profile_image.file.name,
-            type: profile_image.file.type,
-            content: await readFileAsBase64(profile_image.file),
-          })
-        );
+    try {
+      console.log("submit!");
 
-      debouncedRedirect(
-        pathname.split("/").slice(0, 2).join("/") + "/location",
-        searchParams.toString(),
-        getValues()
-      );
+      if (!(await isNicknameUnique(data.nickname)))
+        setError("nickname", { message: CustomErrMsg.NicknameNotUnique });
+      else {
+        if (profile_image)
+          sessionStorage.setItem(
+            "profile_image",
+            JSON.stringify({
+              name: profile_image.file.name,
+              type: profile_image.file.type,
+              content: await readFileAsBase64(profile_image.file),
+            })
+          );
+
+        debouncedRedirect(
+          pathname.split("/").slice(0, 2).join("/") + "/location",
+          searchParams.toString(),
+          getValues()
+        );
+      }
+    } catch (e) {
+      console.log(e);
     }
   };
   //
