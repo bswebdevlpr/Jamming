@@ -11,11 +11,11 @@ import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { SignUp_Profile_Background_Genre } from "@/app/ui/images/signup/genre";
 import { SignUp_Profile_Background_Level } from "@/app/ui/images/signup/level";
 import { SignUp_Profile_Background_Position } from "@/app/ui/images/signup/position";
-import { debouncedRedirect } from "../buttons/next-button";
+import { useDebouncedRedirect } from "../buttons/next-button";
 import Image from "next/image";
 import { isNicknameUnique } from "@/app/api/functions/validation";
 import { CustomErrMsg } from "@/app/lib/errors/client.error";
-import { redirect, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { FormData_User, ZodSchema_User, ZodType_Image } from "@/app/lib/zod";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { readFileAsBase64 } from "@/app/util/convert/file";
@@ -68,6 +68,7 @@ export default function SignUp_Profile() {
   // INIT
   const { bottomSheet } = useContext(globalContext);
 
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   //
@@ -108,7 +109,7 @@ export default function SignUp_Profile() {
   // USE-EFFECT
   useEffect(() => {
     const query = searchParams.get("accept_marketing");
-    if (query === null) redirect("/signup");
+    if (query === null) router.push("/signup");
 
     setValue("accept_marketing", Boolean(query));
   }, []);
@@ -138,6 +139,8 @@ export default function SignUp_Profile() {
       setProfileImage(newImage);
     }
   };
+
+  const debouncedRedirect = useDebouncedRedirect(300);
 
   const onSubmit = async (data: FormData_User) => {
     try {
