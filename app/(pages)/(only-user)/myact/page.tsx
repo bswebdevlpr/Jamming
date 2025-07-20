@@ -32,6 +32,7 @@ export default function MyAct() {
     genre: null,
     position: null,
     level: null,
+    includeWithDrawn: true,
   });
   //
 

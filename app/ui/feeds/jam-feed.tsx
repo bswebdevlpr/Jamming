@@ -15,6 +15,7 @@ export interface Filter_JamSessionFeed {
   position?: PositionEnum;
   level?: LevelEnum;
   atMyAct?: boolean;
+  includeWithDrawn?: boolean;
 }
 
 export function JamFeed({

@@ -25,7 +25,6 @@ import {
   GenreTag,
   LevelTag,
   LocationTag,
-  PositionTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
 import { initialize } from "./functions/initialize";
@@ -33,6 +32,7 @@ import { CustomError } from "@/app/lib/errors/client.error";
 import Image from "next/image";
 import { deleteJamSession } from "@/app/api/functions/delete";
 import { globalContext } from "@/app/(pages)/context";
+import RadixAvatar from "@/app/ui/templates/avatar";
 
 const FlexRow = ({
   tag,
@@ -268,13 +268,11 @@ export default function JamSession_Post() {
           borderBottom: "1px solid #333335",
         }}
       >
-        <div
-          style={{
-            width: "44px",
-            height: "44px",
-            borderRadius: "100px",
-            backgroundColor: "#FFBB0C",
-          }}
+        <RadixAvatar
+          width={44}
+          height={44}
+          src={jam.user?.profile_image}
+          pos={jam.user?.pos}
         />
         <div className="grow flex flex-col gap-0.5">
           <div className="flex flex-row gap-2">
@@ -285,7 +283,7 @@ export default function JamSession_Post() {
                 color: "#FFF",
               }}
             >
-              {jam.user.nickname ?? "-"}
+              {jam.user?.nickname ?? "탈퇴한 유저에요"}
             </p>
             <p
               style={{
@@ -294,7 +292,7 @@ export default function JamSession_Post() {
                 color: "#A3FF0C",
               }}
             >
-              {jam.user.bpm ?? 0}BPM
+              {jam.user?.bpm ?? 0}BPM
             </p>
           </div>
           <div className="flex flex-row justify-between items-center">
@@ -305,9 +303,9 @@ export default function JamSession_Post() {
                 color: "#9F9FA2",
               }}
             >
-              {jam.user.genre ? MapDataToGenre[jam.user.genre] : "-"} •{" "}
-              {jam.user.level ? MapDataToLevel[jam.user.level] : "-"} •{" "}
-              {jam.user.pos ? MapDataToPosition[jam.user.pos] : "-"}
+              {jam.user?.genre ? MapDataToGenre[jam.user.genre] : "-"} •{" "}
+              {jam.user?.level ? MapDataToLevel[jam.user.level] : "-"} •{" "}
+              {jam.user?.pos ? MapDataToPosition[jam.user.pos] : "-"}
             </p>
           </div>
         </div>

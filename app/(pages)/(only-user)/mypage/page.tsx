@@ -20,7 +20,6 @@ import MyListIcon from "@/app/ui/images/mypage/note";
 import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import BPMBar from "@/app/ui/bpm/bpm-bar";
-import { createClient } from "@/app/util/supabase/client";
 import { globalContext } from "../../context";
 
 export default function MyPage() {

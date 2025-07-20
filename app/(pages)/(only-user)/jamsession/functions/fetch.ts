@@ -39,10 +39,7 @@ export const createJam = async (input: ZodType_Post) => {
         // TODO: 에러 핸들링
         await supabase.storage
           .from(process.env.SUPABASE_STORAGE_NAME)
-          .upload(
-            `${user.id}/jamsession/${data[0].id}/${image.file.name}`,
-            image.file
-          );
+          .upload(`jamsession/${data[0].id}/${image.file.name}`, image.file);
       }
     }
 

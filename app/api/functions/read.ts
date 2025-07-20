@@ -38,7 +38,7 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
       .select(
         `
             *,
-            user ( nickname, pos, genre, level, bpm ),
+            user ( nickname, pos, genre, level, bpm, profile_image ),
             jamentry ( id, jam_id, user_id, applied_pos )
         `
       )

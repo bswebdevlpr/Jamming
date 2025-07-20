@@ -17,6 +17,7 @@ import BottomSheetContentTemplate_List from "@/app/ui/templates/bottom-sheet/con
 import { refuseEntry } from "../functions/fetch";
 import moment from "moment";
 import { Dispatch, SetStateAction } from "react";
+import RadixAvatar from "@/app/ui/templates/avatar";
 
 export const MemberComponent = (
   idx: number,
@@ -29,7 +30,8 @@ export const MemberComponent = (
   handleNoShow: (noShowState: boolean, entryId: number) => void,
   setRejamTargetUserId: (targetUserId: string) => void
 ) => {
-  const { nickname, bpm, location, pos, genre, level } = entry.user;
+  const { nickname, bpm, location, pos, genre, level, profile_image } =
+    entry.user;
 
   const isPast = moment(jam.created_at).isBefore(moment());
 
@@ -41,15 +43,7 @@ export const MemberComponent = (
         borderBottom: "1px solid #323234",
       }}
     >
-      <div
-        style={{
-          width: "52px",
-          height: "52px",
-          borderRadius: "100px",
-          background:
-            "linear-gradient(0deg, rgba(255, 187, 12, 0.70) 0%, rgba(255, 187, 12, 0.70) 100%)",
-        }}
-      />
+      <RadixAvatar width={52} height={52} src={profile_image} pos={pos} />
       <div className="grow flex flex-row justify-between">
         <div className="flex flex-col gap-1">
           <div className="flex gap-2">

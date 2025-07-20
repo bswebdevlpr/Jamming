@@ -32,6 +32,7 @@ export const fetchJams: FetchFeedFunc = async ({
       .select(
         `
         *,
+        user${convertedParam.includeWithDrawn ? "" : "!inner"} ( id ),
         jamentry ( id, user_id )
       `
       )
@@ -92,6 +93,7 @@ export const fetchJams: FetchFeedFunc = async ({
         const {
           data: { user },
         } = await supabase.auth.getUser();
+
         data = data
           .filter((row) => row.user_id === user.id || row.jamentry.length > 0)
           .map((row) => {
