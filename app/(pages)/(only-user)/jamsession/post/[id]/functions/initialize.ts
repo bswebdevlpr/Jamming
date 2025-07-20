@@ -37,16 +37,20 @@ export const initialize = async (jam_id: number) => {
       const isAlreadyRegistered = jam.jamentry
         .map((je) => je.user_id)
         .includes(user.id);
+      const isUserWithdrawn = !jam.user;
 
       ret.applyBtnTxt = isAuthor
         ? "내가 작성한 잼세션이에요"
+        : isUserWithdrawn
+        ? "세션장이 탈퇴하여 참여할 수 없어요"
         : jam.maxHeadCnt !== 0 && jam.maxHeadCnt <= jam.jamentry.length
         ? "인원이 전부 찼어요"
         : isAlreadyRegistered
         ? "신청완료!"
         : "신청하기";
 
-      ret.isApplyBtnActive = !isAuthor && !isAlreadyRegistered;
+      ret.isApplyBtnActive =
+        !isAuthor && !isUserWithdrawn && !isAlreadyRegistered;
     }
   } catch (e) {
     if (process.env.NODE_ENV === "development") console.error(e);

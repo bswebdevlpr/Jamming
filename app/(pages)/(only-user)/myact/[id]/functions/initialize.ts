@@ -32,13 +32,16 @@ export const initialize = async (jam_id: number) => {
           id,
           datetime,
           created_at,
-          leader:user!inner (*),
+          leader:user (*),
           jamentry (*, user (*))
         `
       )
       .eq("id", jam_id)
       .single();
-    if (err1) throw CustomError.UnExpected;
+    if (err1) {
+      console.error(err1);
+      throw CustomError.UnExpected;
+    }
 
     ret.jam = jam;
     ret.leader = jam.leader as any;
@@ -48,9 +51,12 @@ export const initialize = async (jam_id: number) => {
       data: { user },
       error: err2,
     } = await supabase.auth.getUser();
-    if (err2) throw CustomError.UnExpected;
+    if (err2) {
+      console.error(err2);
+      throw CustomError.UnExpected;
+    }
 
-    if ((jam.leader as any).id === user.id)
+    if ((jam.leader as any)?.id === user.id)
       ret.applierEntries = jam.jamentry.filter((je) => je.is_allowed === null);
   } catch (e) {
     if (process.env.NODE_ENV === "development") console.error(e);

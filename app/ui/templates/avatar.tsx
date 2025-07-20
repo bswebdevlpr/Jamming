@@ -18,6 +18,9 @@ export default function RadixAvatar({
   src?: null | string;
   pos?: string;
 }) {
+  const fallbackContentWidth = width ? width * 0.7 : 100,
+    fallbackContentHeight = height ? height * 0.7 : 100;
+
   pos = MapDataToPosition[pos];
 
   return (
@@ -26,37 +29,44 @@ export default function RadixAvatar({
         src={src}
         alt="Avatar"
         style={{
-          width: width ?? "140px",
-          height: height ?? "140px",
-
-          border: "2px solid var(--highlight)",
+          width: width ? `${width}px` : "140px",
+          height: height ? `${height}px` : "140px",
           borderRadius: "50%",
         }}
       />
       <Avatar.Fallback
         className="flex justify-center items-center"
         style={{
-          width: width ?? "140px",
-          height: height ?? "140px",
+          width: width ? `${width}px` : "140px",
+          height: height ? `${height}px` : "140px",
 
-          border: "2px solid var(--highlight)",
+          border: "1.5px solid var(--highlight)",
           borderRadius: "50%",
         }}
         delayMs={600}
       >
         {pos === PositionEnum.Drum ? (
-          <DefaultUserProfileImage_Drum width={width} height={height} />
-        ) : pos === PositionEnum.Guitar || pos === PositionEnum.Base ? (
-          <DefaultUserProfileImage_GuitarBase width={width} height={height} />
-        ) : pos === PositionEnum.Keyboard ? (
-          <DefaultUserProfileImage_Keyboard width={width} height={height} />
-        ) : pos === PositionEnum.Vocal ? (
-          <DefaultUserProfileImage_Vocal width={width} height={height} />
-        ) : (
-          <Logo
-            width={width ? Number(width) - 20 : 100}
-            height={height ? Number(height) - 20 : 100}
+          <DefaultUserProfileImage_Drum
+            width={fallbackContentWidth}
+            height={fallbackContentHeight}
           />
+        ) : pos === PositionEnum.Guitar || pos === PositionEnum.Base ? (
+          <DefaultUserProfileImage_GuitarBase
+            width={fallbackContentWidth}
+            height={fallbackContentHeight}
+          />
+        ) : pos === PositionEnum.Keyboard ? (
+          <DefaultUserProfileImage_Keyboard
+            width={fallbackContentWidth}
+            height={fallbackContentHeight}
+          />
+        ) : pos === PositionEnum.Vocal ? (
+          <DefaultUserProfileImage_Vocal
+            width={fallbackContentWidth}
+            height={fallbackContentHeight}
+          />
+        ) : (
+          <Logo width={fallbackContentWidth} height={fallbackContentHeight} />
         )}
       </Avatar.Fallback>
     </Avatar.Root>

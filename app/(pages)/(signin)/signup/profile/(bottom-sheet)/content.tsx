@@ -11,7 +11,7 @@ import Genre from "@/app/ui/images/categories/genre";
 import Level from "@/app/ui/images/categories/level";
 import Position from "@/app/ui/images/categories/position";
 import { BOTTOMSHEET_HEIGHT_HIGH } from "@/app/ui/templates/bottom-sheet/body";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type BottomSheetContentType = null | "position" | "genre" | "level";
 
@@ -25,6 +25,10 @@ const BottomSheetContent = ({
   handleState: (value: any) => void;
 }) => {
   const [localState, setLocalState] = useState(state);
+
+  useEffect(() => {
+    setLocalState(state);
+  }, [state]);
 
   const thisEnum =
     type === "position"

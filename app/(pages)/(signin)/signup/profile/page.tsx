@@ -144,8 +144,6 @@ export default function SignUp_Profile() {
 
   const onSubmit = async (data: FormData_User) => {
     try {
-      console.log("submit!");
-
       if (!(await isNicknameUnique(data.nickname)))
         setError("nickname", { message: CustomErrMsg.NicknameNotUnique });
       else {

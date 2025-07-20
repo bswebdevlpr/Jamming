@@ -131,7 +131,12 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
               position: "relative",
             }}
           >
-            <Image src={thumbnail} alt="" fill style={{ objectFit: "cover" }} />
+            <Image
+              src={thumbnail}
+              alt="Default"
+              fill
+              style={{ objectFit: "cover" }}
+            />
           </div>
         ) : (
           <Logo width={72} height={72} />

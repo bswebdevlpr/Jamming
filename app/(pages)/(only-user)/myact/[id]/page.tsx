@@ -115,7 +115,7 @@ export default function MyAct() {
           lineHeight: "140%",
         }}
       />
-      {user_id === leader.id && (
+      {user_id === leader?.id && (
         <>
           <p
             style={{
@@ -156,7 +156,7 @@ export default function MyAct() {
             idx,
             jam,
             entry,
-            user_id === leader.id,
+            user_id === leader?.id,
             letOutMember,
             bottomSheet,
             setIsRejamOn,

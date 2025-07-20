@@ -24,13 +24,14 @@ export default async function createUser(input: any): Promise<UserProfile> {
       (await supabase.storage
         .from(process.env.SUPABASE_STORAGE_NAME)
         .upload(
-          `${user.id}/profile-image/${input.profile_image.name}`,
-          input.profile_image
+          `user/${user.id}/profile-image/${input.profile_image.name}`,
+          input.profile_imagex
         )
-        .then(async (res) =>
-          supabase.storage
-            .from(process.env.SUPABASE_STORAGE_NAME)
-            .getPublicUrl(res.data.path)
+        .then(
+          async (res) =>
+            supabase.storage
+              .from(process.env.SUPABASE_STORAGE_NAME)
+              .getPublicUrl(res.data.path).data.publicUrl
         ));
 
     const { data, error } = await supabase

@@ -329,7 +329,7 @@ export default function CreateJam({
             right={[genre[0], level[0]].filter((elem) => elem).join(" ")}
             onClick={() =>
               bottomSheet.set({
-                location: "high",
+                location: 88.5,
                 children: (
                   <BottomSheetContent
                     genre={MapDataToGenre[genre[0]]}
