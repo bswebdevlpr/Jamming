@@ -63,12 +63,6 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
         return acc;
       }, {})
     );
-    data.images = data.images.map(
-      (row) =>
-        supabase.storage
-          .from(process.env.SUPABASE_STORAGE_NAME)
-          .getPublicUrl(`${user.id}/jamsession/${id}/${row}`).data.publicUrl
-    );
 
     ret = data;
   } catch (e) {
