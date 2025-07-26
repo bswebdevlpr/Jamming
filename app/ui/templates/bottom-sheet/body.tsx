@@ -1,8 +1,10 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import BottomSheetHeader from "./header";
 import { motion } from "framer-motion";
 import _ from "lodash";
 import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
+import { usePathname, useSearchParams } from "next/navigation";
+import { globalContext } from "@/app/(pages)/context";
 
 export type BottomSheetHeight =
   | null
@@ -113,6 +115,17 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
       }
   }, [pullUp]);
 
+  const { bottomSheet } = useContext(globalContext);
+  const pathname = usePathname(),
+    searchParams = useSearchParams();
+  useEffect(() => {
+    return () => {
+      bottomSheet.set({
+        children: null,
+      });
+    };
+  }, [pathname, searchParams]);
+
   return (
     <motion.div
       ref={ref}
@@ -129,7 +142,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
 
         transition: "transform 0.75s ease-out",
-        
+
         visibility: "hidden",
       }}
     >
