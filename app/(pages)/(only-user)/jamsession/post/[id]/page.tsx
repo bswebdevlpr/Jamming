@@ -116,6 +116,8 @@ export default function JamSession_Post() {
         setJam(foundJam);
         setUser(foundUser);
 
+        console.log(foundJam.images);
+
         if (applyBtnTxtFromFunc) setApplyBtnTxt(applyBtnTxtFromFunc);
         if (isApplyBtnActiveFromFunc !== undefined)
           setIsApplyBtnActive(isApplyBtnActiveFromFunc);

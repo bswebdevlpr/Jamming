@@ -183,6 +183,8 @@ export default function CreateJam({
   }, [isTurnedOn]);
 
   useEffect(() => {
+    console.log("selectedDate", selectedDate.toISOString());
+
     if (selectedDate) {
       setValue("datetime", selectedDate.toISOString(), {
         shouldValidate: false,
@@ -204,6 +206,8 @@ export default function CreateJam({
 
   // HANDLERS
   const onSubmit = async (data: ZodType_Post) => {
+    console.log("createJam에 보내기 전", data);
+
     await createJam(data).then((res) => {
       setValue("images", [], { shouldValidate: false });
 
@@ -261,7 +265,13 @@ export default function CreateJam({
         backgroundColor: "var(--background)",
       }}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className="h-full flex flex-col">
+      <form
+        onSubmit={handleSubmit(onSubmit, (e) => {
+          console.log(e);
+          console.log(getValues());
+        })}
+        className="h-full flex flex-col"
+      >
         <div
           className="flex flex-row justify-between py-3 px-5"
           style={{
