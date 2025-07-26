@@ -40,7 +40,7 @@ export default function LocationPopup({
   useEffect(() => {
     setWidth(document.body.offsetWidth);
     setHeight(document.body.offsetHeight);
-  });
+  }, []);
 
   useEffect(() => {
     if (ref.current) {

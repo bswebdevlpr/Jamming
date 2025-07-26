@@ -1,7 +1,8 @@
 "use client";
 
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { ListItemProp, VerticalListItem } from "./item";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export default function VerticalList({
   props,
@@ -12,9 +13,18 @@ export default function VerticalList({
   className?: string;
   style?: CSSProperties;
 }) {
+  const pathname = usePathname(),
+    searchParams = useSearchParams();
+
   const [isFocused, setIsFocused] = useState<boolean[]>(
     new Array(props.length).fill(false)
   );
+
+  useEffect(() => {
+    return () => {
+      setIsFocused(new Array(props.length).fill(false));
+    };
+  }, [pathname, searchParams]);
 
   return (
     <div className={`flex flex-col ${className}`} style={style}>

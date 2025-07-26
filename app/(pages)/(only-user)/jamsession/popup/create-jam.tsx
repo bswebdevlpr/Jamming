@@ -21,18 +21,9 @@ import {
 import BottomSheetContent from "../bottom-sheet/content";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import SelectHeadCountPopup from "./select-headcount";
-import { GenreEnum } from "@/app/lib/enums/genre.enum";
-import { PositionEnum } from "@/app/lib/enums/position.enum";
-import { LevelEnum } from "@/app/lib/enums/level.enum";
 import ClockPopup from "./clock";
 import moment from "moment";
-import {
-  ZodType_Song,
-  ZodSchema_Post,
-  ZodType_LocationDetail,
-  ZodType_Image,
-  ZodType_Post,
-} from "@/app/lib/zod";
+import { ZodType_Song, ZodSchema_Post, ZodType_Post } from "@/app/lib/zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createJam } from "../functions/fetch";
@@ -44,16 +35,11 @@ import _ from "lodash";
 import {
   MapDataToGenre,
   MapDataToLevel,
-  MapDataToLocation,
   MapDataToPosition,
-  MapGenreToData,
-  MapLevelToData,
-  MapLocationToData,
-  MapPositionToData,
 } from "@/app/lib/maps/jam";
 import LocationPopup from "./location";
-import { fallbackModeToStaticPathsResult } from "next/dist/lib/fallback";
 import { globalContext } from "@/app/(pages)/context";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const FlexRow = ({
   left,
@@ -122,6 +108,9 @@ export default function CreateJam({
 
   const ref = useRef<HTMLDivElement>(null);
 
+  const pathname = usePathname(),
+    searchParams = useSearchParams();
+
   // STATES
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -150,6 +139,7 @@ export default function CreateJam({
     getValues,
     setError,
     clearErrors,
+    reset,
   } = useForm<ZodType_Post>({
     defaultValues: {
       title: "",
@@ -204,6 +194,12 @@ export default function CreateJam({
   useEffect(() => {
     setHeadTotal(headcnt_by_pos.reduce((acc, cur) => acc + cur.headcnt, 0));
   }, [headcnt_by_pos]);
+
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, [pathname, searchParams]);
   //
 
   // HANDLERS

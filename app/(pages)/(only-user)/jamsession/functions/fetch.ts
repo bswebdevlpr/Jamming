@@ -18,7 +18,19 @@ export const createJam = async (input: ZodType_Post) => {
 
     const user = await getUser(supabase);
 
-    const originImages = input.images;
+    const images = input.images?.map(
+      async (image) =>
+        await supabase.storage
+          .from(process.env.SUPABASE_STORAGE_NAME)
+          .upload(`jamsession/${data[0].id}/${image.file.name}`, image.file)
+          .then(({ data, error }) => {
+            if (error) throw CustomError.UploadImage;
+
+            return supabase.storage
+              .from(process.env.SUPABASE_STORAGE_NAME)
+              .getPublicUrl(data.path).data.publicUrl;
+          })
+    );
 
     const { data, error } = await supabase
       .from("jamsession")
@@ -29,19 +41,11 @@ export const createJam = async (input: ZodType_Post) => {
         location: input.location.map((row) => MapLocationToData[row]),
         genre: input.genre.map((row) => MapGenreToData[row]),
         level: input.level.map((row) => MapLevelToData[row]),
-        images: input.images.map((row) => row.file.name),
+        images,
       })
       .eq("id", user.id)
       .select();
     if (error || data.length === 0) throw CustomError.UnExpected;
-    else {
-      for (let image of originImages) {
-        // TODO: 에러 핸들링
-        await supabase.storage
-          .from(process.env.SUPABASE_STORAGE_NAME)
-          .upload(`jamsession/${data[0].id}/${image.file.name}`, image.file);
-      }
-    }
 
     ret = data;
   } catch (e) {

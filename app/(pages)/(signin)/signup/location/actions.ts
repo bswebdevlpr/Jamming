@@ -28,7 +28,7 @@ export default async function createUser(input: any): Promise<UserProfile> {
           input.profile_imagex
         )
         .then(
-          async (res) =>
+          (res) =>
             supabase.storage
               .from(process.env.SUPABASE_STORAGE_NAME)
               .getPublicUrl(res.data.path).data.publicUrl
