@@ -33,7 +33,8 @@ export default function JamNow({
 
           cursor: "pointer",
         }}
-        onClick={() => setIsTurnedOn(true)}>
+        onClick={() => setIsTurnedOn(true)}
+      >
         <Plus />
         <p
           style={{
@@ -44,7 +45,8 @@ export default function JamNow({
             lineHeight: "normal",
             letterSpacing: "-0.336px",
             transform: "translateY(0.075rem)",
-          }}>
+          }}
+        >
           JAM NOW!
         </p>
       </span>
