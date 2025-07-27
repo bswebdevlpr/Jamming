@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, Suspense } from "react";
 import BottomSheet from "../ui/templates/bottom-sheet/body";
 
 import SmallLoading from "../ui/loading/small";
@@ -82,7 +82,7 @@ function GlobalLayout({
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    if (typeof window !== "undefined" && typeof document !== "undefined") {
       const setVh = () => {
         const vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty("--vh", `${vh}px`);
@@ -113,17 +113,19 @@ function GlobalLayout({
   return (
     <globalContext.Provider value={globalState}>
       <QueryClientProvider client={queryClient}>
-        {children}
-        <SmallLoading isTurnedOn={globalState.isSmallLoadingOn} />
-        <BottomSheet
-          width={width}
-          height={height}
-          pullUp={globalState.bottomSheet.location}
-          setPullUp={globalState.bottomSheet.set}
-          header={globalState.bottomSheet.header}
-        >
-          {globalState.bottomSheet.children}
-        </BottomSheet>
+        <Suspense fallback={<div>Loading page...</div>}>
+          {children}
+          <SmallLoading isTurnedOn={globalState.isSmallLoadingOn} />
+          <BottomSheet
+            width={width}
+            height={height}
+            pullUp={globalState.bottomSheet.location}
+            setPullUp={globalState.bottomSheet.set}
+            header={globalState.bottomSheet.header}
+          >
+            {globalState.bottomSheet.children}
+          </BottomSheet>
+        </Suspense>
       </QueryClientProvider>
     </globalContext.Provider>
   );
