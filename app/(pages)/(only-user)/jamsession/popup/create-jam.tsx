@@ -151,7 +151,7 @@ export default function CreateJam({
         pos: key,
         headcnt: 0,
       })),
-      datetime: selectedDate && selectedDate?.format("YYYY-MM-DD"),
+      datetime: selectedDate.toISOString(),
       songs: [],
       images: [],
       location_detail: null,
@@ -183,8 +183,6 @@ export default function CreateJam({
   }, [isTurnedOn]);
 
   useEffect(() => {
-    console.log("selectedDate", selectedDate.toISOString());
-
     if (selectedDate) {
       setValue("datetime", selectedDate.toISOString(), {
         shouldValidate: false,
@@ -198,6 +196,11 @@ export default function CreateJam({
   }, [headcnt_by_pos]);
 
   useEffect(() => {
+    if (selectedDate)
+      setValue("datetime", selectedDate.toISOString(), {
+        shouldValidate: false,
+      });
+
     return () => {
       reset();
     };
@@ -206,8 +209,6 @@ export default function CreateJam({
 
   // HANDLERS
   const onSubmit = async (data: ZodType_Post) => {
-    console.log("createJam에 보내기 전", data);
-
     await createJam(data).then((res) => {
       setValue("images", [], { shouldValidate: false });
 
