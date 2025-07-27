@@ -13,6 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import moment from "moment";
 import { globalContext, initialContext } from "./context";
 import _ from "lodash";
+import FullScreenLoading from "../ui/loading/fullscreen";
 
 // EXTERNAL PACKAGES
 const queryClient = new QueryClient();
@@ -113,7 +114,7 @@ function GlobalLayout({
   return (
     <globalContext.Provider value={globalState}>
       <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<div>Loading page...</div>}>
+        <Suspense fallback={<FullScreenLoading />}>
           {children}
           <SmallLoading isTurnedOn={globalState.isSmallLoadingOn} />
           <BottomSheet

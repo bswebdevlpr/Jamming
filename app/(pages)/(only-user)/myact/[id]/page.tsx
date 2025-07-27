@@ -74,7 +74,7 @@ export default function MyAct() {
     } catch (e) {
       const errToShow = e instanceof CustomError ? e : CustomError.UnExpected;
       // TODO: 에러팝업
-      console.error(errToShow);
+      if (process.env.NODE_ENV === "development") console.error(errToShow);
       router.back();
     }
   }, [jam_id]);

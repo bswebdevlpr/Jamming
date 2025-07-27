@@ -14,6 +14,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { getDatesHavingJam } from "./functions/fetch";
 
 const MapDateToKor = {
   0: "일",
@@ -75,9 +76,16 @@ export default function SlideCalendarComponent({
   }, [startOfPeriod, endOfPeriod, dateParam]);
 
   const [dates, setDates] = useState<moment.Moment[]>(null);
+  const [datesHavingJam, setDatesHavingJam] = useState<string[]>([]);
   //
 
   // USE-EFFECTS
+  useEffect(() => {
+    const initiate = async () => setDatesHavingJam(await getDatesHavingJam());
+
+    initiate();
+  }, []);
+
   useEffect(() => {
     const dates: moment.Moment[] = [];
 
@@ -132,7 +140,8 @@ export default function SlideCalendarComponent({
               fontFamily: "SUIT-TITLE",
 
               cursor: "pointer",
-            }}>
+            }}
+          >
             <span
               style={{
                 color: highlight ? "var(--highlight)" : "#FFF",
@@ -141,7 +150,8 @@ export default function SlideCalendarComponent({
                 letterSpacing: "-0.3px",
 
                 marginBottom: "2px",
-              }}>
+              }}
+            >
               {MapDateToKor[thisDay]}
             </span>
             <span
@@ -152,18 +162,21 @@ export default function SlideCalendarComponent({
                 letterSpacing: "-0.35px",
 
                 marginBottom: "6px",
-              }}>
+              }}
+            >
               {date.date()}
             </span>
-            <span
-              className="w-1 h-1 shrink-0"
-              style={{
-                width: "5px",
-                height: "5px",
-                backgroundColor: "var(--highlight)",
-                borderRadius: "50%",
-              }}
-            />
+            {datesHavingJam.includes(date.format("YYYYMMDD")) && (
+              <span
+                className="w-1 h-1 shrink-0"
+                style={{
+                  width: "5px",
+                  height: "5px",
+                  backgroundColor: "var(--highlight)",
+                  borderRadius: "50%",
+                }}
+              />
+            )}
           </div>
         </div>
       );
@@ -176,7 +189,8 @@ export default function SlideCalendarComponent({
         {...settings}
         ref={(slider) => {
           sliderRef = slider;
-        }}>
+        }}
+      >
         {sliders()}
       </Slider>
     </div>

@@ -31,7 +31,6 @@ export default function MyPage() {
   const {
     session: { userProfile },
   } = useContext(globalContext);
-  console.log(userProfile);
 
   // STATES
   const [user, setUser] = useState<Entity_User>(null);
