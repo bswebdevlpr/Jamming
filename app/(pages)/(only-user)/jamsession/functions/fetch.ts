@@ -14,9 +14,6 @@ export const createJam = async (input: ZodType_Post) => {
   let ret = null;
 
   try {
-    console.log(input);
-    throw new Error();
-
     const supabase = await createClient();
 
     const user = await getUser(supabase);
