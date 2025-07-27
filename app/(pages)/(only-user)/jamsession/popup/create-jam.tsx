@@ -268,8 +268,10 @@ export default function CreateJam({
     >
       <form
         onSubmit={handleSubmit(onSubmit, (e) => {
-          console.log(e);
-          console.log(getValues());
+          if (process.env.NODE_ENV === "development") {
+            console.log(e);
+            console.log(getValues());
+          }
         })}
         className="h-full flex flex-col"
       >

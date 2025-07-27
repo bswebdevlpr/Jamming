@@ -116,8 +116,6 @@ export default function JamSession_Post() {
         setJam(foundJam);
         setUser(foundUser);
 
-        console.log(foundJam.images);
-
         if (applyBtnTxtFromFunc) setApplyBtnTxt(applyBtnTxtFromFunc);
         if (isApplyBtnActiveFromFunc !== undefined)
           setIsApplyBtnActive(isApplyBtnActiveFromFunc);
@@ -135,8 +133,9 @@ export default function JamSession_Post() {
       })();
     } catch (e) {
       const errToShow = e instanceof CustomError ? e : CustomError.UnExpected;
-      // TODO: 에러팝업
-      console.error(errToShow);
+      if (process.env.NODE_ENV === "production")
+        // TODO: 에러팝업
+        console.error(errToShow);
       router.back();
     }
   }, [jam_id]);

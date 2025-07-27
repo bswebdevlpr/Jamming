@@ -33,8 +33,6 @@ export const createJam = async (input: ZodType_Post) => {
       .then(async ({ data, error }) => {
         if (error || data.length === 0) throw CustomError.UnExpected;
 
-        console.log("저장된 데이터", data);
-
         const images = await Promise.allSettled(
           input.images?.map(
             async (image) =>
@@ -45,7 +43,6 @@ export const createJam = async (input: ZodType_Post) => {
                   image.file
                 )
                 .then(({ data, error }) => {
-                  console.log(data, error);
                   if (error) throw CustomError.UploadImage;
 
                   return supabase.storage
@@ -54,7 +51,6 @@ export const createJam = async (input: ZodType_Post) => {
                 })
           )
         );
-        console.log("이미지", images);
 
         if (images?.filter((row) => row.status === "fulfilled").length > 0) {
           const { error } = await supabase
@@ -66,7 +62,6 @@ export const createJam = async (input: ZodType_Post) => {
             })
             .eq("id", data[0].id);
           if (error) {
-            console.log(error);
             await supabase.from("jamsession").delete().eq("id", data[0].id);
             throw CustomError.UploadImage;
           }
