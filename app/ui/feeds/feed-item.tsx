@@ -169,7 +169,8 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                       onClick={() => {
                         if (isMyJam)
                           deleteJamSession(id).then(() => {
-                            setResetSlideCalendarDots(true);
+                            if (setResetSlideCalendarDots)
+                              setResetSlideCalendarDots(true);
                           });
                         else deleteJamEntry(jamentry[0].id);
                         refetch();

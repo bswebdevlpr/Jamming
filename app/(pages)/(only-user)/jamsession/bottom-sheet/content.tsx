@@ -71,7 +71,7 @@ const BottomSheetContent = ({
       </p>
       <div
         className="flex flex-col gap-6"
-        style={{ marginBottom: !isCreatePopup ? "12.875rem" : "22.75rem" }}
+        style={{ marginBottom: !isCreatePopup ? "73.5%" : "100%" }}
       >
         <div className="flex flex-col gap-3">
           <CategoryFilterItem text="장르">

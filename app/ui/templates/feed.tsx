@@ -45,6 +45,8 @@ const FeedTemplate = forwardRef<FeedMethods, FeedProps>(
         queryFn: ({ pageParam = 0 }) => queryFn({ pageParam, queryFnParam }),
         getNextPageParam: (lastPage, pages) =>
           lastPage.nextPage ?? pages.length,
+        staleTime: 1000 * 60 * 5, // 5분
+        refetchOnWindowFocus: false,
       });
 
     useImperativeHandle(ref, () => ({
