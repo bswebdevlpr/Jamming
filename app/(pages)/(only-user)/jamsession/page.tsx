@@ -15,6 +15,7 @@ import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 import { FeedMethods } from "@/app/ui/templates/feed";
 import { globalContext } from "../../context";
+import { useSearchParams } from "next/navigation";
 
 export default function JamSession() {
   // GLOBAL
@@ -31,6 +32,8 @@ export default function JamSession() {
   const [level, setLevel] = useState<LevelEnum>(null);
   const [location, setLocation] = useState<LocationEnum>();
   const [selectedDate, setSelectedDate] = useState<moment.Moment>(moment());
+  const [resetSlideCalendarDots, setResetSlideCalendarDots] =
+    useState<boolean>(true);
 
   const [filter, setFilter] = useState<Filter_JamSessionFeed>({
     location,
@@ -38,6 +41,7 @@ export default function JamSession() {
     genre,
     position,
     level,
+    setResetSlideCalendarDots,
   });
   //
 
@@ -50,6 +54,19 @@ export default function JamSession() {
       level: LevelEnum[level],
     });
   }, [location, selectedDate, genre, position, level]);
+
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const paramDate = searchParams.get("date");
+    const paramDateFormatted =
+      paramDate && moment(paramDate).format("YYYYMMDD");
+
+    if (
+      paramDateFormatted &&
+      paramDateFormatted !== selectedDate.format("YYYYMMDD")
+    )
+      setSelectedDate(moment(paramDate));
+  }, [searchParams]);
 
   return (
     <div className="h-full flex flex-col overflow-without-scroll">
@@ -64,6 +81,8 @@ export default function JamSession() {
         <SlideCalendarComponent
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
+          resetSlideCalendarDots={resetSlideCalendarDots}
+          setResetSlideCalendarDots={setResetSlideCalendarDots}
         />
       </div>
       <div className="grow overflow-hidden flex flex-col justify-between">
@@ -117,6 +136,7 @@ export default function JamSession() {
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
             refetch={childRef && childRef.current && childRef.current.refetch}
+            setResetSlideCalendarDots={setResetSlideCalendarDots}
           />
           <BottomNavBar />
         </Fragment>

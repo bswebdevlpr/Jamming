@@ -10,7 +10,8 @@ export const deleteJamSession = async (jam_id: number) => {
   try {
     const supabase = await createClient();
 
-    const user = await getUser(supabase);
+    // validation
+    await getUser(supabase);
 
     const { data, error } = await supabase
       .from("jamsession")
@@ -22,11 +23,7 @@ export const deleteJamSession = async (jam_id: number) => {
       if (data[0].images.length > 0)
         await supabase.storage
           .from(process.env.SUPABASE_STORAGE_NAME)
-          .remove(
-            data[0].images.map(
-              (image) => `${user.id}/jamsession/${jam_id}/${image}`
-            )
-          );
+          .remove(data[0].images);
 
       ret = true;
     }
@@ -34,6 +31,8 @@ export const deleteJamSession = async (jam_id: number) => {
     if (e instanceof CustomError) throw e;
     else throw CustomError.UnExpected;
   }
+
+  return ret;
 };
 
 export const deleteJamEntry = async (entryId: number) => {

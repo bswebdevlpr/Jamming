@@ -14,6 +14,7 @@ import { deleteJamEntry, deleteJamSession } from "@/app/api/functions/delete";
 import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
 import Image from "next/image";
 import Logo from "../images/logo";
+import { Dispatch, SetStateAction } from "react";
 
 export interface FeedItemProps_Jam {
   idx: number;
@@ -22,6 +23,7 @@ export interface FeedItemProps_Jam {
     curHeadCnt: number;
     maxHeadCnt: number;
     thumbnail: string;
+    setResetSlideCalendarDots: Dispatch<SetStateAction<boolean>>;
   };
   router: AppRouterInstance;
   bottomSheet: BottomSheetContext;
@@ -46,6 +48,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
     curHeadCnt,
     maxHeadCnt,
     thumbnail,
+    setResetSlideCalendarDots,
   } = data;
 
   const tags = [
@@ -164,7 +167,10 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
                         color: "#FF3E2F",
                       }}
                       onClick={() => {
-                        if (isMyJam) deleteJamSession(id);
+                        if (isMyJam)
+                          deleteJamSession(id).then(() => {
+                            setResetSlideCalendarDots(true);
+                          });
                         else deleteJamEntry(jamentry[0].id);
                         refetch();
                         bottomSheet.set({
