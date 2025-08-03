@@ -129,6 +129,8 @@ export default function CreateJam({
     useState(false);
 
   const [headTotal, setHeadTotal] = useState<number>(0);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   //
 
   // FORM
@@ -211,18 +213,25 @@ export default function CreateJam({
 
   // HANDLERS
   const onSubmit = async (data: ZodType_Post) => {
-    await createJam(data).then((res) => {
-      setValue("images", [], { shouldValidate: false });
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
-      if (res) {
-        refetch();
-        setResetSlideCalendarDots(true);
-        turnOff();
-      }
-      // TODO: 실패 팝업
-      else {
-      }
-    });
+    await createJam(data)
+      .then((res) => {
+        setValue("images", [], { shouldValidate: false });
+
+        if (res) {
+          refetch();
+          setResetSlideCalendarDots(true);
+          turnOff();
+        }
+        // TODO: 실패 팝업
+        else {
+        }
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
