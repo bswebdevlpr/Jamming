@@ -8,10 +8,12 @@ export default function JamNow({
   selectedDate,
   setSelectedDate,
   refetch,
+  setResetSlideCalendarDots,
 }: {
   selectedDate: moment.Moment;
   setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
   refetch;
+  setResetSlideCalendarDots: Dispatch<SetStateAction<boolean>>;
 }) {
   const [isTurnedOn, setIsTurnedOn] = useState(false);
   const turnOff = () => {
@@ -56,6 +58,7 @@ export default function JamNow({
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         refetch={refetch}
+        setResetSlideCalendarDots={setResetSlideCalendarDots}
       />
     </div>
   );

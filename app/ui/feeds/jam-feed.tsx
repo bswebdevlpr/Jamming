@@ -6,7 +6,7 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { fetchJams } from "@/app/lib/functions/fetch";
 import { FeedItem_Jam } from "@/app/ui/feeds/feed-item";
 import FeedTemplate from "@/app/ui/templates/feed";
-import { useMemo } from "react";
+import { Dispatch, SetStateAction, useMemo } from "react";
 
 export interface Filter_JamSessionFeed {
   selectedDate: moment.Moment;
@@ -16,6 +16,7 @@ export interface Filter_JamSessionFeed {
   level?: LevelEnum;
   atMyAct?: boolean;
   includeWithDrawn?: boolean;
+  setResetSlideCalendarDots?: Dispatch<SetStateAction<boolean>>;
 }
 
 export function JamFeed({

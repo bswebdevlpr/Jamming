@@ -29,17 +29,19 @@ const MapDateToKor = {
 export default function SlideCalendarComponent({
   selectedDate,
   setSelectedDate,
+  resetSlideCalendarDots,
+  setResetSlideCalendarDots,
 }: {
   selectedDate: moment.Moment;
   setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
+  resetSlideCalendarDots: boolean;
+  setResetSlideCalendarDots: Dispatch<SetStateAction<boolean>>;
 }) {
   let sliderRef = useRef(null);
 
   // NAVIGATION
   const pathname = usePathname();
-
   const searchParams = useSearchParams();
-  const dateParam = moment(searchParams.get("date"));
 
   const router = useRouter();
   //
@@ -59,6 +61,8 @@ export default function SlideCalendarComponent({
   }, []);
 
   const settings = useMemo(() => {
+    const dateParam = moment(searchParams.get("date"));
+
     return {
       dots: false,
       infinite: false,
@@ -73,7 +77,7 @@ export default function SlideCalendarComponent({
         ? Math.ceil(Math.abs(startOfPeriod.diff(endOfPeriod, "day")) / 2) - 3
         : 0,
     };
-  }, [startOfPeriod, endOfPeriod, dateParam]);
+  }, [startOfPeriod, endOfPeriod, searchParams]);
 
   const [dates, setDates] = useState<moment.Moment[]>(null);
   const [datesHavingJam, setDatesHavingJam] = useState<string[]>([]);
@@ -81,10 +85,12 @@ export default function SlideCalendarComponent({
 
   // USE-EFFECTS
   useEffect(() => {
-    const initiate = async () => setDatesHavingJam(await getDatesHavingJam());
-
+    const initiate = async () => {
+      setDatesHavingJam(await getDatesHavingJam());
+      setResetSlideCalendarDots(false);
+    };
     initiate();
-  }, []);
+  }, [resetSlideCalendarDots]);
 
   useEffect(() => {
     const dates: moment.Moment[] = [];

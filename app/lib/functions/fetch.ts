@@ -93,6 +93,10 @@ export const fetchJams: FetchFeedFunc = async ({
           .map((row) => {
             row.isMyJam = row.user_id === user.id;
 
+            if (convertedParam.setResetSlideCalendarDots)
+              row.setResetSlideCalendarDots =
+                convertedParam.setResetSlideCalendarDots;
+
             return row;
           });
       }

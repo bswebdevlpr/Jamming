@@ -95,12 +95,14 @@ export default function CreateJam({
   selectedDate,
   setSelectedDate,
   refetch,
+  setResetSlideCalendarDots,
 }: {
   isTurnedOn: boolean;
   turnOff: () => void;
   selectedDate: moment.Moment;
   setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
   refetch;
+  setResetSlideCalendarDots: Dispatch<SetStateAction<boolean>>;
 }) {
   // GLOBAL
   const { bottomSheet } = useContext(globalContext);
@@ -214,6 +216,7 @@ export default function CreateJam({
 
       if (res) {
         refetch();
+        setResetSlideCalendarDots(true);
         turnOff();
       }
       // TODO: 실패 팝업
