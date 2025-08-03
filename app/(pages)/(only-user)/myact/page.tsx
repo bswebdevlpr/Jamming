@@ -7,6 +7,10 @@ import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FeedMethods } from "@/app/ui/templates/feed";
+import { GenreEnum } from "@/app/lib/enums/genre.enum";
+import { PositionEnum } from "@/app/lib/enums/position.enum";
+import { LevelEnum } from "@/app/lib/enums/level.enum";
+import { LocationEnum } from "@/app/lib/enums/location.enum";
 
 export default function MyAct() {
   const searchParams = useSearchParams();
@@ -21,32 +25,50 @@ export default function MyAct() {
 
   // MEMO & STATES
   const [isPopupOn, setIsPopupOn] = useState(false);
+
+  const [genre, setGenre] = useState<GenreEnum>(null);
+  const [position, setPosition] = useState<PositionEnum>(null);
+  const [level, setLevel] = useState<LevelEnum>(null);
+  const [location, setLocation] = useState<LocationEnum>();
   const [selectedDate, setSelectedDate] = useState<moment.Moment>(
     dateParam.isValid() ? dateParam : moment()
   );
+  const [resetSlideCalendarDots, setResetSlideCalendarDots] =
+    useState<boolean>(true);
 
   const [filter, setFilter] = useState<Filter_JamSessionFeed>({
     selectedDate,
     atMyAct: true,
-    location: null,
-    genre: null,
-    position: null,
-    level: null,
+    location,
+    genre,
+    position,
+    level,
     includeWithDrawn: true,
   });
   //
 
   // HOOKS
   useEffect(() => {
-    const params = new URLSearchParams();
-    params.set("date", selectedDate.format("YYYYMMDD"));
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
-
     setFilter({
-      ...filter,
+      location: LocationEnum[location],
       selectedDate,
+      genre: GenreEnum[genre],
+      position: PositionEnum[position],
+      level: LevelEnum[level],
     });
-  }, [selectedDate]);
+  }, [location, selectedDate, genre, position, level]);
+
+  useEffect(() => {
+    const paramDate = searchParams.get("date");
+    const paramDateFormatted =
+      paramDate && moment(paramDate).format("YYYYMMDD");
+
+    if (
+      paramDateFormatted &&
+      paramDateFormatted !== selectedDate.format("YYYYMMDD")
+    )
+      setSelectedDate(moment(paramDate));
+  }, [searchParams]);
   //
 
   return (

@@ -34,8 +34,8 @@ export default function SlideCalendarComponent({
 }: {
   selectedDate: moment.Moment;
   setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
-  resetSlideCalendarDots: boolean;
-  setResetSlideCalendarDots: Dispatch<SetStateAction<boolean>>;
+  resetSlideCalendarDots?: boolean;
+  setResetSlideCalendarDots?: Dispatch<SetStateAction<boolean>>;
 }) {
   let sliderRef = useRef(null);
 
@@ -87,7 +87,7 @@ export default function SlideCalendarComponent({
   useEffect(() => {
     const initiate = async () => {
       setDatesHavingJam(await getDatesHavingJam());
-      setResetSlideCalendarDots(false);
+      if (setResetSlideCalendarDots) setResetSlideCalendarDots(false);
     };
     initiate();
   }, [resetSlideCalendarDots]);
