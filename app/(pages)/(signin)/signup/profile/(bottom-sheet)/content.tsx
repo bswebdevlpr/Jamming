@@ -63,7 +63,7 @@ const BottomSheetContent = ({
 
   return (
     <div
-      className="flex flex-col justify-between px-4"
+      className="h-full flex flex-col justify-between px-4"
       style={{
         height: `${BOTTOMSHEET_HEIGHT_HIGH}%`,
       }}

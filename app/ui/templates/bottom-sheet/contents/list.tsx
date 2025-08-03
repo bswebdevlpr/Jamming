@@ -14,7 +14,7 @@ export default function BottomSheetContentTemplate_List({
 }) {
   return (
     <div
-      className="flex flex-col px-4 pt-2 pb-3"
+      className="h-full flex flex-col px-4 pt-2 pb-3"
       style={{
         fontFamily: "SUIT-BODY",
         fontSize: "0.875rem",
