@@ -58,7 +58,7 @@ const BottomSheetContent = ({
   }, [localGenre, localPosition, localLevel]);
 
   return (
-    <div className="flex flex-col justify-between pt-6 px-5">
+    <div className="h-full flex flex-col pt-6 px-5">
       <p
         className="pb-5"
         style={{
@@ -71,7 +71,7 @@ const BottomSheetContent = ({
       </p>
       <div
         className="flex flex-col gap-6"
-        style={{ marginBottom: !isCreatePopup ? "73.5%" : "100%" }}
+        style={{ marginBottom: !isCreatePopup ? "72.5%" : "100%" }}
       >
         <div className="flex flex-col gap-3">
           <CategoryFilterItem text="장르">
