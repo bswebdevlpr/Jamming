@@ -128,8 +128,6 @@ export default function Modal({
               height: "100%",
               border: "1px solid #767678",
               borderRadius: "8px",
-
-              fontSize: "0.875rem",
             }}
             onChange={(e) => setAppeal(e.target.value)}
           />

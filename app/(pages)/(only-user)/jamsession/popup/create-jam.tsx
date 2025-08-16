@@ -427,7 +427,6 @@ export default function CreateJam({
 
                 color: "#FFF",
                 fontFamily: "SUIT-BODY",
-                fontSize: "0.875rem",
                 fontStyle: "normal",
 
                 lineHeight: "normal",

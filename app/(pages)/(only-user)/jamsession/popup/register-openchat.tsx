@@ -60,7 +60,6 @@ export default function RegisterOpenchatPopup({
           style={{
             width: "100%",
             fontFamily: "SUIT-BODY",
-            fontSize: "0.875rem",
             lineHeight: "152%",
             letterSpacing: "-0.336px",
           }}

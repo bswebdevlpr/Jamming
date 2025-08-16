@@ -69,7 +69,6 @@ export default function Popup({
             backgroundColor: "#242426",
 
             fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
             color: "#FFF",
           }}
           onChange={(e) => setVideoPath(e.currentTarget.value)}

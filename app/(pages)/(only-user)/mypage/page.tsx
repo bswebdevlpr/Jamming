@@ -201,7 +201,6 @@ export default function MyPage() {
                 height: "104px",
 
                 fontFamily: "SUIT-BODY",
-                fontSize: "0.75rem",
                 color: "#FFF",
 
                 lineHeight: "150%",
