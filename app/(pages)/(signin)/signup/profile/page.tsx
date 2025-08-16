@@ -359,7 +359,6 @@ export default function SignUp_Profile() {
                       style={{
                         background: "var(--background)",
                         color: "var(--highlight)",
-                        fontSize: "14px",
                       }}
                       onChange={(e) =>
                         setValue(

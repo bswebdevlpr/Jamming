@@ -217,7 +217,6 @@ export default function RejamPopup({
                 borderRadius: "4px",
 
                 fontFamily: "SUIT-BODY",
-                fontSize: "0.875rem",
                 color: "#FFF",
               }}
               onChange={(e) => setAppeal(e.currentTarget.value)}
