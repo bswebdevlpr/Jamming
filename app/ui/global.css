@@ -134,3 +134,30 @@ body {
     display: none; /* Chrome, Safari, Edge */
   }
 }
+
+/* ==============================
+   iOS Safari 자동 확대 방지
+   ============================== */
+
+/* 모든 텍스트 입력, textarea, select */
+input,
+textarea,
+select {
+  font-size: 16px; /* 최소 16px 이상 */
+  line-height: 1.4;
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+}
+
+/* placeholder 폰트도 16px 이상 */
+input::placeholder,
+textarea::placeholder {
+  font-size: 16px;
+  opacity: 0.6;
+}
+
+/* 선택박스 스타일 초기화 (iOS) */
+select {
+  -webkit-appearance: menulist;
+}
