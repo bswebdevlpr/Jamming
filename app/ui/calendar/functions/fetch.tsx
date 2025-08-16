@@ -27,7 +27,7 @@ export const getDatesHavingJam: () => Promise<string[]> = async () => {
       .gte("datetime", today.toISOString())
       .lte("datetime", today.clone().add(2, "week").toISOString())
       .then(({ data, error }) => {
-        if (error || data.length === 0) throw CustomError.UnExpected;
+        if (error) throw CustomError.UnExpected;
 
         return _.uniq(
           data.map((row) => moment(row.datetime).format("YYYYMMDD"))
