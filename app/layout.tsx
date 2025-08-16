@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/ui/global.css";
+import KeyboardScrollLockWrapper from "./bootstrap";
 
 export const metadata: Metadata = {
   title: "Jamming",
@@ -19,7 +20,9 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1.0, maximum-scale=1"
         />
       </head>
-      <body className={`antialiased`}>{children}</body>
+      <body className={`antialiased`}>
+        <KeyboardScrollLockWrapper>{children}</KeyboardScrollLockWrapper>
+      </body>
     </html>
   );
 }
