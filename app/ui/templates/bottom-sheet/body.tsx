@@ -25,6 +25,8 @@ interface Props {
   // ref: RefObject<HTMLDivElement>;
 }
 
+const DEFAULT_BUTTON_HEIGHT = 1;
+
 export const BOTTOMSHEET_HEIGHT_HIGH = 94.35;
 export const BOTTOMSHEET_HEIGHT_MIDDLE = 59.95;
 export const BOTTOMSHEET_HEIGHT_ROW_2 = 21.6;
@@ -46,6 +48,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
           );
+          ref.current?.style.setProperty(
+            "padding-bottom",
+            `${100 - BOTTOMSHEET_HEIGHT_HIGH + DEFAULT_BUTTON_HEIGHT}vh`
+          );
           setPrevDist(BOTTOMSHEET_HEIGHT_HIGH);
           _.debounce(
             () => ref.current!.style.setProperty("user-select", "auto"),
@@ -57,6 +63,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
+          );
+          ref.current?.style.setProperty(
+            "padding-bottom",
+            `${100 - BOTTOMSHEET_HEIGHT_MIDDLE + DEFAULT_BUTTON_HEIGHT}vh`
           );
           setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
           _.debounce(
@@ -70,6 +80,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_ROW_2}%)`
           );
+          ref.current?.style.setProperty(
+            "padding-bottom",
+            `${100 - BOTTOMSHEET_HEIGHT_ROW_2 + DEFAULT_BUTTON_HEIGHT}vh`
+          );
           setPrevDist(BOTTOMSHEET_HEIGHT_ROW_2);
           _.debounce(
             () => ref.current!.style.setProperty("user-select", "auto"),
@@ -81,6 +95,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${BOTTOMSHEET_HEIGHT_ROW_1}%)`
+          );
+          ref.current?.style.setProperty(
+            "padding-bottom",
+            `${100 - BOTTOMSHEET_HEIGHT_ROW_1 + DEFAULT_BUTTON_HEIGHT}vh`
           );
           setPrevDist(BOTTOMSHEET_HEIGHT_ROW_1);
           _.debounce(
@@ -94,6 +112,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             "transform",
             `translateY(${prevDist}%)`
           );
+          ref.current?.style.setProperty(
+            "padding-bottom",
+            `${DEFAULT_BUTTON_HEIGHT}%`
+          );
           setPrevDist(0);
           _.debounce(
             () => ref.current?.style.setProperty("visibility", "hidden"),
@@ -105,6 +127,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
           ref.current?.style.setProperty(
             "transform",
             `translateY(-${pullUp}%)`
+          );
+          ref.current?.style.setProperty(
+            "padding-bottom",
+            `${100 - pullUp + DEFAULT_BUTTON_HEIGHT}vh`
           );
           setPrevDist(pullUp);
           _.debounce(
@@ -144,6 +170,8 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         transition: "transform 0.75s ease-out",
 
         visibility: "hidden",
+
+        paddingBottom: `${DEFAULT_BUTTON_HEIGHT}vh`,
       }}
     >
       {children}
