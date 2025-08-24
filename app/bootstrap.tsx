@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import useKeyboardScrollLock from "./init/useKeyboardScrollLock";
+import { useKeyboardScrollLock } from "./init/useKeyboardScrollLock";
 
 export default function KeyboardScrollLockWrapper({
   children,
