@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Jamming - 음악인을 위한 합주 플랫폼",
     description: "놀기 위해 모였다! 다양한 사람과 음악을 공유하고 즐기세요.",
-    url: "https://jamming.co.kr", // TODO: 실제 서비스 URL로 변경해주세요.
+    url: "https://jamming.co.kr",
     siteName: "Jamming",
     images: [
       {
@@ -35,6 +35,13 @@ export const metadata: Metadata = {
     title: "Jamming - 음악인을 위한 합주 플랫폼",
     description: "놀기 위해 모였다! 다양한 사람과 음악을 공유하고 즐기세요.",
     images: ["/logo.svg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: "https://jamming.co.kr",
   },
 };
 
