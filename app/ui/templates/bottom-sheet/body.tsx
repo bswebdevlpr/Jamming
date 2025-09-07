@@ -58,9 +58,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             );
             setPrevDist(BOTTOMSHEET_HEIGHT_HIGH);
 
-            setTimeout(() => {
-              ref.current!.style.setProperty("user-select", "auto");
-            }, 750);
+            ref.current!.style.setProperty("user-select", "auto");
           }, 0);
           break;
         case "middle":
@@ -79,9 +77,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             );
             setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
 
-            setTimeout(() => {
-              ref.current!.style.setProperty("user-select", "auto");
-            }, 750);
+            ref.current!.style.setProperty("user-select", "auto");
           }, 0);
           break;
         case "row-2":
@@ -100,9 +96,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             );
             setPrevDist(BOTTOMSHEET_HEIGHT_ROW_2);
 
-            setTimeout(() => {
-              ref.current!.style.setProperty("user-select", "auto");
-            }, 750);
+            ref.current!.style.setProperty("user-select", "auto");
           }, 0);
           break;
         case "row-1":
@@ -121,9 +115,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             );
             setPrevDist(BOTTOMSHEET_HEIGHT_ROW_1);
 
-            setTimeout(() => {
-              ref.current!.style.setProperty("user-select", "auto");
-            }, 750);
+            ref.current!.style.setProperty("user-select", "auto");
           }, 0);
           break;
         case "hidden":
@@ -141,7 +133,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
           setTimeout(() => {
             if (!ref.current) return;
             ref.current.style.setProperty("display", "none");
-          }, 750); // padding-bottom 애니메이션 시간(transition-duration)
+          }, 350); // padding-bottom 애니메이션 시간(transition-duration)
           break;
         default:
           ref.current?.style.setProperty("display", "flex");
@@ -159,10 +151,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             );
             setPrevDist(pullUp);
 
-            _.debounce(
-              () => ref.current!.style.setProperty("user-select", "auto"),
-              750
-            );
+            ref.current!.style.setProperty("user-select", "auto");
           }, 0);
           break;
       }
