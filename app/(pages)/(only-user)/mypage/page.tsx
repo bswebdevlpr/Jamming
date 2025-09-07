@@ -14,7 +14,7 @@ import { useContext, useEffect, useState } from "react";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { EditGrayIcon } from "@/app/ui/images/mypage/edit/edits";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
-import { initialize } from "./functions/fetch";
+import { createFeedback, initialize } from "./functions/fetch";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import MyListIcon from "@/app/ui/images/mypage/note";
 import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
@@ -36,6 +36,7 @@ export default function MyPage() {
   const [user, setUser] = useState<Entity_User>(null);
 
   const [feedback, setFeedback] = useState<string>("");
+  const [placeholder, setPlaceholder] = useState<string>("");
   //
 
   // HANDLERS
@@ -194,7 +195,10 @@ export default function MyPage() {
               }
             `}</style>
             <textarea
-              placeholder="재밍에 대한 의견을 자유롭게 입력해주세요"
+              placeholder={
+                placeholder || "재밍에 대한 의견을 자유롭게 입력해주세요"
+              }
+              value={feedback}
               maxLength={100}
               className="w-full p-2.5"
               style={{
@@ -209,7 +213,10 @@ export default function MyPage() {
                 backgroundColor: "#323234",
                 borderRadius: "5px",
               }}
-              onChange={(e) => setFeedback(e.currentTarget.value)}
+              onChange={(e) => {
+                setFeedback(e.currentTarget.value);
+                setPlaceholder("");
+              }}
             />
             <p
               className="absolute"
@@ -232,6 +239,17 @@ export default function MyPage() {
               border: "1px solid #333335",
             }}
             isActive={feedback.length > 0}
+            onClick={() =>
+              createFeedback(feedback).then((res) => {
+                console.log("피드백 전송!");
+                setFeedback("");
+                if (res) setPlaceholder("피드백 전송이 완료되었어요");
+                else
+                  setPlaceholder(
+                    "피드백 전송이 실패했어요. 나중에 다시 시도해주세요."
+                  );
+              })
+            }
             // TODO: 메일전송 연동
           />
         </div>
