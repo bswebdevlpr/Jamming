@@ -22,7 +22,7 @@ export default function ClockPopup({
         <ImageWithTxt
           image={<LeftArrow />}
           text="시간 선택"
-          className="py-3 gap-3 mb-4"
+          className="w-full py-3 gap-3 mb-4"
           style={{
             fontFamily: "SUIT-TITLE",
             fontSize: "1.125rem",
