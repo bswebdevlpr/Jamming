@@ -78,10 +78,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
               `${100 - BOTTOMSHEET_HEIGHT_MIDDLE + DEFAULT_BUTTON_HEIGHT}vh`
             );
             setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
-            _.debounce(
-              () => ref.current!.style.setProperty("user-select", "auto"),
-              750
-            );
+
+            setTimeout(() => {
+              ref.current!.style.setProperty("user-select", "auto");
+            }, 750);
           }, 0);
           break;
         case "row-2":
@@ -99,10 +99,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
               `${100 - BOTTOMSHEET_HEIGHT_ROW_2 + DEFAULT_BUTTON_HEIGHT}vh`
             );
             setPrevDist(BOTTOMSHEET_HEIGHT_ROW_2);
-            _.debounce(
-              () => ref.current!.style.setProperty("user-select", "auto"),
-              750
-            );
+
+            setTimeout(() => {
+              ref.current!.style.setProperty("user-select", "auto");
+            }, 750);
           }, 0);
           break;
         case "row-1":
@@ -120,10 +120,10 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
               `${100 - BOTTOMSHEET_HEIGHT_ROW_1 + DEFAULT_BUTTON_HEIGHT}vh`
             );
             setPrevDist(BOTTOMSHEET_HEIGHT_ROW_1);
-            _.debounce(
-              () => ref.current!.style.setProperty("user-select", "auto"),
-              750
-            );
+
+            setTimeout(() => {
+              ref.current!.style.setProperty("user-select", "auto");
+            }, 750);
           }, 0);
           break;
         case "hidden":
@@ -132,20 +132,16 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             "transform",
             `translateY(${prevDist}%)`
           );
+          ref.current.style.setProperty(
+            "padding-bottom",
+            `${DEFAULT_BUTTON_HEIGHT}%`
+          );
+          setPrevDist(0);
 
           setTimeout(() => {
             if (!ref.current) return;
-            ref.current.style.setProperty(
-              "padding-bottom",
-              `${DEFAULT_BUTTON_HEIGHT}%`
-            );
-
-            setTimeout(() => {
-              if (!ref.current) return;
-              setPrevDist(0);
-              ref.current.style.setProperty("display", "none");
-            }, 750); // padding-bottom 애니메이션 시간(transition-duration)
-          }, 0);
+            ref.current.style.setProperty("display", "none");
+          }, 750); // padding-bottom 애니메이션 시간(transition-duration)
           break;
         default:
           ref.current?.style.setProperty("display", "flex");
@@ -162,6 +158,7 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
               `${100 - pullUp + DEFAULT_BUTTON_HEIGHT}vh`
             );
             setPrevDist(pullUp);
+
             _.debounce(
               () => ref.current!.style.setProperty("user-select", "auto"),
               750
