@@ -43,68 +43,88 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
         case null:
           break;
         case "high":
-          ref.current?.style.setProperty("visibility", "visible");
-          ref.current?.style.setProperty(
-            "transform",
-            `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
-          );
-          ref.current?.style.setProperty(
-            "padding-bottom",
-            `${100 - BOTTOMSHEET_HEIGHT_HIGH + DEFAULT_BUTTON_HEIGHT}vh`
-          );
-          setPrevDist(BOTTOMSHEET_HEIGHT_HIGH);
-          _.debounce(
-            () => ref.current!.style.setProperty("user-select", "auto"),
-            750
-          );
+          ref.current?.style.setProperty("display", "flex");
+
+          setTimeout(() => {
+            if (!ref.current) return;
+
+            ref.current?.style.setProperty(
+              "transform",
+              `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
+            );
+            ref.current?.style.setProperty(
+              "padding-bottom",
+              `${100 - BOTTOMSHEET_HEIGHT_HIGH + DEFAULT_BUTTON_HEIGHT}vh`
+            );
+            setPrevDist(BOTTOMSHEET_HEIGHT_HIGH);
+
+            setTimeout(() => {
+              ref.current!.style.setProperty("user-select", "auto");
+            }, 750);
+          }, 0);
           break;
         case "middle":
-          ref.current?.style.setProperty("visibility", "visible");
-          ref.current?.style.setProperty(
-            "transform",
-            `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
-          );
-          ref.current?.style.setProperty(
-            "padding-bottom",
-            `${100 - BOTTOMSHEET_HEIGHT_MIDDLE + DEFAULT_BUTTON_HEIGHT}vh`
-          );
-          setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
-          _.debounce(
-            () => ref.current!.style.setProperty("user-select", "auto"),
-            750
-          );
+          ref.current?.style.setProperty("display", "flex");
+
+          setTimeout(() => {
+            if (!ref.current) return;
+
+            ref.current?.style.setProperty(
+              "transform",
+              `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
+            );
+            ref.current?.style.setProperty(
+              "padding-bottom",
+              `${100 - BOTTOMSHEET_HEIGHT_MIDDLE + DEFAULT_BUTTON_HEIGHT}vh`
+            );
+            setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
+            _.debounce(
+              () => ref.current!.style.setProperty("user-select", "auto"),
+              750
+            );
+          }, 0);
           break;
         case "row-2":
-          ref.current?.style.setProperty("visibility", "visible");
-          ref.current?.style.setProperty(
-            "transform",
-            `translateY(-${BOTTOMSHEET_HEIGHT_ROW_2}%)`
-          );
-          ref.current?.style.setProperty(
-            "padding-bottom",
-            `${100 - BOTTOMSHEET_HEIGHT_ROW_2 + DEFAULT_BUTTON_HEIGHT}vh`
-          );
-          setPrevDist(BOTTOMSHEET_HEIGHT_ROW_2);
-          _.debounce(
-            () => ref.current!.style.setProperty("user-select", "auto"),
-            750
-          );
+          ref.current?.style.setProperty("display", "flex");
+
+          setTimeout(() => {
+            if (!ref.current) return;
+
+            ref.current?.style.setProperty(
+              "transform",
+              `translateY(-${BOTTOMSHEET_HEIGHT_ROW_2}%)`
+            );
+            ref.current?.style.setProperty(
+              "padding-bottom",
+              `${100 - BOTTOMSHEET_HEIGHT_ROW_2 + DEFAULT_BUTTON_HEIGHT}vh`
+            );
+            setPrevDist(BOTTOMSHEET_HEIGHT_ROW_2);
+            _.debounce(
+              () => ref.current!.style.setProperty("user-select", "auto"),
+              750
+            );
+          }, 0);
           break;
         case "row-1":
-          ref.current?.style.setProperty("visibility", "visible");
-          ref.current?.style.setProperty(
-            "transform",
-            `translateY(-${BOTTOMSHEET_HEIGHT_ROW_1}%)`
-          );
-          ref.current?.style.setProperty(
-            "padding-bottom",
-            `${100 - BOTTOMSHEET_HEIGHT_ROW_1 + DEFAULT_BUTTON_HEIGHT}vh`
-          );
-          setPrevDist(BOTTOMSHEET_HEIGHT_ROW_1);
-          _.debounce(
-            () => ref.current!.style.setProperty("user-select", "auto"),
-            750
-          );
+          ref.current?.style.setProperty("display", "flex");
+
+          setTimeout(() => {
+            if (!ref.current) return;
+
+            ref.current?.style.setProperty(
+              "transform",
+              `translateY(-${BOTTOMSHEET_HEIGHT_ROW_1}%)`
+            );
+            ref.current?.style.setProperty(
+              "padding-bottom",
+              `${100 - BOTTOMSHEET_HEIGHT_ROW_1 + DEFAULT_BUTTON_HEIGHT}vh`
+            );
+            setPrevDist(BOTTOMSHEET_HEIGHT_ROW_1);
+            _.debounce(
+              () => ref.current!.style.setProperty("user-select", "auto"),
+              750
+            );
+          }, 0);
           break;
         case "hidden":
           ref.current?.style.setProperty("user-select", "none");
@@ -112,31 +132,41 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
             "transform",
             `translateY(${prevDist}%)`
           );
-          ref.current?.style.setProperty(
-            "padding-bottom",
-            `${DEFAULT_BUTTON_HEIGHT}%`
-          );
-          setPrevDist(0);
-          _.debounce(
-            () => ref.current?.style.setProperty("visibility", "hidden"),
-            750
-          );
+
+          setTimeout(() => {
+            if (!ref.current) return;
+            ref.current.style.setProperty(
+              "padding-bottom",
+              `${DEFAULT_BUTTON_HEIGHT}%`
+            );
+
+            setTimeout(() => {
+              if (!ref.current) return;
+              setPrevDist(0);
+              ref.current.style.setProperty("display", "none");
+            }, 750); // padding-bottom 애니메이션 시간(transition-duration)
+          }, 0);
           break;
         default:
-          ref.current?.style.setProperty("visibility", "visible");
-          ref.current?.style.setProperty(
-            "transform",
-            `translateY(-${pullUp}%)`
-          );
-          ref.current?.style.setProperty(
-            "padding-bottom",
-            `${100 - pullUp + DEFAULT_BUTTON_HEIGHT}vh`
-          );
-          setPrevDist(pullUp);
-          _.debounce(
-            () => ref.current!.style.setProperty("user-select", "auto"),
-            750
-          );
+          ref.current?.style.setProperty("display", "flex");
+
+          setTimeout(() => {
+            if (!ref.current) return;
+
+            ref.current?.style.setProperty(
+              "transform",
+              `translateY(-${pullUp}%)`
+            );
+            ref.current?.style.setProperty(
+              "padding-bottom",
+              `${100 - pullUp + DEFAULT_BUTTON_HEIGHT}vh`
+            );
+            setPrevDist(pullUp);
+            _.debounce(
+              () => ref.current!.style.setProperty("user-select", "auto"),
+              750
+            );
+          }, 0);
           break;
       }
   }, [pullUp]);
@@ -169,7 +199,8 @@ const Wrapper = ({ children, width, height, pullUp }: Props) => {
 
         transition: "transform 0.75s ease-out",
 
-        visibility: "hidden",
+        display: "none",
+        // visibility: "hidden",
 
         paddingBottom: `${DEFAULT_BUTTON_HEIGHT}vh`,
       }}
@@ -206,14 +237,13 @@ const BottomSheet = ({
     <>
       {pullUp && pullUp !== "hidden" && (
         <div
-          id="hola"
           className="absolute w-full h-full top-0 left-0 bg-[rgba(0,0,0,0.5)] z-20"
           onClick={() =>
             setPullUp({
               location: "hidden",
             })
           }
-        />
+        ></div>
       )}
       <Wrapper width={width} height={height} pullUp={pullUp}>
         {header && <BottomSheetHeader />}

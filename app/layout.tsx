@@ -21,7 +21,8 @@ export default function RootLayout({
         />
       </head>
       <body className={`antialiased`}>
-        <KeyboardScrollLockWrapper>{children}</KeyboardScrollLockWrapper>
+        {children}
+        {/* <KeyboardScrollLockWrapper>{children}</KeyboardScrollLockWrapper> */}
       </body>
     </html>
   );

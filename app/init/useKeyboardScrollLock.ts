@@ -11,6 +11,7 @@ export function useKeyboardScrollLock() {
   useEffect(() => {
     const handleFocusOut = (event: FocusEvent) => {
       const target = event.target as HTMLElement;
+
       // input 또는 textarea에서 포커스가 벗어날 때만 동작
       if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") {
         // 키보드가 완전히 사라진 후 스크롤을 조절하기 위해 짧은 지연 시간을 줍니다.
