@@ -36,6 +36,7 @@ export interface Entity_JamSession {
   headcnt_by_pos?: ZodType_HeadCnt[];
   songs?: ZodType_Song[];
   images?: string[];
+  openchat?: string;
   created_at?: string;
 
   // NOT COLUMNS

@@ -1,16 +1,8 @@
 "use client";
 
-import { DownArrowWhite, LeftArrowWhite } from "@/app/ui/images/arrows";
-import Kebap from "@/app/ui/images/menu/kebap";
-import { ReactNode, useContext, useEffect, useState } from "react";
-import { ImageWithTxt } from "@/app/ui/templates/images";
-import EditIcon from "@/app/ui/images/jamsession/post/edit";
-import DeleteIcon from "@/app/ui/images/jamsession/post/delete";
-import ReportIcon from "@/app/ui/images/jamsession/post/report";
-import ButtonTemplate from "@/app/ui/templates/buttons";
-import Modal from "./modal";
-import FullScreenLoading from "@/app/ui/loading/fullscreen";
-import { useParams, useRouter } from "next/navigation";
+import { globalContext } from "@/app/(pages)/context";
+import { deleteJamSession } from "@/app/api/functions/delete";
+import { CustomError } from "@/app/lib/errors/client.error";
 import {
   Entity_JamSession,
   Entity_User,
@@ -20,19 +12,28 @@ import {
   MapDataToLevel,
   MapDataToPosition,
 } from "@/app/lib/maps/jam";
-import moment from "moment";
+import { DownArrowWhite, LeftArrowWhite } from "@/app/ui/images/arrows";
+import DeleteIcon from "@/app/ui/images/jamsession/post/delete";
+import EditIcon from "@/app/ui/images/jamsession/post/edit";
+import ReportIcon from "@/app/ui/images/jamsession/post/report";
+import Kebap from "@/app/ui/images/menu/kebap";
+import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import {
   GenreTag,
   LevelTag,
   LocationTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
-import { initialize } from "./functions/initialize";
-import { CustomError } from "@/app/lib/errors/client.error";
-import Image from "next/image";
-import { deleteJamSession } from "@/app/api/functions/delete";
-import { globalContext } from "@/app/(pages)/context";
 import RadixAvatar from "@/app/ui/templates/avatar";
+import ButtonTemplate from "@/app/ui/templates/buttons";
+import { ImageWithTxt } from "@/app/ui/templates/images";
+import moment from "moment";
+import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
+import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import { initialize } from "./functions/initialize";
+import Modal from "./modal";
+import UpdateJam from "./popup/update-jam";
 
 const FlexRow = ({
   tag,
@@ -101,44 +102,53 @@ export default function JamSession_Post() {
   const [applyBtnTxt, setApplyBtnTxt] = useState<string>("Loading..");
   const [isApplyBtnActive, setIsApplyBtnActive] = useState<boolean>(false);
 
-  useEffect(() => {
+  const [isTurnedOn, setIsTurnedOn] = useState(false);
+  const turnOff = () => {
+    setIsTurnedOn(!isTurnedOn);
+  };
+
+  const fetchJamData = useCallback(async () => {
+    const {
+      jam: foundJam,
+      user: foundUser,
+      isApplyBtnActive: isApplyBtnActiveFromFunc,
+      applyBtnTxt: applyBtnTxtFromFunc,
+    } = await initialize(Number(jam_id as string));
+    if (!foundJam) throw CustomError.InvalidJam;
+    else if (!foundUser) throw CustomError.InvalidUserSession;
+
+    setJam(foundJam);
+    setUser(foundUser);
+
+    if (applyBtnTxtFromFunc) setApplyBtnTxt(applyBtnTxtFromFunc);
+    if (isApplyBtnActiveFromFunc !== undefined)
+      setIsApplyBtnActive(isApplyBtnActiveFromFunc);
+
+    const tagsToRender = [];
+    if (location)
+      tagsToRender.push(
+        <LocationTag key={"location"} text={foundJam.location} />
+      );
+    tagsToRender.push(<GenreTag key={"genre"} text={foundJam.genre} />);
+    tagsToRender.push(<LevelTag key={"level"} text={foundJam.level} />);
+    setTags(tagsToRender);
+
+    setIsInitializing(false);
+  }, [jam_id]);
+
+  const refetch = useCallback(async () => {
     try {
-      (async () => {
-        const {
-          jam: foundJam,
-          user: foundUser,
-          isApplyBtnActive: isApplyBtnActiveFromFunc,
-          applyBtnTxt: applyBtnTxtFromFunc,
-        } = await initialize(Number(jam_id as string));
-        if (!foundJam) throw CustomError.InvalidJam;
-        else if (!foundUser) throw CustomError.InvalidUserSession;
-
-        setJam(foundJam);
-        setUser(foundUser);
-
-        if (applyBtnTxtFromFunc) setApplyBtnTxt(applyBtnTxtFromFunc);
-        if (isApplyBtnActiveFromFunc !== undefined)
-          setIsApplyBtnActive(isApplyBtnActiveFromFunc);
-
-        const tagsToRender = [];
-        if (location)
-          tagsToRender.push(
-            <LocationTag key={"location"} text={foundJam.location} />
-          );
-        tagsToRender.push(<GenreTag key={"genre"} text={foundJam.genre} />);
-        tagsToRender.push(<LevelTag key={"level"} text={foundJam.level} />);
-        setTags(tagsToRender);
-
-        setIsInitializing(false);
-      })();
+      await fetchJamData();
     } catch (e) {
       const errToShow = e instanceof CustomError ? e : CustomError.UnExpected;
-      if (process.env.NODE_ENV === "production")
-        // TODO: 에러팝업
-        console.error(errToShow);
+      if (process.env.NODE_ENV === "production") console.error(errToShow);
       router.back();
     }
-  }, [jam_id]);
+  }, [fetchJamData, router]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
   //
 
   // GLOBAL
@@ -183,6 +193,12 @@ export default function JamSession_Post() {
                             color: "#F2F2F4",
 
                             borderBottom: "1px solid #323234",
+                          }}
+                          onClick={() => {
+                            bottomSheet.set({
+                              location: "hidden",
+                            });
+                            setIsTurnedOn(true);
                           }}
                         />
                         <ImageWithTxt
@@ -477,6 +493,16 @@ export default function JamSession_Post() {
         user_id={user.id}
         jam_id={jam.id}
       />
+      {jam && (
+        <UpdateJam
+          isTurnedOn={isTurnedOn}
+          turnOff={turnOff}
+          jam={jam}
+          jamId={jam.id}
+          selectedDate={jam.datetime && moment(jam.datetime)}
+          refetch={refetch}
+        />
+      )}
     </div>
   );
 }
