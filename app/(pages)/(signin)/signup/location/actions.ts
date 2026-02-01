@@ -44,7 +44,7 @@ export default async function createUser(input: any): Promise<UserProfile> {
         location: MapLocationToData[input.location],
         profile_image,
       })
-      .select()
+      .select("*, playlist(*)")
       .single();
     if (error || !data) throw CustomError.SignUp;
 

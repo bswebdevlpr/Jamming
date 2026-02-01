@@ -20,6 +20,7 @@ export const initialContext: GlobalContext = {
   session: {
     userProfile: {
       isLoaded: undefined,
+      id: undefined,
       accept_marketing: undefined,
       profile_image: undefined,
       nickname: undefined,
@@ -28,6 +29,10 @@ export const initialContext: GlobalContext = {
       genre: undefined,
       level: undefined,
       location: undefined,
+      bpm: undefined,
+      is_bpm_public: undefined,
+      allow_noti: undefined,
+      playlist: [],
     },
     setUserProfile: () => {},
   },

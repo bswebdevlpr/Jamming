@@ -4,6 +4,7 @@ import { GenreEnum } from "../enums/genre.enum";
 import { LevelEnum } from "../enums/level.enum";
 import { LocationEnum } from "../enums/location.enum";
 import { PositionEnum } from "../enums/position.enum";
+import { Entity_Playlist } from "./entity.interface";
 
 export interface BottomSheetContext {
   children: ReactNode;
@@ -33,6 +34,7 @@ export interface GlobalContext {
 
 export interface UserProfile {
   isLoaded: undefined | boolean;
+  id: undefined | string;
   accept_marketing: undefined | boolean;
   profile_image: undefined | null | string;
   nickname: undefined | string;
@@ -41,4 +43,8 @@ export interface UserProfile {
   genre: undefined | GenreEnum;
   level: undefined | LevelEnum;
   location: undefined | LocationEnum;
+  bpm: undefined | number;
+  is_bpm_public: undefined | boolean;
+  allow_noti: undefined | boolean;
+  playlist: Entity_Playlist[];
 }
