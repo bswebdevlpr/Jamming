@@ -68,6 +68,7 @@ function GlobalLayout({
   globalState.bottomSheet.setHeader = (input: boolean) => {
     globalState.bottomSheet.header = input;
     globalState.bottomSheet = { ...globalState.bottomSheet };
+    setGlobalState({ ...globalState });
   };
   //
 

@@ -47,11 +47,11 @@ export default function JamSession() {
 
   useEffect(() => {
     setFilter({
-      location: LocationEnum[location],
+      location,
       selectedDate,
-      genre: GenreEnum[genre],
-      position: PositionEnum[position],
-      level: LevelEnum[level],
+      genre,
+      position,
+      level,
     });
   }, [location, selectedDate, genre, position, level]);
 
