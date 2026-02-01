@@ -2,6 +2,10 @@
 
 > 음악인을 위한 합주/잼 세션 매칭 모바일 웹 플랫폼
 
+## Rules
+
+- 패키지 매니저는 반드시 **pnpm** 사용 (npm, yarn 사용 금지)
+
 ## Tech Stack
 
 | Category | Technology |
@@ -12,7 +16,6 @@
 | State | React Context, TanStack React Query 5 |
 | Backend | Supabase (Auth, DB, Storage) |
 | External API | ManiaDB (곡 검색), Naver Map (장소 검색) |
-| Package Manager | pnpm |
 
 ## Project Structure
 
@@ -48,42 +51,4 @@ app/
 
 ## Documentation
 
-<!-- AI: 프로젝트 작업 전 docs/context → docs/architecture → docs/patterns 순으로 읽어주세요 -->
-
-| Directory | Purpose | AI 우선순위 |
-|-----------|---------|------------|
-| [docs/context/](docs/context/) | 프로젝트 컨텍스트 (목표, 제약조건, 핵심 개념) | 1순위 - 먼저 읽기 |
-| [docs/architecture/](docs/architecture/) | 시스템 아키텍처 (데이터 흐름, 인증 플로우) | 2순위 |
-| [docs/patterns/](docs/patterns/) | 코드 패턴 & 컨벤션 (네이밍, 구조) | 3순위 |
-| [docs/reference/](docs/reference/) | API/스키마 레퍼런스 (Supabase, 엔드포인트) | 필요시 참조 |
-| [docs/decisions/](docs/decisions/) | 기술 결정 기록 (ADR) | 필요시 참조 |
-| [docs/tasks/](docs/tasks/) | 작업 추적 (진행 중/예정 작업) | 연속 작업시 참조 |
-
-## Quick Start
-
-```bash
-# 설치
-pnpm install
-
-# 개발 서버 (port 3038)
-pnpm dev
-
-# 빌드
-pnpm build
-
-# 프로덕션
-pnpm start
-```
-
-## Environment Variables
-
-| Name | Description |
-|------|-------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase 프로젝트 URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
-| `DOMAIN` | OAuth 리디렉션 베이스 URL |
-| `SUPABASE_STORAGE_NAME` | Storage 버킷명 |
-| `NAVER_MAP_ID` | 네이버 지도 API ID |
-| `NAVER_MAP_SECRET` | 네이버 지도 API Secret |
-
-> `.env.local` 파일은 Git에 포함되지 않음
+작업 전 docs 폴더 참조: `docs/context/` → `docs/architecture/` → `docs/patterns/` 순서

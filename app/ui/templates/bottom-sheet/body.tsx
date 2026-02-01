@@ -1,10 +1,14 @@
-import { ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { ReactNode, useContext, useEffect, useRef, useMemo } from "react";
 import BottomSheetHeader from "./header";
-import { motion } from "framer-motion";
-import _ from "lodash";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
 import { usePathname, useSearchParams } from "next/navigation";
 import { globalContext } from "@/app/(pages)/context";
+import {
+  useBottomSheetGesture,
+  springConfig,
+  closeSpringConfig,
+} from "./hooks/useBottomSheetGesture";
 
 export type BottomSheetHeight =
   | null
@@ -22,7 +26,6 @@ interface Props {
   pullUp: BottomSheetHeight;
   setPullUp?: (input: Partial<BottomSheetContext>) => void;
   header?: boolean;
-  // ref: RefObject<HTMLDivElement>;
 }
 
 const DEFAULT_BUTTON_HEIGHT = 1;
@@ -32,163 +35,92 @@ export const BOTTOMSHEET_HEIGHT_MIDDLE = 59.95;
 export const BOTTOMSHEET_HEIGHT_ROW_2 = 21.6;
 export const BOTTOMSHEET_HEIGHT_ROW_1 = 14;
 
-const Wrapper = ({ children, width, height, pullUp }: Props) => {
-  const ref = useRef<HTMLDivElement>(null);
+// 높이 퍼센트 계산
+const getHeightPercent = (location: BottomSheetHeight): number => {
+  if (location === null || location === "hidden") return 0;
+  if (typeof location === "number") return location;
 
-  const [prevDist, setPrevDist] = useState(0);
+  switch (location) {
+    case "high":
+      return BOTTOMSHEET_HEIGHT_HIGH;
+    case "middle":
+      return BOTTOMSHEET_HEIGHT_MIDDLE;
+    case "row-2":
+      return BOTTOMSHEET_HEIGHT_ROW_2;
+    case "row-1":
+      return BOTTOMSHEET_HEIGHT_ROW_1;
+    default:
+      return 0;
+  }
+};
 
+interface WrapperProps extends Props {
+  onClose: () => void;
+}
+
+const Wrapper = ({
+  children,
+  width,
+  height,
+  pullUp,
+  onClose,
+}: WrapperProps) => {
+  const { controls, currentHeightPx, handleDragEnd } = useBottomSheetGesture({
+    viewportHeight: height,
+    currentLocation: pullUp,
+    onClose,
+  });
+
+  // pullUp 변경 시 애니메이션
   useEffect(() => {
-    if (ref.current)
-      switch (pullUp) {
-        case null:
-          break;
-        case "high":
-          ref.current?.style.setProperty("display", "flex");
-
-          setTimeout(() => {
-            if (!ref.current) return;
-
-            ref.current?.style.setProperty(
-              "transform",
-              `translateY(-${BOTTOMSHEET_HEIGHT_HIGH}%)`
-            );
-            ref.current?.style.setProperty(
-              "padding-bottom",
-              `${100 - BOTTOMSHEET_HEIGHT_HIGH + DEFAULT_BUTTON_HEIGHT}vh`
-            );
-            setPrevDist(BOTTOMSHEET_HEIGHT_HIGH);
-
-            ref.current!.style.setProperty("user-select", "auto");
-          }, 0);
-          break;
-        case "middle":
-          ref.current?.style.setProperty("display", "flex");
-
-          setTimeout(() => {
-            if (!ref.current) return;
-
-            ref.current?.style.setProperty(
-              "transform",
-              `translateY(-${BOTTOMSHEET_HEIGHT_MIDDLE}%)`
-            );
-            ref.current?.style.setProperty(
-              "padding-bottom",
-              `${100 - BOTTOMSHEET_HEIGHT_MIDDLE + DEFAULT_BUTTON_HEIGHT}vh`
-            );
-            setPrevDist(BOTTOMSHEET_HEIGHT_MIDDLE);
-
-            ref.current!.style.setProperty("user-select", "auto");
-          }, 0);
-          break;
-        case "row-2":
-          ref.current?.style.setProperty("display", "flex");
-
-          setTimeout(() => {
-            if (!ref.current) return;
-
-            ref.current?.style.setProperty(
-              "transform",
-              `translateY(-${BOTTOMSHEET_HEIGHT_ROW_2}%)`
-            );
-            ref.current?.style.setProperty(
-              "padding-bottom",
-              `${100 - BOTTOMSHEET_HEIGHT_ROW_2 + DEFAULT_BUTTON_HEIGHT}vh`
-            );
-            setPrevDist(BOTTOMSHEET_HEIGHT_ROW_2);
-
-            ref.current!.style.setProperty("user-select", "auto");
-          }, 0);
-          break;
-        case "row-1":
-          ref.current?.style.setProperty("display", "flex");
-
-          setTimeout(() => {
-            if (!ref.current) return;
-
-            ref.current?.style.setProperty(
-              "transform",
-              `translateY(-${BOTTOMSHEET_HEIGHT_ROW_1}%)`
-            );
-            ref.current?.style.setProperty(
-              "padding-bottom",
-              `${100 - BOTTOMSHEET_HEIGHT_ROW_1 + DEFAULT_BUTTON_HEIGHT}vh`
-            );
-            setPrevDist(BOTTOMSHEET_HEIGHT_ROW_1);
-
-            ref.current!.style.setProperty("user-select", "auto");
-          }, 0);
-          break;
-        case "hidden":
-          ref.current?.style.setProperty("user-select", "none");
-          ref.current?.style.setProperty(
-            "transform",
-            `translateY(${prevDist}%)`
-          );
-          ref.current.style.setProperty(
-            "padding-bottom",
-            `${DEFAULT_BUTTON_HEIGHT}%`
-          );
-          setPrevDist(0);
-
-          setTimeout(() => {
-            if (!ref.current) return;
-            ref.current.style.setProperty("display", "none");
-          }, 350); // padding-bottom 애니메이션 시간(transition-duration)
-          break;
-        default:
-          ref.current?.style.setProperty("display", "flex");
-
-          setTimeout(() => {
-            if (!ref.current) return;
-
-            ref.current?.style.setProperty(
-              "transform",
-              `translateY(-${pullUp}%)`
-            );
-            ref.current?.style.setProperty(
-              "padding-bottom",
-              `${100 - pullUp + DEFAULT_BUTTON_HEIGHT}vh`
-            );
-            setPrevDist(pullUp);
-
-            ref.current!.style.setProperty("user-select", "auto");
-          }, 0);
-          break;
-      }
-  }, [pullUp]);
-
-  const { bottomSheet } = useContext(globalContext);
-  const pathname = usePathname(),
-    searchParams = useSearchParams();
-  useEffect(() => {
-    return () => {
-      bottomSheet.set({
-        children: null,
+    if (pullUp === null || pullUp === "hidden") {
+      controls.start({
+        y: 0,
+        transition: closeSpringConfig,
       });
-    };
-  }, [pathname, searchParams]);
+    } else {
+      controls.start({
+        y: -currentHeightPx,
+        transition: springConfig,
+      });
+    }
+  }, [pullUp, currentHeightPx, controls]);
+
+  // 드래그 제약 조건
+  const dragConstraints = useMemo(
+    () => ({
+      top: -currentHeightPx - 50, // 약간 위로 과도 드래그 허용
+      bottom: height, // 화면 아래까지
+    }),
+    [currentHeightPx, height]
+  );
+
+  // 패딩 계산
+  const heightPercent = getHeightPercent(pullUp);
+  const paddingBottom =
+    pullUp && pullUp !== "hidden"
+      ? `${100 - heightPercent + DEFAULT_BUTTON_HEIGHT}vh`
+      : `${DEFAULT_BUTTON_HEIGHT}vh`;
 
   return (
     <motion.div
-      ref={ref}
-      className="flex flex-col absolute z-30"
+      drag="y"
+      dragConstraints={dragConstraints}
+      dragElastic={{ top: 0.1, bottom: 0.2 }}
+      onDragEnd={handleDragEnd}
+      animate={controls}
+      initial={{ y: 0 }}
+      className="flex flex-col absolute z-30 touch-none"
       style={{
         width: `${width}px`,
         height: `${height}px`,
-
         top: `${height}px`,
-
         borderTopLeftRadius: "8px",
         borderTopRightRadius: "8px",
         backgroundColor: "#242426",
         boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
-
-        transition: "transform 0.75s ease-out",
-
-        display: "none",
-        // visibility: "hidden",
-
-        paddingBottom: `${DEFAULT_BUTTON_HEIGHT}vh`,
+        paddingBottom,
+        willChange: "transform",
       }}
     >
       {children}
@@ -199,6 +131,7 @@ Wrapper.displayName = "BottomSheetWrapper";
 
 const BottomSheetContent = ({ children }: { children: ReactNode }) => (
   <div
+    className="touch-auto"
     style={{
       overflow: "auto",
       WebkitOverflowScrolling: "touch",
@@ -217,25 +150,64 @@ const BottomSheet = ({
   setPullUp,
   header = false,
 }: Props) => {
-  // const { sheet, content } = useBottomSheet();
+  const { bottomSheet } = useContext(globalContext);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // 라우트 변경 시 바텀시트 상태 초기화
+  useEffect(() => {
+    return () => {
+      bottomSheet.set({
+        children: null,
+        location: null,
+        header: false,
+      });
+    };
+  }, [pathname, searchParams]);
+
+  const handleClose = () => {
+    setPullUp?.({
+      location: "hidden",
+    });
+  };
+
+  const isOpen = pullUp && pullUp !== "hidden";
 
   return (
     <>
-      {pullUp && pullUp !== "hidden" && (
-        <div
-          className="absolute w-full h-full top-0 left-0 bg-[rgba(0,0,0,0.5)] z-20"
-          onClick={() =>
-            setPullUp({
-              location: "hidden",
-            })
-          }
-        ></div>
-      )}
-      <Wrapper width={width} height={height} pullUp={pullUp}>
-        {header && <BottomSheetHeader />}
-        <BottomSheetContent>{children}</BottomSheetContent>
-      </Wrapper>
+      {/* 백드롭 */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="backdrop"
+            className="absolute w-full h-full top-0 left-0 z-20"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+            onClick={handleClose}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* 바텀시트 */}
+      <AnimatePresence>
+        {isOpen && (
+          <Wrapper
+            key="sheet"
+            width={width}
+            height={height}
+            pullUp={pullUp}
+            onClose={handleClose}
+          >
+            {header && <BottomSheetHeader />}
+            <BottomSheetContent>{children}</BottomSheetContent>
+          </Wrapper>
+        )}
+      </AnimatePresence>
     </>
   );
 };
+
 export default BottomSheet;
