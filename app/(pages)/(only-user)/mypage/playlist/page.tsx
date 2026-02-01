@@ -7,10 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import Popup from "./popup";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { List_PlayList, ListItem_PlayList } from "@/app/ui/lists/playlist.list";
-import {
-  Entity_Playlist,
-  Entity_User,
-} from "@/app/lib/interfaces/entity.interface";
+import { Entity_Playlist } from "@/app/lib/interfaces/entity.interface";
 import { initialize } from "../functions/fetch";
 
 import { motion } from "framer-motion";
@@ -19,14 +16,15 @@ import { useRouter } from "next/navigation";
 import { globalContext } from "@/app/(pages)/context";
 
 export default function Playlist() {
-  const { bottomSheet } = useContext(globalContext);
+  const {
+    bottomSheet,
+    session: { userProfile, setUserProfile },
+  } = useContext(globalContext);
 
   const router = useRouter();
 
   // STATES
   const [isPopupOn, setIsPopupOn] = useState(false);
-
-  const [user, setUser] = useState<Entity_User>(null);
   const [isPublic, setIsPublic] = useState<boolean>(true);
 
   const [publicPlaylistToShow, setPublicPlaylistToShow] = useState<
@@ -36,15 +34,30 @@ export default function Playlist() {
     Entity_Playlist[]
   >([]);
 
-  const [isRefetch, setIsRefetch] = useState<boolean>(true);
+  const [isRefetch, setIsRefetch] = useState<boolean>(false);
   //
 
   // HANDLERS
+  // 초기 로드: GlobalContext의 playlist 사용
+  useEffect(() => {
+    if (userProfile.playlist) {
+      setPublicPlaylistToShow(
+        userProfile.playlist.filter((row) => row.is_public)
+      );
+      setPrivatePlistToShow(
+        userProfile.playlist.filter((row) => !row.is_public)
+      );
+    }
+  }, [userProfile.playlist]);
+
+  // refetch: 서버에서 다시 가져오고 GlobalContext도 갱신
   useEffect(() => {
     if (isRefetch)
       (async () => {
         const foundUser = await initialize();
-        setUser(foundUser);
+
+        // GlobalContext 갱신
+        setUserProfile({ playlist: foundUser.playlist });
 
         setPublicPlaylistToShow(
           foundUser.playlist.filter((row) => row.is_public)

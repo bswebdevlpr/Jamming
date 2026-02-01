@@ -10,11 +10,11 @@ import {
   PositionTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { EditGrayIcon } from "@/app/ui/images/mypage/edit/edits";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
-import { createFeedback, initialize } from "./functions/fetch";
+import { createFeedback } from "./functions/fetch";
 import { ImageWithTxt } from "@/app/ui/templates/images";
 import MyListIcon from "@/app/ui/images/mypage/note";
 import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
@@ -33,25 +33,8 @@ export default function MyPage() {
   } = useContext(globalContext);
 
   // STATES
-  const [user, setUser] = useState<Entity_User>(null);
-
   const [feedback, setFeedback] = useState<string>("");
   const [placeholder, setPlaceholder] = useState<string>("");
-  //
-
-  // HANDLERS
-  useEffect(() => {
-    (async () => {
-      const initedUser = await initialize();
-
-      // // 프로필 이미지 없을 시 카카오톡 프로필 이미지로 설정
-      // if (!initedUser.profile_image)
-      //   initedUser.profile_image = await (
-      //     await createClient().auth.getUser()
-      //   ).data.user.user_metadata.avatar_url;
-      setUser(initedUser);
-    })();
-  }, []);
   //
 
   return (
@@ -133,7 +116,7 @@ export default function MyPage() {
           )}
         </div>
       )}
-      <BPMBar user={user} className="mt-9" />
+      <BPMBar user={userProfile as Entity_User} className="mt-9" />
       <div className="w-full flex flex-col">
         <div
           className="flex justify-between mb-4"
@@ -166,8 +149,8 @@ export default function MyPage() {
           </p>
         </div>
         <Grid_PlayList>
-          {user &&
-            user.playlist.map((row, idx) => (
+          {userProfile.playlist &&
+            userProfile.playlist.map((row, idx) => (
               <GridItem_PlayList key={idx} item={row} />
             ))}
         </Grid_PlayList>

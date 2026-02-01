@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           const { data } = await supabase
             .from("user")
-            .select()
+            .select("*, playlist(*)")
             .eq("id", user.id)
             .single();
 

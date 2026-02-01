@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   else
                     await supabase
                       .from("user")
-                      .select()
+                      .select("*, playlist(*)")
                       .eq("id", user.id)
                       .maybeSingle()
                       .then(async ({ data, error }) => {

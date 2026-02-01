@@ -14,8 +14,8 @@ import {
 } from "@/app/ui/images/mypage/edit/edits";
 import RadixAvatar from "@/app/ui/templates/avatar";
 import RadixSelect from "@/app/ui/templates/select";
-import { useEffect, useState } from "react";
-import { initialize } from "../functions/fetch";
+import { useContext, useState } from "react";
+import { globalContext } from "@/app/(pages)/context";
 import {
   MapDataToGenre,
   MapDataToLevel,
@@ -57,21 +57,12 @@ const FlexRow = ({
 
 export default function Edit() {
   const router = useRouter();
+  const {
+    session: { userProfile },
+  } = useContext(globalContext);
 
   // STATES
-  const [isBPMChecked, setIsBPMChecked] = useState(false);
-  const [user, setUser] = useState<Entity_User>(null);
-  //
-
-  // HANDLERS
-  useEffect(() => {
-    (async () => {
-      const foundUser = await initialize();
-
-      setUser(foundUser);
-      setIsBPMChecked(foundUser.is_bpm_public);
-    })();
-  }, []);
+  const [isBPMChecked, setIsBPMChecked] = useState(userProfile?.is_bpm_public ?? false);
   //
 
   return (
@@ -123,10 +114,10 @@ export default function Edit() {
           gap: "6px",
         }}
       >
-        <p>{user?.nickname}</p>
+        <p>{userProfile?.nickname}</p>
         <EditLightGrayIcon />
       </div>
-      <BPMBar user={user} />
+      <BPMBar user={userProfile as Entity_User} />
       <div
         className="flex gap-2"
         style={{
@@ -143,7 +134,7 @@ export default function Edit() {
           BPM 공개
         </p>
         <CheckboxOnEditPage
-          isClicked={user?.is_bpm_public}
+          isClicked={userProfile?.is_bpm_public}
           onClick={() => setIsBPMChecked(!isBPMChecked)}
         />
       </div>
@@ -153,7 +144,7 @@ export default function Edit() {
           opt={{
             items: Object.values(LocationEnum),
             color: "#0C7CFF",
-            placeholder: MapDataToLocation[user?.location],
+            placeholder: MapDataToLocation[userProfile?.location],
           }}
         />
         <FlexRow
@@ -161,7 +152,7 @@ export default function Edit() {
           opt={{
             items: Object.values(PositionEnum),
             color: "#FF3773",
-            placeholder: MapDataToPosition[user?.pos],
+            placeholder: MapDataToPosition[userProfile?.pos],
           }}
         />
         <FlexRow
@@ -169,7 +160,7 @@ export default function Edit() {
           opt={{
             items: Object.values(GenreEnum),
             color: "#A3FF0C",
-            placeholder: MapDataToGenre[user?.genre],
+            placeholder: MapDataToGenre[userProfile?.genre],
           }}
         />
         <FlexRow
@@ -177,7 +168,7 @@ export default function Edit() {
           opt={{
             items: Object.values(LevelEnum),
             color: "#FFFFFF",
-            placeholder: MapDataToLevel[user?.level],
+            placeholder: MapDataToLevel[userProfile?.level],
           }}
         />
       </div>
