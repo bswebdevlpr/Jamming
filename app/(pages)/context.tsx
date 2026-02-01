@@ -1,6 +1,6 @@
+import _ from "lodash";
 import { createContext } from "react";
 import { GlobalContext } from "../lib/interfaces/global.interface";
-import _ from "lodash";
 
 export const initialContext: GlobalContext = {
   bodyWidth: 0,
@@ -31,6 +31,9 @@ export const initialContext: GlobalContext = {
     },
     setUserProfile: () => {},
   },
+
+  resetSlideCalendarDots: true,
+  setResetSlideCalendarDots: () => {},
 };
 
 export const globalContext = createContext<GlobalContext>(

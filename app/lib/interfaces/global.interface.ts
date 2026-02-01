@@ -1,9 +1,9 @@
-import { ReactNode } from "react";
+import { BottomSheetHeight } from "@/app/ui/templates/bottom-sheet/body";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { GenreEnum } from "../enums/genre.enum";
 import { LevelEnum } from "../enums/level.enum";
 import { LocationEnum } from "../enums/location.enum";
 import { PositionEnum } from "../enums/position.enum";
-import { BottomSheetHeight } from "@/app/ui/templates/bottom-sheet/body";
 
 export interface BottomSheetContext {
   children: ReactNode;
@@ -26,6 +26,9 @@ export interface GlobalContext {
     userProfile: UserProfile;
     setUserProfile: (input: Partial<UserProfile>) => void;
   };
+
+  resetSlideCalendarDots: boolean;
+  setResetSlideCalendarDots: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface UserProfile {

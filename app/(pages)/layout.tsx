@@ -1,19 +1,19 @@
 "use client";
 
-import { ReactNode, useEffect, useState, Suspense } from "react";
+import { ReactNode, Suspense, useEffect, useState } from "react";
 import BottomSheet from "../ui/templates/bottom-sheet/body";
 
-import SmallLoading from "../ui/loading/small";
-import {
-  BottomSheetContext,
-  GlobalContext,
-  UserProfile,
-} from "../lib/interfaces/global.interface";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import moment from "moment";
-import { globalContext, initialContext } from "./context";
 import _ from "lodash";
+import moment from "moment";
+import {
+    BottomSheetContext,
+    GlobalContext,
+    UserProfile,
+} from "../lib/interfaces/global.interface";
 import FullScreenLoading from "../ui/loading/fullscreen";
+import SmallLoading from "../ui/loading/small";
+import { globalContext, initialContext } from "./context";
 
 // EXTERNAL PACKAGES
 const queryClient = new QueryClient();
@@ -28,6 +28,8 @@ function GlobalLayout({
   const [globalState, setGlobalState] = useState<GlobalContext>(
     _.cloneDeep(initialContext)
   );
+
+  const [resetSlideCalendarDots, setResetSlideCalendarDots] = useState(true);
 
   moment.updateLocale("en", {
     relativeTime: {
@@ -78,6 +80,9 @@ function GlobalLayout({
     globalState.session = { ...globalState.session };
   };
   //
+
+  globalState.resetSlideCalendarDots = resetSlideCalendarDots;
+  globalState.setResetSlideCalendarDots = setResetSlideCalendarDots;
 
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
