@@ -6,7 +6,7 @@ import { createClient } from "@/app/util/supabase/client";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
-import { CustomError } from "@/app/lib/errors/client.error";
+import { CustomError } from "@/app/lib/errors/custom-error";
 import { globalContext } from "../context";
 
 export default function Layout({ children }: { children: React.ReactNode }) {

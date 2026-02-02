@@ -2,7 +2,7 @@
 
 import { globalContext } from "@/app/(pages)/context";
 import { deleteJamSession } from "@/app/api/functions/delete";
-import { CustomError } from "@/app/lib/errors/client.error";
+import { CustomError } from "@/app/lib/errors/custom-error";
 import {
   Entity_JamSession,
   Entity_User,

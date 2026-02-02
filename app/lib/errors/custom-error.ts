@@ -7,8 +7,10 @@ export class CustomErrMsg {
 export class CustomError extends Error {
   constructor(msg: string) {
     super(msg);
+    this.name = "CustomError";
   }
 
+  // 공통
   static Forbidden = new CustomError("권한이 없습니다.");
   static UnExpected = new CustomError(
     "예기치 못한 문제가 발생했습니다." + postfix
@@ -24,14 +26,18 @@ export class CustomError extends Error {
   );
   static InvalidJam = new CustomError("유효하지 않은 잼세션입니다.");
   static InvalidUser = new CustomError("일치하는 유저를 찾을 수 없습니다.");
+
+  // 서버
   static UpdatePlaylistItem = new CustomError(
     "연주목록 항목 업데이트에 실패했습니다." + postfix
   );
   static UploadImage = new CustomError(
     "이미지 업로드에 실패했습니다." + postfix
   );
-  // SignIn: {
-  //   code: 1,
-  //   msg: "로그인 도중 에러가 발생했습니다. 잠시 후 다시 시도해주세요.",
-  // },
+
+  // 클라이언트
+  static CreateJamSession = new CustomError(
+    "잼세션을 생성하는데에 실패했습니다." + postfix
+  );
+  static SearchSong = new CustomError("곡 검색에 실패했습니다." + postfix);
 }

@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { initialize } from "./functions/initialize";
 import { useParams, useRouter } from "next/navigation";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
-import { CustomError } from "@/app/lib/errors/client.error";
+import { CustomError } from "@/app/lib/errors/custom-error";
 import {
   Entity_JamEntry,
   Entity_JamSession,

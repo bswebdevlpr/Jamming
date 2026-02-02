@@ -14,7 +14,7 @@ import { SignUp_Profile_Background_Position } from "@/app/ui/images/signup/posit
 import { useDebouncedRedirect } from "../buttons/next-button";
 import Image from "next/image";
 import { isNicknameUnique } from "@/app/api/functions/validation";
-import { CustomErrMsg } from "@/app/lib/errors/client.error";
+import { CustomErrMsg } from "@/app/lib/errors/custom-error";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { FormData_User, ZodSchema_User, ZodType_Image } from "@/app/lib/zod";
 import ButtonTemplate from "@/app/ui/templates/buttons";
