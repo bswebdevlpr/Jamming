@@ -147,7 +147,7 @@ export const MemberComponent = (
 // app/api/functions/create.ts
 "use server";
 
-import { CustomError } from "@/app/lib/errors/server.error";
+import { CustomError } from "@/app/lib/errors/custom-error";
 import { createClient } from "@/app/util/supabase/server";
 import { CreateJamEntryDto } from "../dtos/create";
 import { sanitize } from "@/app/lib/functions/validate";
@@ -276,21 +276,29 @@ export async function POST(req: NextRequest) {
 ### CustomError 클래스
 
 ```typescript
-// app/lib/errors/server.error.ts
+// app/lib/errors/custom-error.ts
 const postfix = " 문제가 지속적으로 발생한다면 피드백을 전송해주세요.";
 
 export class CustomError extends Error {
   constructor(msg: string) {
     super(msg);
+    this.name = "CustomError";
   }
 
-  // 정적 인스턴스로 에러 정의
+  // 공통 에러
   static Forbidden = new CustomError("권한이 없습니다.");
   static UnExpected = new CustomError("예기치 못한 문제가 발생했습니다." + postfix);
-  static InvalidUserSession = new CustomError("회원정보를 불러오는 데에 실패했습니다...");
+  static InvalidUserSession = new CustomError("회원정보를 불러오는 데에 실패했습니다." + postfix);
   static InvalidJam = new CustomError("유효하지 않은 잼세션입니다.");
   static InvalidUser = new CustomError("일치하는 유저를 찾을 수 없습니다.");
-  // ...
+
+  // 서버 전용
+  static UpdatePlaylistItem = new CustomError("연주목록 항목 업데이트에 실패했습니다." + postfix);
+  static UploadImage = new CustomError("이미지 업로드에 실패했습니다." + postfix);
+
+  // 클라이언트 전용
+  static CreateJamSession = new CustomError("잼세션을 생성하는데에 실패했습니다." + postfix);
+  static SearchSong = new CustomError("곡 검색에 실패했습니다." + postfix);
 }
 ```
 
@@ -315,19 +323,6 @@ try {
 
   // 알 수 없는 에러는 UnExpected로 래핑
   else throw CustomError.UnExpected;
-}
-```
-
-### 클라이언트 에러 (동일 구조)
-
-```typescript
-// app/lib/errors/client.error.ts
-"use client";
-
-export class CustomError extends Error {
-  static CreateJamSession = new CustomError("잼세션을 생성하는데에 실패했습니다...");
-  static SearchSong = new CustomError("곡 검색에 실패했습니다...");
-  // ...
 }
 ```
 
