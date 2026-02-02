@@ -1,6 +1,6 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/server.error";
+import { CustomError } from "@/app/lib/errors/custom-error";
 import { createClient } from "@/app/util/supabase/server";
 import { CreateJamEntryDto } from "../dtos/create";
 import { sanitize } from "@/app/lib/functions/validate";

@@ -1,6 +1,6 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/server.error";
+import { CustomError } from "@/app/lib/errors/custom-error";
 import {
   Entity_JamEntry,
   Entity_JamSession,

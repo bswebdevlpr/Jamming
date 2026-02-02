@@ -1,7 +1,7 @@
 "use server";
 
 import { getUser } from "@/app/api/functions/read";
-import { CustomError } from "@/app/lib/errors/server.error";
+import { CustomError } from "@/app/lib/errors/custom-error";
 import { UserProfile } from "@/app/lib/interfaces/global.interface";
 import {
   MapGenreToData,

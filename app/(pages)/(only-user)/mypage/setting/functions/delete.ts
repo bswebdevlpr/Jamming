@@ -1,7 +1,7 @@
 "use server";
 
 import { getUser } from "@/app/api/functions/read";
-import { CustomError } from "@/app/lib/errors/server.error";
+import { CustomError } from "@/app/lib/errors/custom-error";
 import { createClient } from "@/app/util/supabase/server";
 
 export const destoryUser = async () => {
