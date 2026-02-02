@@ -1,25 +1,9 @@
 "use client";
 
-import { RightArrow } from "@/app/ui/images/arrows";
+import { FormFieldRow } from "@/app/ui/rows/form-field-row";
 import X from "@/app/ui/images/common/x";
-import {
-  CreateJam_ImageRemoveIcon,
-  Gallery,
-  Location,
-  MusicNote,
-  OpenChat,
-} from "@/app/ui/images/jamsession/popup/create-jam";
-import {
-  Dispatch,
-  ReactNode,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import BottomSheetContent from "../bottom-sheet/content";
-import { ImageWithTxt } from "@/app/ui/templates/images";
 import SelectHeadCountPopup from "./select-headcount";
 import ClockPopup from "./clock";
 import moment from "moment";
@@ -28,66 +12,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createJam } from "../functions/fetch";
 import SearchSongPopup from "./search-song";
-import Image from "next/image";
 import RegisterOpenchatPopup from "./register-openchat";
 import SearchLocationPopup from "./search-location";
-import _ from "lodash";
-import {
-  MapDataToGenre,
-  MapDataToLevel,
-  MapDataToPosition,
-} from "@/app/lib/maps/jam";
+import { MapDataToGenre, MapDataToLevel, MapDataToPosition } from "@/app/lib/maps/jam";
 import LocationPopup from "./location";
 import { globalContext } from "@/app/(pages)/context";
 import { usePathname, useSearchParams } from "next/navigation";
-
-const FlexRow = ({
-  left,
-  err,
-  right,
-  onClick,
-}: {
-  left: string;
-  err?: ReactNode;
-  right: string;
-  onClick?: any;
-}) => {
-  return (
-    <div
-      className="flex flex-row justify-between items-center px-5 py-2"
-      style={{
-        height: "6.9%",
-        borderBottom: "1px solid #333335",
-        cursor: "pointer",
-      }}
-      onClick={onClick}
-    >
-      <p
-        style={{
-          fontFamily: "SUIT-TITLE",
-          fontSize: "0.875rem",
-          color: "#DCDCDD",
-        }}
-      >
-        {left}
-      </p>
-      <span className="flex flex-row items-center gap-2 cursor-pointer">
-        {err}
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.875rem",
-            color: "#DCDCDD",
-            opacity: 1,
-          }}
-        >
-          {right}
-        </p>
-        <RightArrow className="ml-auto" />
-      </span>
-    </div>
-  );
-};
+import { JamImagePreview, JamFormToolbar } from "@/app/ui/jam-form";
 
 export default function CreateJam({
   isTurnedOn,
@@ -316,7 +247,7 @@ export default function CreateJam({
           </button>
         </div>
         <div className="grow flex flex-col">
-          <FlexRow
+          <FormFieldRow
             left="지역"
             err={
               formState.errors.location && (
@@ -333,7 +264,7 @@ export default function CreateJam({
             right={location[0]}
             onClick={() => setIsLocationPopupClicked(true)}
           />
-          <FlexRow
+          <FormFieldRow
             left="카테고리"
             err={
               (formState.errors.genre || formState.errors.level) && (
@@ -369,13 +300,13 @@ export default function CreateJam({
               })
             }
           />
-          <FlexRow
+          <FormFieldRow
             left="참여 인원"
             right={(() =>
               headTotal > 0 ? headTotal.toString() : "상관없음")()}
             onClick={() => setIsHeadCountPopupTurnedOn(true)}
           />
-          <FlexRow
+          <FormFieldRow
             left="날짜"
             right={
               selectedDate
@@ -439,105 +370,15 @@ export default function CreateJam({
               }}
               {...register("body")}
             />
-            {images.length > 0 && (
-              <div
-                className="flex flex-col gap-3"
-                style={{
-                  color: "#9F9FA2",
-                  fontFamily: "SUIT-BODY",
-                  fontSize: "0.75rem",
-                  lineHeight: "140%",
-                  letterSpacing: "-0.288px",
-                }}
-              >
-                <div className="flex flex-wrap gap-4">
-                  {images.map((image, idx) => (
-                    <div key={idx} className="relative">
-                      <div
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          position: "relative",
-                        }}
-                      >
-                        <Image
-                          src={image.thumbnail}
-                          alt=""
-                          fill
-                          style={{ objectFit: "cover" }}
-                        />
-                      </div>
-                      <CreateJam_ImageRemoveIcon
-                        style={{
-                          position: "absolute",
-                          top: -8,
-                          right: -8,
-                        }}
-                        onClick={() => handleFileRemove(idx)}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <div>
-                  <p>*첫번째 사진은 게시글의 대표사진으로 지정됩니다.</p>
-                  <p>사진은 최대 5개까지 첨부 가능합니다.</p>
-                </div>
-              </div>
-            )}
+            <JamImagePreview images={images} onRemove={handleFileRemove} />
           </div>
         </div>
-        <div
-          className="flex flex-row px-5 py-2 gap-3"
-          style={{
-            height: "6.37%",
-
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.875rem",
-            fontFeatureSettings: "'liga' off, 'clig' off",
-            color: "#FFF",
-            lineHeight: "normal",
-            letterSpacing: "-0.336px",
-
-            borderTop: "1px solid #333335",
-            borderBottom: "1px solid #333335",
-          }}
-        >
-          <ImageWithTxt
-            image={<MusicNote />}
-            text="합주곡"
-            style={{ opacity: 0.6, cursor: "pointer" }}
-            onClick={() => setIsSearchSongPopupTurnedOn(true)}
-          />
-          <div className="relative flex items-center">
-            <ImageWithTxt
-              image={<Gallery />}
-              text="사진"
-              style={{ opacity: 0.6 }}
-            />
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleFileChange}
-              className="w-full h-full absolute opacity-0 z-20 top-0 left-0"
-              style={{
-                cursor: "pointer",
-              }}
-            />
-          </div>
-          <ImageWithTxt
-            image={<Location />}
-            text="장소"
-            style={{ opacity: 0.6, cursor: "pointer" }}
-            onClick={() => setIsSearchLocationPopupTurnedOn(true)}
-          />
-          <ImageWithTxt
-            image={<OpenChat />}
-            text="채팅방링크"
-            style={{ opacity: 0.6, cursor: "pointer" }}
-            onClick={() => setIsRegisterOpenchatPopupTurnedOn(true)}
-          />
-        </div>
+        <JamFormToolbar
+          onSongClick={() => setIsSearchSongPopupTurnedOn(true)}
+          onFileChange={handleFileChange}
+          onLocationClick={() => setIsSearchLocationPopupTurnedOn(true)}
+          onOpenchatClick={() => setIsRegisterOpenchatPopupTurnedOn(true)}
+        />
         <LocationPopup
           turnOn={isLocationPopupClicked}
           turnOff={() => setIsLocationPopupClicked(false)}
