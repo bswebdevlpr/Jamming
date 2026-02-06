@@ -4,19 +4,25 @@ import { ReactNode, Suspense, useEffect, useState } from "react";
 import BottomSheet from "../ui/templates/bottom-sheet/body";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import _ from "lodash";
 import moment from "moment";
-import {
-    BottomSheetContext,
-    GlobalContext,
-    UserProfile,
-} from "../lib/interfaces/global.interface";
 import FullScreenLoading from "../ui/loading/fullscreen";
 import SmallLoading from "../ui/loading/small";
-import { globalContext, initialContext } from "./context";
+import {
+  useUIStore,
+  useBottomSheetStore,
+} from "../stores";
 
 // EXTERNAL PACKAGES
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5분
+      gcTime: 1000 * 60 * 30, // 30분
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 //
 
 function GlobalLayout({
@@ -24,12 +30,10 @@ function GlobalLayout({
 }: Readonly<{
   children: ReactNode;
 }>) {
-  // INIT
-  const [globalState, setGlobalState] = useState<GlobalContext>(
-    _.cloneDeep(initialContext)
-  );
-
-  const [resetSlideCalendarDots, setResetSlideCalendarDots] = useState(true);
+  // ZUSTAND STORES
+  const { isSmallLoadingOn, setBodyDimensions } = useUIStore();
+  const bottomSheet = useBottomSheetStore();
+  //
 
   moment.updateLocale("en", {
     relativeTime: {
@@ -51,39 +55,6 @@ function GlobalLayout({
       yy: "%d년",
     },
   });
-  //
-
-  // SMALL LOADING
-  globalState.setSmallLoading = () => {
-    globalState.isSmallLoadingOn = !globalState.isSmallLoadingOn;
-    setGlobalState({ ...globalState });
-  };
-  //
-
-  // BOTTOM SHEET
-  globalState.bottomSheet.set = (input: Partial<BottomSheetContext>) => {
-    globalState.bottomSheet = { ...globalState.bottomSheet, ...input };
-    setGlobalState({ ...globalState });
-  };
-  globalState.bottomSheet.setHeader = (input: boolean) => {
-    globalState.bottomSheet.header = input;
-    globalState.bottomSheet = { ...globalState.bottomSheet };
-    setGlobalState({ ...globalState });
-  };
-  //
-
-  // USER PROFILE
-  globalState.session.setUserProfile = (input: Partial<UserProfile>) => {
-    globalState.session.userProfile = {
-      ...globalState.session.userProfile,
-      ...input,
-    };
-    globalState.session = { ...globalState.session };
-  };
-  //
-
-  globalState.resetSlideCalendarDots = resetSlideCalendarDots;
-  globalState.setResetSlideCalendarDots = setResetSlideCalendarDots;
 
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -101,19 +72,12 @@ function GlobalLayout({
 
       window.addEventListener("resize", setVh);
 
-      const width = document.body.offsetWidth;
-      const height = document.body.offsetHeight;
+      const bodyWidth = document.body.offsetWidth;
+      const bodyHeight = document.body.offsetHeight;
 
-      setWidth(width);
-      setHeight(height);
-
-      setGlobalState({
-        ...globalState,
-        ...{
-          bodyWidth: width,
-          bodyHeight: height,
-        },
-      });
+      setWidth(bodyWidth);
+      setHeight(bodyHeight);
+      setBodyDimensions(bodyWidth, bodyHeight);
 
       // javascript 더블클릭 방지
       const preventDblClick = (e: MouseEvent) => {
@@ -128,27 +92,24 @@ function GlobalLayout({
         document.removeEventListener("dblclick", preventDblClick);
       };
     }
-  }, []);
-  //
+  }, [setBodyDimensions]);
 
   return (
-    <globalContext.Provider value={globalState}>
-      <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<FullScreenLoading />}>
-          {children}
-          <SmallLoading isTurnedOn={globalState.isSmallLoadingOn} />
-          <BottomSheet
-            width={width}
-            height={height}
-            pullUp={globalState.bottomSheet.location}
-            setPullUp={globalState.bottomSheet.set}
-            header={globalState.bottomSheet.header}
-          >
-            {globalState.bottomSheet.children}
-          </BottomSheet>
-        </Suspense>
-      </QueryClientProvider>
-    </globalContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <Suspense fallback={<FullScreenLoading />}>
+        {children}
+        <SmallLoading isTurnedOn={isSmallLoadingOn} />
+        <BottomSheet
+          width={width}
+          height={height}
+          pullUp={bottomSheet.location}
+          setPullUp={bottomSheet.set}
+          header={bottomSheet.header}
+        >
+          {bottomSheet.children}
+        </BottomSheet>
+      </Suspense>
+    </QueryClientProvider>
   );
 }
 export default GlobalLayout;
