@@ -1,22 +1,18 @@
 "use client";
 
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
+import { useLogout } from "@/app/lib/functions/logout";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import RadixSwitch from "@/app/ui/templates/switch";
-import { createClient } from "@/app/util/supabase/client";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { redirect, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { initialize } from "./functions/fetch";
 import { updateNotiAccept } from "./functions/update";
 import UnregisterPopup from "./popup/unregister";
 
 export default function Setting() {
-  const router = useRouter();
+  const logout = useLogout();
 
   // STATES
-  const [supabase, setSupabase] =
-    useState<SupabaseClient<any, "public", any>>(null);
   const [user, setUser] = useState<Entity_User>(null);
   const [acceptNoti, setAcceptNoti] = useState<boolean>(null);
 
@@ -26,9 +22,6 @@ export default function Setting() {
 
   useEffect(() => {
     (async () => {
-      const supabase = await createClient();
-      setSupabase(supabase);
-
       const user = await initialize();
       setUser(user);
 
@@ -108,10 +101,7 @@ export default function Setting() {
 
             cursor: "pointer",
           }}
-          onClick={() => {
-            supabase.auth.signOut();
-            redirect("/");
-          }}
+          onClick={logout}
         >
           로그아웃
         </p>
@@ -121,11 +111,7 @@ export default function Setting() {
           style={{
             transform: "rotate(180deg)",
           }}
-          onClick={async () => {
-            await supabase.auth.signOut().then(() => {
-              router.push("/");
-            });
-          }}
+          onClick={logout}
         />
       </div>
       <div className="flex flex-row justify-between px-4 pt-5">

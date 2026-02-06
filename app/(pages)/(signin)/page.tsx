@@ -1,30 +1,32 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { signInWithKakao } from "@/app/util/supabase/auth";
 import { createClient } from "@/app/util/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function SignIn() {
   const supabase = createClient();
+  const router = useRouter();
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    const fetchSession = async () => {
+    const checkSession = async () => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
 
-      //   if (session.status === "loading") setIsLoading(true);
-      //   else if (
-      //     session.data?.user?.isRegistered &&
-      //     session.status === "authenticated"
-      //   ) {
-      //     setIsLoading(false);
-      //     redirect("/jamsession");
-      //   } else setIsLoading(false);
+      if (user) {
+        router.push("/jamsession");
+      } else {
+        setIsChecking(false);
+      }
     };
-    fetchSession();
+    checkSession();
   }, []);
+
+  if (isChecking) return null;
 
   return (
     <div className="flex flex-col justify-between items-center h-full">
