@@ -8,8 +8,6 @@ import { sanitize } from "@/app/lib/functions/validate";
 export async function createJamEntry(
   input: CreateJamEntryDto
 ): Promise<boolean> {
-  let ret: boolean = false;
-
   try {
     input.appeal = await sanitize(input.appeal);
 
@@ -17,10 +15,14 @@ export async function createJamEntry(
 
     const { error } = await supabase.from("jamentry").insert(input);
 
-    ret = !!error;
+    if (error) {
+      if (process.env.NODE_ENV === "development") console.error(error);
+      return false;
+    }
+
+    return true;
   } catch (e) {
+    if (process.env.NODE_ENV === "development") console.error(e);
     throw CustomError.UnExpected;
   }
-
-  return ret;
 }
