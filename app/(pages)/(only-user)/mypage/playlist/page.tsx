@@ -3,7 +3,7 @@
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import PlusPinkIcon from "@/app/ui/images/mypage/playlist/plus";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Popup from "./popup";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { List_PlayList, ListItem_PlayList } from "@/app/ui/lists/playlist.list";
@@ -13,13 +13,11 @@ import { initialize } from "../functions/fetch";
 import { motion } from "framer-motion";
 import { deletePlaylistItem, updatePlaylistItem } from "./functions/fetch";
 import { useRouter } from "next/navigation";
-import { globalContext } from "@/app/(pages)/context";
+import { useBottomSheetStore, useSessionStore } from "@/app/stores";
 
 export default function Playlist() {
-  const {
-    bottomSheet,
-    session: { userProfile, setUserProfile },
-  } = useContext(globalContext);
+  const bottomSheet = useBottomSheetStore();
+  const { userProfile, setUserProfile } = useSessionStore();
 
   const router = useRouter();
 

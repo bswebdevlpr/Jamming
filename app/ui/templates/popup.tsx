@@ -1,13 +1,11 @@
 "use client";
 
-import { globalContext } from "@/app/(pages)/context";
+import { useUIStore } from "@/app/stores";
 import React, {
   CSSProperties,
   ReactNode,
-  useContext,
   useEffect,
   useRef,
-  useState,
 } from "react";
 
 export default function PopupTemplate({
@@ -27,7 +25,7 @@ export default function PopupTemplate({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  const { bodyWidth, bodyHeight } = useContext(globalContext);
+  const { bodyWidth, bodyHeight } = useUIStore();
 
   useEffect(() => {
     if (ref.current) {

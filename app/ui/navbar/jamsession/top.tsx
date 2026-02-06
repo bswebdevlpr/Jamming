@@ -12,8 +12,6 @@ import {
   useState,
 } from "react";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
-// import { globalContext } from "@/app/(pages)/layout";
-// import CalendarComponent from "../../calendar/calendar";
 import { Filter_JamSessionFeed } from "../../feeds/jam-feed";
 
 export default function TopNavBar({
@@ -27,9 +25,6 @@ export default function TopNavBar({
   setLocation: (location: LocationEnum) => void;
   // setSelectedDate: (input: moment.Moment) => void;
 }) {
-  // // GLOBAL
-  // const { bottomSheet } = useContext(globalContext);
-  // //
 
   // STATES
   const [isLocationClicked, setIsLocationClicked] = useState(false);

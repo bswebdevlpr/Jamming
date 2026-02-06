@@ -1,6 +1,5 @@
 "use client";
 
-// import { globalContext } from "@/app/(pages)/layout";
 import Bell from "@/app/ui/images/jamsession/bell";
 // import CalendarImage from "@/app/ui/images/jamsession/calendar";
 // import { Dispatch, SetStateAction, useContext } from "react";
@@ -17,8 +16,6 @@ export default function TopNavBar({
   // setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
   // setSelectedDate: (input: moment.Moment) => void;
 }) {
-  // const { bottomSheet } = useContext(globalContext);
-
   return (
     <div className="flex flex-row justify-between px-5 py-3">
       <p

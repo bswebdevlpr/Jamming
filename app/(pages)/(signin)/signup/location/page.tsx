@@ -7,7 +7,7 @@ import {
 import CompleteButton from "@/app/ui/buttons/complete";
 import VerticalList from "@/app/ui/lists/list";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import createUser from "./actions";
 import _ from "lodash";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { base64ToFile } from "@/app/util/convert/file";
-import { globalContext } from "@/app/(pages)/context";
+import { useSessionStore } from "@/app/stores";
 
 export default function SignUp_Location() {
   // INIT
@@ -27,7 +27,7 @@ export default function SignUp_Location() {
     return acc;
   }, {} as { [key: string]: string });
 
-  const { session } = useContext(globalContext);
+  const setUserProfile = useSessionStore((state) => state.setUserProfile);
 
   const router = useRouter();
   //
@@ -76,7 +76,7 @@ export default function SignUp_Location() {
 
     const ret = await createUser(Object.assign(data, { profile_image }))
       .then((newUserProfile) => {
-        session.setUserProfile(newUserProfile);
+        setUserProfile(newUserProfile);
         return true;
       })
       .catch((e) => {

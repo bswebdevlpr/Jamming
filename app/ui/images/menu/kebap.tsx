@@ -1,7 +1,11 @@
 import Image from "next/image";
-import { CSSProperties } from "react";
+import React from "react";
 
-const Kebap = ({ onClick }: { onClick?: (e?: any) => any }) => {
+const Kebap = ({
+  onClick,
+}: {
+  onClick?: (e: React.MouseEvent<HTMLImageElement>) => void;
+}) => {
   return (
     <Image
       src={"/menu/kebap.svg"}

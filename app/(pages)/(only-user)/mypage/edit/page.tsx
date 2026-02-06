@@ -14,8 +14,8 @@ import {
 } from "@/app/ui/images/mypage/edit/edits";
 import RadixAvatar from "@/app/ui/templates/avatar";
 import RadixSelect from "@/app/ui/templates/select";
-import { useContext, useState } from "react";
-import { globalContext } from "@/app/(pages)/context";
+import { useState } from "react";
+import { useSessionStore } from "@/app/stores";
 import {
   MapDataToGenre,
   MapDataToLevel,
@@ -57,9 +57,7 @@ const FlexRow = ({
 
 export default function Edit() {
   const router = useRouter();
-  const {
-    session: { userProfile },
-  } = useContext(globalContext);
+  const userProfile = useSessionStore((state) => state.userProfile);
 
   // STATES
   const [isBPMChecked, setIsBPMChecked] = useState(userProfile?.is_bpm_public ?? false);

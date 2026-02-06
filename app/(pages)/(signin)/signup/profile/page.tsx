@@ -1,7 +1,7 @@
 "use client";
 
 import { Camera } from "@/app/ui/images/camera";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BottomSheetContent from "./(bottom-sheet)/content";
@@ -19,7 +19,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { FormData_User, ZodSchema_User, ZodType_Image } from "@/app/lib/zod";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { readFileAsBase64 } from "@/app/util/convert/file";
-import { globalContext } from "@/app/(pages)/context";
+import { useBottomSheetStore } from "@/app/stores";
 
 const TextBox = ({
   upTxt,
@@ -66,7 +66,7 @@ const TextBox = ({
 
 export default function SignUp_Profile() {
   // INIT
-  const { bottomSheet } = useContext(globalContext);
+  const bottomSheet = useBottomSheetStore();
 
   const router = useRouter();
   const pathname = usePathname();

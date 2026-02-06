@@ -10,7 +10,7 @@ import {
   PositionTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { EditGrayIcon } from "@/app/ui/images/mypage/edit/edits";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
@@ -20,7 +20,7 @@ import MyListIcon from "@/app/ui/images/mypage/note";
 import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import BPMBar from "@/app/ui/bpm/bpm-bar";
-import { globalContext } from "../../context";
+import { useSessionStore } from "@/app/stores";
 
 export default function MyPage() {
   // HOOOKS
@@ -28,9 +28,7 @@ export default function MyPage() {
   const router = useRouter();
   //
 
-  const {
-    session: { userProfile },
-  } = useContext(globalContext);
+  const userProfile = useSessionStore((state) => state.userProfile);
 
   // STATES
   const [feedback, setFeedback] = useState<string>("");
