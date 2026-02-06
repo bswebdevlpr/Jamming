@@ -1,18 +1,27 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     serverActions: {
       bodySizeLimit: "50mb",
     },
   },
   images: {
-    domains: [
-      "i.ytimg.com",
-      "i.maniadb.com",
-      "niiidqqsxsiowmzumcgw.supabase.co",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.maniadb.com",
+      },
+      {
+        protocol: "https",
+        hostname: "niiidqqsxsiowmzumcgw.supabase.co",
+      },
     ],
+    formats: ["image/avif", "image/webp"],
   },
 };
 
