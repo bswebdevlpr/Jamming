@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
@@ -27,6 +27,10 @@ const VerticalListItem = ({
   const [isHovered, setIsHovered] = useState(false);
   const showImage = isHovered || isFocused;
 
+  // 한번 활성화되면 Image를 DOM에 유지 (캐시 활용)
+  const hasBeenActivated = useRef(false);
+  if (showImage) hasBeenActivated.current = true;
+
   return (
     <motion.div
       style={{
@@ -40,7 +44,7 @@ const VerticalListItem = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {backgroundUrl && (
+      {backgroundUrl && hasBeenActivated.current && (
         <>
           <motion.div
             variants={imageVariants}
@@ -61,8 +65,7 @@ const VerticalListItem = ({
               style={{
                 objectFit: "cover",
               }}
-              sizes="100vw"
-              priority
+              sizes="(max-width: 768px) 100vw, 480px"
             />
           </motion.div>
           {/* 오버레이 효과 */}
