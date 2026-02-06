@@ -3,73 +3,71 @@
 import { CustomError } from "@/app/lib/errors/custom-error";
 import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
 import { createClient } from "@/app/util/supabase/server";
-import { User } from "@supabase/supabase-js";
+import { SupabaseClient, User } from "@supabase/supabase-js";
 
-export const getUser: (supabase: any) => Promise<User> = async (supabase) => {
-  let ret: User = null;
+export const getUser = async (supabase: SupabaseClient): Promise<User> => {
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser();
-    if (error) throw CustomError.UnExpected;
-    else if (!user) throw CustomError.InvalidUserSession;
-    else ret = user;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
+  if (error) {
+    if (process.env.NODE_ENV === "development") console.error(error);
+    throw CustomError.UnExpected;
+  }
+  if (!user) {
+    throw CustomError.InvalidUserSession;
   }
 
-  return ret;
+  return user;
 };
 
 export async function getJam(id: number): Promise<Entity_JamSession> {
-  let ret: Entity_JamSession = null;
+  const supabase = await createClient();
 
-  try {
-    const supabase = await createClient();
+  // 인증 확인
+  await getUser(supabase);
 
-    const user = await getUser(supabase);
+  const { data, error } = await supabase
+    .from("jamsession")
+    .select(
+      `
+          *,
+          user ( nickname, pos, genre, level, bpm, profile_image ),
+          jamentry ( id, jam_id, user_id, applied_pos )
+      `
+    )
+    .eq("id", id)
+    .single();
 
-    const { data, error } = await supabase
-      .from("jamsession")
-      .select(
-        `
-            *,
-            user ( nickname, pos, genre, level, bpm, profile_image ),
-            jamentry ( id, jam_id, user_id, applied_pos )
-        `
-      )
-      .eq("id", id)
-      .single();
-    if (error) throw CustomError.UnExpected;
-    if (!data) throw CustomError.InvalidJam;
-
-    data.curHeadCnt = data.jamentry.length;
-    data.maxHeadCnt = data.headcnt_by_pos.reduce(
-      (acc, cur) => acc + cur.headcnt,
-      0
-    );
-    data.appliedPosDict = data.jamentry.reduce(
-      (acc, cur) => {
-        if (typeof acc[cur.pos] === "number") acc[cur.pos].headcnt++;
-        else acc[cur.pos] = 0;
-        return acc;
-      },
-      data.headcnt_by_pos.reduce((acc, cur) => {
-        if (cur.headcnt > 0) acc[cur.pos] = 0;
-        return acc;
-      }, {})
-    );
-
-    ret = data;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
+  if (error) {
+    if (process.env.NODE_ENV === "development") console.error(error);
+    throw CustomError.UnExpected;
+  }
+  if (!data) {
+    throw CustomError.InvalidJam;
   }
 
-  return ret;
+  data.curHeadCnt = data.jamentry.length;
+  data.maxHeadCnt = data.headcnt_by_pos.reduce(
+    (acc, cur) => acc + cur.headcnt,
+    0
+  );
+  data.appliedPosDict = data.jamentry.reduce(
+    (acc: Record<string, number>, cur: { applied_pos: string }) => {
+      const pos = cur.applied_pos;
+      if (typeof acc[pos] === "number") acc[pos]++;
+      else acc[pos] = 1;
+      return acc;
+    },
+    data.headcnt_by_pos.reduce(
+      (acc: Record<string, number>, cur: { pos: string; headcnt: number }) => {
+        if (cur.headcnt > 0) acc[cur.pos] = 0;
+        return acc;
+      },
+      {} as Record<string, number>
+    )
+  );
+
+  return data;
 }
