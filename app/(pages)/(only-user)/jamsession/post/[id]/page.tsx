@@ -1,6 +1,6 @@
 "use client";
 
-import { globalContext } from "@/app/(pages)/context";
+import { useBottomSheetStore } from "@/app/stores";
 import { deleteJamSession } from "@/app/api/functions/delete";
 import { CustomError } from "@/app/lib/errors/custom-error";
 import {
@@ -30,10 +30,12 @@ import { ImageWithTxt } from "@/app/ui/templates/images";
 import moment from "moment";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { initialize } from "./functions/initialize";
 import Modal from "./modal";
-import UpdateJam from "./popup/update-jam";
+
+const UpdateJam = dynamic(() => import("./popup/update-jam"), { ssr: false });
 
 const FlexRow = ({
   tag,
@@ -151,8 +153,8 @@ export default function JamSession_Post() {
   }, [refetch]);
   //
 
-  // GLOBAL
-  const { bottomSheet } = useContext(globalContext);
+  // ZUSTAND STORE
+  const bottomSheet = useBottomSheetStore();
   //
 
   // STATES
