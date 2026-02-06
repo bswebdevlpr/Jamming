@@ -1,7 +1,7 @@
 "use client";
 
 import Filter from "@/app/ui/images/filter";
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import BottomSheetContent from "./bottom-sheet/content";
 import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
@@ -14,12 +14,12 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 import { FeedMethods } from "@/app/ui/templates/feed";
-import { globalContext } from "../../context";
+import { useBottomSheetStore } from "@/app/stores";
 import { useSearchParams } from "next/navigation";
 
 export default function JamSession() {
-  // GLOBAL
-  const { bottomSheet } = useContext(globalContext);
+  // ZUSTAND STORE
+  const bottomSheet = useBottomSheetStore();
   //
 
   // REF

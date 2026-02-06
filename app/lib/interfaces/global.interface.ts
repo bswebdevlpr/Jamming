@@ -1,35 +1,22 @@
 import { BottomSheetHeight } from "@/app/ui/templates/bottom-sheet/body";
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { ReactNode } from "react";
 import { GenreEnum } from "../enums/genre.enum";
 import { LevelEnum } from "../enums/level.enum";
 import { LocationEnum } from "../enums/location.enum";
 import { PositionEnum } from "../enums/position.enum";
 import { Entity_Playlist } from "./entity.interface";
 
-export interface BottomSheetContext {
+// Zustand store와 호환되는 BottomSheet 타입
+export interface BottomSheetState {
   children: ReactNode;
   location: BottomSheetHeight;
-  set: (input: Partial<BottomSheetContext>) => void;
-  header?: boolean;
-  setHeader: null | ((input: boolean) => void);
+  header: boolean;
 }
 
-export interface GlobalContext {
-  bodyWidth: number;
-  bodyHeight: number;
-
-  isSmallLoadingOn: boolean;
-  setSmallLoading: () => void;
-
-  bottomSheet: BottomSheetContext;
-
-  session: {
-    userProfile: UserProfile;
-    setUserProfile: (input: Partial<UserProfile>) => void;
-  };
-
-  resetSlideCalendarDots: boolean;
-  setResetSlideCalendarDots: Dispatch<SetStateAction<boolean>>;
+export interface BottomSheetContext extends BottomSheetState {
+  set: (input: Partial<BottomSheetState>) => void;
+  setHeader: (input: boolean) => void;
+  close: () => void;
 }
 
 export interface UserProfile {

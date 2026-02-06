@@ -14,7 +14,7 @@ import { deleteJamEntry, deleteJamSession } from "@/app/api/functions/delete";
 import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
 import Image from "next/image";
 import Logo from "../images/logo";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, memo, SetStateAction } from "react";
 
 export interface FeedItemProps_Jam {
   idx: number;
@@ -27,16 +27,16 @@ export interface FeedItemProps_Jam {
   };
   router: AppRouterInstance;
   bottomSheet: BottomSheetContext;
-  refetch: any;
+  refetch: () => void;
 }
 
-export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
+export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = memo(function FeedItem_Jam({
   idx,
   data,
   router,
   bottomSheet,
   refetch,
-}) => {
+}) {
   const {
     id,
     title,
@@ -138,6 +138,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
               src={thumbnail}
               alt="Default"
               fill
+              sizes="72px"
               style={{ objectFit: "cover" }}
             />
           </div>
@@ -204,4 +205,4 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = ({
       </div>
     </motion.div>
   );
-};
+});

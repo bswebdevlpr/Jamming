@@ -6,12 +6,11 @@ import {
   CSSProperties,
   forwardRef,
   Fragment,
-  useContext,
   useEffect,
   useImperativeHandle,
 } from "react";
 import { useRouter } from "next/navigation";
-import { globalContext } from "@/app/(pages)/context";
+import { useBottomSheetStore } from "@/app/stores";
 
 export type FetchFeedFunc = ({
   pageParam,
@@ -54,7 +53,7 @@ const FeedTemplate = forwardRef<FeedMethods, FeedProps>(
     }));
 
     const router = useRouter();
-    const { bottomSheet } = useContext(globalContext);
+    const bottomSheet = useBottomSheetStore();
 
     useEffect(() => {
       if (inView && hasNextPage && !isLoading) {

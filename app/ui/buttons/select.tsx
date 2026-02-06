@@ -1,7 +1,7 @@
 "use client";
 
-import { globalContext } from "@/app/(pages)/context";
-import { CSSProperties, useContext, useEffect } from "react";
+import { useBottomSheetStore } from "@/app/stores";
+import { CSSProperties } from "react";
 
 const commonStyle = {
   width: "67.76%",
@@ -41,8 +41,8 @@ export default function SelectButton({
   };
   //
 
-  // CONTEXT
-  const { bottomSheet } = useContext(globalContext);
+  // ZUSTAND STORE
+  const bottomSheet = useBottomSheetStore();
   //
 
   return (

@@ -2,14 +2,12 @@
 
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { createClient } from "@/app/util/supabase/client";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { globalContext } from "../context";
+import { useSessionStore } from "@/app/stores";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const {
-    session: { userProfile, setUserProfile },
-  } = useContext(globalContext);
+  const { userProfile, setUserProfile } = useSessionStore();
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);

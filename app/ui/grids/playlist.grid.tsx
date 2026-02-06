@@ -4,9 +4,13 @@ import { Entity_Playlist } from "@/app/lib/interfaces/entity.interface";
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
-import { ReactNode, useEffect, useState } from "react";
+import { memo, ReactNode, useEffect, useState } from "react";
 
-export const GridItem_PlayList = ({ item }: { item: Entity_Playlist }) => {
+export const GridItem_PlayList = memo(function GridItem_PlayList({
+  item,
+}: {
+  item: Entity_Playlist;
+}) {
   const [itemWidth, setItemWidth] = useState<number>(0);
   const [itemHeight, setItemHeight] = useState<number>(0);
 
@@ -29,7 +33,8 @@ export const GridItem_PlayList = ({ item }: { item: Entity_Playlist }) => {
         src={item.thumbnail_path}
         width={itemWidth / 2}
         height={itemHeight}
-        alt="Image"
+        alt={item.title}
+        sizes="50vw"
         className="mb-2"
       />
       <p
@@ -71,7 +76,7 @@ export const GridItem_PlayList = ({ item }: { item: Entity_Playlist }) => {
       </p>
     </Link>
   );
-};
+});
 
 export const Grid_PlayList = ({ children }: { children: ReactNode }) => {
   return <div className="grid grid-cols-2 gap-x-4 gap-y-6">{children}</div>;

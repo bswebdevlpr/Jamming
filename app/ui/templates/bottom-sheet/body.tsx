@@ -1,9 +1,8 @@
-import { ReactNode, useContext, useEffect, useRef, useMemo } from "react";
+import { ReactNode, useEffect, useMemo } from "react";
 import BottomSheetHeader from "./header";
-import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import { BottomSheetContext } from "@/app/lib/interfaces/global.interface";
+import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useSearchParams } from "next/navigation";
-import { globalContext } from "@/app/(pages)/context";
+import { useBottomSheetStore } from "@/app/stores";
 import {
   useBottomSheetGesture,
   springConfig,
@@ -19,12 +18,18 @@ export type BottomSheetHeight =
   | number
   | "hidden";
 
+interface BottomSheetInput {
+  children?: ReactNode;
+  location?: BottomSheetHeight;
+  header?: boolean;
+}
+
 interface Props {
   children: ReactNode;
   width: number;
   height: number;
   pullUp: BottomSheetHeight;
-  setPullUp?: (input: Partial<BottomSheetContext>) => void;
+  setPullUp?: (input: BottomSheetInput) => void;
   header?: boolean;
 }
 
@@ -150,20 +155,16 @@ const BottomSheet = ({
   setPullUp,
   header = false,
 }: Props) => {
-  const { bottomSheet } = useContext(globalContext);
+  const closeBottomSheet = useBottomSheetStore((state) => state.close);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   // 라우트 변경 시 바텀시트 상태 초기화
   useEffect(() => {
     return () => {
-      bottomSheet.set({
-        children: null,
-        location: null,
-        header: false,
-      });
+      closeBottomSheet();
     };
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, closeBottomSheet]);
 
   const handleClose = () => {
     setPullUp?.({

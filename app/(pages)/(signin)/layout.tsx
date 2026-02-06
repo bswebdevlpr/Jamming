@@ -5,16 +5,16 @@ import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { createClient } from "@/app/util/supabase/client";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CustomError } from "@/app/lib/errors/custom-error";
-import { globalContext } from "../context";
+import { useSessionStore } from "@/app/stores";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
   const [isOAuthSignedIn, setIsOAuthSignedIn] = useState<boolean>(false);
-  const { session } = useContext(globalContext);
+  const setUserProfile = useSessionStore((state) => state.setUserProfile);
 
   useEffect(() => {
     try {
@@ -36,7 +36,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             .single();
 
           if (data) {
-            session.setUserProfile({
+            setUserProfile({
               ...data,
               isLoaded: true,
             });

@@ -1,8 +1,13 @@
 "use client";
 
-import CreateJam from "@/app/(pages)/(only-user)/jamsession/popup/create-jam";
+import dynamic from "next/dynamic";
 import Plus from "../images/jamsession/plus";
 import { Dispatch, SetStateAction, useState } from "react";
+
+const CreateJam = dynamic(
+  () => import("@/app/(pages)/(only-user)/jamsession/popup/create-jam"),
+  { ssr: false }
+);
 
 export default function JamNow({
   selectedDate,

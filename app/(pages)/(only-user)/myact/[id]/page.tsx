@@ -2,7 +2,7 @@
 
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { initialize } from "./functions/initialize";
 import { useParams, useRouter } from "next/navigation";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
@@ -17,7 +17,7 @@ import { MemberComponent } from "./components/member.component";
 import { createClient } from "@/app/util/supabase/client";
 import NoshowPopup from "./popup/noshow";
 import RejamPopup from "./popup/rejam";
-import { globalContext } from "@/app/(pages)/context";
+import { useBottomSheetStore } from "@/app/stores";
 
 export default function MyAct() {
   const { id } = useParams();
@@ -25,7 +25,7 @@ export default function MyAct() {
 
   const router = useRouter();
 
-  const { bottomSheet } = useContext(globalContext);
+  const bottomSheet = useBottomSheetStore();
 
   // STATES
   const [isInitializing, setIsInitializing] = useState(true);
