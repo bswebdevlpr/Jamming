@@ -6,7 +6,6 @@ import { createClient } from "@/app/util/supabase/client";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CustomError } from "@/app/lib/errors/custom-error";
 import { useSessionStore } from "@/app/stores";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -17,39 +16,41 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const setUserProfile = useSessionStore((state) => state.setUserProfile);
 
   useEffect(() => {
-    try {
-      const validateUser = async () => {
+    const validateUser = async () => {
+      try {
         const supabase = createClient();
         const {
           data: { user },
           error,
         } = await supabase.auth.getUser();
 
-        if (!user || error) router.push("/");
-        else {
-          setIsOAuthSignedIn(true);
-
-          const { data } = await supabase
-            .from("user")
-            .select("*, playlist(*)")
-            .eq("id", user.id)
-            .single();
-
-          if (data) {
-            setUserProfile({
-              ...data,
-              isLoaded: true,
-            });
-            router.push("/jamsession");
-          } else router.push("/signup");
+        if (!user || error) {
+          router.push("/");
+          return;
         }
-      };
 
-      validateUser();
-    } catch (e) {
-      // TODO: 에러모달
-      throw CustomError.InvalidUserSession;
-    }
+        setIsOAuthSignedIn(true);
+
+        const { data } = await supabase
+          .from("user")
+          .select("*, playlist(*)")
+          .eq("id", user.id)
+          .single();
+
+        if (data) {
+          setUserProfile({
+            ...data,
+            isLoaded: true,
+          });
+          router.push("/jamsession");
+        } else {
+          router.push("/signup");
+        }
+      } catch (e) {
+        router.push("/");
+      }
+    };
+    validateUser();
   }, []);
 
   return (

@@ -7,70 +7,62 @@ import { useRouter } from "next/navigation";
 import { useSessionStore } from "@/app/stores";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { userProfile, setUserProfile } = useSessionStore();
+  const { userProfile, setUserProfile, resetUserProfile } = useSessionStore();
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    let supabase = null;
+    const supabase = createClient();
 
-    try {
-      supabase = createClient();
+    const validateUser = async () => {
+      try {
+        if (!userProfile.isLoaded) {
+          const {
+            data: { user },
+            error,
+          } = await supabase.auth.getUser();
 
-      if (supabase) {
-        // validation
-        const validateUser = async () => {
-          let redirectUrl = null;
-
-          try {
-            if (!userProfile.isLoaded)
-              await supabase.auth
-                .getUser()
-                .then(async ({ data: { user }, error }) => {
-                  if (!user || error) redirectUrl = "/";
-                  else
-                    await supabase
-                      .from("user")
-                      .select("*, playlist(*)")
-                      .eq("id", user.id)
-                      .maybeSingle()
-                      .then(async ({ data, error }) => {
-                        if (!data || error) {
-                          await supabase.auth.signOut();
-                          redirectUrl = "/";
-                        } else
-                          setUserProfile({
-                            ...data,
-                            isLoaded: true,
-                          });
-                      });
-                });
-          } catch (e) {
-            redirectUrl = "/";
-          }
-
-          if (redirectUrl) router.push(redirectUrl);
-          else setIsLoading(false);
-        };
-        validateUser();
-        //
-
-        const onAuth = supabase.auth.onAuthStateChange((event, session) => {
-          if (event === "SIGNED_OUT") {
+          if (!user || error) {
             router.push("/");
+            return;
           }
-        });
-        const authListener = onAuth.data;
 
-        return () => {
-          authListener?.subscription.unsubscribe();
-        };
+          const { data, error: dbError } = await supabase
+            .from("user")
+            .select("*, playlist(*)")
+            .eq("id", user.id)
+            .maybeSingle();
+
+          if (!data || dbError) {
+            resetUserProfile();
+            await supabase.auth.signOut();
+            router.push("/");
+            return;
+          }
+
+          setUserProfile({ ...data, isLoaded: true });
+        }
+
+        setIsLoading(false);
+      } catch (e) {
+        router.push("/");
       }
-    } catch (e) {
-      // TODO: 경고 로그인할 수 없음
-      router.push("/");
-    }
+    };
+    validateUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event) => {
+        if (event === "SIGNED_OUT") {
+          resetUserProfile();
+          router.push("/");
+        }
+      }
+    );
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
   }, []);
 
   return isLoading ? <FullScreenLoading /> : children;
