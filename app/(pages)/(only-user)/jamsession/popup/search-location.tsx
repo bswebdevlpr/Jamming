@@ -15,8 +15,8 @@ const FlexRow = ({
   checkboxState,
 }: {
   dto: ZodType_LocationDetail;
-  onClick;
-  checkboxState;
+  onClick: (location: ZodType_LocationDetail | null) => void;
+  checkboxState: boolean;
 }) => {
   return (
     <div
@@ -71,8 +71,8 @@ export default function SearchLocationPopup({
   setLocation,
 }: {
   isTurnedOn: boolean;
-  turnOff: any;
-  setLocation: any;
+  turnOff: () => void;
+  setLocation: (location: ZodType_LocationDetail) => void;
 }) {
   const [searchTxt, setSearchTxt] = useState<string>("");
   const [data, setData] = useState<ZodType_LocationDetail[]>([]);

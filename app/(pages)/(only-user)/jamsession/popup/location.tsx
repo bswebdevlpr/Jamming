@@ -29,8 +29,8 @@ export default function LocationPopup({
   setLocation,
 }: {
   turnOn: boolean;
-  turnOff: any;
-  setLocation;
+  turnOff: () => void;
+  setLocation: (location: LocationEnum) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -84,7 +84,7 @@ export default function LocationPopup({
       <VerticalList
         props={locations.map((prop) => {
           prop.onClick = () => {
-            setLocation(prop.text);
+            setLocation(prop.text as LocationEnum);
             turnOff();
           };
           return prop;

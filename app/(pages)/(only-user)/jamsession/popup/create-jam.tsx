@@ -2,7 +2,7 @@
 
 import { FormFieldRow } from "@/app/ui/rows/form-field-row";
 import X from "@/app/ui/images/common/x";
-import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import BottomSheetContent from "../bottom-sheet/content";
 import SelectHeadCountPopup from "./select-headcount";
 import ClockPopup from "./clock";
@@ -16,7 +16,7 @@ import RegisterOpenchatPopup from "./register-openchat";
 import SearchLocationPopup from "./search-location";
 import { MapDataToGenre, MapDataToLevel, MapDataToPosition } from "@/app/lib/maps/jam";
 import LocationPopup from "./location";
-import { globalContext } from "@/app/(pages)/context";
+import { useBottomSheetStore } from "@/app/stores";
 import { usePathname, useSearchParams } from "next/navigation";
 import { JamImagePreview, JamFormToolbar } from "@/app/ui/jam-form";
 
@@ -35,8 +35,8 @@ export default function CreateJam({
   refetch;
   setResetSlideCalendarDots: Dispatch<SetStateAction<boolean>>;
 }) {
-  // GLOBAL
-  const { bottomSheet } = useContext(globalContext);
+  // ZUSTAND STORE
+  const bottomSheet = useBottomSheetStore();
   //
 
   const ref = useRef<HTMLDivElement>(null);
@@ -124,7 +124,7 @@ export default function CreateJam({
       });
       clearErrors();
     }
-  }, [selectedDate]);
+  }, [selectedDate, setValue, clearErrors]);
 
   useEffect(() => {
     setHeadTotal(headcnt_by_pos.reduce((acc, cur) => acc + cur.headcnt, 0));
@@ -137,9 +137,13 @@ export default function CreateJam({
       });
 
     return () => {
+      // 메모리 누수 방지: 생성된 Object URL 해제
+      images.forEach((img) => {
+        if (img.thumbnail) URL.revokeObjectURL(img.thumbnail);
+      });
       reset();
     };
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, images, reset, selectedDate, setValue]);
   //
 
   // HANDLERS
@@ -155,26 +159,43 @@ export default function CreateJam({
           refetch();
           setResetSlideCalendarDots(true);
           turnOff();
+        } else {
+          alert("잼세션 생성에 실패했습니다. 다시 시도해주세요.");
         }
-        // TODO: 실패 팝업
-        else {
-        }
+      })
+      .catch(() => {
+        alert("잼세션 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
       })
       .finally(() => {
         setIsSubmitting(false);
       });
   };
 
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
 
     if (fileList) {
-      const newImages = Array.from(fileList)
-        .slice(0, 5)
-        .map((row) => ({
-          file: row,
-          thumbnail: URL.createObjectURL(row), // 미리보기 URL 생성
-        }));
+      const validFiles = Array.from(fileList)
+        .filter((file) => {
+          if (file.size > MAX_FILE_SIZE) {
+            alert(`파일 ${file.name}이(가) 10MB를 초과합니다.`);
+            return false;
+          }
+          if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+            alert(`파일 ${file.name}은(는) 지원하지 않는 형식입니다.`);
+            return false;
+          }
+          return true;
+        })
+        .slice(0, 5);
+
+      const newImages = validFiles.map((row) => ({
+        file: row,
+        thumbnail: URL.createObjectURL(row),
+      }));
 
       if (newImages.length + images.length <= 5)
         setValue("images", [...images, ...newImages], {
