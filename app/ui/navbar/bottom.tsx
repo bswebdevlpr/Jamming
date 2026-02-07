@@ -1,11 +1,12 @@
 "use client";
 
-import { redirect, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import HomeButton from "../buttons/home";
 import MyActivity from "../images/navbar/my-activity";
 import UserProfile from "../images/navbar/user-profile";
 
 export default function BottomNavBar() {
+  const router = useRouter();
   const path = usePathname();
 
   return (
@@ -26,7 +27,7 @@ export default function BottomNavBar() {
 
           cursor: "pointer",
         }}
-        onClick={() => redirect("/myact")}
+        onClick={() => router.push("/myact")}
       >
         <MyActivity focused={path.startsWith("/myact")} />
       </div>
@@ -38,7 +39,7 @@ export default function BottomNavBar() {
 
           cursor: "pointer",
         }}
-        onClick={() => redirect("/jamsession")}
+        onClick={() => router.push("/jamsession")}
       >
         <HomeButton />
       </div>
@@ -52,7 +53,7 @@ export default function BottomNavBar() {
 
           cursor: "pointer",
         }}
-        onClick={() => redirect("/mypage")}
+        onClick={() => router.push("/mypage")}
       >
         <span className="flex flex-col items-center">
           <UserProfile focused={path.startsWith("/mypage")} />
