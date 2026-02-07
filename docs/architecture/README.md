@@ -299,4 +299,5 @@ app/layout.tsx (Root: 메타데이터, Analytics)
 
 - [Context](../context/README.md) - 프로젝트 컨텍스트
 - [Patterns](../patterns/README.md) - 코드 패턴
+- [Design](../design/README.md) - 디자인 시스템 가이드
 - [Reference](../reference/README.md) - API/스키마 레퍼런스

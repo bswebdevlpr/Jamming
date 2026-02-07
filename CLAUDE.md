@@ -5,6 +5,7 @@
 ## Rules
 
 - 패키지 매니저는 반드시 **pnpm** 사용 (npm, yarn 사용 금지)
+- 프론트엔드 또는 디자인 관련 작업 시 반드시 `docs/design/README.md`를 먼저 확인하고, 정의된 컬러 팔레트·폰트·컴포넌트 스타일을 준수할 것 (프로젝트 전반의 분위기를 해치는 임의 색상·폰트 사용 금지)
 
 ## Tech Stack
 
@@ -51,4 +52,4 @@ app/
 
 ## Documentation
 
-작업 전 docs 폴더 참조: `docs/context/` → `docs/architecture/` → `docs/patterns/` 순서
+작업 전 docs 폴더 참조: `docs/context/` → `docs/architecture/` → `docs/patterns/` → `docs/design/` 순서
