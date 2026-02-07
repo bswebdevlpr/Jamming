@@ -10,14 +10,10 @@ export const SignUp_Profile_Background_Genre = ({
     <Image
       style={style}
       className="w-full h-auto"
-      src="/signup/profile/genre.svg"
+      src="/signup/profile/genre.webp"
       alt="genre"
-      width={0}
-      height={0}
-      priority={true}
-      loading="eager"
-      // width={347}
-      // height={119.871}
+      width={340}
+      height={120}
     />
   );
 };

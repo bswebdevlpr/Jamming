@@ -103,6 +103,9 @@ export default function CreateJam({
     songs = watch("songs"),
     images = watch("images"),
     openchat = watch("openchat");
+
+  const imagesRef = useRef(images);
+  imagesRef.current = images;
   //
 
   // HOOKS
@@ -138,12 +141,12 @@ export default function CreateJam({
 
     return () => {
       // 메모리 누수 방지: 생성된 Object URL 해제
-      images.forEach((img) => {
+      imagesRef.current.forEach((img) => {
         if (img.thumbnail) URL.revokeObjectURL(img.thumbnail);
       });
       reset();
     };
-  }, [pathname, searchParams, images, reset, selectedDate, setValue]);
+  }, [pathname, searchParams, reset, selectedDate, setValue]);
   //
 
   // HANDLERS
