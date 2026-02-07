@@ -3,16 +3,22 @@
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { createClient } from "@/app/util/supabase/client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useSessionStore } from "@/app/stores";
+
+const PUBLIC_PATHS = ["/jamsession/post/"];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { userProfile, setUserProfile, resetUserProfile } = useSessionStore();
   const router = useRouter();
+  const pathname = usePathname();
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const isPublicPath = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
+  const [isLoading, setIsLoading] = useState<boolean>(!isPublicPath);
 
   useEffect(() => {
+    if (isPublicPath) return;
+
     const supabase = createClient();
 
     const validateUser = async () => {

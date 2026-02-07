@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 const protectedPaths = ["/jamsession", "/mypage", "/myact", "/user-profile"];
+const publicPaths = ["/jamsession/post/"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -32,11 +33,15 @@ export async function updateSession(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser();
 
+    const pathname = request.nextUrl.pathname;
     const isProtected = protectedPaths.some((path) =>
-      request.nextUrl.pathname.startsWith(path)
+      pathname.startsWith(path)
+    );
+    const isPublicException = publicPaths.some((path) =>
+      pathname.startsWith(path)
     );
 
-    if (!user && isProtected) {
+    if (!user && isProtected && !isPublicException) {
       const url = request.nextUrl.clone();
       url.pathname = "/";
       return NextResponse.redirect(url);
