@@ -9,15 +9,11 @@ export const SignUp_Profile_Background_Level = ({
   return (
     <Image
       style={style}
-      className="w-full"
-      src="/signup/profile/band-type.svg"
+      className="w-full h-auto"
+      src="/signup/profile/band-type.webp"
       alt="band type"
-      width={0}
-      height={0}
-      priority={true}
-      loading="eager"
-      // width={347}
-      // height={123.41}
+      width={340}
+      height={124}
     />
   );
 };
