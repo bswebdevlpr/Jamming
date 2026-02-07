@@ -117,10 +117,9 @@ export default function JamSession_Post() {
       applyBtnTxt: applyBtnTxtFromFunc,
     } = await initialize(Number(jam_id as string));
     if (!foundJam) throw CustomError.InvalidJam;
-    else if (!foundUser) throw CustomError.InvalidUserSession;
 
     setJam(foundJam);
-    setUser(foundUser);
+    setUser(foundUser ?? null);
 
     if (applyBtnTxtFromFunc) setApplyBtnTxt(applyBtnTxtFromFunc);
     if (isApplyBtnActiveFromFunc !== undefined)
@@ -174,7 +173,7 @@ export default function JamSession_Post() {
             router.back();
           }}
         />
-        <Kebap
+        {user && <Kebap
           onClick={
             user.id === jam.user_id
               ? // 작성자
@@ -279,7 +278,7 @@ export default function JamSession_Post() {
                     ),
                   })
           }
-        />
+        />}
       </div>
       <div
         className="flex flex-row px-4 py-2 gap-3"
@@ -485,17 +484,19 @@ export default function JamSession_Post() {
             border: "1px solid #A3FF0C",
             background: "#304313",
           }}
-          onClick={() => setIsModalOn(!isModalOn)}
+          onClick={() => user ? setIsModalOn(!isModalOn) : router.push("/")}
           isActive={isApplyBtnActive}
         />
       </div>
-      <Modal
-        isTurnedOn={isModalOn}
-        turnOff={() => setIsModalOn(!isModalOn)}
-        user_id={user.id}
-        jam_id={jam.id}
-      />
-      {jam && (
+      {user && (
+        <Modal
+          isTurnedOn={isModalOn}
+          turnOff={() => setIsModalOn(!isModalOn)}
+          user_id={user.id}
+          jam_id={jam.id}
+        />
+      )}
+      {user && jam && (
         <UpdateJam
           isTurnedOn={isTurnedOn}
           turnOff={turnOff}

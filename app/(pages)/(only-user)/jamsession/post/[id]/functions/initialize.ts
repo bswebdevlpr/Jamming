@@ -4,7 +4,7 @@ import { CustomError } from "@/app/lib/errors/custom-error";
 import { Entity_JamSession } from "../../../../../../lib/interfaces/entity.interface";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
 import { createClient } from "@/app/util/supabase/server";
-import { getJam } from "@/app/api/functions/read";
+import { getJam, getJamPublic } from "@/app/api/functions/read";
 
 interface RetType {
   user: Entity_User;
@@ -24,13 +24,14 @@ export const initialize = async (jam_id: number) => {
   try {
     const supabase = await createClient();
 
-    const jam = await getJam(jam_id);
-    if (jam) ret.jam = jam;
-
     const {
       data: { user },
     } = await supabase.auth.getUser();
     if (user) ret.user = user as unknown as Entity_User;
+
+    // 인증 유저: getJam, 비인증: getJamPublic 폴백
+    const jam = user ? await getJam(jam_id) : await getJamPublic(jam_id);
+    if (jam) ret.jam = jam;
 
     if (jam && user) {
       const isAuthor = user.id === jam.user_id;
@@ -51,6 +52,9 @@ export const initialize = async (jam_id: number) => {
 
       ret.isApplyBtnActive =
         !isAuthor && !isUserWithdrawn && !isAlreadyRegistered;
+    } else if (jam && !user) {
+      ret.applyBtnTxt = "로그인하고 참여하기";
+      ret.isApplyBtnActive = true;
     }
   } catch (e) {
     if (process.env.NODE_ENV === "development") console.error(e);

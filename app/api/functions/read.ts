@@ -22,35 +22,10 @@ export const getUser = async (supabase: SupabaseClient): Promise<User> => {
   return user;
 };
 
-export async function getJam(id: number): Promise<Entity_JamSession> {
-  const supabase = await createClient();
-
-  // 인증 확인
-  await getUser(supabase);
-
-  const { data, error } = await supabase
-    .from("jamsession")
-    .select(
-      `
-          *,
-          user ( nickname, pos, genre, level, bpm, profile_image ),
-          jamentry ( id, jam_id, user_id, applied_pos )
-      `
-    )
-    .eq("id", id)
-    .single();
-
-  if (error) {
-    if (process.env.NODE_ENV === "development") console.error(error);
-    throw CustomError.UnExpected;
-  }
-  if (!data) {
-    throw CustomError.InvalidJam;
-  }
-
+function processJamData(data: any): Entity_JamSession {
   data.curHeadCnt = data.jamentry.length;
   data.maxHeadCnt = data.headcnt_by_pos.reduce(
-    (acc, cur) => acc + cur.headcnt,
+    (acc: number, cur: { headcnt: number }) => acc + cur.headcnt,
     0
   );
   data.appliedPosDict = data.jamentry.reduce(
@@ -68,6 +43,55 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
       {} as Record<string, number>
     )
   );
-
   return data;
+}
+
+const JAM_SELECT_QUERY = `
+  *,
+  user ( nickname, pos, genre, level, bpm, profile_image ),
+  jamentry ( id, jam_id, user_id, applied_pos )
+`;
+
+export async function getJam(id: number): Promise<Entity_JamSession> {
+  const supabase = await createClient();
+
+  // 인증 확인
+  await getUser(supabase);
+
+  const { data, error } = await supabase
+    .from("jamsession")
+    .select(JAM_SELECT_QUERY)
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    if (process.env.NODE_ENV === "development") console.error(error);
+    throw CustomError.UnExpected;
+  }
+  if (!data) {
+    throw CustomError.InvalidJam;
+  }
+
+  return processJamData(data);
+}
+
+export async function getJamPublic(id: number): Promise<Entity_JamSession | null> {
+  const supabase = await createClient();
+
+  const now = new Date().toISOString();
+  const twoWeeksLater = new Date(
+    Date.now() + 14 * 24 * 60 * 60 * 1000
+  ).toISOString();
+
+  const { data, error } = await supabase
+    .from("jamsession")
+    .select(JAM_SELECT_QUERY)
+    .eq("id", id)
+    .gte("datetime", now)
+    .lte("datetime", twoWeeksLater)
+    .single();
+
+  if (error || !data) return null;
+
+  return processJamData(data);
 }
