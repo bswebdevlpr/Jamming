@@ -438,4 +438,5 @@ return (
 
 - [Context](../context/README.md) - 프로젝트 컨텍스트
 - [Architecture](../architecture/README.md) - 시스템 구조
+- [Design](../design/README.md) - 디자인 시스템 가이드
 - [Reference](../reference/README.md) - API/스키마 레퍼런스
