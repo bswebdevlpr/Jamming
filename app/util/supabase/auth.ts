@@ -5,13 +5,13 @@ import { createClient } from "./server";
 
 const isDev = process.env.NODE_ENV === "development";
 
-export async function signInWithKakao() {
+async function signInWithOAuthProvider(provider: "kakao" | "google") {
   // AHA!
   // 재로그인의 경우 createClient()를 다시 해줘야함
   const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "kakao",
+    provider,
     options: {
       redirectTo: `${process.env.DOMAIN}/api/auth/callback`,
     },
@@ -24,19 +24,10 @@ export async function signInWithKakao() {
   }
 }
 
+export async function signInWithKakao() {
+  return signInWithOAuthProvider("kakao");
+}
+
 export async function signInWithGoogle() {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${process.env.DOMAIN}/api/auth/callback`,
-    },
-  });
-
-  if (data.url) redirect(data.url);
-  if (error) {
-    if (isDev) console.error(error);
-    redirect("/signin");
-  }
+  return signInWithOAuthProvider("google");
 }

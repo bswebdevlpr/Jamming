@@ -178,9 +178,9 @@ export default function RejamInvitationCard({
             포지션 선택
           </p>
           <div className="flex gap-1.5 flex-wrap">
-            {Object.values(PositionEnum).map((val, idx) => (
+            {Object.values(PositionEnum).map((val) => (
               <p
-                key={idx}
+                key={val}
                 className="px-2 py-1"
                 style={{
                   fontFamily: "SUIT-BODY",

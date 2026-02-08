@@ -54,7 +54,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         // 미읽음 알림 개수 로드
         getUnreadCount()
           .then((count) => setUnreadCount(count))
-          .catch(() => {});
+          .catch((e) => {
+            if (process.env.NODE_ENV === "development") {
+              console.error("Failed to load unread count:", e);
+            }
+            setUnreadCount(0);
+          });
 
         setIsLoading(false);
       } catch (e) {

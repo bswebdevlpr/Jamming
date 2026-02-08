@@ -83,7 +83,7 @@ export interface RejamNotificationData {
 export interface Entity_Notification {
   id: number;
   user_id: string;
-  type: string;
+  type: "rejam" | "invite" | "system";
   title: string;
   body?: string;
   data?: Record<string, any> | RejamNotificationData;

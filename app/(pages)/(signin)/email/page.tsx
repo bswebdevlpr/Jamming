@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/app/util/supabase/client";
+import { AuthError } from "@supabase/supabase-js";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import { getAuthRedirectPath } from "@/app/util/auth/redirect";
 
-const getErrorMessage = (error: any) => {
+const getErrorMessage = (error: AuthError) => {
   const msg = error.message.toLowerCase();
   if (msg.includes("invalid") || msg.includes("credentials")) {
     return "이메일 또는 비밀번호가 올바르지 않습니다.";
@@ -30,6 +31,20 @@ export default function EmailAuth() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+
+  // 회원가입 성공 후 3초 뒤 자동 탭 전환 (cleanup 포함)
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setMode("signin");
+        setSuccess("");
+        setEmail("");
+        setPassword("");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   const handleSubmit = async () => {
     setError("");
@@ -84,11 +99,6 @@ export default function EmailAuth() {
 
         setSuccess("확인 이메일을 보냈습니다. 이메일을 확인해주세요.");
         setIsLoading(false);
-        // 3초 후 로그인 탭으로 자동 전환
-        setTimeout(() => {
-          setMode("signin");
-          setSuccess("");
-        }, 3000);
       }
     } catch (err: unknown) {
       setError("오류가 발생했습니다. 다시 시도해주세요.");
@@ -98,6 +108,14 @@ export default function EmailAuth() {
 
   const isFormValid =
     email && password && (mode === "signin" || password.length >= 6);
+
+  const switchMode = (newMode: "signin" | "signup") => {
+    setMode(newMode);
+    setEmail("");
+    setPassword("");
+    setError("");
+    setSuccess("");
+  };
 
   return (
     <div className="flex flex-col h-full" style={{ backgroundColor: "#111113" }}>
@@ -113,7 +131,7 @@ export default function EmailAuth() {
       {/* 탭 */}
       <div className="flex px-4 mb-8">
         <button
-          onClick={() => setMode("signin")}
+          onClick={() => switchMode("signin")}
           style={{
             flex: 1,
             paddingBottom: "12px",
@@ -132,7 +150,7 @@ export default function EmailAuth() {
           로그인
         </button>
         <button
-          onClick={() => setMode("signup")}
+          onClick={() => switchMode("signup")}
           style={{
             flex: 1,
             paddingBottom: "12px",
