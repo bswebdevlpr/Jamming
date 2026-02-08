@@ -73,6 +73,7 @@
 
 | 폰트 | 굵기 | 용도 |
 |-------|------|------|
+| `SBAggroL` | Light | 대형 텍스트, 브랜딩 |
 | `SBAggroM` | Medium | 일반 UI 요소 |
 | `SBAggroB` | Bold | 강조 |
 
