@@ -84,7 +84,7 @@ export default function SignUp_Location() {
         return false;
       });
 
-    if (ret) router.push("/jamsession", { scroll: false });
+    if (ret) router.push("/", { scroll: false });
     else router.push("/signup");
   };
   //

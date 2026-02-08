@@ -24,7 +24,7 @@ export async function GET(request: Request) {
         .single()
         .then((res) => res.data);
 
-      const next = user ? "/jamsession" : "/signup";
+      const next = user ? "/" : "/signup";
 
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === "development";

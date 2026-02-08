@@ -29,7 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           } = await supabase.auth.getUser();
 
           if (!user || error) {
-            router.push("/");
+            router.push("/signin");
             return;
           }
 
@@ -42,7 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           if (!data || dbError) {
             resetUserProfile();
             await supabase.auth.signOut();
-            router.push("/");
+            router.push("/signin");
             return;
           }
 
@@ -51,7 +51,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         setIsLoading(false);
       } catch (e) {
-        router.push("/");
+        router.push("/signin");
       }
     };
     validateUser();
@@ -60,7 +60,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       (event) => {
         if (event === "SIGNED_OUT") {
           resetUserProfile();
-          router.push("/");
+          router.push("/signin");
         }
       }
     );

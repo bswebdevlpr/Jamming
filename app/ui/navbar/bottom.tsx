@@ -39,7 +39,7 @@ export default function BottomNavBar() {
 
           cursor: "pointer",
         }}
-        onClick={() => router.push("/jamsession")}
+        onClick={() => router.push("/")}
       >
         <HomeButton />
       </div>

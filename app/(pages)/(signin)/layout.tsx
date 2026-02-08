@@ -25,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         } = await supabase.auth.getUser();
 
         if (!user || error) {
-          router.push("/");
+          router.push("/signin");
           return;
         }
 
@@ -42,12 +42,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             ...data,
             isLoaded: true,
           });
-          router.push("/jamsession");
+          router.push("/");
         } else {
           router.push("/signup");
         }
       } catch (e) {
-        router.push("/");
+        router.push("/signin");
       }
     };
     validateUser();
@@ -55,7 +55,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <WorkSpace>
-      {pathname === "/" || isOAuthSignedIn ? (
+      {pathname === "/signin" || isOAuthSignedIn ? (
         children
       ) : (
         <FullScreenLoading isTurnedOn={true} />

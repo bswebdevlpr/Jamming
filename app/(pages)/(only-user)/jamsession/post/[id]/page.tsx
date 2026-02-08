@@ -221,7 +221,7 @@ export default function JamSession_Post() {
                                 bottomSheet.set({
                                   location: "hidden",
                                 });
-                                router.push("/jamsession");
+                                router.push("/");
                               });
                           }}
                         />
@@ -483,7 +483,7 @@ export default function JamSession_Post() {
             border: "1px solid #A3FF0C",
             background: "#304313",
           }}
-          onClick={() => user ? setIsModalOn(!isModalOn) : router.push("/")}
+          onClick={() => user ? setIsModalOn(!isModalOn) : router.push("/signin")}
           isActive={isApplyBtnActive}
         />
       </div>

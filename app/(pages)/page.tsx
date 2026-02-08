@@ -2,10 +2,12 @@
 
 import Filter from "@/app/ui/images/filter";
 import { Fragment, useEffect, useRef, useState } from "react";
-import BottomSheetContent from "./bottom-sheet/content";
+import BottomSheetContent from "./(only-user)/jamsession/bottom-sheet/content";
 import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
+import BottomNavBarPublic from "@/app/ui/navbar/bottom-public";
 import JamNow from "@/app/ui/buttons/jam-now";
+import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import moment from "moment";
@@ -16,8 +18,37 @@ import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 import { FeedMethods } from "@/app/ui/templates/feed";
 import { useBottomSheetStore } from "@/app/stores";
 import { useSearchParams } from "next/navigation";
+import { createClient } from "@/app/util/supabase/client";
+import { getDatesHavingJamPublic } from "@/app/ui/calendar/functions/fetch";
 
-export default function JamSession() {
+export default function Home() {
+  // AUTH STATE
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+
+    const checkAuth = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+
+    checkAuth();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setIsAuthenticated(!!session?.user);
+      }
+    );
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
+  }, []);
+  //
+
   // ZUSTAND STORE
   const bottomSheet = useBottomSheetStore();
   //
@@ -68,13 +99,15 @@ export default function JamSession() {
       setSelectedDate(moment(paramDate));
   }, [searchParams]);
 
+  if (isAuthenticated === null) {
+    return <FullScreenLoading />;
+  }
+
   return (
     <div className="h-full flex flex-col overflow-without-scroll">
       <TopNavBar
         filter={filter}
-        // setFilter={setFilter}
         setLocation={setLocation}
-        // setSelectedDate={setSelectedDate}
       />
       {/* 슬라이드 캘린더 */}
       <div className="p-5">
@@ -83,6 +116,7 @@ export default function JamSession() {
           setSelectedDate={setSelectedDate}
           resetSlideCalendarDots={resetSlideCalendarDots}
           setResetSlideCalendarDots={setResetSlideCalendarDots}
+          fetchDates={getDatesHavingJamPublic}
         />
       </div>
       <div className="grow overflow-hidden flex flex-col justify-between">
@@ -131,15 +165,18 @@ export default function JamSession() {
         <div className="grow overflow-hidden flex justify-center items-center px-5">
           <JamFeed ref={childRef} filter={filter} />
         </div>
-        <Fragment>
-          <JamNow
-            selectedDate={selectedDate}
-            setSelectedDate={setSelectedDate}
-            refetch={childRef && childRef.current && childRef.current.refetch}
-            setResetSlideCalendarDots={setResetSlideCalendarDots}
-          />
-          <BottomNavBar />
-        </Fragment>
+        {isAuthenticated === true && (
+          <Fragment>
+            <JamNow
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              refetch={childRef && childRef.current && childRef.current.refetch}
+              setResetSlideCalendarDots={setResetSlideCalendarDots}
+            />
+            <BottomNavBar />
+          </Fragment>
+        )}
+        {isAuthenticated === false && <BottomNavBarPublic />}
       </div>
     </div>
   );
