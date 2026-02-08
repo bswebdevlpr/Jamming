@@ -12,6 +12,13 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        'suit-body': ['SUIT-BODY', 'sans-serif'],
+        'suit-title': ['SUIT-TITLE', 'sans-serif'],
+        'sbaggio-m': ['SBAggroM', 'sans-serif'],
+        'sbaggio-b': ['SBAggroB', 'sans-serif'],
+        'pretendard': ['Pretendard', 'sans-serif'],
+      },
     },
   },
   plugins: [],

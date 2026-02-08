@@ -73,11 +73,15 @@
 
 | 폰트 | 굵기 | 용도 |
 |-------|------|------|
-| `SBAggroL` | Light | 대형 텍스트, 브랜딩 |
 | `SBAggroM` | Medium | 일반 UI 요소 |
 | `SBAggroB` | Bold | 강조 |
 
-공통 속성: `color: #c0c0c5`, `letter-spacing: 0`, `line-height: 140%`
+권장 스타일 (실제 사용 시 적용):
+- 텍스트 색상: `#c0c0c5`
+- Letter spacing: `0`
+- Line height: `140%`
+
+폰트 로딩 전략: 모든 폰트는 `font-display: swap`으로 설정되어 있습니다.
 
 #### 국문 폰트 (SUIT)
 
@@ -90,11 +94,15 @@
 
 #### 보조 폰트 (Pretendard)
 
-| 폰트 | 굵기 |
-|-------|------|
-| `Pretendard-400` | Regular |
-| `Pretendard-500` | Medium |
-| `Pretendard-600` | SemiBold |
+단일 font-family로 통합되어 있으며, font-weight로 굵기를 조절합니다.
+
+| font-weight | 굵기 | 용도 |
+|-------------|------|------|
+| `400` | Regular | Material UI 달력, 보조 텍스트 |
+| `500` | Medium | 일반 UI |
+| `600` | SemiBold | 강조 |
+
+**사용 예시**: `font-family: "Pretendard"; font-weight: 500;`
 
 ### 폰트 크기 가이드
 

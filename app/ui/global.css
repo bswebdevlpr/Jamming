@@ -1,81 +1,78 @@
 @import "tailwindcss";
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
 
-/* 영문 */
+/* ============================================
+   웹폰트 선언
+   ============================================ */
+
+/* 국문 폰트 - SUIT (주력 폰트) */
 @font-face {
-  font-family: "SBAggroL";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroL.woff")
-    format("woff");
-  font-weight: normal;
+  font-family: "SUIT-BODY";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
   font-style: normal;
-  color: #c0c0c5;
-  letter-spacing: 0;
-  line-height: 140%;
+  font-display: swap;
 }
 
+@font-face {
+  font-family: "SUIT-TITLE";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-SemiBold.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 영문 폰트 - SBAggro */
 @font-face {
   font-family: "SBAggroM";
   src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroM.woff")
     format("woff");
-  font-weight: normal;
+  font-weight: 500;
   font-style: normal;
-  color: #c0c0c5;
-  letter-spacing: 0;
-  line-height: 140%;
+  font-display: swap;
 }
 
 @font-face {
   font-family: "SBAggroB";
   src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff")
     format("woff");
-  font-weight: normal;
+  font-weight: 700;
   font-style: normal;
-  color: #c0c0c5;
-  letter-spacing: 0;
-  line-height: 140%;
+  font-display: swap;
 }
 
-/* 국문 */
+/* 보조 폰트 - Pretendard (Material UI 전용) */
 @font-face {
-  font-family: "SUIT-TITLE";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-SemiBold.woff2")
-    format("woff2");
-  font-weight: normal;
-  font-style: normal;
-  color: #e5e5e9;
-  letter-spacing: -2.5%;
-  line-height: 140%;
-}
-@font-face {
-  font-family: "SUIT-BODY";
-  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2")
-    format("woff2");
-  font-weight: normal;
-  font-style: normal;
-  color: #e5e5e9;
-  letter-spacing: -2.5%;
-  line-height: 150%;
-}
-
-@font-face {
-  font-family: "Pretendard-400";
+  font-family: "Pretendard";
   src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
     format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Pretendard-500";
+  font-family: "Pretendard";
   src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff")
     format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: "Pretendard-600";
+  font-family: "Pretendard";
   src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff")
     format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
 }
+
+/* ============================================
+   디자인 토큰 (CSS 변수)
+   ============================================ */
 
 :root {
   --background: #111113;
@@ -91,6 +88,10 @@
 
   --vh: 1vh;
 }
+
+/* ============================================
+   글로벌 스타일
+   ============================================ */
 
 html,
 body {
@@ -124,6 +125,10 @@ body {
   height: inherit;
 }
 
+/* ============================================
+   유틸리티 클래스
+   ============================================ */
+
 @layer components {
   .overflow-without-scroll {
     @apply overflow-auto;
@@ -135,9 +140,9 @@ body {
   }
 }
 
-/* ==============================
-   iOS Safari 자동 확대 방지
-   ============================== */
+/* ============================================
+   iOS Safari 최적화
+   ============================================ */
 
 /* 모든 텍스트 입력, textarea, select */
 input,
