@@ -36,7 +36,7 @@ export default function NotificationPage() {
   }, [resetUnread]);
 
   return (
-    <div className="grow flex flex-col overflow-without-scroll">
+    <div className="grow flex flex-col">
       {/* 헤더 */}
       <div
         className="px-5"
@@ -55,7 +55,7 @@ export default function NotificationPage() {
       </div>
 
       {/* 알림 목록 */}
-      <div className="grow overflow-auto">
+      <div className="grow overflow-without-scroll">
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
             <p

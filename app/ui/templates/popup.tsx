@@ -32,28 +32,21 @@ export default function PopupTemplate({
       ref={ref}
       className={`hidden fixed z-10 ${className}`}
       style={{
-        width: '100vw',
+        ...style,
+
+        width: 'min(var(--max-width), 100vw)',
         height: 'calc(var(--vh, 1vh) * 100)',
 
         top: 0,
-        left: 0,
+        left: '50%',
+        transform: 'translateX(-50%)',
 
         overflow: "auto",
 
-        backgroundColor: "var(--background)",
-
-        ...style,
+        backgroundColor: style?.backgroundColor || "var(--background)",
       }}
     >
-      <div
-        style={{
-          maxWidth: 'var(--max-width)',
-          width: '100%',
-          margin: '0 auto',
-        }}
-      >
-        {children}
-      </div>
+      {children}
     </div>
   );
 }

@@ -7,29 +7,27 @@ export default function FullScreenLoading({
   isTurnedOn?: boolean;
 }) {
   return (
-    <div className="w-full h-full relative">
-      <PopupTemplate
-        isTurnedOn={isTurnedOn}
-        className="h-full flex justify-center items-center"
-      >
-        <style jsx>{`
-          @keyframes infinite_rotate {
-            100% {
-              transform: rotate(360deg);
-            }
+    <PopupTemplate
+      isTurnedOn={isTurnedOn}
+      className="h-full flex justify-center items-center"
+    >
+      <style jsx>{`
+        @keyframes infinite_rotate {
+          100% {
+            transform: rotate(360deg);
           }
-        `}</style>
-        <Image
-          src="/logo.svg"
-          alt="Logo"
-          width={149}
-          height={138}
-          style={{
-            animation: "infinite_rotate 3s linear infinite",
-            transformOrigin: "50% 50%",
-          }}
-        />
-      </PopupTemplate>
-    </div>
+        }
+      `}</style>
+      <Image
+        src="/logo.svg"
+        alt="Logo"
+        width={149}
+        height={138}
+        style={{
+          animation: "infinite_rotate 3s linear infinite",
+          transformOrigin: "50% 50%",
+        }}
+      />
+    </PopupTemplate>
   );
 }

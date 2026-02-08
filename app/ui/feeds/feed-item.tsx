@@ -78,7 +78,7 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = memo(function FeedItem_
         background: "rgba(163, 255, 12, 0.12)",
       }}
     >
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5" style={{ minWidth: 0, flex: 1 }}>
         <div className="flex gap-1">
           <p
             style={{
@@ -87,6 +87,9 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = memo(function FeedItem_
               fontStyle: "normal",
               lineHeight: "140%",
               letterSpacing: "-0.384px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             {title}

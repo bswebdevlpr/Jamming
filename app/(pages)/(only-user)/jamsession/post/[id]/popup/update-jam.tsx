@@ -125,6 +125,22 @@ export default function UpdateJam({
   }, []);
 
   useEffect(() => {
+    if (!isTurnedOn) return;
+
+    const updateDimensions = () => {
+      setWidth(document.body.offsetWidth);
+      setHeight(document.body.offsetHeight);
+    };
+
+    updateDimensions();
+    window.addEventListener("resize", updateDimensions);
+
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+    };
+  }, [isTurnedOn]);
+
+  useEffect(() => {
     if (ref.current) {
       ref.current.style.display = isTurnedOn ? "flex" : "none";
     }
