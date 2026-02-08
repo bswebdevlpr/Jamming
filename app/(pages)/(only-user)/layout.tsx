@@ -5,8 +5,7 @@ import { createClient } from "@/app/util/supabase/client";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useSessionStore } from "@/app/stores";
-
-const PUBLIC_PATHS = ["/jamsession/post/"];
+import { PUBLIC_PATHS } from "@/app/lib/constants/paths";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { userProfile, setUserProfile, resetUserProfile } = useSessionStore();

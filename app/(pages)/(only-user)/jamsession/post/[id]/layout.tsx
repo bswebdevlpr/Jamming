@@ -2,7 +2,9 @@ import { Metadata } from "next";
 import { getJamPublic } from "@/app/api/functions/read";
 import { MapDataToGenre, MapDataToLocation } from "@/app/lib/maps/jam";
 import WorkSpace from "@/app/ui/layouts/workspace";
-import { ReactNode } from "react";
+import { cache, ReactNode } from "react";
+
+const getJamPublicCached = cache((id: number) => getJamPublic(id));
 
 export async function generateMetadata({
   params,
@@ -12,7 +14,7 @@ export async function generateMetadata({
   const { id } = await params;
 
   try {
-    const jam = await getJamPublic(Number(id));
+    const jam = await getJamPublicCached(Number(id));
     if (!jam) return {};
 
     const title = jam.title || "잼세션";
@@ -52,7 +54,7 @@ export default async function Layout({
   let jsonLd = null;
 
   try {
-    const jam = await getJamPublic(Number(id));
+    const jam = await getJamPublicCached(Number(id));
     if (jam) {
       const location = jam.location ? MapDataToLocation[jam.location] : "";
       const genre = jam.genre ? MapDataToGenre[jam.genre] : "";
