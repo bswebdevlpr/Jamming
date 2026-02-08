@@ -11,6 +11,9 @@ import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
+import { Entity_JamEntry } from "@/app/lib/interfaces/entity.interface";
+import { getRejamInvitations } from "./functions/fetch";
+import RejamInvitationCard from "./components/rejam-invitation";
 
 export default function MyAct() {
   const searchParams = useSearchParams();
@@ -45,6 +48,10 @@ export default function MyAct() {
     level,
     includeWithDrawn: true,
   });
+
+  const [rejamInvitations, setRejamInvitations] = useState<Entity_JamEntry[]>(
+    []
+  );
   //
 
   // HOOKS
@@ -69,7 +76,22 @@ export default function MyAct() {
     )
       setSelectedDate(moment(paramDate));
   }, [searchParams]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const invitations = await getRejamInvitations();
+        setRejamInvitations(invitations);
+      } catch (e) {
+        if (process.env.NODE_ENV === "development") console.error(e);
+      }
+    })();
+  }, []);
   //
+
+  const handleRemoveInvitation = (entryId: number) => {
+    setRejamInvitations((prev) => prev.filter((inv) => inv.id !== entryId));
+  };
 
   return (
     <div className="grow flex flex-col overflow-without-scroll">
@@ -85,6 +107,28 @@ export default function MyAct() {
           setSelectedDate={setSelectedDate}
         />
       </div>
+      {/* 리잼 초대 */}
+      {rejamInvitations.length > 0 && (
+        <div className="px-5 pb-4">
+          <p
+            className="mb-3"
+            style={{
+              fontFamily: "SBAggroB",
+              fontSize: "0.875rem",
+              color: "#A3FF0C",
+            }}
+          >
+            REJAM Invitations
+          </p>
+          {rejamInvitations.map((entry) => (
+            <RejamInvitationCard
+              key={entry.id}
+              entry={entry}
+              onRemove={handleRemoveInvitation}
+            />
+          ))}
+        </div>
+      )}
       {/* 잼세션 피드 */}
       <div className="flex flex-row justify-between px-5 pb-4">
         <p

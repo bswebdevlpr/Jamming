@@ -20,6 +20,7 @@ export interface CreateJamEntryDto {
   jam_id: number | string;
   appeal: string;
   applied_pos: string;
+  is_rejam?: boolean;
 }
 
 export interface CreatePlaylistItemDto {

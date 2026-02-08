@@ -1,0 +1,4 @@
+export const REJAM_CONSTANTS = {
+  MAX_APPEAL_LENGTH: 50,
+  SCHEDULE_WINDOW_WEEKS: 2,
+} as const;

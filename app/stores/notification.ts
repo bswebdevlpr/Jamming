@@ -1,0 +1,26 @@
+"use client";
+
+import { create } from "zustand";
+
+interface NotificationState {
+  unreadCount: number;
+}
+
+interface NotificationActions {
+  setUnreadCount: (count: number) => void;
+  decrementUnread: () => void;
+  resetUnread: () => void;
+}
+
+export const useNotificationStore = create<
+  NotificationState & NotificationActions
+>((set) => ({
+  unreadCount: 0,
+
+  setUnreadCount: (count) => set({ unreadCount: count }),
+  decrementUnread: () =>
+    set((state) => ({
+      unreadCount: Math.max(0, state.unreadCount - 1),
+    })),
+  resetUnread: () => set({ unreadCount: 0 }),
+}));
