@@ -108,9 +108,12 @@ export const ApplierComponent = (
             border: "1px solid #444447",
           }}
           onClick={async () => {
-            await refuseEntry(entry.id).then(() => {
+            const result = await refuseEntry(entry.id);
+            if (result.success === true) {
               refuseEntryState();
-            });
+            } else if (result.success === false) {
+              alert(result.error.message);
+            }
           }}
         />
         <ButtonTemplate
@@ -125,9 +128,12 @@ export const ApplierComponent = (
             background: "rgba(163, 255, 12, 0.12)",
           }}
           onClick={async () => {
-            await allowEntry(entry.id).then(() => {
+            const result = await allowEntry(entry.id);
+            if (result.success === true) {
               allowEntryState();
-            });
+            } else if (result.success === false) {
+              alert(result.error.message);
+            }
           }}
         />
       </div>

@@ -88,9 +88,13 @@ export default function Popup({
             color: "#FFF",
           }}
           onClick={() =>
-            uploadPlaylistItem(videoPath).then(() => {
-              setIsRefetch(true);
-              turnOff();
+            uploadPlaylistItem(videoPath).then((result) => {
+              if (result.success === true) {
+                setIsRefetch(true);
+                turnOff();
+              } else if (result.success === false) {
+                alert(result.error.message);
+              }
             })
           }
         />

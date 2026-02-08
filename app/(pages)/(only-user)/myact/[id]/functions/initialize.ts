@@ -1,12 +1,15 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
 import {
   Entity_JamEntry,
   Entity_JamSession,
   Entity_User,
 } from "@/app/lib/interfaces/entity.interface";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
+
 interface RetType {
   jam: Entity_JamSession;
   leader: Entity_User;
@@ -14,15 +17,17 @@ interface RetType {
   applierEntries: Entity_JamEntry[];
 }
 
-export const initialize = async (jam_id: number) => {
-  let ret: RetType = {
-    jam: null,
-    leader: null,
-    memberEntries: [],
-    applierEntries: [],
-  };
+export const initialize = async (
+  jam_id: number
+): Promise<ActionResult<RetType>> => {
+  return safeAction("myactDetail.initialize", async () => {
+    const ret: RetType = {
+      jam: null,
+      leader: null,
+      memberEntries: [],
+      applierEntries: [],
+    };
 
-  try {
     const supabase = await createClient();
 
     const { data: jam, error: err1 } = await supabase
@@ -38,9 +43,13 @@ export const initialize = async (jam_id: number) => {
       )
       .eq("id", jam_id)
       .single();
+
     if (err1) {
-      console.error(err1);
-      throw CustomError.UnExpected;
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        err1,
+        "myactDetail.initialize.getJam"
+      );
     }
 
     ret.jam = jam;
@@ -51,20 +60,20 @@ export const initialize = async (jam_id: number) => {
       data: { user },
       error: err2,
     } = await supabase.auth.getUser();
+
     if (err2) {
-      console.error(err2);
-      throw CustomError.UnExpected;
+      throw CustomError.fromAuthError(
+        ErrorCode.INVALID_SESSION,
+        err2,
+        "myactDetail.initialize.getUser"
+      );
     }
 
     if ((jam.leader as any)?.id === user.id)
       ret.applierEntries = jam.jamentry.filter(
         (je) => je.is_allowed === null && !je.is_rejam
       );
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
 
-  return ret;
+    return ret;
+  });
 };

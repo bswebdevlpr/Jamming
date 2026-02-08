@@ -210,27 +210,25 @@ export default function UpdateJam({
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    await updateJam(jamId, data, {
-      preservedImages: existingImages,
-    })
-      .then((res) => {
-        setValue("images", [], { shouldValidate: false });
-
-        if (res) {
-          setExistingImages(res.images ?? []);
-          refetch();
-          setResetSlideCalendarDots?.(true);
-          turnOff();
-        } else {
-          alert("잼세션 수정에 실패했습니다. 다시 시도해주세요.");
-        }
-      })
-      .catch(() => {
-        alert("잼세션 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
-      })
-      .finally(() => {
-        setIsSubmitting(false);
+    try {
+      const result = await updateJam(jamId, data, {
+        preservedImages: existingImages,
       });
+      setValue("images", [], { shouldValidate: false });
+
+      if (result.success === true && result.data) {
+        setExistingImages(result.data.images ?? []);
+        refetch();
+        setResetSlideCalendarDots?.(true);
+        turnOff();
+      } else if (result.success === false) {
+        alert(result.error.message);
+      }
+    } catch {
+      alert("잼세션 수정 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB

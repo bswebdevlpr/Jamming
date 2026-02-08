@@ -1,32 +1,32 @@
 "use server";
 
 import { getUser } from "@/app/api/functions/read";
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 
-export const updateNotiAccept = async (value: boolean) => {
-  let ret = null;
-
-  try {
+export const updateNotiAccept = async (
+  value: boolean
+): Promise<ActionResult<boolean>> => {
+  return safeAction("updateNotiAccept", async () => {
     const supabase = await createClient();
-
     const user = await getUser(supabase);
 
     const { error } = await supabase
       .from("user")
-      .update({
-        allow_noti: value,
-      })
+      .update({ allow_noti: value })
       .eq("id", user.id)
       .single();
-    if (error) throw CustomError.UnExpected;
 
-    ret = true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "updateNotiAccept"
+      );
+    }
 
-  return ret;
+    return true;
+  });
 };

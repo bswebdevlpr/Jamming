@@ -1,6 +1,8 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 import { sanitize } from "@/app/lib/functions/validate";
 import { createNotification } from "@/app/api/functions/notification";
@@ -8,12 +10,11 @@ import moment from "moment";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { REJAM_CONSTANTS } from "@/app/lib/constants/rejam";
 
-export const allowEntry = async (entryId: number) => {
-  let ret: boolean = false;
-
-  try {
+export const allowEntry = async (
+  entryId: number
+): Promise<ActionResult<boolean>> => {
+  return safeAction("allowEntry", async () => {
     const supabase = await createClient();
-
     await validateAuth(supabase, "entry", entryId);
 
     const { error } = await supabase
@@ -21,61 +22,66 @@ export const allowEntry = async (entryId: number) => {
       .update({ is_allowed: true })
       .eq("id", entryId)
       .select();
-    if (error) throw CustomError.UnExpected;
-    else ret = true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
 
-  return ret;
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "allowEntry"
+      );
+    }
+
+    return true;
+  });
 };
 
-export const refuseEntry = async (entryId: number) => {
-  let ret: boolean = false;
-
-  try {
+export const refuseEntry = async (
+  entryId: number
+): Promise<ActionResult<boolean>> => {
+  return safeAction("refuseEntry", async () => {
     const supabase = await createClient();
-
     await validateAuth(supabase, "entry", entryId);
 
     const { error } = await supabase
       .from("jamentry")
       .update({ is_allowed: false })
       .eq("id", entryId);
-    if (error) throw CustomError.UnExpected;
-    else ret = true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
 
-  return ret;
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "refuseEntry"
+      );
+    }
+
+    return true;
+  });
 };
 
-export const setNoShow = async (entryId: number, noshow: boolean) => {
-  let ret: boolean = false;
-
-  try {
+export const setNoShow = async (
+  entryId: number,
+  noshow: boolean
+): Promise<ActionResult<boolean>> => {
+  return safeAction("setNoShow", async () => {
     const supabase = await createClient();
-
     await validateAuth(supabase, "entry", entryId);
 
     const { error } = await supabase
       .from("jamentry")
       .update({ noshow })
       .eq("id", entryId);
-    if (error) throw CustomError.UnExpected;
-    else ret = true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
 
-  return ret;
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "setNoShow"
+      );
+    }
+
+    return true;
+  });
 };
 
 const validateAuth = async (
@@ -83,55 +89,64 @@ const validateAuth = async (
   type: "jam" | "entry",
   targetId: number
 ) => {
-  try {
-    const user = await getUser(supabase);
+  const user = await getUser(supabase);
 
-    if (type === "jam") {
-      const { data, error } = await supabase
-        .from("jamsession")
-        .select()
-        .eq("id", targetId)
-        .eq("user_id", user.id)
-        .single();
-      if (error) throw CustomError.UnExpected;
-      else if (!data) throw CustomError.Forbidden;
-    } else if (type === "entry") {
-      const { data, error } = await supabase.rpc("validate-user-jamentry", {
-        entry_id: targetId,
-        user_id: user.id,
-      });
-      if (error) throw CustomError.UnExpected;
-      else if (!data) throw CustomError.Forbidden;
+  if (type === "jam") {
+    const { data, error } = await supabase
+      .from("jamsession")
+      .select()
+      .eq("id", targetId)
+      .eq("user_id", user.id)
+      .single();
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "validateAuth.jam"
+      );
     }
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
+    if (!data) {
+      throw CustomError.forbidden({ operation: "validateAuth.jam" });
+    }
+  } else if (type === "entry") {
+    const { data, error } = await supabase.rpc("validate-user-jamentry", {
+      entry_id: targetId,
+      user_id: user.id,
+    });
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "validateAuth.entry"
+      );
+    }
+    if (!data) {
+      throw CustomError.forbidden({ operation: "validateAuth.entry" });
+    }
   }
 };
 
-export const getJamSchedule = async (targetUserId: string) => {
-  let ret = [];
-
-  try {
+export const getJamSchedule = async (
+  targetUserId: string
+): Promise<ActionResult<any[]>> => {
+  return safeAction("getJamSchedule", async () => {
     const supabase = await createClient();
-
     const user = await getUser(supabase);
 
     const now = moment();
-    ret = await supabase
+    const result = await supabase
       .from("jamentry")
       .select(
         `
           *,
           jamsession (
-            id, 
+            id,
             title,
-            location, 
-            genre, 
-            pos, 
-            level, 
-            datetime, 
+            location,
+            genre,
+            pos,
+            level,
+            datetime,
             headcnt_by_pos,
             user ( id ),
             jamentry ( id )
@@ -142,12 +157,25 @@ export const getJamSchedule = async (targetUserId: string) => {
       .neq("jamsession.user.id", targetUserId)
       .eq("is_allowed", true)
       .gt("jamsession.datetime", now.toISOString())
-      .lte("jamsession.datetime", now.clone().add(REJAM_CONSTANTS.SCHEDULE_WINDOW_WEEKS, "week").toISOString())
+      .lte(
+        "jamsession.datetime",
+        now
+          .clone()
+          .add(REJAM_CONSTANTS.SCHEDULE_WINDOW_WEEKS, "week")
+          .toISOString()
+      )
       .then(({ data, error }) => {
-        if (error) throw CustomError.UnExpected;
+        if (error) {
+          throw CustomError.fromSupabaseError(
+            ErrorCode.UNEXPECTED,
+            error,
+            "getJamSchedule"
+          );
+        }
 
+        let filtered = data;
         if (data.length > 0) {
-          data = data
+          filtered = data
             .filter((row) => row.jamsession)
             .map((row) => row.jamsession)
             .map((row) => {
@@ -156,25 +184,19 @@ export const getJamSchedule = async (targetUserId: string) => {
             });
         }
 
-        return data;
+        return filtered;
       });
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
 
-  return ret;
+    return result;
+  });
 };
 
 export const sendRejam = async (
   targetUserId: string,
   jamIds: number[],
   appeal: string
-) => {
-  let ret: boolean = false;
-
-  try {
+): Promise<ActionResult<boolean>> => {
+  return safeAction("sendRejam", async () => {
     const supabase = await createClient();
     const user = await getUser(supabase);
 
@@ -192,14 +214,20 @@ export const sendRejam = async (
       .eq("user_id", targetUserId)
       .eq("is_rejam", true)
       .in("jam_id", jamIds);
-    if (checkErr) throw CustomError.UnExpected;
+
+    if (checkErr) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        checkErr,
+        "sendRejam.checkDuplicate"
+      );
+    }
 
     const existingJamIds = new Set(existing?.map((e) => e.jam_id) ?? []);
     const newJamIds = jamIds.filter((id) => !existingJamIds.has(id));
 
     if (newJamIds.length === 0) {
-      ret = true;
-      return ret;
+      return true;
     }
 
     // 벌크 insert
@@ -215,7 +243,14 @@ export const sendRejam = async (
     const { error: insertErr } = await supabase
       .from("jamentry")
       .insert(entries);
-    if (insertErr) throw CustomError.UnExpected;
+
+    if (insertErr) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        insertErr,
+        "sendRejam.insert"
+      );
+    }
 
     // 잼 세션 제목 조회 (알림용)
     const { data: jamData } = await supabase
@@ -244,32 +279,26 @@ export const sendRejam = async (
       }
     );
 
-    ret = true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
-
-  return ret;
+    return true;
+  });
 };
 
 const getUser = async (supabase: SupabaseClient) => {
-  let ret = null;
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  try {
-    const {
-      data: { user },
+  if (error) {
+    throw CustomError.fromAuthError(
+      ErrorCode.INVALID_SESSION,
       error,
-    } = await supabase.auth.getUser();
-    if (error) throw CustomError.UnExpected;
-    else if (!user) throw CustomError.InvalidUserSession;
-    else ret = user;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
+      "myact.getUser"
+    );
+  }
+  if (!user) {
+    throw CustomError.invalidSession({ operation: "myact.getUser" });
   }
 
-  return ret;
+  return user;
 };

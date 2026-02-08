@@ -170,24 +170,22 @@ export default function CreateJam({
     if (isSubmitting) return;
     setIsSubmitting(true);
 
-    await createJam(data)
-      .then((res) => {
-        setValue("images", [], { shouldValidate: false });
+    try {
+      const result = await createJam(data);
+      setValue("images", [], { shouldValidate: false });
 
-        if (res) {
-          refetch();
-          setResetSlideCalendarDots(true);
-          turnOff();
-        } else {
-          alert("잼세션 생성에 실패했습니다. 다시 시도해주세요.");
-        }
-      })
-      .catch(() => {
-        alert("잼세션 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+      if (result.success === true && result.data) {
+        refetch();
+        setResetSlideCalendarDots(true);
+        turnOff();
+      } else if (result.success === false) {
+        alert(result.error.message);
+      }
+    } catch {
+      alert("잼세션 생성 중 오류가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB

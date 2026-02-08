@@ -33,7 +33,13 @@ export default function MyPage() {
 
   useEffect(() => {
     (async () => {
-      const foundTargetUser = await getUserByNickname(nickname as string);
+      const result = await getUserByNickname(nickname as string);
+      if (result.success === false) {
+        if (process.env.NODE_ENV === "development") console.error(result.error.message);
+        return;
+      }
+
+      const foundTargetUser = result.data;
       setTargetUser(foundTargetUser);
 
       // TODO: 만약 유저 프로필 이미지가 있다면 하단 로직 생략

@@ -52,17 +52,20 @@ export default function Playlist() {
   useEffect(() => {
     if (isRefetch)
       (async () => {
-        const foundUser = await initialize();
+        const result = await initialize();
+        if (result.success) {
+          const foundUser = result.data;
 
-        // GlobalContext 갱신
-        setUserProfile({ playlist: foundUser.playlist });
+          // GlobalContext 갱신
+          setUserProfile({ playlist: foundUser.playlist });
 
-        setPublicPlaylistToShow(
-          foundUser.playlist.filter((row) => row.is_public)
-        );
-        setPrivatePlistToShow(
-          foundUser.playlist.filter((row) => !row.is_public)
-        );
+          setPublicPlaylistToShow(
+            foundUser.playlist.filter((row) => row.is_public)
+          );
+          setPrivatePlistToShow(
+            foundUser.playlist.filter((row) => !row.is_public)
+          );
+        }
 
         setIsRefetch(false);
       })();
@@ -85,9 +88,13 @@ export default function Playlist() {
             }}
             onClick={() => {
               updatePlaylistItem(playlistItemId, isPublic ? false : true).then(
-                () => {
-                  bottomSheet.set({ location: "hidden" });
-                  setIsRefetch(true);
+                (result) => {
+                  if (result.success === true) {
+                    bottomSheet.set({ location: "hidden" });
+                    setIsRefetch(true);
+                  } else if (result.success === false) {
+                    alert(result.error.message);
+                  }
                 }
               );
             }}
@@ -102,9 +109,13 @@ export default function Playlist() {
               color: "#FF380C",
             }}
             onClick={() => {
-              deletePlaylistItem(playlistItemId).then(() => {
-                bottomSheet.set({ location: "hidden" });
-                setIsRefetch(true);
+              deletePlaylistItem(playlistItemId).then((result) => {
+                if (result.success === true) {
+                  bottomSheet.set({ location: "hidden" });
+                  setIsRefetch(true);
+                } else if (result.success === false) {
+                  alert(result.error.message);
+                }
               });
             }}
           >
