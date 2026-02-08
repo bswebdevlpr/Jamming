@@ -28,7 +28,7 @@ export const deleteJamSession = async (
       );
     }
 
-    if (data[0].images.length > 0)
+    if (data && data.length > 0 && data[0].images?.length > 0)
       await supabase.storage
         .from(process.env.SUPABASE_STORAGE_NAME)
         .remove(data[0].images);

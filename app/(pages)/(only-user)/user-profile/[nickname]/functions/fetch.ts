@@ -12,7 +12,7 @@ export const getUserByNickname = async (
   return safeAction("getUserByNickname", async () => {
     const supabase = await createClient();
 
-    getUser(supabase);
+    await getUser(supabase);
 
     const { data, error } = await supabase
       .from("user")
