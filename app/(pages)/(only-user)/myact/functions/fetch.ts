@@ -4,6 +4,23 @@ import { CustomError } from "@/app/lib/errors/custom-error";
 import { Entity_JamEntry } from "@/app/lib/interfaces/entity.interface";
 import { createClient } from "@/app/util/supabase/server";
 import moment from "moment";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+const validateUserEntry = async (
+  supabase: SupabaseClient,
+  entryId: number,
+  userId: string
+) => {
+  const { data: entry, error } = await supabase
+    .from("jamentry")
+    .select("id, user_id")
+    .eq("id", entryId)
+    .eq("user_id", userId)
+    .single();
+
+  if (error || !entry) throw CustomError.Forbidden;
+  return entry;
+};
 
 export const getRejamInvitations = async (): Promise<Entity_JamEntry[]> => {
   try {
@@ -65,13 +82,7 @@ export const acceptRejam = async (
     if (authErr || !user) throw CustomError.InvalidUserSession;
 
     // 본인의 엔트리인지 확인
-    const { data: entry, error: entryErr } = await supabase
-      .from("jamentry")
-      .select("id, user_id")
-      .eq("id", entryId)
-      .eq("user_id", user.id)
-      .single();
-    if (entryErr || !entry) throw CustomError.Forbidden;
+    await validateUserEntry(supabase, entryId, user.id);
 
     const { error } = await supabase
       .from("jamentry")
@@ -98,13 +109,7 @@ export const rejectRejam = async (entryId: number): Promise<boolean> => {
     if (authErr || !user) throw CustomError.InvalidUserSession;
 
     // 본인의 엔트리인지 확인
-    const { data: entry, error: entryErr } = await supabase
-      .from("jamentry")
-      .select("id, user_id")
-      .eq("id", entryId)
-      .eq("user_id", user.id)
-      .single();
-    if (entryErr || !entry) throw CustomError.Forbidden;
+    await validateUserEntry(supabase, entryId, user.id);
 
     const { error } = await supabase
       .from("jamentry")

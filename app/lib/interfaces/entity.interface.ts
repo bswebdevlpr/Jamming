@@ -74,13 +74,19 @@ export interface Entity_Playlist {
   origin: string;
 }
 
+export interface RejamNotificationData {
+  jam_ids: number[];
+  sender_id: string;
+  sender_nickname: string;
+}
+
 export interface Entity_Notification {
   id: number;
   user_id: string;
   type: string;
   title: string;
   body?: string;
-  data?: Record<string, any>;
+  data?: Record<string, any> | RejamNotificationData;
   is_read: boolean;
   created_at: string;
 }

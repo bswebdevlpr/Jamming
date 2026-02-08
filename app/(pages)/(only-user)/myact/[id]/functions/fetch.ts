@@ -5,6 +5,8 @@ import { createClient } from "@/app/util/supabase/server";
 import { sanitize } from "@/app/lib/functions/validate";
 import { createNotification } from "@/app/api/functions/notification";
 import moment from "moment";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { REJAM_CONSTANTS } from "@/app/lib/constants/rejam";
 
 export const allowEntry = async (entryId: number) => {
   let ret: boolean = false;
@@ -77,7 +79,7 @@ export const setNoShow = async (entryId: number, noshow: boolean) => {
 };
 
 const validateAuth = async (
-  supabase,
+  supabase: SupabaseClient,
   type: "jam" | "entry",
   targetId: number
 ) => {
@@ -140,7 +142,7 @@ export const getJamSchedule = async (targetUserId: string) => {
       .neq("jamsession.user.id", targetUserId)
       .eq("is_allowed", true)
       .gt("jamsession.datetime", now.toISOString())
-      .lte("jamsession.datetime", now.clone().add(2, "week").toISOString())
+      .lte("jamsession.datetime", now.clone().add(REJAM_CONSTANTS.SCHEDULE_WINDOW_WEEKS, "week").toISOString())
       .then(({ data, error }) => {
         if (error) throw CustomError.UnExpected;
 
@@ -252,7 +254,7 @@ export const sendRejam = async (
   return ret;
 };
 
-const getUser = async (supabase) => {
+const getUser = async (supabase: SupabaseClient) => {
   let ret = null;
 
   try {
