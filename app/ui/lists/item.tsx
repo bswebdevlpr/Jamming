@@ -138,6 +138,9 @@ const VerticalListItem = ({
           fontFamily: "SUIT-BODY",
           fontSize: "0.875rem",
           color: "#FFF",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
         }}
         onClick={() => {
           setIsFocused();

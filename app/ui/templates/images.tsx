@@ -16,7 +16,7 @@ const ImageWithTxt = ({
   return (
     <span
       className={`flex flex-row items-center gap-0.5 ${className}`}
-      style={style}
+      style={{ minWidth: 0, ...style }}
       onClick={onClick}
     >
       {image}

@@ -59,7 +59,12 @@ const GridItem = ({
   return (
     <div
       className="flex justify-center items-center"
-      style={innerStyle}
+      style={{
+        ...innerStyle,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+      }}
       onClick={() => onClick(idx, text)}
     >
       {text}

@@ -26,13 +26,16 @@ const FlexRow = ({
         lineHeight: "132%",
       }}
     >
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2" style={{ minWidth: 0, flex: 1 }}>
         <div className="flex gap-2">
           <p
             style={{
               color: "#FFF",
               fontSize: "0.875rem",
               letterSpacing: "-0.336px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             {dto.name}
@@ -42,6 +45,7 @@ const FlexRow = ({
               color: "#979798",
               fontSize: "0.75rem",
               letterSpacing: "-0.288px",
+              flexShrink: 0,
             }}
           >
             {dto.category}
@@ -52,6 +56,9 @@ const FlexRow = ({
             color: "#979798",
             fontSize: "0.75rem",
             letterSpacing: "-0.288px",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
           {dto.address}

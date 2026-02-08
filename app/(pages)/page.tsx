@@ -104,7 +104,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-full flex flex-col overflow-without-scroll">
+    <div className="h-full flex flex-col overflow-without-scroll relative">
       <TopNavBar
         filter={filter}
         setLocation={setLocation}

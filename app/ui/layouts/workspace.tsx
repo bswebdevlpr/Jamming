@@ -10,7 +10,7 @@ export default function WorkSpace({
   return (
     <div
       className="w-full h-full flex flex-col justify-between relative overflow-without-scroll"
-      style={style}
+      style={{ ...style, overflowX: "hidden" }}
     >
       {children}
     </div>
