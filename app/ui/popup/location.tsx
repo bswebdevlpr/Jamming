@@ -7,7 +7,7 @@ import {
 import X from "@/app/ui/images/common/x";
 import { ListItemProp } from "@/app/ui/lists/item";
 import VerticalList from "@/app/ui/lists/list";
-import { useEffect, useRef, useState } from "react";
+import PopupTemplate from "@/app/ui/templates/popup";
 
 const locations: ListItemProp[] = Object.keys(LocationEnum).map((key) => {
   const typeForcedKey: keyof typeof LocationEnum =
@@ -24,46 +24,16 @@ const locations: ListItemProp[] = Object.keys(LocationEnum).map((key) => {
 });
 
 export default function LocationPopup({
-  turnOn,
+  isTurnedOn,
   turnOff,
   setLocation,
 }: {
-  turnOn: boolean;
+  isTurnedOn: boolean;
   turnOff: () => void;
   setLocation: (location: LocationEnum) => void;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
-
-  useEffect(() => {
-    setWidth(document.body.offsetWidth);
-    setHeight(document.body.offsetHeight);
-  }, []);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.style.display = turnOn ? "flex" : "none";
-    }
-  }, [turnOn]);
-
   return (
-    <div
-      ref={ref}
-      className="hidden absolute z-10 flex flex-col"
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
-
-        top: 0,
-        left: 0,
-
-        overflow: "auto",
-
-        backgroundColor: "var(--background)",
-      }}
-    >
+    <PopupTemplate isTurnedOn={isTurnedOn} className="flex flex-col">
       <div
         className="flex flex-row justify-between w-full px-5 py-3 mb-3"
         style={{
@@ -90,6 +60,6 @@ export default function LocationPopup({
           return prop;
         })}
       />
-    </div>
+    </PopupTemplate>
   );
 }

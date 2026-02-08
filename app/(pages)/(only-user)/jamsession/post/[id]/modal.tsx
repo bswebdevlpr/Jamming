@@ -35,9 +35,11 @@ export default function Modal({
   return (
     <div
       ref={ref}
-      className="absolute w-full h-full flex justify-center items-center px-8 hidden"
+      className="fixed w-screen h-screen flex justify-center items-center px-8 hidden"
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
+        top: 0,
+        left: 0,
       }}
     >
       <div
