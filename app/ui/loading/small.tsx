@@ -4,8 +4,6 @@ import Image from "next/image";
 export default function SmallLoading({ isTurnedOn }: { isTurnedOn: boolean }) {
   return (
     <PopupTemplate
-      width={50}
-      height={50}
       isTurnedOn={isTurnedOn}
       className="flex justify-center items-center"
     >

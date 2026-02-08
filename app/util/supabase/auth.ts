@@ -23,3 +23,20 @@ export async function signInWithKakao() {
     redirect("/signin");
   }
 }
+
+export async function signInWithGoogle() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: `${process.env.DOMAIN}/api/auth/callback`,
+    },
+  });
+
+  if (data.url) redirect(data.url);
+  if (error) {
+    if (isDev) console.error(error);
+    redirect("/signin");
+  }
+}

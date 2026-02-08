@@ -1,0 +1,247 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/app/util/supabase/client";
+import ButtonTemplate from "@/app/ui/templates/buttons";
+import { LeftArrowWhite } from "@/app/ui/images/arrows";
+
+export default function EmailAuth() {
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleSubmit = async () => {
+    setError("");
+    setSuccess("");
+    setIsLoading(true);
+
+    // 유효성 검사
+    if (!email || !password) {
+      setError("이메일과 비밀번호를 입력해주세요.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (mode === "signup" && password.length < 6) {
+      setError("비밀번호는 최소 6자 이상이어야 합니다.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      if (mode === "signin") {
+        // 로그인
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) {
+          setError(error.message);
+          setIsLoading(false);
+          return;
+        }
+
+        // 프로필 존재 확인
+        const { data: profile } = await supabase
+          .from("user")
+          .select()
+          .eq("id", data.user.id)
+          .single();
+
+        router.push(profile ? "/" : "/signup");
+      } else {
+        // 회원가입
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${process.env.NEXT_PUBLIC_DOMAIN || window.location.origin}/api/auth/callback`,
+          },
+        });
+
+        if (error) {
+          setError(error.message);
+          setIsLoading(false);
+          return;
+        }
+
+        setSuccess("확인 이메일을 보냈습니다. 이메일을 확인해주세요.");
+        setIsLoading(false);
+      }
+    } catch (err) {
+      setError("오류가 발생했습니다. 다시 시도해주세요.");
+      setIsLoading(false);
+    }
+  };
+
+  const isFormValid =
+    email && password && (mode === "signin" || password.length >= 6);
+
+  return (
+    <div className="flex flex-col h-full" style={{ backgroundColor: "#111113" }}>
+      {/* 뒤로가기 버튼 */}
+      <div className="px-4 pt-4 pb-6">
+        <LeftArrowWhite
+          onClick={() => router.push("/signin")}
+          width={24}
+          height={24}
+        />
+      </div>
+
+      {/* 탭 */}
+      <div className="flex px-4 mb-8">
+        <button
+          onClick={() => setMode("signin")}
+          style={{
+            flex: 1,
+            paddingBottom: "12px",
+            fontFamily: "SUIT-BODY",
+            fontSize: "18px",
+            color: mode === "signin" ? "#FFFFFF" : "#535355",
+            cursor: "pointer",
+            backgroundColor: "transparent",
+            border: "none",
+            borderBottom:
+              mode === "signin"
+                ? "2px solid #A3FF0C"
+                : "2px solid #323234",
+          }}
+        >
+          로그인
+        </button>
+        <button
+          onClick={() => setMode("signup")}
+          style={{
+            flex: 1,
+            paddingBottom: "12px",
+            fontFamily: "SUIT-BODY",
+            fontSize: "18px",
+            color: mode === "signup" ? "#FFFFFF" : "#535355",
+            cursor: "pointer",
+            backgroundColor: "transparent",
+            border: "none",
+            borderBottom:
+              mode === "signup"
+                ? "2px solid #A3FF0C"
+                : "2px solid #323234",
+          }}
+        >
+          회원가입
+        </button>
+      </div>
+
+      {/* 폼 */}
+      <div className="flex-1 px-4">
+        <div className="flex flex-col gap-6">
+          {/* 이메일 입력 */}
+          <div>
+            <label
+              style={{
+                fontFamily: "SUIT-BODY",
+                fontSize: "14px",
+                color: "#C0C0C5",
+                display: "block",
+                marginBottom: "8px",
+              }}
+            >
+              이메일
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="example@email.com"
+              style={{
+                width: "100%",
+                padding: "12px",
+                borderRadius: "8px",
+                backgroundColor: "#323234",
+                border: "1px solid #535355",
+                color: "#FFFFFF",
+                fontFamily: "SUIT-BODY",
+                fontSize: "16px",
+                outline: "none",
+              }}
+            />
+          </div>
+
+          {/* 비밀번호 입력 */}
+          <div>
+            <label
+              style={{
+                fontFamily: "SUIT-BODY",
+                fontSize: "14px",
+                color: "#C0C0C5",
+                display: "block",
+                marginBottom: "8px",
+              }}
+            >
+              비밀번호
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={mode === "signup" ? "최소 6자 이상" : "비밀번호 입력"}
+              style={{
+                width: "100%",
+                padding: "12px",
+                borderRadius: "8px",
+                backgroundColor: "#323234",
+                border: "1px solid #535355",
+                color: "#FFFFFF",
+                fontFamily: "SUIT-BODY",
+                fontSize: "16px",
+                outline: "none",
+              }}
+            />
+          </div>
+
+          {/* 에러 메시지 */}
+          {error && (
+            <p
+              style={{
+                fontFamily: "SUIT-BODY",
+                fontSize: "14px",
+                color: "#FF3E2F",
+                marginTop: "-8px",
+              }}
+            >
+              {error}
+            </p>
+          )}
+
+          {/* 성공 메시지 */}
+          {success && (
+            <p
+              style={{
+                fontFamily: "SUIT-BODY",
+                fontSize: "14px",
+                color: "#A3FF0C",
+                marginTop: "-8px",
+              }}
+            >
+              {success}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* 버튼 */}
+      <div className="px-4 pb-8">
+        <ButtonTemplate
+          text={isLoading ? "처리 중..." : "시작하기"}
+          onClick={handleSubmit}
+          isActive={!!isFormValid && !isLoading}
+        />
+      </div>
+    </div>
+  );
+}
