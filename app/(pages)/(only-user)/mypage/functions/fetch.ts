@@ -2,6 +2,7 @@
 
 import { getUser } from "@/app/api/functions/read";
 import { CustomError } from "@/app/lib/errors/custom-error";
+import { sanitize } from "@/app/lib/functions/validate";
 import { createClient } from "@/app/util/supabase/server";
 
 export const initialize = async () => {
@@ -40,12 +41,14 @@ export const createFeedback = async (input: string) => {
   try {
     const supabase = await createClient();
 
+    const sanitized = await sanitize(input);
+
     const user = await getUser(supabase);
 
     ret = await supabase
       .from("feedback")
       .insert({
-        body: input,
+        body: sanitized,
         user_id: user.id,
       })
       .select()

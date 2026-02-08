@@ -40,4 +40,9 @@ export class CustomError extends Error {
     "잼세션을 생성하는데에 실패했습니다." + postfix
   );
   static SearchSong = new CustomError("곡 검색에 실패했습니다." + postfix);
+
+  // 보안
+  static SecurityViolation = new CustomError(
+    "보안 위반이 감지되었습니다. 입력 내용을 확인해주세요."
+  );
 }

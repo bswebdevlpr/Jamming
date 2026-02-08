@@ -34,6 +34,7 @@ import dynamic from "next/dynamic";
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { initialize } from "./functions/initialize";
 import Modal from "./modal";
+import BottomNavBarPublic from "@/app/ui/navbar/bottom-public";
 
 const UpdateJam = dynamic(() => import("./popup/update-jam"), { ssr: false });
 
@@ -381,23 +382,21 @@ export default function JamSession_Post() {
       <FlexRow
         tag="합주곡"
         mainConent={
-          jam.songs.length > 0 &&
-          jam.songs.map((row, idx) => (
+          jam.songs.length > 0 && (
             <p
-              key={idx}
               style={{
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
               }}
             >
-              {`${row.title} - ${row.artist}`}
+              {`${jam.songs[0].title} - ${jam.songs[0].artist}`}
             </p>
-          ))
+          )
         }
         subContent={
           jam.songs.length > 1 &&
-          jam.songs.map((row, idx) => (
+          jam.songs.slice(1).map((row, idx) => (
             <p
               key={idx}
               style={{
@@ -488,6 +487,7 @@ export default function JamSession_Post() {
           isActive={isApplyBtnActive}
         />
       </div>
+      {!user && <BottomNavBarPublic />}
       {user && (
         <Modal
           isTurnedOn={isModalOn}

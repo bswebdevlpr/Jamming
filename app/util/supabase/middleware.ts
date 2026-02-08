@@ -1,8 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { PUBLIC_PATHS } from "@/app/lib/constants/paths";
 
 const protectedPaths = ["/jamsession", "/mypage", "/myact", "/user-profile"];
-const publicPaths = ["/jamsession/post/"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -37,7 +37,7 @@ export async function updateSession(request: NextRequest) {
     const isProtected = protectedPaths.some((path) =>
       pathname.startsWith(path)
     );
-    const isPublicException = publicPaths.some((path) =>
+    const isPublicException = PUBLIC_PATHS.some((path) =>
       pathname.startsWith(path)
     );
 

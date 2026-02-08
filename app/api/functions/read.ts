@@ -52,6 +52,12 @@ const JAM_SELECT_QUERY = `
   jamentry ( id, jam_id, user_id, applied_pos )
 `;
 
+const JAM_PUBLIC_SELECT_QUERY = `
+  *,
+  user ( nickname, pos, genre, level, bpm, profile_image ),
+  jamentry ( applied_pos )
+`;
+
 export async function getJam(id: number): Promise<Entity_JamSession> {
   const supabase = await createClient();
 
@@ -85,7 +91,7 @@ export async function getJamPublic(id: number): Promise<Entity_JamSession | null
 
   const { data, error } = await supabase
     .from("jamsession")
-    .select(JAM_SELECT_QUERY)
+    .select(JAM_PUBLIC_SELECT_QUERY)
     .eq("id", id)
     .gte("datetime", now)
     .lte("datetime", twoWeeksLater)

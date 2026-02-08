@@ -1,8 +1,10 @@
 "use server";
 
 import { CustomError } from "@/app/lib/errors/custom-error";
-import { Entity_JamSession } from "../../../../../../lib/interfaces/entity.interface";
-import { Entity_User } from "@/app/lib/interfaces/entity.interface";
+import {
+  Entity_JamSession,
+  Entity_User,
+} from "@/app/lib/interfaces/entity.interface";
 import { createClient } from "@/app/util/supabase/server";
 import { getJam, getJamPublic } from "@/app/api/functions/read";
 

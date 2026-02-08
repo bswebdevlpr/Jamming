@@ -34,3 +34,18 @@ export async function sanitize(text: string): Promise<string> {
 
   return ret;
 }
+
+export async function sanitizePublic(text: string): Promise<string> {
+  try {
+    const sanitized: string = sanitizeHtml(text);
+
+    if (text.length !== sanitized.length) {
+      throw CustomError.SecurityViolation;
+    }
+
+    return sanitized;
+  } catch (e) {
+    if (e instanceof CustomError) throw e;
+    throw CustomError.UnExpected;
+  }
+}
