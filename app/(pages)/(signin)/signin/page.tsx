@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { signInWithKakao } from "@/app/util/supabase/auth";
+import { signInWithKakao, signInWithGoogle } from "@/app/util/supabase/auth";
 import { createClient } from "@/app/util/supabase/client";
 import { useRouter } from "next/navigation";
+import SocialLoginButton from "./social-login-button";
 
 export default function SignIn() {
   const supabase = createClient();
@@ -95,13 +96,14 @@ export default function SignIn() {
           음악인을 위한 합주 플랫폼
         </p>
       </div>
-      <Image
-        src="/signup/large-wide.png"
-        alt="kakao login"
-        width={350}
-        height={52}
-        onClick={signInWithKakao}
-      />
+      <div className="flex flex-col gap-3 w-full px-4 pb-8">
+        <SocialLoginButton provider="kakao" onClick={signInWithKakao} />
+        <SocialLoginButton provider="google" onClick={signInWithGoogle} />
+        <SocialLoginButton
+          provider="email"
+          onClick={() => router.push("/email")}
+        />
+      </div>
     </div>
   );
 }

@@ -47,15 +47,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           router.push("/signup");
         }
       } catch (e) {
+        if (process.env.NODE_ENV === "development") {
+          console.error("Auth validation error:", e);
+        }
         router.push("/signin");
       }
     };
     validateUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const publicPaths = ["/signin", "/email"];
+  const isPublicPath = publicPaths.includes(pathname);
 
   return (
     <WorkSpace>
-      {pathname === "/signin" || isOAuthSignedIn ? (
+      {isPublicPath || isOAuthSignedIn ? (
         children
       ) : (
         <FullScreenLoading isTurnedOn={true} />
