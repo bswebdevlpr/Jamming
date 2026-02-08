@@ -57,7 +57,9 @@ export const initialize = async (jam_id: number) => {
     }
 
     if ((jam.leader as any)?.id === user.id)
-      ret.applierEntries = jam.jamentry.filter((je) => je.is_allowed === null);
+      ret.applierEntries = jam.jamentry.filter(
+        (je) => je.is_allowed === null && !je.is_rejam
+      );
   } catch (e) {
     if (process.env.NODE_ENV === "development") console.error(e);
     if (e instanceof CustomError) throw e;
