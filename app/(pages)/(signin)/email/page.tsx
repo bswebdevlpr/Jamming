@@ -5,6 +5,21 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/app/util/supabase/client";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
+import { getAuthRedirectPath } from "@/app/util/auth/redirect";
+
+const getErrorMessage = (error: any) => {
+  const msg = error.message.toLowerCase();
+  if (msg.includes("invalid") || msg.includes("credentials")) {
+    return "이메일 또는 비밀번호가 올바르지 않습니다.";
+  }
+  if (msg.includes("not confirmed") || msg.includes("email")) {
+    return "이메일 인증이 완료되지 않았습니다.";
+  }
+  if (msg.includes("already registered") || msg.includes("already exists")) {
+    return "이미 가입된 이메일입니다.";
+  }
+  return "오류가 발생했습니다. 다시 시도해주세요.";
+};
 
 export default function EmailAuth() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
@@ -43,19 +58,14 @@ export default function EmailAuth() {
         });
 
         if (error) {
-          setError(error.message);
+          setError(getErrorMessage(error));
           setIsLoading(false);
           return;
         }
 
-        // 프로필 존재 확인
-        const { data: profile } = await supabase
-          .from("user")
-          .select()
-          .eq("id", data.user.id)
-          .single();
-
-        router.push(profile ? "/" : "/signup");
+        // 프로필 존재 확인 및 리다이렉트
+        const redirectPath = await getAuthRedirectPath(data.user.id);
+        router.push(redirectPath);
       } else {
         // 회원가입
         const { error } = await supabase.auth.signUp({
@@ -67,15 +77,20 @@ export default function EmailAuth() {
         });
 
         if (error) {
-          setError(error.message);
+          setError(getErrorMessage(error));
           setIsLoading(false);
           return;
         }
 
         setSuccess("확인 이메일을 보냈습니다. 이메일을 확인해주세요.");
         setIsLoading(false);
+        // 3초 후 로그인 탭으로 자동 전환
+        setTimeout(() => {
+          setMode("signin");
+          setSuccess("");
+        }, 3000);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       setError("오류가 발생했습니다. 다시 시도해주세요.");
       setIsLoading(false);
     }
