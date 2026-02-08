@@ -3,7 +3,7 @@
 import Bell from "@/app/ui/images/jamsession/bell";
 // import CalendarImage from "@/app/ui/images/jamsession/calendar";
 import { DownArrow } from "../../images/arrows";
-import LocationPopup from "@/app/(pages)/(only-user)/jamsession/popup/location";
+import LocationPopup from "@/app/ui/popup/location";
 import {
   Dispatch,
   SetStateAction,
@@ -68,7 +68,7 @@ export default function TopNavBar({
         /> */}
       </div>
       <LocationPopup
-        turnOn={isLocationClicked}
+        isTurnedOn={isLocationClicked}
         turnOff={handleLocationClick}
         setLocation={setLocation}
       />

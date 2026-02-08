@@ -1,7 +1,6 @@
 "use client";
 
-import { useUIStore } from "@/app/stores";
-import React, {
+import {
   CSSProperties,
   ReactNode,
   useEffect,
@@ -11,21 +10,15 @@ import React, {
 export default function PopupTemplate({
   children,
   isTurnedOn,
-  width,
-  height,
   className,
   style,
 }: {
   children: ReactNode;
   isTurnedOn: boolean;
-  width?: number;
-  height?: number;
   className?: string;
   style?: CSSProperties;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-
-  const { bodyWidth, bodyHeight } = useUIStore();
 
   useEffect(() => {
     if (ref.current) {
@@ -37,10 +30,10 @@ export default function PopupTemplate({
   return (
     <div
       ref={ref}
-      className={`hidden absolute z-10 ${className}`}
+      className={`hidden fixed z-10 ${className}`}
       style={{
-        width: `${width ?? bodyWidth}px`,
-        height: `${height ?? bodyHeight}px`,
+        width: '100vw',
+        height: 'calc(var(--vh, 1vh) * 100)',
 
         top: 0,
         left: 0,
@@ -52,7 +45,15 @@ export default function PopupTemplate({
         ...style,
       }}
     >
-      {children}
+      <div
+        style={{
+          maxWidth: 'var(--max-width)',
+          width: '100%',
+          margin: '0 auto',
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

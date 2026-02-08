@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import BottomSheetContent from "../../../bottom-sheet/content";
 import { updateJam } from "../../../functions/fetch";
 import ClockPopup from "../../../popup/clock";
-import LocationPopup from "../../../popup/location";
+import LocationPopup from "@/app/ui/popup/location";
 import RegisterOpenchatPopup from "../../../popup/register-openchat";
 import SearchLocationPopup from "../../../popup/search-location";
 import SearchSongPopup from "../../../popup/search-song";
@@ -458,7 +458,7 @@ export default function UpdateJam({
           onOpenchatClick={() => setIsRegisterOpenchatPopupTurnedOn(true)}
         />
         <LocationPopup
-          turnOn={isLocationPopupClicked}
+          isTurnedOn={isLocationPopupClicked}
           turnOff={() => setIsLocationPopupClicked(false)}
           setLocation={(val) =>
             setValue("location", [val], { shouldValidate: false })

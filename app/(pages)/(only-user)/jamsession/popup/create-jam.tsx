@@ -15,7 +15,7 @@ import SearchSongPopup from "./search-song";
 import RegisterOpenchatPopup from "./register-openchat";
 import SearchLocationPopup from "./search-location";
 import { MapDataToGenre, MapDataToLevel, MapDataToPosition } from "@/app/lib/maps/jam";
-import LocationPopup from "./location";
+import LocationPopup from "@/app/ui/popup/location";
 import { useBottomSheetStore } from "@/app/stores";
 import { usePathname, useSearchParams } from "next/navigation";
 import { JamImagePreview, JamFormToolbar } from "@/app/ui/jam-form";
@@ -404,7 +404,7 @@ export default function CreateJam({
           onOpenchatClick={() => setIsRegisterOpenchatPopupTurnedOn(true)}
         />
         <LocationPopup
-          turnOn={isLocationPopupClicked}
+          isTurnedOn={isLocationPopupClicked}
           turnOff={() => setIsLocationPopupClicked(false)}
           setLocation={(val) =>
             setValue("location", [val], { shouldValidate: false })
