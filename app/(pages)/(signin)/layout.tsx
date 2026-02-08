@@ -53,9 +53,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     validateUser();
   }, []);
 
+  const publicPaths = ["/signin", "/email"];
+  const isPublicPath = publicPaths.includes(pathname);
+
   return (
     <WorkSpace>
-      {pathname === "/signin" || isOAuthSignedIn ? (
+      {isPublicPath || isOAuthSignedIn ? (
         children
       ) : (
         <FullScreenLoading isTurnedOn={true} />
