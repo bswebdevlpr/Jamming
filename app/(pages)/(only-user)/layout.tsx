@@ -4,11 +4,13 @@ import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { createClient } from "@/app/util/supabase/client";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useSessionStore } from "@/app/stores";
+import { useSessionStore, useNotificationStore } from "@/app/stores";
 import { PUBLIC_PATHS } from "@/app/lib/constants/paths";
+import { getUnreadCount } from "@/app/api/functions/notification";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { userProfile, setUserProfile, resetUserProfile } = useSessionStore();
+  const setUnreadCount = useNotificationStore((state) => state.setUnreadCount);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -48,6 +50,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           setUserProfile({ ...data, isLoaded: true });
         }
+
+        // 미읽음 알림 개수 로드
+        getUnreadCount()
+          .then((count) => setUnreadCount(count))
+          .catch(() => {});
 
         setIsLoading(false);
       } catch (e) {
