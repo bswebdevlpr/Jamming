@@ -6,6 +6,7 @@ import Bell from "@/app/ui/images/jamsession/bell";
 // import CalendarComponent from "../../calendar/calendar";
 import { MapDateToKor } from "@/app/lib/maps/moment";
 import { Filter_JamSessionFeed } from "../../feeds/jam-feed";
+import { useRouter } from "next/navigation";
 
 export default function TopNavBar({
   filter,
@@ -16,6 +17,8 @@ export default function TopNavBar({
   // setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
   // setSelectedDate: (input: moment.Moment) => void;
 }) {
+  const router = useRouter();
+
   return (
     <div className="flex flex-row justify-between px-5 py-3">
       <p
@@ -31,7 +34,7 @@ export default function TopNavBar({
         }요일`}
       </p>
       <div className="flex flex-row gap-5">
-        <Bell />
+        <Bell onClick={() => router.push("/notification")} />
         {/* <CalendarImage
           onClick={() =>
             bottomSheet.set({

@@ -13,6 +13,7 @@ import {
 } from "react";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
 import { Filter_JamSessionFeed } from "../../feeds/jam-feed";
+import { useRouter } from "next/navigation";
 
 export default function TopNavBar({
   filter,
@@ -25,6 +26,7 @@ export default function TopNavBar({
   setLocation: (location: LocationEnum) => void;
   // setSelectedDate: (input: moment.Moment) => void;
 }) {
+  const router = useRouter();
 
   // STATES
   const [isLocationClicked, setIsLocationClicked] = useState(false);
@@ -50,7 +52,7 @@ export default function TopNavBar({
         <DownArrow />
       </div>
       <div className="flex flex-row gap-5">
-        <Bell />
+        <Bell onClick={() => router.push("/notification")} />
         {/* <CalendarImage
           onClick={() =>
             bottomSheet.set({

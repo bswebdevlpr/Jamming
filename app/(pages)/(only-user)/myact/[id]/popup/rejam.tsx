@@ -4,18 +4,19 @@ import { SquaredCheckbox } from "@/app/ui/checkbox";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import UserProfile from "@/app/ui/images/navbar/user-profile";
 import ButtonTemplate from "@/app/ui/templates/buttons";
+import PopupTemplate from "@/app/ui/templates/popup";
 import { ImageWithTxt } from "@/app/ui/templates/images";
-import { useEffect, useRef, useState } from "react";
-import { getJamSchedule } from "../functions/fetch";
+import { useEffect, useState } from "react";
+import { getJamSchedule, sendRejam } from "../functions/fetch";
 import {
   GenreTag,
   LevelTag,
   LocationTag,
-  PositionTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
 import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
 import moment from "moment";
+import { REJAM_CONSTANTS } from "@/app/lib/constants/rejam";
 
 const FlexRow = ({
   jam,
@@ -24,7 +25,7 @@ const FlexRow = ({
 }: {
   jam: Entity_JamSession;
   checkedJamIds: number[];
-  setCheckedJamIds: any;
+  setCheckedJamIds: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   return (
     <div
@@ -100,18 +101,11 @@ export default function RejamPopup({
   turnOff: () => void;
   rejamTargetUserId: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-
   const [jams, setJams] = useState<Entity_JamSession[]>([]);
   const [appeal, setAppeal] = useState<string>("");
-
   const [checkedJamIds, setCheckedJamIds] = useState<number[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.style.display = isTurnedOn ? "flex" : "none";
-    }
-  }, [isTurnedOn]);
   useEffect(() => {
     if (rejamTargetUserId)
       (async () => {
@@ -119,15 +113,25 @@ export default function RejamPopup({
       })();
   }, [rejamTargetUserId]);
 
+  const handleSendRejam = async () => {
+    if (checkedJamIds.length === 0 || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      await sendRejam(rejamTargetUserId, checkedJamIds, appeal);
+      setCheckedJamIds([]);
+      setAppeal("");
+      turnOff();
+    } catch (e) {
+      if (process.env.NODE_ENV === "development") console.error(e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div
-      ref={ref}
-      className="absolute z-10 hidden w-full h-full flex flex-col justify-between left-0 top-0 px-5"
-      style={{
-        backgroundColor: "var(--background)",
-      }}
-    >
-      <div>
+    <PopupTemplate isTurnedOn={isTurnedOn} className="flex flex-col">
+      <div className="px-5">
         <ImageWithTxt
           image={<LeftArrowWhite onClick={turnOff} />}
           text="초대하기"
@@ -160,7 +164,7 @@ export default function RejamPopup({
           </p>
         </div>
       </div>
-      <div className="grow py-3 overflow-hidden">
+      <div className="grow py-3 px-5 overflow-hidden">
         <p
           style={{
             fontFamily: "SUIT-BODY",
@@ -208,7 +212,8 @@ export default function RejamPopup({
             <textarea
               placeholder="입력"
               className="w-full px-3 py-2"
-              maxLength={50}
+              maxLength={REJAM_CONSTANTS.MAX_APPEAL_LENGTH}
+              value={appeal}
               style={{
                 height: "72px",
 
@@ -229,22 +234,25 @@ export default function RejamPopup({
                 color: "#767678",
               }}
             >
-              {appeal.length}/50
+              {appeal.length}/{REJAM_CONSTANTS.MAX_APPEAL_LENGTH}
             </p>
           </div>
         </div>
       </div>
-      <ButtonTemplate
-        text="LET'S JAM!"
-        className="px-3 py-2.5 my-2"
-        style={{
-          fontFamily: "SBAggroM",
-        }}
-        styleActivated={{
-          fontFamily: "SBAggroM",
-        }}
-        isActive={checkedJamIds.length > 0}
-      />
-    </div>
+      <div className="px-5">
+        <ButtonTemplate
+          text="LET'S JAM!"
+          className="px-3 py-2.5 my-2"
+          style={{
+            fontFamily: "SBAggroM",
+          }}
+          styleActivated={{
+            fontFamily: "SBAggroM",
+          }}
+          isActive={checkedJamIds.length > 0 && !isSubmitting}
+          onClick={handleSendRejam}
+        />
+      </div>
+    </PopupTemplate>
   );
 }
