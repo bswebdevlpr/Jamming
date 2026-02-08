@@ -79,6 +79,15 @@ export default function RootLayout({
           rel="dns-prefetch"
           href="https://niiidqqsxsiowmzumcgw.supabase.co"
         />
+        {/* 폰트 CDN 최적화 */}
+        <link
+          rel="preconnect"
+          href="https://fastly.jsdelivr.net"
+        />
+        <link
+          rel="dns-prefetch"
+          href="https://fastly.jsdelivr.net"
+        />
       </head>
       <body className={`antialiased`}>
         <script
