@@ -16,6 +16,7 @@ import {
 } from "@/app/ui/tags/category-tag";
 import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
 import moment from "moment";
+import { REJAM_CONSTANTS } from "@/app/lib/constants/rejam";
 
 const FlexRow = ({
   jam,
@@ -24,7 +25,7 @@ const FlexRow = ({
 }: {
   jam: Entity_JamSession;
   checkedJamIds: number[];
-  setCheckedJamIds: any;
+  setCheckedJamIds: React.Dispatch<React.SetStateAction<number[]>>;
 }) => {
   return (
     <div
@@ -211,7 +212,7 @@ export default function RejamPopup({
             <textarea
               placeholder="입력"
               className="w-full px-3 py-2"
-              maxLength={50}
+              maxLength={REJAM_CONSTANTS.MAX_APPEAL_LENGTH}
               value={appeal}
               style={{
                 height: "72px",
@@ -233,7 +234,7 @@ export default function RejamPopup({
                 color: "#767678",
               }}
             >
-              {appeal.length}/50
+              {appeal.length}/{REJAM_CONSTANTS.MAX_APPEAL_LENGTH}
             </p>
           </div>
         </div>

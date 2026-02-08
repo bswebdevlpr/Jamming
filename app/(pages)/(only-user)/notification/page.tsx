@@ -33,7 +33,7 @@ export default function NotificationPage() {
         setIsLoading(false);
       }
     })();
-  }, []);
+  }, [resetUnread]);
 
   return (
     <div className="grow flex flex-col overflow-without-scroll">
