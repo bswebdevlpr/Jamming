@@ -49,7 +49,7 @@ export default function BottomNavBarPublic() {
             borderTop: "1px solid #323234",
             cursor: "pointer",
           }}
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/signin")}
         >
           <LoginIcon />
         </div>

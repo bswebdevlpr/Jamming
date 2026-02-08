@@ -184,7 +184,7 @@ export default function Modal({
                 appeal,
                 applied_pos: MapPositionToData[pos],
               }).then(() => {
-                router.push("/jamsession");
+                router.push("/");
               });
             }}
           >

@@ -31,11 +31,13 @@ export default function SlideCalendarComponent({
   setSelectedDate,
   resetSlideCalendarDots,
   setResetSlideCalendarDots,
+  fetchDates,
 }: {
   selectedDate: moment.Moment;
   setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
   resetSlideCalendarDots?: boolean;
   setResetSlideCalendarDots?: Dispatch<SetStateAction<boolean>>;
+  fetchDates?: () => Promise<string[]>;
 }) {
   let sliderRef = useRef(null);
 
@@ -86,7 +88,7 @@ export default function SlideCalendarComponent({
   // USE-EFFECTS
   useEffect(() => {
     const initiate = async () => {
-      setDatesHavingJam(await getDatesHavingJam());
+      setDatesHavingJam(await (fetchDates ?? getDatesHavingJam)());
       if (setResetSlideCalendarDots) setResetSlideCalendarDots(false);
     };
     initiate();

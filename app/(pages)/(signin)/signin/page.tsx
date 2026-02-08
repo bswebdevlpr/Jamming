@@ -18,7 +18,7 @@ export default function SignIn() {
       } = await supabase.auth.getUser();
 
       if (user) {
-        router.push("/jamsession");
+        router.push("/");
       } else {
         setIsChecking(false);
       }

@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: ["/", ...PUBLIC_PATHS],
-        disallow: ["/mypage", "/myact", "/signup", "/user-profile", "/api/"],
+        disallow: ["/signin", "/mypage", "/myact", "/signup", "/user-profile", "/api/"],
       },
     ],
     sitemap: "https://jamming.co.kr/sitemap.xml",
