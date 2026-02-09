@@ -2,9 +2,7 @@ import { useCallback, useMemo } from "react";
 import { PanInfo, useAnimation } from "framer-motion";
 import { BottomSheetHeight } from "../types";
 import { heightToPixels } from "../utils/height";
-
-const VELOCITY_THRESHOLD = 500; // px/s - 빠른 스와이프 감지
-const POSITION_THRESHOLD = 0.4; // 40% 이상 드래그 시 닫기
+import { decideGestureAction } from "../utils/gesture-decision";
 
 // 스프링 애니메이션 설정
 export const springConfig = {
@@ -44,27 +42,13 @@ export function useBottomSheetGesture({
   // 드래그 종료 핸들러
   const handleDragEnd = useCallback(
     (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
-      const { velocity, offset } = info;
+      const action = decideGestureAction(
+        info.velocity.y,
+        info.offset.y,
+        currentHeightPx
+      );
 
-      // 높이가 0이면 바텀시트가 닫힌 상태이므로 즉시 닫기
-      if (currentHeightPx === 0) {
-        onClose();
-        return;
-      }
-
-      // 빠른 아래 스와이프 = 즉시 닫기
-      if (velocity.y > VELOCITY_THRESHOLD) {
-        controls
-          .start({ y: 0, transition: closeSpringConfig })
-          .then(() => onClose());
-        return;
-      }
-
-      // 위치 기반 결정: 40% 이상 아래로 드래그되면 닫기
-      const draggedDownRatio = offset.y / currentHeightPx;
-
-      if (draggedDownRatio > POSITION_THRESHOLD) {
-        // 닫기
+      if (action === "close") {
         controls
           .start({ y: 0, transition: closeSpringConfig })
           .then(() => onClose());
