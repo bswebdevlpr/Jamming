@@ -1,65 +1,40 @@
-import { ReactNode, useEffect, useMemo } from "react";
+import { ReactNode, memo, useCallback, useEffect, useMemo } from "react";
 import BottomSheetHeader from "./header";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useBottomSheetStore } from "@/app/stores";
+import { useShallow } from "zustand/react/shallow";
 import {
   useBottomSheetGesture,
   springConfig,
   closeSpringConfig,
 } from "./hooks/useBottomSheetGesture";
+import { BottomSheetHeight } from "./types";
+import { getHeightPercent } from "./utils/height";
+import {
+  BOTTOM_PADDING_OFFSET_VH,
+  DRAG_OVERSCROLL_TOP_PX,
+} from "./utils/constants";
 
-export type BottomSheetHeight =
-  | null
-  | "high"
-  | "middle"
-  | "row-2"
-  | "row-1"
-  | number
-  | "hidden";
-
-interface BottomSheetInput {
-  children?: ReactNode;
-  location?: BottomSheetHeight;
-  header?: boolean;
-}
+// re-export for backward compatibility
+export type { BottomSheetHeight } from "./types";
+export {
+  BOTTOMSHEET_HEIGHT_HIGH,
+  BOTTOMSHEET_HEIGHT_MIDDLE,
+  BOTTOMSHEET_HEIGHT_ROW_2,
+  BOTTOMSHEET_HEIGHT_ROW_1,
+} from "./utils/height";
 
 interface Props {
+  width: number;
+  height: number;
+}
+
+interface WrapperProps {
   children: ReactNode;
   width: number;
   height: number;
   pullUp: BottomSheetHeight;
-  setPullUp?: (input: BottomSheetInput) => void;
-  header?: boolean;
-}
-
-const DEFAULT_BUTTON_HEIGHT = 1;
-
-export const BOTTOMSHEET_HEIGHT_HIGH = 94.35;
-export const BOTTOMSHEET_HEIGHT_MIDDLE = 59.95;
-export const BOTTOMSHEET_HEIGHT_ROW_2 = 21.6;
-export const BOTTOMSHEET_HEIGHT_ROW_1 = 14;
-
-// 높이 퍼센트 계산
-const getHeightPercent = (location: BottomSheetHeight): number => {
-  if (location === null || location === "hidden") return 0;
-  if (typeof location === "number") return location;
-
-  switch (location) {
-    case "high":
-      return BOTTOMSHEET_HEIGHT_HIGH;
-    case "middle":
-      return BOTTOMSHEET_HEIGHT_MIDDLE;
-    case "row-2":
-      return BOTTOMSHEET_HEIGHT_ROW_2;
-    case "row-1":
-      return BOTTOMSHEET_HEIGHT_ROW_1;
-    default:
-      return 0;
-  }
-};
-
-interface WrapperProps extends Props {
   onClose: () => void;
 }
 
@@ -94,7 +69,7 @@ const Wrapper = ({
   // 드래그 제약 조건
   const dragConstraints = useMemo(
     () => ({
-      top: -currentHeightPx - 50, // 약간 위로 과도 드래그 허용
+      top: -currentHeightPx - DRAG_OVERSCROLL_TOP_PX, // 약간 위로 과도 드래그 허용
       bottom: height, // 화면 아래까지
     }),
     [currentHeightPx, height]
@@ -104,11 +79,14 @@ const Wrapper = ({
   const heightPercent = getHeightPercent(pullUp);
   const paddingBottom =
     pullUp && pullUp !== "hidden"
-      ? `${100 - heightPercent + DEFAULT_BUTTON_HEIGHT}vh`
-      : `${DEFAULT_BUTTON_HEIGHT}vh`;
+      ? `${100 - heightPercent + BOTTOM_PADDING_OFFSET_VH}vh`
+      : `${BOTTOM_PADDING_OFFSET_VH}vh`;
 
   return (
     <motion.div
+      role="dialog"
+      aria-modal="true"
+      aria-label="바텀시트"
       drag="y"
       dragConstraints={dragConstraints}
       dragElastic={{ top: 0.1, bottom: 0.2 }}
@@ -122,8 +100,8 @@ const Wrapper = ({
         top: `${height}px`,
         borderTopLeftRadius: "8px",
         borderTopRightRadius: "8px",
-        backgroundColor: "#242426",
-        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
+        backgroundColor: "var(--deep-bg)",
+        boxShadow: "var(--shadow-bottom-sheet)",
         paddingBottom,
         willChange: "transform",
       }}
@@ -134,7 +112,7 @@ const Wrapper = ({
 };
 Wrapper.displayName = "BottomSheetWrapper";
 
-const BottomSheetContent = ({ children }: { children: ReactNode }) => (
+const BottomSheetContent = memo(({ children }: { children: ReactNode }) => (
   <div
     className="touch-auto"
     style={{
@@ -145,16 +123,17 @@ const BottomSheetContent = ({ children }: { children: ReactNode }) => (
   >
     {children}
   </div>
-);
+));
+BottomSheetContent.displayName = "BottomSheetContent";
 
-const BottomSheet = ({
-  children,
-  width,
-  height,
-  pullUp,
-  setPullUp,
-  header = false,
-}: Props) => {
+const BottomSheet = ({ width, height }: Props) => {
+  const { children, location, header } = useBottomSheetStore(
+    useShallow((state) => ({
+      children: state.children,
+      location: state.location,
+      header: state.header,
+    }))
+  );
   const closeBottomSheet = useBottomSheetStore((state) => state.close);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -166,13 +145,23 @@ const BottomSheet = ({
     };
   }, [pathname, searchParams, closeBottomSheet]);
 
-  const handleClose = () => {
-    setPullUp?.({
-      location: "hidden",
-    });
-  };
+  const handleClose = useCallback(() => {
+    closeBottomSheet();
+  }, [closeBottomSheet]);
 
-  const isOpen = pullUp && pullUp !== "hidden";
+  const isOpen = location && location !== "hidden";
+
+  // ESC 키로 바텀시트 닫기
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) handleClose();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, handleClose]);
+
+  // 뷰포트 크기가 0이면 렌더링하지 않음 (초기 로딩 또는 비정상 상태)
+  if (width === 0 || height === 0) return null;
 
   return (
     <>
@@ -181,13 +170,15 @@ const BottomSheet = ({
         {isOpen && (
           <motion.div
             key="backdrop"
+            role="presentation"
+            aria-label="바텀시트 닫기"
             className="absolute w-full h-full top-0 left-0 z-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             style={{
-              backgroundColor: "rgba(0,0,0,0.5)",
+              backgroundColor: "var(--backdrop)",
               maxWidth: "var(--max-width)",
               margin: "0 auto",
             }}
@@ -203,7 +194,7 @@ const BottomSheet = ({
             key="sheet"
             width={width}
             height={height}
-            pullUp={pullUp}
+            pullUp={location}
             onClose={handleClose}
           >
             {header && <BottomSheetHeader />}
