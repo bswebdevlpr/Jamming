@@ -78,31 +78,9 @@ export function useBottomSheetGesture({
     [currentHeightPx, controls, onClose]
   );
 
-  // 위치가 변경될 때 애니메이션
-  const animateToLocation = useCallback(
-    (location: BottomSheetHeight) => {
-      if (location === null || location === "hidden") {
-        return controls.start({
-          y: 0,
-          transition: closeSpringConfig,
-        });
-      }
-
-      const targetY = heightToPixels(location, viewportHeight);
-      return controls.start({
-        y: -targetY,
-        transition: springConfig,
-      });
-    },
-    [controls, viewportHeight]
-  );
-
   return {
     controls,
     currentHeightPx,
     handleDragEnd,
-    animateToLocation,
-    springConfig,
-    closeSpringConfig,
   };
 }

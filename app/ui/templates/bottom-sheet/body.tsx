@@ -8,7 +8,7 @@ import {
   springConfig,
   closeSpringConfig,
 } from "./hooks/useBottomSheetGesture";
-import { BottomSheetHeight, BottomSheetInput } from "./types";
+import { BottomSheetHeight } from "./types";
 import { getHeightPercent } from "./utils/height";
 import {
   BOTTOM_PADDING_OFFSET_VH,
@@ -25,15 +25,15 @@ export {
 } from "./utils/height";
 
 interface Props {
+  width: number;
+  height: number;
+}
+
+interface WrapperProps {
   children: ReactNode;
   width: number;
   height: number;
   pullUp: BottomSheetHeight;
-  setPullUp?: (input: BottomSheetInput) => void;
-  header?: boolean;
-}
-
-interface WrapperProps extends Props {
   onClose: () => void;
 }
 
@@ -121,14 +121,8 @@ const BottomSheetContent = ({ children }: { children: ReactNode }) => (
   </div>
 );
 
-const BottomSheet = ({
-  children,
-  width,
-  height,
-  pullUp,
-  setPullUp,
-  header = false,
-}: Props) => {
+const BottomSheet = ({ width, height }: Props) => {
+  const { children, location, header } = useBottomSheetStore();
   const closeBottomSheet = useBottomSheetStore((state) => state.close);
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -141,12 +135,10 @@ const BottomSheet = ({
   }, [pathname, searchParams, closeBottomSheet]);
 
   const handleClose = () => {
-    setPullUp?.({
-      location: "hidden",
-    });
+    closeBottomSheet();
   };
 
-  const isOpen = pullUp && pullUp !== "hidden";
+  const isOpen = location && location !== "hidden";
 
   return (
     <>
@@ -177,7 +169,7 @@ const BottomSheet = ({
             key="sheet"
             width={width}
             height={height}
-            pullUp={pullUp}
+            pullUp={location}
             onClose={handleClose}
           >
             {header && <BottomSheetHeader />}
