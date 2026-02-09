@@ -7,10 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import moment from "moment";
 import FullScreenLoading from "../ui/loading/fullscreen";
 import SmallLoading from "../ui/loading/small";
-import {
-  useUIStore,
-  useBottomSheetStore,
-} from "../stores";
+import { useUIStore } from "../stores";
 
 // EXTERNAL PACKAGES
 const queryClient = new QueryClient({
@@ -32,7 +29,6 @@ function GlobalLayout({
 }>) {
   // ZUSTAND STORES
   const { isSmallLoadingOn, setBodyDimensions } = useUIStore();
-  const bottomSheet = useBottomSheetStore();
   //
 
   moment.updateLocale("en", {
@@ -99,15 +95,7 @@ function GlobalLayout({
       <Suspense fallback={<FullScreenLoading />}>
         {children}
         <SmallLoading isTurnedOn={isSmallLoadingOn} />
-        <BottomSheet
-          width={width}
-          height={height}
-          pullUp={bottomSheet.location}
-          setPullUp={bottomSheet.set}
-          header={bottomSheet.header}
-        >
-          {bottomSheet.children}
-        </BottomSheet>
+        <BottomSheet width={width} height={height} />
       </Suspense>
     </QueryClientProvider>
   );

@@ -21,10 +21,16 @@ const Wrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
 const Handle: React.FC = () => {
   return (
     <motion.div
+      role="slider"
+      aria-orientation="vertical"
+      aria-label="바텀시트 높이 조절"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      tabIndex={0}
       className="w-10 h-1 m-auto"
       style={{
         borderRadius: "2px",
-        backgroundColor: "#535355",
+        backgroundColor: "var(--mid-gray-border)",
       }}
       whileHover={{
         scale: 1.1,

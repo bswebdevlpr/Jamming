@@ -10,7 +10,7 @@ export default function BottomSheetContentTemplate_List({
 }: {
   children: ReactNode;
   btnTxt: string;
-  onClose: any;
+  onClose: () => void;
 }) {
   return (
     <div
@@ -28,8 +28,8 @@ export default function BottomSheetContentTemplate_List({
         className="w-full"
         style={{
           borderRadius: "8px",
-          border: "1px solid #444447",
-          backgroundColor: "#323234",
+          border: "1px solid var(--dark-gray)",
+          backgroundColor: "var(--inactive-bg)",
         }}
         onClick={onClose}
       />
