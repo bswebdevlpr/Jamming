@@ -30,7 +30,7 @@ const Handle: React.FC = () => {
       className="w-10 h-1 m-auto"
       style={{
         borderRadius: "2px",
-        backgroundColor: "#535355",
+        backgroundColor: "var(--mid-gray-border)",
       }}
       whileHover={{
         scale: 1.1,

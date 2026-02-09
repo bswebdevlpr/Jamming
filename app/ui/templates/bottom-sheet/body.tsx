@@ -99,8 +99,8 @@ const Wrapper = ({
         top: `${height}px`,
         borderTopLeftRadius: "8px",
         borderTopRightRadius: "8px",
-        backgroundColor: "#242426",
-        boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.6)",
+        backgroundColor: "var(--deep-bg)",
+        boxShadow: "var(--shadow-bottom-sheet)",
         paddingBottom,
         willChange: "transform",
       }}
@@ -167,7 +167,7 @@ const BottomSheet = ({ width, height }: Props) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             style={{
-              backgroundColor: "rgba(0,0,0,0.5)",
+              backgroundColor: "var(--backdrop)",
               maxWidth: "var(--max-width)",
               margin: "0 auto",
             }}
