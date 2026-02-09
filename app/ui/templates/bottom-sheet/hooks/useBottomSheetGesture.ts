@@ -1,12 +1,8 @@
 import { useCallback, useMemo } from "react";
 import { PanInfo, useAnimation } from "framer-motion";
-import {
-  BOTTOMSHEET_HEIGHT_HIGH,
-  BOTTOMSHEET_HEIGHT_MIDDLE,
-  BOTTOMSHEET_HEIGHT_ROW_1,
-  BOTTOMSHEET_HEIGHT_ROW_2,
-  BottomSheetHeight,
-} from "../body";
+import { BottomSheetHeight } from "../types";
+import { heightToPixels } from "../utils/height";
+import { CLOSE_ANIMATION_DURATION_MS } from "../utils/constants";
 
 const VELOCITY_THRESHOLD = 500; // px/s - 빠른 스와이프 감지
 const POSITION_THRESHOLD = 0.4; // 40% 이상 드래그 시 닫기
@@ -25,38 +21,6 @@ export const closeSpringConfig = {
   damping: 40,
   stiffness: 400,
   mass: 0.5,
-};
-
-// 높이 퍼센트를 픽셀로 변환
-const heightToPixels = (
-  location: BottomSheetHeight,
-  viewportHeight: number
-): number => {
-  if (location === null || location === "hidden") return 0;
-
-  let percentage: number;
-  if (typeof location === "number") {
-    percentage = location;
-  } else {
-    switch (location) {
-      case "high":
-        percentage = BOTTOMSHEET_HEIGHT_HIGH;
-        break;
-      case "middle":
-        percentage = BOTTOMSHEET_HEIGHT_MIDDLE;
-        break;
-      case "row-2":
-        percentage = BOTTOMSHEET_HEIGHT_ROW_2;
-        break;
-      case "row-1":
-        percentage = BOTTOMSHEET_HEIGHT_ROW_1;
-        break;
-      default:
-        percentage = 0;
-    }
-  }
-
-  return (viewportHeight * percentage) / 100;
 };
 
 interface UseBottomSheetGestureProps {
@@ -89,7 +53,7 @@ export function useBottomSheetGesture({
           y: 0,
           transition: closeSpringConfig,
         });
-        setTimeout(() => onClose(), 200);
+        setTimeout(() => onClose(), CLOSE_ANIMATION_DURATION_MS);
         return;
       }
 
@@ -102,7 +66,7 @@ export function useBottomSheetGesture({
           y: 0,
           transition: closeSpringConfig,
         });
-        setTimeout(() => onClose(), 200);
+        setTimeout(() => onClose(), CLOSE_ANIMATION_DURATION_MS);
       } else {
         // 원위치로 복귀
         controls.start({

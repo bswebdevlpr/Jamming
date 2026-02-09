@@ -8,21 +8,21 @@ import {
   springConfig,
   closeSpringConfig,
 } from "./hooks/useBottomSheetGesture";
+import { BottomSheetHeight, BottomSheetInput } from "./types";
+import { getHeightPercent } from "./utils/height";
+import {
+  BOTTOM_PADDING_OFFSET_VH,
+  DRAG_OVERSCROLL_TOP_PX,
+} from "./utils/constants";
 
-export type BottomSheetHeight =
-  | null
-  | "high"
-  | "middle"
-  | "row-2"
-  | "row-1"
-  | number
-  | "hidden";
-
-interface BottomSheetInput {
-  children?: ReactNode;
-  location?: BottomSheetHeight;
-  header?: boolean;
-}
+// re-export for backward compatibility
+export type { BottomSheetHeight } from "./types";
+export {
+  BOTTOMSHEET_HEIGHT_HIGH,
+  BOTTOMSHEET_HEIGHT_MIDDLE,
+  BOTTOMSHEET_HEIGHT_ROW_2,
+  BOTTOMSHEET_HEIGHT_ROW_1,
+} from "./utils/height";
 
 interface Props {
   children: ReactNode;
@@ -32,32 +32,6 @@ interface Props {
   setPullUp?: (input: BottomSheetInput) => void;
   header?: boolean;
 }
-
-const DEFAULT_BUTTON_HEIGHT = 1;
-
-export const BOTTOMSHEET_HEIGHT_HIGH = 94.35;
-export const BOTTOMSHEET_HEIGHT_MIDDLE = 59.95;
-export const BOTTOMSHEET_HEIGHT_ROW_2 = 21.6;
-export const BOTTOMSHEET_HEIGHT_ROW_1 = 14;
-
-// 높이 퍼센트 계산
-const getHeightPercent = (location: BottomSheetHeight): number => {
-  if (location === null || location === "hidden") return 0;
-  if (typeof location === "number") return location;
-
-  switch (location) {
-    case "high":
-      return BOTTOMSHEET_HEIGHT_HIGH;
-    case "middle":
-      return BOTTOMSHEET_HEIGHT_MIDDLE;
-    case "row-2":
-      return BOTTOMSHEET_HEIGHT_ROW_2;
-    case "row-1":
-      return BOTTOMSHEET_HEIGHT_ROW_1;
-    default:
-      return 0;
-  }
-};
 
 interface WrapperProps extends Props {
   onClose: () => void;
@@ -94,7 +68,7 @@ const Wrapper = ({
   // 드래그 제약 조건
   const dragConstraints = useMemo(
     () => ({
-      top: -currentHeightPx - 50, // 약간 위로 과도 드래그 허용
+      top: -currentHeightPx - DRAG_OVERSCROLL_TOP_PX, // 약간 위로 과도 드래그 허용
       bottom: height, // 화면 아래까지
     }),
     [currentHeightPx, height]
@@ -104,8 +78,8 @@ const Wrapper = ({
   const heightPercent = getHeightPercent(pullUp);
   const paddingBottom =
     pullUp && pullUp !== "hidden"
-      ? `${100 - heightPercent + DEFAULT_BUTTON_HEIGHT}vh`
-      : `${DEFAULT_BUTTON_HEIGHT}vh`;
+      ? `${100 - heightPercent + BOTTOM_PADDING_OFFSET_VH}vh`
+      : `${BOTTOM_PADDING_OFFSET_VH}vh`;
 
   return (
     <motion.div
