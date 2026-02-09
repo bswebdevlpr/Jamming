@@ -3,6 +3,7 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { FetchResult } from "../../types/response.interface";
+import { logger } from "@/app/lib/logger";
 import sanitizeHtml from "sanitize-html";
 
 export async function POST(req: NextRequest) {
@@ -43,7 +44,8 @@ export async function POST(req: NextRequest) {
         data,
       };
     })
-    .catch(() => {
+    .catch((e) => {
+      logger.error("naver.map.search", e);
       return {
         status: 500,
         msg: "Failed to request",

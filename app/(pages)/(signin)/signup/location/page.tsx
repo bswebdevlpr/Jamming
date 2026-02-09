@@ -74,18 +74,16 @@ export default function SignUp_Location() {
       profile_image = base64ToFile(content, name, type);
     }
 
-    const ret = await createUser(Object.assign(data, { profile_image }))
-      .then((newUserProfile) => {
-        setUserProfile(newUserProfile);
-        return true;
-      })
-      .catch((e) => {
-        // TODO: 에러모달 - SignUp 에러
-        return false;
-      });
+    const result = await createUser(Object.assign(data, { profile_image }));
 
-    if (ret) router.push("/", { scroll: false });
-    else router.push("/signup");
+    if (result.success === true) {
+      setUserProfile(result.data);
+      router.push("/", { scroll: false });
+    } else if (result.success === false) {
+      // TODO: 에러모달 - SignUp 에러
+      if (process.env.NODE_ENV === "development") console.error(result.error.message);
+      router.push("/signup");
+    }
   };
   //
 

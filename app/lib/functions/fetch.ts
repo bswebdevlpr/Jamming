@@ -2,7 +2,8 @@
 
 import { FetchFeedFunc } from "@/app/ui/templates/feed";
 import { createClient } from "@/app/util/supabase/server";
-import { CustomError } from "../errors/custom-error";
+import { CustomError, ErrorCode } from "../errors/custom-error";
+import { logger } from "../logger";
 import moment from "moment";
 import _ from "lodash";
 import {
@@ -71,7 +72,13 @@ export const fetchJams: FetchFeedFunc = async ({
       query = query.contains("level", [MapLevelToData[convertedParam.level]]);
 
     await query.then(async ({ data, error }) => {
-      if (error) throw CustomError.GetJamFeed;
+      if (error) {
+        throw CustomError.fromSupabaseError(
+          ErrorCode.GET_JAM_FEED,
+          error,
+          "fetchJams"
+        );
+      }
 
       data.forEach((row) => {
         row.curHeadCnt = row.jamentry.length;
@@ -105,9 +112,9 @@ export const fetchJams: FetchFeedFunc = async ({
       ret.nextPage = data.length < 6 ? null : pageParam + 1;
     });
   } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
+    logger.error("fetchJams", e);
     if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
+    else throw CustomError.getJamFeed({ operation: "fetchJams" });
   }
 
   return ret;

@@ -1,14 +1,16 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 import { CreateJamEntryDto } from "../dtos/create";
 import { sanitize, sanitizePublic } from "@/app/lib/functions/validate";
 
 export async function createJamEntry(
   input: CreateJamEntryDto
-): Promise<boolean> {
-  try {
+): Promise<ActionResult<boolean>> {
+  return safeAction("createJamEntry", async () => {
     input.appeal = await sanitize(input.appeal);
 
     const supabase = await createClient();
@@ -16,25 +18,27 @@ export async function createJamEntry(
     const { error } = await supabase.from("jamentry").insert(input);
 
     if (error) {
-      if (process.env.NODE_ENV === "development") console.error(error);
-      return false;
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "createJamEntry"
+      );
     }
 
     return true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    throw CustomError.UnExpected;
-  }
+  });
 }
 
 export async function createPublicFeedback(
   input: string
-): Promise<boolean> {
-  try {
+): Promise<ActionResult<boolean>> {
+  return safeAction("createPublicFeedback", async () => {
     const sanitized = await sanitizePublic(input);
 
     if (sanitized.length === 0 || sanitized.length > 100) {
-      return false;
+      throw CustomError.validationFailed({
+        operation: "createPublicFeedback",
+      });
     }
 
     const supabase = await createClient();
@@ -55,14 +59,13 @@ export async function createPublicFeedback(
     });
 
     if (error) {
-      if (process.env.NODE_ENV === "development") console.error(error);
-      return false;
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "createPublicFeedback"
+      );
     }
 
     return true;
-  } catch (e) {
-    if (e instanceof CustomError) throw e;
-    if (process.env.NODE_ENV === "development") console.error(e);
-    return false;
-  }
+  });
 }

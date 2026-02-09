@@ -1,16 +1,18 @@
 "use server";
 
 import { getUser } from "@/app/api/functions/read";
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 
-export const getUserByNickname = async (nickname: string) => {
-  let ret = null;
-
-  try {
+export const getUserByNickname = async (
+  nickname: string
+): Promise<ActionResult<any>> => {
+  return safeAction("getUserByNickname", async () => {
     const supabase = await createClient();
 
-    getUser(supabase);
+    await getUser(supabase);
 
     const { data, error } = await supabase
       .from("user")
@@ -22,15 +24,18 @@ export const getUserByNickname = async (nickname: string) => {
       )
       .eq("nickname", nickname)
       .single();
-    if (error) throw CustomError.UnExpected;
-    else if (!data) throw CustomError.InvalidUser;
 
-    ret = data;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "getUserByNickname"
+      );
+    }
+    if (!data) {
+      throw CustomError.invalidUser({ operation: "getUserByNickname" });
+    }
 
-  return ret;
+    return data;
+  });
 };

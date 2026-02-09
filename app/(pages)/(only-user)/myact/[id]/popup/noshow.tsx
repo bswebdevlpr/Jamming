@@ -107,9 +107,13 @@ export default function NoshowPopup({
                     color: "#FFF",
                     border: "1px solid #444447",
                   }}
-                  onClick={() => {
-                    setNoShow(entryId, true);
-                    turnOff();
+                  onClick={async () => {
+                    const result = await setNoShow(entryId, true);
+                    if (result.success === true) {
+                      turnOff();
+                    } else if (result.success === false) {
+                      alert(result.error.message);
+                    }
                   }}
                 />
                 <ButtonTemplate

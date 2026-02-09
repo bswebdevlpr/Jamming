@@ -46,22 +46,29 @@ export default function MyAct() {
 
   // HOOKS
   useEffect(() => {
-    try {
-      (async () => {
+    (async () => {
+      try {
         const {
           data: { user },
           error,
         } = await createClient().auth.getUser();
-        if (!user || error) throw CustomError.InvalidUserSession;
+        if (!user || error) throw CustomError.invalidSession({ operation: "myact.detail.getUser" });
 
         setUserId(user.id);
+
+        const result = await initialize(jam_id);
+        if (result.success === false) {
+          if (process.env.NODE_ENV === "development") console.error(result.error.message);
+          router.back();
+          return;
+        }
 
         const {
           jam: foundJam,
           leader: foundLeader,
           memberEntries: foundMemberEntries,
           applierEntries: foundApplierEntries,
-        } = await initialize(jam_id);
+        } = result.data;
 
         setJam(foundJam);
         setLeader(foundLeader);
@@ -70,13 +77,12 @@ export default function MyAct() {
           setApplierEntries(foundApplierEntries);
 
         setIsInitializing(false);
-      })();
-    } catch (e) {
-      const errToShow = e instanceof CustomError ? e : CustomError.UnExpected;
-      // TODO: 에러팝업
-      if (process.env.NODE_ENV === "development") console.error(errToShow);
-      router.back();
-    }
+      } catch (e) {
+        const errToShow = e instanceof CustomError ? e : CustomError.unexpected({ operation: "myact.detail" });
+        if (process.env.NODE_ENV === "development") console.error(errToShow);
+        router.back();
+      }
+    })();
   }, [jam_id]);
   //
 

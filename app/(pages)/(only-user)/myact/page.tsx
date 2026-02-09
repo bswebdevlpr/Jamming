@@ -80,8 +80,12 @@ export default function MyAct() {
   useEffect(() => {
     (async () => {
       try {
-        const invitations = await getRejamInvitations();
-        setRejamInvitations(invitations);
+        const result = await getRejamInvitations();
+        if (result.success === true) {
+          setRejamInvitations(result.data);
+        } else if (result.success === false) {
+          if (process.env.NODE_ENV === "development") console.error(result.error.message);
+        }
       } catch (e) {
         if (process.env.NODE_ENV === "development") console.error(e);
       }

@@ -1,21 +1,29 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
 import { Entity_Notification } from "@/app/lib/interfaces/entity.interface";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 
 export async function getNotifications(
   limit: number = 20,
   offset: number = 0
-): Promise<Entity_Notification[]> {
-  try {
+): Promise<ActionResult<Entity_Notification[]>> {
+  return safeAction("getNotifications", async () => {
     const supabase = await createClient();
 
     const {
       data: { user },
       error: authErr,
     } = await supabase.auth.getUser();
-    if (authErr || !user) throw CustomError.InvalidUserSession;
+    if (authErr || !user) {
+      throw CustomError.fromAuthError(
+        ErrorCode.INVALID_SESSION,
+        authErr ?? { message: "User not found" },
+        "getNotifications"
+      );
+    }
 
     const { data, error } = await supabase
       .from("notification")
@@ -23,89 +31,121 @@ export async function getNotifications(
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
-    if (error) throw CustomError.UnExpected;
+
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "getNotifications"
+      );
+    }
 
     return data ?? [];
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+  });
 }
 
-export async function getUnreadCount(): Promise<number> {
-  try {
+export async function getUnreadCount(): Promise<ActionResult<number>> {
+  return safeAction("getUnreadCount", async () => {
     const supabase = await createClient();
 
     const {
       data: { user },
       error: authErr,
     } = await supabase.auth.getUser();
-    if (authErr || !user) throw CustomError.InvalidUserSession;
+    if (authErr || !user) {
+      throw CustomError.fromAuthError(
+        ErrorCode.INVALID_SESSION,
+        authErr ?? { message: "User not found" },
+        "getUnreadCount"
+      );
+    }
 
     const { count, error } = await supabase
       .from("notification")
       .select("*", { count: "exact", head: true })
       .eq("user_id", user.id)
       .eq("is_read", false);
-    if (error) throw CustomError.UnExpected;
+
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "getUnreadCount"
+      );
+    }
 
     return count ?? 0;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+  });
 }
 
-export async function markAsRead(notificationId: number): Promise<boolean> {
-  try {
+export async function markAsRead(
+  notificationId: number
+): Promise<ActionResult<boolean>> {
+  return safeAction("markAsRead", async () => {
     const supabase = await createClient();
 
     const {
       data: { user },
       error: authErr,
     } = await supabase.auth.getUser();
-    if (authErr || !user) throw CustomError.InvalidUserSession;
+    if (authErr || !user) {
+      throw CustomError.fromAuthError(
+        ErrorCode.INVALID_SESSION,
+        authErr ?? { message: "User not found" },
+        "markAsRead"
+      );
+    }
 
     const { error } = await supabase
       .from("notification")
       .update({ is_read: true })
       .eq("id", notificationId)
       .eq("user_id", user.id);
-    if (error) throw CustomError.UnExpected;
+
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "markAsRead"
+      );
+    }
 
     return true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+  });
 }
 
-export async function markAllAsRead(): Promise<boolean> {
-  try {
+export async function markAllAsRead(): Promise<ActionResult<boolean>> {
+  return safeAction("markAllAsRead", async () => {
     const supabase = await createClient();
 
     const {
       data: { user },
       error: authErr,
     } = await supabase.auth.getUser();
-    if (authErr || !user) throw CustomError.InvalidUserSession;
+    if (authErr || !user) {
+      throw CustomError.fromAuthError(
+        ErrorCode.INVALID_SESSION,
+        authErr ?? { message: "User not found" },
+        "markAllAsRead"
+      );
+    }
 
     const { error } = await supabase
       .from("notification")
       .update({ is_read: true })
       .eq("user_id", user.id)
       .eq("is_read", false);
-    if (error) throw CustomError.UnExpected;
+
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "markAllAsRead"
+      );
+    }
 
     return true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+  });
 }
 
 export async function createNotification(
@@ -114,8 +154,8 @@ export async function createNotification(
   title: string,
   body?: string,
   data?: Record<string, any>
-): Promise<boolean> {
-  try {
+): Promise<ActionResult<boolean>> {
+  return safeAction("createNotification", async () => {
     const supabase = await createClient();
 
     const { error } = await supabase.from("notification").insert({
@@ -125,14 +165,15 @@ export async function createNotification(
       body,
       data: data ?? {},
     });
+
     if (error) {
-      if (process.env.NODE_ENV === "development") console.error(error);
-      return false;
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "createNotification"
+      );
     }
 
     return true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    return false;
-  }
+  });
 }

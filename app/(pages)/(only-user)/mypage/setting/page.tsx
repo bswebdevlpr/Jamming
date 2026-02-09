@@ -22,10 +22,11 @@ export default function Setting() {
 
   useEffect(() => {
     (async () => {
-      const user = await initialize();
-      setUser(user);
-
-      setAcceptNoti(user.allow_noti);
+      const result = await initialize();
+      if (result.success) {
+        setUser(result.data);
+        setAcceptNoti(result.data.allow_noti);
+      }
     })();
   }, []);
 

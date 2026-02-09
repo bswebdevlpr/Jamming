@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import xml2js from "xml2js";
 import { JaroWinklerDistance } from "natural";
 import { FetchResult } from "../types/response.interface";
+import { logger } from "@/app/lib/logger";
 import _ from "lodash";
 
 export async function POST(req: NextRequest) {
@@ -68,11 +69,14 @@ export async function POST(req: NextRequest) {
             data,
           };
         })
-        .catch(() => ({
-          status: 500,
-          msg: "Failed to request",
-          data: null,
-        }));
+        .catch((e) => {
+          logger.error("maniadb.parseXml", e);
+          return {
+            status: 500,
+            msg: "Failed to request",
+            data: null,
+          };
+        });
       return parsedByPromise;
     });
 

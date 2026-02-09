@@ -1,7 +1,9 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
 import { Entity_JamEntry } from "@/app/lib/interfaces/entity.interface";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 import moment from "moment";
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -18,19 +20,29 @@ const validateUserEntry = async (
     .eq("user_id", userId)
     .single();
 
-  if (error || !entry) throw CustomError.Forbidden;
+  if (error || !entry) {
+    throw CustomError.forbidden({ operation: "validateUserEntry" });
+  }
   return entry;
 };
 
-export const getRejamInvitations = async (): Promise<Entity_JamEntry[]> => {
-  try {
+export const getRejamInvitations = async (): Promise<
+  ActionResult<Entity_JamEntry[]>
+> => {
+  return safeAction("getRejamInvitations", async () => {
     const supabase = await createClient();
 
     const {
       data: { user },
       error: authErr,
     } = await supabase.auth.getUser();
-    if (authErr || !user) throw CustomError.InvalidUserSession;
+    if (authErr || !user) {
+      throw CustomError.fromAuthError(
+        ErrorCode.INVALID_SESSION,
+        authErr ?? { message: "User not found" },
+        "getRejamInvitations"
+      );
+    }
 
     const now = moment().toISOString();
 
@@ -55,31 +67,40 @@ export const getRejamInvitations = async (): Promise<Entity_JamEntry[]> => {
       .eq("is_rejam", true)
       .is("is_allowed", null)
       .gt("jamsession.datetime", now);
-    if (error) throw CustomError.UnExpected;
+
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "getRejamInvitations"
+      );
+    }
 
     // jamsession이 null인 경우 필터 (과거 잼은 join에서 null 반환)
     const filtered = (data ?? []).filter((entry) => entry.jamsession);
 
     return filtered;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+  });
 };
 
 export const acceptRejam = async (
   entryId: number,
   appliedPos: string
-): Promise<boolean> => {
-  try {
+): Promise<ActionResult<boolean>> => {
+  return safeAction("acceptRejam", async () => {
     const supabase = await createClient();
 
     const {
       data: { user },
       error: authErr,
     } = await supabase.auth.getUser();
-    if (authErr || !user) throw CustomError.InvalidUserSession;
+    if (authErr || !user) {
+      throw CustomError.fromAuthError(
+        ErrorCode.INVALID_SESSION,
+        authErr ?? { message: "User not found" },
+        "acceptRejam"
+      );
+    }
 
     // 본인의 엔트리인지 확인
     await validateUserEntry(supabase, entryId, user.id);
@@ -88,25 +109,36 @@ export const acceptRejam = async (
       .from("jamentry")
       .update({ is_allowed: true, applied_pos: appliedPos })
       .eq("id", entryId);
-    if (error) throw CustomError.UnExpected;
+
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "acceptRejam"
+      );
+    }
 
     return true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+  });
 };
 
-export const rejectRejam = async (entryId: number): Promise<boolean> => {
-  try {
+export const rejectRejam = async (
+  entryId: number
+): Promise<ActionResult<boolean>> => {
+  return safeAction("rejectRejam", async () => {
     const supabase = await createClient();
 
     const {
       data: { user },
       error: authErr,
     } = await supabase.auth.getUser();
-    if (authErr || !user) throw CustomError.InvalidUserSession;
+    if (authErr || !user) {
+      throw CustomError.fromAuthError(
+        ErrorCode.INVALID_SESSION,
+        authErr ?? { message: "User not found" },
+        "rejectRejam"
+      );
+    }
 
     // 본인의 엔트리인지 확인
     await validateUserEntry(supabase, entryId, user.id);
@@ -115,12 +147,15 @@ export const rejectRejam = async (entryId: number): Promise<boolean> => {
       .from("jamentry")
       .update({ is_allowed: false })
       .eq("id", entryId);
-    if (error) throw CustomError.UnExpected;
+
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "rejectRejam"
+      );
+    }
 
     return true;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+  });
 };

@@ -1,7 +1,8 @@
 "use server";
 
 import { getUser } from "@/app/api/functions/read";
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
+import { logger } from "@/app/lib/logger";
 import { createClient } from "@/app/util/supabase/server";
 import _ from "lodash";
 import moment from "moment";
@@ -27,16 +28,22 @@ export const getDatesHavingJam: () => Promise<string[]> = async () => {
       .gte("datetime", today.toISOString())
       .lte("datetime", today.clone().add(2, "week").toISOString())
       .then(({ data, error }) => {
-        if (error) throw CustomError.UnExpected;
+        if (error) {
+          throw CustomError.fromSupabaseError(
+            ErrorCode.UNEXPECTED,
+            error,
+            "getDatesHavingJam"
+          );
+        }
 
         return _.uniq(
           data.map((row) => moment(row.datetime).format("YYYYMMDD"))
         );
       });
   } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
+    logger.error("getDatesHavingJam", e);
     if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
+    else throw CustomError.unexpected({ operation: "getDatesHavingJam" });
   }
 
   return ret;
@@ -60,16 +67,22 @@ export const getDatesHavingJamPublic: () => Promise<string[]> = async () => {
       .gte("datetime", today.toISOString())
       .lte("datetime", today.clone().add(2, "week").toISOString())
       .then(({ data, error }) => {
-        if (error) throw CustomError.UnExpected;
+        if (error) {
+          throw CustomError.fromSupabaseError(
+            ErrorCode.UNEXPECTED,
+            error,
+            "getDatesHavingJamPublic"
+          );
+        }
 
         return _.uniq(
           data.map((row) => moment(row.datetime).format("YYYYMMDD"))
         );
       });
   } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
+    logger.error("getDatesHavingJamPublic", e);
     if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
+    else throw CustomError.unexpected({ operation: "getDatesHavingJamPublic" });
   }
 
   return ret;
