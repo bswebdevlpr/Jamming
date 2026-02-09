@@ -152,6 +152,9 @@ const BottomSheet = ({ width, height }: Props) => {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, handleClose]);
 
+  // 뷰포트 크기가 0이면 렌더링하지 않음 (초기 로딩 또는 비정상 상태)
+  if (width === 0 || height === 0) return null;
+
   return (
     <>
       {/* 백드롭 */}

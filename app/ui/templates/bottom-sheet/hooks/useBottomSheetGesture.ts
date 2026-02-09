@@ -2,7 +2,6 @@ import { useCallback, useMemo } from "react";
 import { PanInfo, useAnimation } from "framer-motion";
 import { BottomSheetHeight } from "../types";
 import { heightToPixels } from "../utils/height";
-import { CLOSE_ANIMATION_DURATION_MS } from "../utils/constants";
 
 const VELOCITY_THRESHOLD = 500; // px/s - 빠른 스와이프 감지
 const POSITION_THRESHOLD = 0.4; // 40% 이상 드래그 시 닫기
@@ -47,13 +46,17 @@ export function useBottomSheetGesture({
     (_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
       const { velocity, offset } = info;
 
+      // 높이가 0이면 바텀시트가 닫힌 상태이므로 즉시 닫기
+      if (currentHeightPx === 0) {
+        onClose();
+        return;
+      }
+
       // 빠른 아래 스와이프 = 즉시 닫기
       if (velocity.y > VELOCITY_THRESHOLD) {
-        controls.start({
-          y: 0,
-          transition: closeSpringConfig,
-        });
-        setTimeout(() => onClose(), CLOSE_ANIMATION_DURATION_MS);
+        controls
+          .start({ y: 0, transition: closeSpringConfig })
+          .then(() => onClose());
         return;
       }
 
@@ -62,11 +65,9 @@ export function useBottomSheetGesture({
 
       if (draggedDownRatio > POSITION_THRESHOLD) {
         // 닫기
-        controls.start({
-          y: 0,
-          transition: closeSpringConfig,
-        });
-        setTimeout(() => onClose(), CLOSE_ANIMATION_DURATION_MS);
+        controls
+          .start({ y: 0, transition: closeSpringConfig })
+          .then(() => onClose());
       } else {
         // 원위치로 복귀
         controls.start({
