@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo } from "react";
+import { ReactNode, useCallback, useEffect, useMemo } from "react";
 import BottomSheetHeader from "./header";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -83,6 +83,9 @@ const Wrapper = ({
 
   return (
     <motion.div
+      role="dialog"
+      aria-modal="true"
+      aria-label="바텀시트"
       drag="y"
       dragConstraints={dragConstraints}
       dragElastic={{ top: 0.1, bottom: 0.2 }}
@@ -134,11 +137,20 @@ const BottomSheet = ({ width, height }: Props) => {
     };
   }, [pathname, searchParams, closeBottomSheet]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     closeBottomSheet();
-  };
+  }, [closeBottomSheet]);
 
   const isOpen = location && location !== "hidden";
+
+  // ESC 키로 바텀시트 닫기
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) handleClose();
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, handleClose]);
 
   return (
     <>
@@ -147,6 +159,8 @@ const BottomSheet = ({ width, height }: Props) => {
         {isOpen && (
           <motion.div
             key="backdrop"
+            role="presentation"
+            aria-label="바텀시트 닫기"
             className="absolute w-full h-full top-0 left-0 z-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
