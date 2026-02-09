@@ -1,8 +1,9 @@
-import { ReactNode, useCallback, useEffect, useMemo } from "react";
+import { ReactNode, memo, useCallback, useEffect, useMemo } from "react";
 import BottomSheetHeader from "./header";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useBottomSheetStore } from "@/app/stores";
+import { useShallow } from "zustand/react/shallow";
 import {
   useBottomSheetGesture,
   springConfig,
@@ -111,7 +112,7 @@ const Wrapper = ({
 };
 Wrapper.displayName = "BottomSheetWrapper";
 
-const BottomSheetContent = ({ children }: { children: ReactNode }) => (
+const BottomSheetContent = memo(({ children }: { children: ReactNode }) => (
   <div
     className="touch-auto"
     style={{
@@ -122,10 +123,17 @@ const BottomSheetContent = ({ children }: { children: ReactNode }) => (
   >
     {children}
   </div>
-);
+));
+BottomSheetContent.displayName = "BottomSheetContent";
 
 const BottomSheet = ({ width, height }: Props) => {
-  const { children, location, header } = useBottomSheetStore();
+  const { children, location, header } = useBottomSheetStore(
+    useShallow((state) => ({
+      children: state.children,
+      location: state.location,
+      header: state.header,
+    }))
+  );
   const closeBottomSheet = useBottomSheetStore((state) => state.close);
   const pathname = usePathname();
   const searchParams = useSearchParams();
