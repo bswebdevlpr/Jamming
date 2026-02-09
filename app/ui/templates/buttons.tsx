@@ -1,4 +1,6 @@
 import { CSSProperties } from "react";
+import { motion } from "framer-motion";
+import { BUTTON_INTERACTION } from "@/app/lib/animations";
 
 const CommonStyle = {
   width: "100%",
@@ -45,7 +47,7 @@ const ButtonTemplate = ({
   type = "submit",
 }: ButtonTemplateProps) => {
   return (
-    <button
+    <motion.button
       style={
         isActive
           ? {
@@ -62,9 +64,21 @@ const ButtonTemplate = ({
       className={className}
       onClick={isActive === undefined || isActive ? onClick : null}
       type={type}
+      // Framer Motion interactions (only when button is active)
+      whileHover={
+        isActive === undefined || isActive
+          ? BUTTON_INTERACTION.whileHover
+          : undefined
+      }
+      whileTap={
+        isActive === undefined || isActive
+          ? BUTTON_INTERACTION.whileTap
+          : undefined
+      }
+      transition={BUTTON_INTERACTION.transition}
     >
       {text}
-    </button>
+    </motion.button>
   );
 };
 export default ButtonTemplate;
