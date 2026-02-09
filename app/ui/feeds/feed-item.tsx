@@ -71,6 +71,15 @@ export const FeedItem_Jam: React.FC<FeedItemProps_Jam> = memo(function FeedItem_
           ? router.push(`/myact/${id}`)
           : router.push(`/jamsession/post/${id}`)
       }
+      // Stagger animation on mount
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.3,
+        delay: idx * 0.05,
+        ease: [0.4, 0, 0.2, 1],
+      }}
+      // Hover/tap effects
       whileHover={{
         background: "rgba(163, 255, 12, 0.12)",
       }}

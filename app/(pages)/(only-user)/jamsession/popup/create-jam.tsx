@@ -3,6 +3,8 @@
 import { FormFieldRow } from "@/app/ui/rows/form-field-row";
 import X from "@/app/ui/images/common/x";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { POPUP_VARIANTS, GPU_ACCELERATED_STYLE } from "@/app/lib/animations";
 import BottomSheetContent from "../bottom-sheet/content";
 import SelectHeadCountPopup from "./select-headcount";
 import ClockPopup from "./clock";
@@ -38,8 +40,6 @@ export default function CreateJam({
   // ZUSTAND STORE
   const bottomSheet = useBottomSheetStore();
   //
-
-  const ref = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname(),
     searchParams = useSearchParams();
@@ -128,12 +128,6 @@ export default function CreateJam({
     return () => {
       window.removeEventListener("resize", updateDimensions);
     };
-  }, [isTurnedOn]);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.style.display = isTurnedOn ? "flex" : "none";
-    }
   }, [isTurnedOn]);
 
   useEffect(() => {
@@ -232,21 +226,27 @@ export default function CreateJam({
   //
 
   return (
-    <div
-      ref={ref}
-      className="hidden absolute z-10 flex flex-col justify-between"
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
+    <AnimatePresence>
+      {isTurnedOn && (
+        <motion.div
+          className="absolute z-10 flex flex-col justify-between"
+          style={{
+            width: `${width}px`,
+            height: `${height}px`,
 
-        top: 0,
-        left: 0,
+            top: 0,
+            left: 0,
 
-        overflow: "auto",
+            overflow: "auto",
 
-        backgroundColor: "var(--background)",
-      }}
-    >
+            backgroundColor: "var(--background)",
+            ...GPU_ACCELERATED_STYLE,
+          }}
+          variants={POPUP_VARIANTS}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
       <form
         onSubmit={handleSubmit(onSubmit, (e) => {
           if (process.env.NODE_ENV === "development") {
@@ -460,6 +460,8 @@ export default function CreateJam({
           }
         />
       </form>
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

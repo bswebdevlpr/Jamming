@@ -1,11 +1,11 @@
 "use client";
 
+import { CSSProperties, ReactNode } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  CSSProperties,
-  ReactNode,
-  useEffect,
-  useRef,
-} from "react";
+  POPUP_VARIANTS,
+  GPU_ACCELERATED_STYLE,
+} from "@/app/lib/animations";
 
 export default function PopupTemplate({
   children,
@@ -18,35 +18,42 @@ export default function PopupTemplate({
   className?: string;
   style?: CSSProperties;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.style.display = isTurnedOn ? "flex" : "none";
-    }
-  }, [isTurnedOn]);
-  //
-
   return (
-    <div
-      ref={ref}
-      className={`hidden fixed z-10 ${className}`}
-      style={{
-        ...style,
+    <AnimatePresence>
+      {isTurnedOn && (
+        <motion.div
+          className={`fixed z-10 ${className ?? ""}`}
+          style={{
+            ...style,
 
-        width: 'min(var(--max-width), 100vw)',
-        height: 'calc(var(--vh, 1vh) * 100)',
+            width: "min(var(--max-width), 100vw)",
+            height: "calc(var(--vh, 1vh) * 100)",
 
-        top: 0,
-        left: '50%',
-        transform: 'translateX(-50%)',
+            top: 0,
+            left: "50%",
 
-        overflow: "auto",
+            overflow: "auto",
 
-        backgroundColor: style?.backgroundColor || "var(--background)",
-      }}
-    >
-      {children}
-    </div>
+            backgroundColor: style?.backgroundColor || "var(--background)",
+
+            ...GPU_ACCELERATED_STYLE,
+            // translateX(-50%) is handled by framer-motion x property below
+            // so we do NOT set transform here
+          }}
+          variants={POPUP_VARIANTS}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          // Keep the popup horizontally centred via framer-motion's x
+          // This avoids conflicting with the scale transform in variants
+          custom={{ x: "-50%" }}
+          transformTemplate={(_transform, generated: string) =>
+            `translateX(-50%) ${generated}`
+          }
+        >
+          {children}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
