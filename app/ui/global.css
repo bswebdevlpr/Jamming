@@ -96,6 +96,14 @@
   --font-size: 14px;
 
   --vh: 1vh;
+
+  /* 바텀시트 디자인 토큰 */
+  --deep-bg: #242426;
+  --dark-gray: #444447;
+  --mid-gray-border: #535355;
+  --inactive-bg: #323234;
+  --backdrop: rgba(0, 0, 0, 0.5);
+  --shadow-bottom-sheet: 0px 0px 10px rgba(0, 0, 0, 0.6);
 }
 
 /* ============================================
