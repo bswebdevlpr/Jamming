@@ -10,7 +10,7 @@ export default function BottomSheetContentTemplate_List({
 }: {
   children: ReactNode;
   btnTxt: string;
-  onClose: any;
+  onClose: () => void;
 }) {
   return (
     <div
