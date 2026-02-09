@@ -111,13 +111,18 @@ export default function JamSession_Post() {
   };
 
   const fetchJamData = useCallback(async () => {
+    const result = await initialize(Number(jam_id as string));
+    if (result.success === false) {
+      throw new Error(result.error.message);
+    }
+
     const {
       jam: foundJam,
       user: foundUser,
       isApplyBtnActive: isApplyBtnActiveFromFunc,
       applyBtnTxt: applyBtnTxtFromFunc,
-    } = await initialize(Number(jam_id as string));
-    if (!foundJam) throw CustomError.InvalidJam;
+    } = result.data;
+    if (!foundJam) throw CustomError.invalidJam({ operation: "jamPost.fetchJamData" });
 
     setJam(foundJam);
     setUser(foundUser ?? null);
@@ -142,7 +147,7 @@ export default function JamSession_Post() {
     try {
       await fetchJamData();
     } catch (e) {
-      const errToShow = e instanceof CustomError ? e : CustomError.UnExpected;
+      const errToShow = e instanceof CustomError ? e : CustomError.unexpected({ operation: "jamPost.refetch" });
       if (process.env.NODE_ENV === "production") console.error(errToShow);
       router.back();
     }
@@ -217,11 +222,15 @@ export default function JamSession_Post() {
                           }}
                           onClick={() => {
                             if (jam)
-                              deleteJamSession(jam.id).then(() => {
-                                bottomSheet.set({
-                                  location: "hidden",
-                                });
-                                router.push("/");
+                              deleteJamSession(jam.id).then((result) => {
+                                if (result.success === true) {
+                                  bottomSheet.set({
+                                    location: "hidden",
+                                  });
+                                  router.push("/");
+                                } else if (result.success === false) {
+                                  alert(result.error.message);
+                                }
                               });
                           }}
                         />

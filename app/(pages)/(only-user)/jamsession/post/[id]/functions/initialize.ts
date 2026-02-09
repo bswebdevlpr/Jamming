@@ -1,10 +1,12 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
 import {
   Entity_JamSession,
   Entity_User,
 } from "@/app/lib/interfaces/entity.interface";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 import { getJam, getJamPublic } from "@/app/api/functions/read";
 
@@ -15,15 +17,17 @@ interface RetType {
   applyBtnTxt: string;
 }
 
-export const initialize = async (jam_id: number) => {
-  let ret: RetType = {
-    user: null,
-    jam: null,
-    isApplyBtnActive: undefined,
-    applyBtnTxt: null,
-  };
+export const initialize = async (
+  jam_id: number
+): Promise<ActionResult<RetType>> => {
+  return safeAction("jamPost.initialize", async () => {
+    const ret: RetType = {
+      user: null,
+      jam: null,
+      isApplyBtnActive: undefined,
+      applyBtnTxt: null,
+    };
 
-  try {
     const supabase = await createClient();
 
     const {
@@ -58,10 +62,7 @@ export const initialize = async (jam_id: number) => {
       ret.applyBtnTxt = "로그인하고 참여하기";
       ret.isApplyBtnActive = true;
     }
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    throw CustomError.UnExpected;
-  }
 
-  return ret;
+    return ret;
+  });
 };

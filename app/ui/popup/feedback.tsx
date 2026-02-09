@@ -28,13 +28,13 @@ export default function FeedbackPopup({
 
     setIsSubmitting(true);
     try {
-      const success = await createPublicFeedback(feedback);
-      if (success) {
+      const result = await createPublicFeedback(feedback);
+      if (result.success === true) {
         recordSubmission();
         setFeedback("");
         setPlaceholder("피드백 전송이 완료되었어요");
-      } else {
-        setPlaceholder("피드백 전송이 실패했어요. 나중에 다시 시도해주세요.");
+      } else if (result.success === false) {
+        setPlaceholder(result.error.message || "피드백 전송이 실패했어요. 나중에 다시 시도해주세요.");
       }
     } catch {
       setPlaceholder("입력 내용을 확인해주세요.");

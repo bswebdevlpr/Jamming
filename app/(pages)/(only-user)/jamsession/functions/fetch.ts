@@ -1,7 +1,9 @@
 "use server";
 
 import { getUser } from "@/app/api/functions/read";
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import {
   MapGenreToData,
   MapLevelToData,
@@ -10,15 +12,14 @@ import {
 import { ZodType_Post } from "@/app/lib/zod";
 import { createClient } from "@/app/util/supabase/server";
 
-export const createJam = async (input: ZodType_Post) => {
-  let ret = null;
-
-  try {
+export const createJam = async (
+  input: ZodType_Post
+): Promise<ActionResult<any>> => {
+  return safeAction("createJam", async () => {
     const supabase = await createClient();
-
     const user = await getUser(supabase);
 
-    ret = await supabase
+    const result = await supabase
       .from("jamsession")
       .insert({
         ...input,
@@ -31,7 +32,13 @@ export const createJam = async (input: ZodType_Post) => {
       .eq("id", user.id)
       .select()
       .then(async ({ data, error }) => {
-        if (error || data.length === 0) throw CustomError.UnExpected;
+        if (error || data.length === 0) {
+          throw CustomError.fromSupabaseError(
+            ErrorCode.UNEXPECTED,
+            error ?? { message: "No data returned" },
+            "createJam.insert"
+          );
+        }
 
         const images = await Promise.allSettled(
           input.images?.map(
@@ -42,12 +49,17 @@ export const createJam = async (input: ZodType_Post) => {
                   `jamsession/${data[0].id}/${image.file.name}`,
                   image.file
                 )
-                .then(({ data, error }) => {
-                  if (error) throw CustomError.UploadImage;
+                .then(({ data: uploadData, error }) => {
+                  if (error) {
+                    throw CustomError.imageUploadFailed({
+                      operation: "createJam.uploadImage",
+                      supabaseMessage: error.message,
+                    });
+                  }
 
                   return supabase.storage
                     .from(process.env.SUPABASE_STORAGE_NAME)
-                    .getPublicUrl(data.path).data.publicUrl;
+                    .getPublicUrl(uploadData.path).data.publicUrl;
                 })
           )
         );
@@ -63,19 +75,19 @@ export const createJam = async (input: ZodType_Post) => {
             .eq("id", data[0].id);
           if (error) {
             await supabase.from("jamsession").delete().eq("id", data[0].id);
-            throw CustomError.UploadImage;
+            throw CustomError.imageUploadFailed({
+              operation: "createJam.updateImages",
+              supabaseCode: error.code,
+              supabaseMessage: error.message,
+            });
           }
         }
 
         return data;
       });
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
 
-  return ret;
+    return result;
+  });
 };
 
 interface UpdateJamOptions {
@@ -86,12 +98,9 @@ export const updateJam = async (
   jam_id: number,
   input: ZodType_Post,
   options?: UpdateJamOptions
-) => {
-  let ret = null;
-
-  try {
+): Promise<ActionResult<any>> => {
+  return safeAction("updateJam", async () => {
     const supabase = await createClient();
-
     const user = await getUser(supabase);
 
     const { data: jam, error: jamError } = await supabase
@@ -99,8 +108,16 @@ export const updateJam = async (
       .select("id, user_id, images")
       .eq("id", jam_id)
       .single();
-    if (jamError || !jam) throw CustomError.InvalidJam;
-    if (jam.user_id !== user.id) throw CustomError.Forbidden;
+    if (jamError || !jam) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.INVALID_JAM,
+        jamError ?? { message: "Jam not found" },
+        "updateJam.getJam"
+      );
+    }
+    if (jam.user_id !== user.id) {
+      throw CustomError.forbidden({ operation: "updateJam" });
+    }
 
     const preservedImages =
       options?.preservedImages ?? (Array.isArray(jam.images) ? jam.images : []);
@@ -112,7 +129,12 @@ export const updateJam = async (
           .upload(`jamsession/${jam_id}/${image.file.name}`, image.file, {
             upsert: true,
           });
-        if (error) throw CustomError.UploadImage;
+        if (error) {
+          throw CustomError.imageUploadFailed({
+            operation: "updateJam.uploadImage",
+            supabaseMessage: error.message,
+          });
+        }
 
         return supabase.storage
           .from(process.env.SUPABASE_STORAGE_NAME)
@@ -144,20 +166,22 @@ export const updateJam = async (
       pos: ["v"],
     };
 
-    ret = await supabase
+    const result = await supabase
       .from("jamsession")
       .update(payload)
       .eq("id", jam_id)
       .select()
       .then(({ data, error }) => {
-        if (error || data.length === 0) throw CustomError.UnExpected;
+        if (error || data.length === 0) {
+          throw CustomError.fromSupabaseError(
+            ErrorCode.UNEXPECTED,
+            error ?? { message: "Update returned no data" },
+            "updateJam.update"
+          );
+        }
         return data[0];
       });
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
 
-  return ret;
+    return result;
+  });
 };

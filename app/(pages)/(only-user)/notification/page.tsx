@@ -22,11 +22,15 @@ export default function NotificationPage() {
   useEffect(() => {
     (async () => {
       try {
-        const data = await getNotifications();
-        setNotifications(data);
+        const result = await getNotifications();
+        if (result.success) {
+          setNotifications(result.data);
+        }
 
-        await markAllAsRead();
-        resetUnread();
+        const markResult = await markAllAsRead();
+        if (markResult.success) {
+          resetUnread();
+        }
       } catch (e) {
         if (process.env.NODE_ENV === "development") console.error(e);
       } finally {

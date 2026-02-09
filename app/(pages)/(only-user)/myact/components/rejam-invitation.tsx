@@ -34,8 +34,12 @@ export default function RejamInvitationCard({
 
     setIsSubmitting(true);
     try {
-      await acceptRejam(entry.id, MapPositionToData[selectedPos]);
-      onRemove(entry.id);
+      const result = await acceptRejam(entry.id, MapPositionToData[selectedPos]);
+      if (result.success === true) {
+        onRemove(entry.id);
+      } else if (result.success === false) {
+        alert(result.error.message);
+      }
     } catch (e) {
       if (process.env.NODE_ENV === "development") console.error(e);
     } finally {
@@ -48,8 +52,12 @@ export default function RejamInvitationCard({
 
     setIsSubmitting(true);
     try {
-      await rejectRejam(entry.id);
-      onRemove(entry.id);
+      const result = await rejectRejam(entry.id);
+      if (result.success === true) {
+        onRemove(entry.id);
+      } else if (result.success === false) {
+        alert(result.error.message);
+      }
     } catch (e) {
       if (process.env.NODE_ENV === "development") console.error(e);
     } finally {

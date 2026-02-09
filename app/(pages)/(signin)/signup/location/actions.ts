@@ -1,7 +1,7 @@
 "use server";
 
 import { getUser } from "@/app/api/functions/read";
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
 import { UserProfile } from "@/app/lib/interfaces/global.interface";
 import {
   MapGenreToData,
@@ -9,14 +9,15 @@ import {
   MapLocationToData,
   MapPositionToData,
 } from "@/app/lib/maps/jam";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 
-export default async function createUser(input: any): Promise<UserProfile> {
-  let ret: UserProfile = null;
-
-  try {
+export default async function createUser(
+  input: any
+): Promise<ActionResult<UserProfile>> {
+  return safeAction("createUser", async () => {
     const supabase = await createClient();
-
     const user = await getUser(supabase);
 
     let profile_image =
@@ -46,14 +47,15 @@ export default async function createUser(input: any): Promise<UserProfile> {
       })
       .select("*, playlist(*)")
       .single();
-    if (error || !data) throw CustomError.SignUp;
 
-    ret = data;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+    if (error || !data) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.SIGNUP_FAILED,
+        error ?? { message: "No data returned" },
+        "createUser"
+      );
+    }
 
-  return ret;
+    return data;
+  });
 }

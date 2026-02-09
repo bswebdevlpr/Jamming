@@ -1,7 +1,11 @@
 "use server";
 
-import { CustomError } from "@/app/lib/errors/custom-error";
+import {
+  CustomError,
+  ErrorCode,
+} from "@/app/lib/errors/custom-error";
 import { Entity_JamSession } from "@/app/lib/interfaces/entity.interface";
+import { logger } from "@/app/lib/logger";
 import { createClient } from "@/app/util/supabase/server";
 import { SupabaseClient, User } from "@supabase/supabase-js";
 
@@ -12,11 +16,14 @@ export const getUser = async (supabase: SupabaseClient): Promise<User> => {
   } = await supabase.auth.getUser();
 
   if (error) {
-    if (process.env.NODE_ENV === "development") console.error(error);
-    throw CustomError.UnExpected;
+    throw CustomError.fromAuthError(
+      ErrorCode.INVALID_SESSION,
+      error,
+      "getUser"
+    );
   }
   if (!user) {
-    throw CustomError.InvalidUserSession;
+    throw CustomError.invalidSession({ operation: "getUser" });
   }
 
   return user;
@@ -71,11 +78,14 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
     .single();
 
   if (error) {
-    if (process.env.NODE_ENV === "development") console.error(error);
-    throw CustomError.UnExpected;
+    throw CustomError.fromSupabaseError(
+      ErrorCode.UNEXPECTED,
+      error,
+      "getJam"
+    );
   }
   if (!data) {
-    throw CustomError.InvalidJam;
+    throw CustomError.invalidJam({ operation: "getJam" });
   }
 
   return processJamData(data);
@@ -97,7 +107,15 @@ export async function getJamPublic(id: number): Promise<Entity_JamSession | null
     .lte("datetime", twoWeeksLater)
     .single();
 
-  if (error || !data) return null;
+  if (error || !data) {
+    if (error) {
+      logger.warn("getJamPublic", "Public jam query returned error", {
+        supabaseCode: error.code,
+        supabaseMessage: error.message,
+      });
+    }
+    return null;
+  }
 
   return processJamData(data);
 }

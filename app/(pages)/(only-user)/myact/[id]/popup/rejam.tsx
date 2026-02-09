@@ -109,7 +109,12 @@ export default function RejamPopup({
   useEffect(() => {
     if (rejamTargetUserId)
       (async () => {
-        setJams(await getJamSchedule(rejamTargetUserId));
+        const result = await getJamSchedule(rejamTargetUserId);
+        if (result.success === true) {
+          setJams(result.data);
+        } else if (result.success === false) {
+          if (process.env.NODE_ENV === "development") console.error(result.error.message);
+        }
       })();
   }, [rejamTargetUserId]);
 
@@ -118,10 +123,14 @@ export default function RejamPopup({
 
     setIsSubmitting(true);
     try {
-      await sendRejam(rejamTargetUserId, checkedJamIds, appeal);
-      setCheckedJamIds([]);
-      setAppeal("");
-      turnOff();
+      const result = await sendRejam(rejamTargetUserId, checkedJamIds, appeal);
+      if (result.success === true) {
+        setCheckedJamIds([]);
+        setAppeal("");
+        turnOff();
+      } else if (result.success === false) {
+        alert(result.error.message);
+      }
     } catch (e) {
       if (process.env.NODE_ENV === "development") console.error(e);
     } finally {

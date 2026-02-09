@@ -221,13 +221,12 @@ export default function MyPage() {
             }}
             isActive={feedback.length > 0}
             onClick={() =>
-              createFeedback(feedback).then((res) => {
-                console.log("피드백 전송!");
+              createFeedback(feedback).then((result) => {
                 setFeedback("");
-                if (res) setPlaceholder("피드백 전송이 완료되었어요");
-                else
+                if (result.success === true) setPlaceholder("피드백 전송이 완료되었어요");
+                else if (result.success === false)
                   setPlaceholder(
-                    "피드백 전송이 실패했어요. 나중에 다시 시도해주세요."
+                    result.error.message || "피드백 전송이 실패했어요. 나중에 다시 시도해주세요."
                   );
               })
             }

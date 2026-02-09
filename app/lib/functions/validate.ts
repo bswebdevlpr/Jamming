@@ -1,13 +1,11 @@
 "use server";
 
 import sanitizeHtml from "sanitize-html";
-import { CustomError } from "../errors/custom-error";
+import { CustomError, ErrorCode } from "../errors/custom-error";
 import { createClient } from "@/app/util/supabase/server";
 import { UserStatus } from "../enums/supabase.enum";
 
 export async function sanitize(text: string): Promise<string> {
-  let ret: string = "";
-
   try {
     const sanitized: string = sanitizeHtml(text);
 
@@ -27,12 +25,14 @@ export async function sanitize(text: string): Promise<string> {
       await supabase.auth.signOut();
     }
 
-    ret = sanitized;
+    return sanitized;
   } catch (e) {
-    throw CustomError.UnExpected;
+    if (e instanceof CustomError) throw e;
+    throw CustomError.unexpected({
+      operation: "sanitize",
+      originalError: e,
+    });
   }
-
-  return ret;
 }
 
 export async function sanitizePublic(text: string): Promise<string> {
@@ -40,12 +40,15 @@ export async function sanitizePublic(text: string): Promise<string> {
     const sanitized: string = sanitizeHtml(text);
 
     if (text.length !== sanitized.length) {
-      throw CustomError.SecurityViolation;
+      throw CustomError.securityViolation({ operation: "sanitizePublic" });
     }
 
     return sanitized;
   } catch (e) {
     if (e instanceof CustomError) throw e;
-    throw CustomError.UnExpected;
+    throw CustomError.unexpected({
+      operation: "sanitizePublic",
+      originalError: e,
+    });
   }
 }

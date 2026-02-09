@@ -185,8 +185,12 @@ export default function Modal({
                 jam_id,
                 appeal,
                 applied_pos: MapPositionToData[pos],
-              }).then(() => {
-                router.push("/");
+              }).then((result) => {
+                if (result.success === true) {
+                  router.push("/");
+                } else if (result.success === false) {
+                  alert(result.error.message);
+                }
               });
             }}
           >

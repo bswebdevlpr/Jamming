@@ -1,16 +1,15 @@
 "use server";
 
 import { getUser } from "@/app/api/functions/read";
-import { CustomError } from "@/app/lib/errors/custom-error";
+import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
 import { sanitize } from "@/app/lib/functions/validate";
+import { safeAction } from "@/app/lib/functions/server-action";
+import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 
-export const initialize = async () => {
-  let ret = null;
-
-  try {
+export const initialize = async (): Promise<ActionResult<any>> => {
+  return safeAction("mypage.initialize", async () => {
     const supabase = await createClient();
-
     const user = await getUser(supabase);
 
     const { data, error } = await supabase
@@ -22,46 +21,48 @@ export const initialize = async () => {
       )
       .eq("id", user.id)
       .single();
-    if (error) throw CustomError.UnExpected;
-    else if (!data) throw CustomError.InvalidUserSession;
 
-    ret = data;
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+    if (error) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error,
+        "mypage.initialize"
+      );
+    }
+    if (!data) {
+      throw CustomError.invalidSession({
+        operation: "mypage.initialize",
+      });
+    }
 
-  return ret;
+    return data;
+  });
 };
 
-export const createFeedback = async (input: string) => {
-  let ret = null;
-
-  try {
+export const createFeedback = async (
+  input: string
+): Promise<ActionResult<boolean>> => {
+  return safeAction("createFeedback", async () => {
     const supabase = await createClient();
-
     const sanitized = await sanitize(input);
-
     const user = await getUser(supabase);
 
-    ret = await supabase
+    const { data, error } = await supabase
       .from("feedback")
       .insert({
         body: sanitized,
         user_id: user.id,
       })
-      .select()
-      .then(async ({ data, error }) => {
-        if (error || !data) throw CustomError.UnExpected;
+      .select();
 
-        return !!data;
-      });
-  } catch (e) {
-    if (process.env.NODE_ENV === "development") console.error(e);
-    if (e instanceof CustomError) throw e;
-    else throw CustomError.UnExpected;
-  }
+    if (error || !data) {
+      throw CustomError.fromSupabaseError(
+        ErrorCode.UNEXPECTED,
+        error ?? { message: "No data returned" },
+        "createFeedback"
+      );
+    }
 
-  return ret;
+    return !!data;
+  });
 };

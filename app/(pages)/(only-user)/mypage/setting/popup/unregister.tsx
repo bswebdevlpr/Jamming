@@ -61,9 +61,12 @@ export default function UnregisterPopup({
             text="탈퇴"
             className="basis-1/2"
             onClick={async () => {
-              await destoryUser().then(() => {
+              const result = await destoryUser();
+              if (result.success === true) {
                 router.push("/");
-              });
+              } else if (result.success === false) {
+                alert(result.error.message);
+              }
             }}
           />
           <ButtonTemplate text="취소" className="basis-1/2" onClick={turnOff} />
