@@ -93,8 +93,9 @@ const Wrapper = ({
       onDragEnd={handleDragEnd}
       animate={controls}
       initial={{ y: 0 }}
-      className="flex flex-col absolute z-30 touch-none"
+      className="flex flex-col absolute left-0 right-0 z-30 touch-none"
       style={{
+        margin: "0 auto",
         width: `${width}px`,
         height: `${height}px`,
         top: `${height}px`,
@@ -172,7 +173,7 @@ const BottomSheet = ({ width, height }: Props) => {
             key="backdrop"
             role="presentation"
             aria-label="바텀시트 닫기"
-            className="absolute w-full h-full top-0 left-0 z-20"
+            className="absolute w-full h-full top-0 left-0 right-0 z-20"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
