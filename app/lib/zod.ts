@@ -116,7 +116,7 @@ export const ZodSchema_RecruitPost = z.object({
   songs: z.array(ZodSchema_Song).optional(),
   images: z.array(ZodSchema_Image).optional(),
   video_url: z.string().url().optional().or(z.literal("")),
-  openchat: z.string().optional(),
+  openchat: z.string().url().optional().or(z.literal("")),
   deadline: z.string().datetime().optional().or(z.literal("")),
 });
 export type ZodType_RecruitPost = z.infer<typeof ZodSchema_RecruitPost>;

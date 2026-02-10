@@ -42,26 +42,26 @@ export default function RecruitDetailPage() {
   const isAuthor = post?.user_id === userProfile.id;
   const isBandLeader =
     post?.band?.band_member?.some(
-      (m: any) => m.role === "leader" && m.user?.nickname === userProfile.nickname
+      (m: any) => m.role === "leader" && m.user_id === userProfile.id
     ) ?? isAuthor;
 
   const hasApplied = post?.recruit_comment?.some(
     (c) => c.user_id === userProfile.id
   );
 
-  const loadPost = async () => {
-    try {
-      const data = await getRecruitPost(postId);
-      setPost(data);
-    } catch {
-      router.push("/recruit");
-    }
-    setIsLoading(false);
-  };
-
   useEffect(() => {
+    const loadPost = async () => {
+      try {
+        const data = await getRecruitPost(postId);
+        setPost(data);
+      } catch {
+        router.push("/recruit");
+      }
+      setIsLoading(false);
+    };
+
     loadPost();
-  }, [postId]);
+  }, [postId, router]);
 
   const handleClose = async () => {
     if (!confirm("구인글을 마감하시겠습니까?")) return;
