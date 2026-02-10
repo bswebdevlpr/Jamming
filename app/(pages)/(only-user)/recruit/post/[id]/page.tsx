@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { getRecruitPost } from "@/app/api/functions/recruit/read";
@@ -49,19 +49,19 @@ export default function RecruitDetailPage() {
     (c) => c.user_id === userProfile.id
   );
 
-  useEffect(() => {
-    const loadPost = async () => {
-      try {
-        const data = await getRecruitPost(postId);
-        setPost(data);
-      } catch {
-        router.push("/recruit");
-      }
-      setIsLoading(false);
-    };
-
-    loadPost();
+  const loadPost = useCallback(async () => {
+    try {
+      const data = await getRecruitPost(postId);
+      setPost(data);
+    } catch {
+      router.push("/recruit");
+    }
+    setIsLoading(false);
   }, [postId, router]);
+
+  useEffect(() => {
+    loadPost();
+  }, [loadPost]);
 
   const handleClose = async () => {
     if (!confirm("구인글을 마감하시겠습니까?")) return;

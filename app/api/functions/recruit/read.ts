@@ -10,7 +10,7 @@ const RECRUIT_DETAIL_SELECT = `
   band (
     id, name, description, genre, location, level, profile_image, tags,
     band_member (
-      id, pos, role,
+      id, user_id, pos, role,
       user ( nickname, profile_image, pos, genre, level )
     )
   ),
