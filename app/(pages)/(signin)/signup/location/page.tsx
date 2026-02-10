@@ -16,7 +16,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
-import { base64ToFile } from "@/app/util/convert/file";
 import { useSessionStore } from "@/app/stores";
 
 export default function SignUp_Location() {
@@ -28,12 +27,15 @@ export default function SignUp_Location() {
   }, {} as { [key: string]: string });
 
   const setUserProfile = useSessionStore((state) => state.setUserProfile);
+  const signupProfileImage = useSessionStore((state) => state.signupProfileImage);
+  const clearSignupData = useSessionStore((state) => state.clearSignupData);
 
   const router = useRouter();
   //
 
   // STATES
   const [location, setLocation] = useState<LocationEnum>();
+  const [error, setError] = useState<string>("");
   //
 
   // FORM
@@ -66,23 +68,20 @@ export default function SignUp_Location() {
   const onSubmit = async (data: FormData_User) => {
     if (!location) return;
 
-    let profile_image = null;
-
-    const profile_image_from_session = sessionStorage.getItem("profile_image");
-    if (profile_image_from_session) {
-      const { name, type, content } = JSON.parse(profile_image_from_session);
-      profile_image = base64ToFile(content, name, type);
-    }
-
-    const result = await createUser(Object.assign(data, { profile_image }));
+    const result = await createUser(
+      Object.assign(data, { profile_image: signupProfileImage })
+    );
 
     if (result.success === true) {
       setUserProfile(result.data);
+      clearSignupData();
       router.push("/", { scroll: false });
     } else if (result.success === false) {
-      // TODO: 에러모달 - SignUp 에러
-      if (process.env.NODE_ENV === "development") console.error(result.error.message);
-      router.push("/signup");
+      console.error("SignUp failed:", result.error.message);
+      setError("회원가입에 실패했습니다. 다시 시도해주세요.");
+      setTimeout(() => {
+        router.push("/signup");
+      }, 3000);
     }
   };
   //
@@ -138,12 +137,27 @@ export default function SignUp_Location() {
         />
       </div>
       <form
-        onSubmit={handleSubmit(onSubmit, (e) => {
-          // TODO: 에러모달 - 잘못된 데이터가 입력되었습니다. 처음부터 다시 진행해주세요.
-          console.log(e);
-          router.push("/signup");
+        onSubmit={handleSubmit(onSubmit, (errors) => {
+          console.error("Validation failed:", errors);
+          setError("잘못된 데이터가 입력되었습니다. 처음부터 다시 진행해주세요.");
+          setTimeout(() => {
+            router.push("/signup");
+          }, 3000);
         })}
       >
+        {error && (
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "14px",
+              color: "#FF3E2F",
+              marginBottom: "8px",
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </p>
+        )}
         <CompleteButton style={{ width: "100%" }} isActive={!!location} />
       </form>
     </div>

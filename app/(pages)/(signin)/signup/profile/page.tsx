@@ -1,7 +1,7 @@
 "use client";
 
 import { Camera } from "@/app/ui/images/camera";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import BottomSheetContent from "./(bottom-sheet)/content";
@@ -18,8 +18,8 @@ import { CustomErrMsg } from "@/app/lib/errors/custom-error";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { FormData_User, ZodSchema_User, ZodType_Image } from "@/app/lib/zod";
 import ButtonTemplate from "@/app/ui/templates/buttons";
-import { readFileAsBase64 } from "@/app/util/convert/file";
-import { useBottomSheetStore } from "@/app/stores";
+import { useBottomSheetStore, useSessionStore } from "@/app/stores";
+import _ from "lodash";
 
 const TextBox = ({
   upTxt,
@@ -79,6 +79,17 @@ export default function SignUp_Profile() {
   const [level, setLevel] = useState<LevelEnum>();
 
   const [profile_image, setProfileImage] = useState<ZodType_Image>(null);
+  const [nicknameStatus, setNicknameStatus] = useState<
+    "idle" | "checking" | "valid" | "invalid"
+  >("idle");
+
+  // Zustand store
+  const setSignupProfileImage = useSessionStore(
+    (state) => state.setSignupProfileImage
+  );
+
+  // Race condition 방지용 ref
+  const latestNicknameRef = useRef<string>("");
   //
 
   // FORM
@@ -90,6 +101,7 @@ export default function SignUp_Profile() {
     setValue,
     getValues,
     setError,
+    clearErrors,
   } = useForm<FormData_User>({
     defaultValues: {
       accept_marketing: undefined,
@@ -104,6 +116,47 @@ export default function SignUp_Profile() {
 
   const nickname = watch("nickname"),
     tags = watch("tags");
+
+  // clearErrors ref for debounce callback
+  const clearErrorsRef = useRef(clearErrors);
+  clearErrorsRef.current = clearErrors;
+
+  // Debounce 닉네임 검증
+  const debouncedCheckNickname = useRef(
+    _.debounce(async (value: string) => {
+      if (!value || value.length === 0) {
+        setNicknameStatus("idle");
+        return;
+      }
+
+      // Zod 형식 검증
+      const nicknameSchema = ZodSchema_User.shape.nickname;
+      const parseResult = nicknameSchema.safeParse(value);
+      if (!parseResult.success) {
+        setNicknameStatus("idle");
+        return;
+      }
+
+      // 서버 중복 검사
+      clearErrorsRef.current("nickname");
+      setNicknameStatus("checking");
+      try {
+        const isUnique = await isNicknameUnique(value);
+        if (latestNicknameRef.current !== value) return;
+
+        if (isUnique) {
+          setNicknameStatus("valid");
+        } else {
+          setNicknameStatus("invalid");
+          setError("nickname", { message: CustomErrMsg.NicknameNotUnique });
+        }
+      } catch (e) {
+        if (latestNicknameRef.current !== value) return;
+        setNicknameStatus("idle");
+        console.error("Nickname check failed:", e);
+      }
+    }, 500)
+  ).current;
   //
 
   // USE-EFFECT
@@ -116,13 +169,18 @@ export default function SignUp_Profile() {
 
   useEffect(() => {
     if (position) setValue("pos", position);
-  }, [position]);
-  useEffect(() => {
     if (genre) setValue("genre", genre);
-  }, [genre]);
-  useEffect(() => {
     if (level) setValue("level", level);
-  }, [level]);
+  }, [position, genre, level, setValue]);
+
+  useEffect(() => {
+    latestNicknameRef.current = nickname;
+    debouncedCheckNickname(nickname);
+
+    return () => {
+      debouncedCheckNickname.cancel();
+    };
+  }, [nickname]);
   //
 
   // HANDLERS
@@ -144,27 +202,36 @@ export default function SignUp_Profile() {
 
   const onSubmit = async (data: FormData_User) => {
     try {
-      if (!(await isNicknameUnique(data.nickname)))
-        setError("nickname", { message: CustomErrMsg.NicknameNotUnique });
-      else {
-        if (profile_image)
-          sessionStorage.setItem(
-            "profile_image",
-            JSON.stringify({
-              name: profile_image.file.name,
-              type: profile_image.file.type,
-              content: await readFileAsBase64(profile_image.file),
-            })
-          );
-
-        debouncedRedirect(
-          pathname.split("/").slice(0, 2).join("/") + "/location",
-          searchParams.toString(),
-          getValues()
-        );
+      // 실시간 검증 미완료 시 재검증
+      if (nicknameStatus === "checking" || nicknameStatus === "idle") {
+        const isUnique = await isNicknameUnique(data.nickname);
+        if (!isUnique) {
+          setNicknameStatus("invalid");
+          setError("nickname", { message: CustomErrMsg.NicknameNotUnique });
+          return;
+        }
       }
+
+      if (nicknameStatus === "invalid") {
+        setError("nickname", { message: CustomErrMsg.NicknameNotUnique });
+        return;
+      }
+
+      // Zustand store에 File 객체 직접 저장
+      if (profile_image) {
+        setSignupProfileImage(profile_image.file);
+      }
+
+      debouncedRedirect(
+        pathname.split("/").slice(0, 2).join("/") + "/location",
+        searchParams.toString(),
+        getValues()
+      );
     } catch (e) {
-      console.log(e);
+      console.error("Profile submission failed:", e);
+      setError("nickname", {
+        message: e instanceof Error ? e.message : "프로필 저장에 실패했습니다.",
+      });
     }
   };
   //
@@ -281,8 +348,36 @@ export default function SignUp_Profile() {
                   <p>
                     <span style={{ color: "#A3FF0C" }}>*</span>닉네임
                   </p>
+                  {nicknameStatus === "checking" && (
+                    <p
+                      style={{
+                        color: "#9F9FA2",
+                        fontSize: "10px",
+                        fontFamily: "SUIT-BODY",
+                      }}
+                    >
+                      확인 중...
+                    </p>
+                  )}
+                  {nicknameStatus === "valid" && !formState.errors.nickname && (
+                    <p
+                      style={{
+                        color: "#A3FF0C",
+                        fontSize: "10px",
+                        fontFamily: "SUIT-BODY",
+                      }}
+                    >
+                      사용 가능한 닉네임입니다
+                    </p>
+                  )}
                   {formState.errors.nickname && (
-                    <p style={{ color: "red", fontSize: "10px" }}>
+                    <p
+                      style={{
+                        color: "#FF3E2F",
+                        fontSize: "10px",
+                        fontFamily: "SUIT-BODY",
+                      }}
+                    >
                       {formState.errors.nickname.message}
                     </p>
                   )}
@@ -455,6 +550,8 @@ export default function SignUp_Profile() {
             !!(
               nickname &&
               !formState.errors.nickname &&
+              nicknameStatus !== "checking" &&
+              nicknameStatus !== "invalid" &&
               position &&
               genre &&
               level

@@ -23,19 +23,25 @@ const initialUserProfile: UserProfile = {
 
 interface SessionState {
   userProfile: UserProfile;
+  signupProfileImage: File | null;
 }
 
 interface SessionActions {
   setUserProfile: (input: Partial<UserProfile>) => void;
   resetUserProfile: () => void;
+  setSignupProfileImage: (file: File | null) => void;
+  clearSignupData: () => void;
 }
 
 export const useSessionStore = create<SessionState & SessionActions>((set) => ({
   userProfile: initialUserProfile,
+  signupProfileImage: null,
 
   setUserProfile: (input) =>
     set((state) => ({
       userProfile: { ...state.userProfile, ...input },
     })),
   resetUserProfile: () => set({ userProfile: initialUserProfile }),
+  setSignupProfileImage: (file) => set({ signupProfileImage: file }),
+  clearSignupData: () => set({ signupProfileImage: null }),
 }));
