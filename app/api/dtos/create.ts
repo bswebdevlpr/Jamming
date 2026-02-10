@@ -31,3 +31,48 @@ export interface CreatePlaylistItemDto {
   date: string;
   origin: string;
 }
+
+// ========== 밴드 관리 ==========
+
+export interface CreateBandDto {
+  leader_id: string;
+  name: string;
+  description?: string;
+  genre: GenreEnum[];
+  location: LocationEnum;
+  level: LevelEnum;
+  tags?: string[];
+}
+
+export interface CreateBandMemberDto {
+  band_id: number;
+  user_id: string;
+  pos: PositionEnum;
+  role: "leader" | "member";
+  is_public?: boolean;
+}
+
+// ========== 구인 게시판 ==========
+
+export interface CreateRecruitPostDto {
+  band_id: number;
+  user_id: string;
+  title: string;
+  body: string;
+  positions: { pos: string; headcnt: number }[];
+  genre: GenreEnum[];
+  level: LevelEnum[];
+  location: LocationEnum;
+  songs?: { title: string; artist: string; album_cover_url: string }[];
+  images?: string[];
+  video_url?: string;
+  openchat?: string;
+  deadline?: string;
+}
+
+export interface CreateRecruitCommentDto {
+  recruit_id: number;
+  user_id: string;
+  body: string;
+  applied_pos: PositionEnum;
+}

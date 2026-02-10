@@ -15,6 +15,14 @@ export enum ErrorCode {
   SECURITY_VIOLATION = "SECURITY_VIOLATION",
   VALIDATION_FAILED = "VALIDATION_FAILED",
   NICKNAME_NOT_UNIQUE = "NICKNAME_NOT_UNIQUE",
+  INVALID_BAND = "INVALID_BAND",
+  INVALID_RECRUIT = "INVALID_RECRUIT",
+  BAND_LIMIT_REACHED = "BAND_LIMIT_REACHED",
+  MEMBER_LIMIT_REACHED = "MEMBER_LIMIT_REACHED",
+  ALREADY_MEMBER = "ALREADY_MEMBER",
+  ALREADY_APPLIED = "ALREADY_APPLIED",
+  RECRUIT_NOT_ACTIVE = "RECRUIT_NOT_ACTIVE",
+  NOT_BAND_LEADER = "NOT_BAND_LEADER",
 }
 
 /**
@@ -42,6 +50,14 @@ const USER_MESSAGES: Record<ErrorCode, string> = {
     "보안 위반이 감지되었습니다. 입력 내용을 확인해주세요.",
   [ErrorCode.VALIDATION_FAILED]: "입력값이 올바르지 않습니다.",
   [ErrorCode.NICKNAME_NOT_UNIQUE]: "이미 존재하는 닉네임입니다.",
+  [ErrorCode.INVALID_BAND]: "유효하지 않은 밴드입니다.",
+  [ErrorCode.INVALID_RECRUIT]: "유효하지 않은 구인 게시글입니다.",
+  [ErrorCode.BAND_LIMIT_REACHED]: "밴드 생성/참여 한도에 도달했습니다.",
+  [ErrorCode.MEMBER_LIMIT_REACHED]: "밴드 멤버 수가 최대 인원에 도달했습니다.",
+  [ErrorCode.ALREADY_MEMBER]: "이미 해당 밴드의 멤버입니다.",
+  [ErrorCode.ALREADY_APPLIED]: "이미 지원한 게시글입니다.",
+  [ErrorCode.RECRUIT_NOT_ACTIVE]: "마감된 구인 게시글입니다.",
+  [ErrorCode.NOT_BAND_LEADER]: "밴드장만 수행할 수 있는 작업입니다.",
 };
 
 /**
@@ -131,6 +147,38 @@ export class CustomError extends Error {
 
   static validationFailed(context?: ErrorContext): CustomError {
     return new CustomError(ErrorCode.VALIDATION_FAILED, context);
+  }
+
+  static invalidBand(context?: ErrorContext): CustomError {
+    return new CustomError(ErrorCode.INVALID_BAND, context);
+  }
+
+  static invalidRecruit(context?: ErrorContext): CustomError {
+    return new CustomError(ErrorCode.INVALID_RECRUIT, context);
+  }
+
+  static bandLimitReached(context?: ErrorContext): CustomError {
+    return new CustomError(ErrorCode.BAND_LIMIT_REACHED, context);
+  }
+
+  static memberLimitReached(context?: ErrorContext): CustomError {
+    return new CustomError(ErrorCode.MEMBER_LIMIT_REACHED, context);
+  }
+
+  static alreadyMember(context?: ErrorContext): CustomError {
+    return new CustomError(ErrorCode.ALREADY_MEMBER, context);
+  }
+
+  static alreadyApplied(context?: ErrorContext): CustomError {
+    return new CustomError(ErrorCode.ALREADY_APPLIED, context);
+  }
+
+  static recruitNotActive(context?: ErrorContext): CustomError {
+    return new CustomError(ErrorCode.RECRUIT_NOT_ACTIVE, context);
+  }
+
+  static notBandLeader(context?: ErrorContext): CustomError {
+    return new CustomError(ErrorCode.NOT_BAND_LEADER, context);
   }
 
   // ========== Supabase 에러 변환 헬퍼 ==========
