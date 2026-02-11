@@ -12,7 +12,7 @@ export default function FilterButton({ onClick }: { onClick: () => void }) {
         padding: "6px 14px",
         color: "#A3FF0C",
         fontFamily: "SUIT-BODY",
-        fontSize: "0.875rem",
+        fontSize: "0.8rem",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
