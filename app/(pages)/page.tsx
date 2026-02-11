@@ -1,11 +1,11 @@
 "use client";
 
 import Filter from "@/app/ui/images/filter";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BottomSheetContent from "./(only-user)/jamsession/bottom-sheet/content";
 import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
-import BottomNavBarPublic from "@/app/ui/navbar/bottom-public";
+
 import JamNow from "@/app/ui/buttons/jam-now";
 import FullScreenLoading from "@/app/ui/loading/fullscreen";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
@@ -20,6 +20,7 @@ import { useBottomSheetStore } from "@/app/stores";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/app/util/supabase/client";
 import { getDatesHavingJamPublic } from "@/app/ui/calendar/functions/fetch";
+import LandingPage from "./_landing/landing-page";
 
 export default function Home() {
   // AUTH STATE
@@ -103,6 +104,10 @@ export default function Home() {
     return <FullScreenLoading />;
   }
 
+  if (isAuthenticated === false) {
+    return <LandingPage />;
+  }
+
   return (
     <div className="h-full flex flex-col overflow-without-scroll relative">
       <TopNavBar
@@ -165,18 +170,13 @@ export default function Home() {
         <div className="grow overflow-hidden flex justify-center items-center px-5">
           <JamFeed ref={childRef} filter={filter} />
         </div>
-        {isAuthenticated === true && (
-          <Fragment>
-            <JamNow
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-              refetch={childRef && childRef.current && childRef.current.refetch}
-              setResetSlideCalendarDots={setResetSlideCalendarDots}
-            />
-            <BottomNavBar />
-          </Fragment>
-        )}
-        {isAuthenticated === false && <BottomNavBarPublic />}
+        <JamNow
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          refetch={childRef && childRef.current && childRef.current.refetch}
+          setResetSlideCalendarDots={setResetSlideCalendarDots}
+        />
+        <BottomNavBar />
       </div>
     </div>
   );
