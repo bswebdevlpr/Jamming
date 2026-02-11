@@ -4,6 +4,7 @@ import HeroSection from "./sections/hero-section";
 import FeaturesSection from "./sections/features-section";
 import HowItWorksSection from "./sections/how-it-works";
 import CTASection from "./sections/cta-section";
+import PreviewSection from "./sections/preview-section";
 
 export default function LandingPage() {
   return (
@@ -12,6 +13,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <HowItWorksSection />
       <CTASection />
+      <PreviewSection id="preview-section" />
 
       {/* JSON-LD Structured Data */}
       <script

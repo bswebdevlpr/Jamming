@@ -124,27 +124,31 @@ export default function CTASection() {
           </Link>
 
           {/* Secondary CTA */}
-          <Link href="/signin" style={{ textDecoration: "none" }}>
-            <motion.div
-              style={{
-                width: "100%",
-                borderRadius: "8px",
-                padding: "14px 12px",
-                fontFamily: "SUIT-BODY",
-                fontSize: "1rem",
-                color: "#9F9FA2",
-                border: "1px solid #444447",
-                backgroundColor: "#323234",
-                textAlign: "center",
-                cursor: "pointer",
-              }}
-              whileHover={BUTTON_INTERACTION.whileHover}
-              whileTap={BUTTON_INTERACTION.whileTap}
-              transition={BUTTON_INTERACTION.transition}
-            >
-              잼 세션 구경하기
-            </motion.div>
-          </Link>
+          <motion.div
+            onClick={() => {
+              document.getElementById('preview-section')?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }}
+            style={{
+              width: "100%",
+              borderRadius: "8px",
+              padding: "14px 12px",
+              fontFamily: "SUIT-BODY",
+              fontSize: "1rem",
+              color: "#9F9FA2",
+              border: "1px solid #444447",
+              backgroundColor: "#323234",
+              textAlign: "center",
+              cursor: "pointer",
+            }}
+            whileHover={BUTTON_INTERACTION.whileHover}
+            whileTap={BUTTON_INTERACTION.whileTap}
+            transition={BUTTON_INTERACTION.transition}
+          >
+            잼 세션 구경하기
+          </motion.div>
         </motion.div>
       </motion.div>
     </section>
