@@ -7,6 +7,7 @@ import {
   GPU_ACCELERATED_STYLE,
 } from "@/app/lib/animations";
 import FeatureCard from "../components/feature-card";
+import { LandingTag } from "../components/landing-tag";
 
 const FEATURES = [
   {
@@ -29,58 +30,10 @@ const FEATURES = [
     description: "합주 모집/참가, 날짜/지역/장르별 필터링으로 딱 맞는 세션을 찾아보세요.",
     tags: (
       <>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#A3FF0C",
-            background: "rgba(163, 255, 12, 0.16)",
-          }}
-        >
-          락
-        </span>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#A3FF0C",
-            background: "rgba(163, 255, 12, 0.16)",
-          }}
-        >
-          팝
-        </span>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#FF3773",
-            background: "rgba(255, 55, 115, 0.24)",
-          }}
-        >
-          기타
-        </span>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#FF3773",
-            background: "rgba(255, 55, 115, 0.24)",
-          }}
-        >
-          드럼
-        </span>
+        <LandingTag text="락" />
+        <LandingTag text="팝" />
+        <LandingTag text="기타" />
+        <LandingTag text="드럼" />
       </>
     ),
   },
@@ -110,32 +63,8 @@ const FEATURES = [
     description: "내 밴드를 만들고 멤버를 관리하세요. 리더와 멤버 역할 구분까지.",
     tags: (
       <>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#E5E5E9",
-            background: "#242426",
-          }}
-        >
-          리더
-        </span>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#E5E5E9",
-            background: "#242426",
-          }}
-        >
-          멤버
-        </span>
+        <LandingTag text="리더" />
+        <LandingTag text="멤버" />
       </>
     ),
   },
@@ -163,45 +92,9 @@ const FEATURES = [
     description: "밴드 멤버를 구하거나, 원하는 밴드에 지원하세요. 포지션별 모집도 가능합니다.",
     tags: (
       <>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#FF3773",
-            background: "rgba(255, 55, 115, 0.24)",
-          }}
-        >
-          보컬
-        </span>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#FF3773",
-            background: "rgba(255, 55, 115, 0.24)",
-          }}
-        >
-          베이스
-        </span>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#FF3773",
-            background: "rgba(255, 55, 115, 0.24)",
-          }}
-        >
-          키보드
-        </span>
+        <LandingTag text="보컬" />
+        <LandingTag text="베이스" />
+        <LandingTag text="키보드" />
       </>
     ),
   },
@@ -231,45 +124,9 @@ const FEATURES = [
     description: "서울부터 제주까지, 전국 19개 지역에서 내 근처 세션을 찾아보세요.",
     tags: (
       <>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#3994FF",
-            background: "rgba(12, 124, 255, 0.20)",
-          }}
-        >
-          서울
-        </span>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#3994FF",
-            background: "rgba(12, 124, 255, 0.20)",
-          }}
-        >
-          경기
-        </span>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            borderRadius: "2px",
-            padding: "2px 6px",
-            whiteSpace: "nowrap",
-            color: "#3994FF",
-            background: "rgba(12, 124, 255, 0.20)",
-          }}
-        >
-          부산
-        </span>
+        <LandingTag text="서울" />
+        <LandingTag text="경기" />
+        <LandingTag text="부산" />
       </>
     ),
   },
