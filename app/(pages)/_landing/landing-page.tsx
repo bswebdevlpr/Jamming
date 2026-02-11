@@ -12,8 +12,8 @@ export default function LandingPage() {
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
+      <PreviewSection />
       <CTASection />
-      <PreviewSection id="preview-section" />
 
       {/* JSON-LD Structured Data */}
       <script

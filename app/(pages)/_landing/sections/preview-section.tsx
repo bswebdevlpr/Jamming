@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useQuery } from "@tanstack/react-query";
@@ -19,41 +20,47 @@ import {
   GPU_ACCELERATED_STYLE,
 } from "@/app/lib/animations";
 import UserProfile from "@/app/ui/images/navbar/user-profile";
-import Link from "next/link";
+import Logo from "@/app/ui/images/logo";
+import { ImageWithTxt } from "@/app/ui/templates/images";
 
-// 샘플 목 데이터
-const MOCK_JAMS: Partial<Entity_JamSession>[] = [
+// 샘플 목 데이터 (실제 DB 형식과 일치)
+const MOCK_JAMS = [
   {
     id: "sample-1",
-    title: "홍대 인디밴드 잼 세션 🎸",
-    location: "서울",
-    genre: ["록", "인디"],
-    level: "중급",
+    title: "홍대 인디밴드 잼 세션",
+    location: "su",        // 서울 (단축 코드)
+    genre: "r",            // 락 (단일값)
+    level: "a",            // 아마추어
     datetime: "2025-03-15T19:00:00",
+    thumbnail: null,       // Logo 폴백 사용
+    curHeadCnt: 3,
+    maxHeadCnt: 6,
   },
   {
     id: "sample-2",
-    title: "강남 재즈 세션 모집 🎷",
-    location: "서울",
-    genre: ["재즈", "블루스"],
-    level: "고급",
+    title: "강남 재즈 세션 모집",
+    location: "su",
+    genre: "j",            // 재즈
+    level: "p",            // 프로
     datetime: "2025-03-20T20:00:00",
+    thumbnail: null,
+    curHeadCnt: 2,
+    maxHeadCnt: 5,
   },
   {
     id: "sample-3",
-    title: "부산 합주 메이트 구해요 🥁",
-    location: "부산",
-    genre: ["팝", "록"],
-    level: "초급",
+    title: "부산 합주 메이트 구해요",
+    location: "bs",        // 부산
+    genre: "po",           // 팝
+    level: "h",            // 취미
     datetime: "2025-03-25T18:00:00",
+    thumbnail: null,
+    curHeadCnt: 4,
+    maxHeadCnt: 7,
   },
 ];
 
-interface PreviewSectionProps {
-  id?: string;
-}
-
-export default function PreviewSection({ id }: PreviewSectionProps) {
+export default function PreviewSection() {
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -82,37 +89,12 @@ export default function PreviewSection({ id }: PreviewSectionProps) {
 
   return (
     <section
-      id={id}
       ref={ref}
       style={{
         padding: "60px 20px 80px",
         background: "var(--background)",
       }}
     >
-      {/* 상단 배너 */}
-      <div
-        style={{
-          background: "rgba(163, 255, 12, 0.1)",
-          border: "1px solid rgba(163, 255, 12, 0.3)",
-          borderRadius: "8px",
-          padding: "12px 16px",
-          marginBottom: "32px",
-          textAlign: "center",
-        }}
-      >
-        <p
-          style={{
-            color: "#A3FF0C",
-            fontFamily: "SUIT-TITLE",
-            fontSize: "0.875rem",
-            letterSpacing: "-0.025em",
-            margin: 0,
-          }}
-        >
-          💡 가입하고 참여하세요!
-        </p>
-      </div>
-
       {/* 섹션 타이틀 */}
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
@@ -140,7 +122,6 @@ export default function PreviewSection({ id }: PreviewSectionProps) {
           display: "flex",
           flexDirection: "column",
           gap: "12px",
-          marginBottom: "32px",
           ...GPU_ACCELERATED_STYLE,
         }}
       >
@@ -148,31 +129,6 @@ export default function PreviewSection({ id }: PreviewSectionProps) {
           <PreviewCard key={jam.id} jam={jam} idx={idx} router={router} />
         ))}
       </motion.div>
-
-      {/* 하단 CTA */}
-      <Link href="/signin" style={{ textDecoration: "none" }}>
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1], delay: 0.3 }}
-          style={{
-            width: "100%",
-            borderRadius: "8px",
-            padding: "14px 12px",
-            fontFamily: "SUIT-BODY",
-            fontSize: "1rem",
-            color: "var(--highlight)",
-            border: "1px solid var(--highlight)",
-            backgroundColor: "#304313",
-            textAlign: "center",
-            cursor: "pointer",
-          }}
-          whileHover={{ scale: 1.02, backgroundColor: "#3a5218" }}
-          whileTap={{ scale: 0.98 }}
-        >
-          더 많은 세션 보려면 가입하기
-        </motion.div>
-      </Link>
     </section>
   );
 }
@@ -182,26 +138,30 @@ function PreviewCard({
   idx,
   router,
 }: {
-  jam: Partial<Entity_JamSession>;
+  jam: (typeof MOCK_JAMS)[number] | Entity_JamSession;
   idx: number;
   router: any;
 }) {
+  // genre를 단일값으로 처리 (Entity_JamSession과 일치)
+  const genre = typeof jam.genre === 'string'
+    ? jam.genre
+    : Array.isArray(jam.genre)
+      ? jam.genre[0]
+      : undefined;
+
   const tags = [
-    ...(jam.genre
-      ? jam.genre.map((g, i) => <GenreTag key={`genre-${i}`} text={g} />)
-      : []),
+    ...(genre ? [<GenreTag key="genre" text={genre} />] : []),
     ...(jam.level ? [<LevelTag key="level" text={jam.level} />] : []),
   ];
 
-  const handleClick = () => {
-    // 로그인 유도
-    router.push("/signin");
-  };
+  const curHeadCnt = (jam as any).curHeadCnt ?? 0;
+  const maxHeadCnt = (jam as any).maxHeadCnt ?? 0;
+  const thumbnail = (jam as any).thumbnail ?? null;
 
   return (
     <motion.div
       variants={STAGGER_ITEM}
-      onClick={handleClick}
+      onClick={() => router.push("/signin")}
       style={{
         width: "100%",
         padding: "16px",
@@ -216,48 +176,69 @@ function PreviewCard({
       }}
       whileTap={{ scale: 0.98 }}
     >
-      <div className="flex flex-col gap-1.5">
-        {/* 제목 */}
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "1rem",
-            lineHeight: "140%",
-            letterSpacing: "-0.384px",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            color: "var(--foreground)",
-          }}
-        >
-          {jam.title}
-        </p>
-
-        {/* 태그 */}
-        <TagList
-          tags={
-            jam.location
-              ? [<LocationTag key="location" text={jam.location} />, ...tags]
-              : tags
-          }
-        />
-
-        {/* 참여 인원 (샘플) */}
-        <div className="flex items-center gap-1">
-          <UserProfile width={10.7} height={12} />
+      {/* 좌우 레이아웃 (FeedItem_Jam과 동일) */}
+      <div className="w-full flex justify-between">
+        {/* 좌측: 제목 + 태그 + 참여인원 */}
+        <div className="flex flex-col gap-1.5" style={{ minWidth: 0, flex: 1 }}>
           <p
             style={{
-              color: "#9F9FA2",
-              fontFamily: "SUIT-TITLE",
-              fontSize: "0.875rem",
+              fontFamily: "SUIT-BODY",
+              fontSize: "1rem",
               lineHeight: "140%",
+              letterSpacing: "-0.384px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              color: "var(--foreground)",
             }}
           >
-            <span style={{ color: "var(--highlight)" }}>
-              {Math.floor(Math.random() * 3) + 2}
-            </span>
-            /{Math.floor(Math.random() * 3) + 5}
+            {jam.title}
           </p>
+
+          <TagList
+            tags={
+              jam.location
+                ? [<LocationTag key="location" text={jam.location} />, ...tags]
+                : tags
+            }
+          />
+
+          <ImageWithTxt
+            className="gap-1"
+            image={<UserProfile width={10.7} height={12} />}
+            text={
+              <p
+                style={{
+                  color: "#9F9FA2",
+                  fontFamily: "SUIT-TITLE",
+                  fontSize: "0.875rem",
+                  lineHeight: "140%",
+                }}
+              >
+                <span style={{ color: "var(--highlight)" }}>
+                  {curHeadCnt}
+                </span>
+                /{maxHeadCnt}
+              </p>
+            }
+          />
+        </div>
+
+        {/* 우측: 썸네일 (72x72) */}
+        <div className="flex items-center">
+          {thumbnail ? (
+            <div style={{ width: "72px", height: "72px", position: "relative" }}>
+              <Image
+                src={thumbnail}
+                alt="session thumbnail"
+                fill
+                sizes="72px"
+                style={{ objectFit: "cover" }}
+              />
+            </div>
+          ) : (
+            <Logo width={72} height={72} />
+          )}
         </div>
       </div>
     </motion.div>
