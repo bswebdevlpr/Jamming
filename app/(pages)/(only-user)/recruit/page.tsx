@@ -24,12 +24,30 @@ import {
 } from "@/app/ui/tags/category-tag";
 import { STAGGER_CONTAINER, STAGGER_ITEM } from "@/app/lib/animations";
 import RecruitIcon from "@/app/ui/images/navbar/recruit-icon";
+import { useBottomSheetStore } from "@/app/stores";
+import RecruitBottomSheetContent from "./bottom-sheet/content";
+import FilterButton from "@/app/ui/buttons/filter";
 
 export default function RecruitFeedPage() {
   const router = useRouter();
   const { ref: scrollRef, inView } = useInView();
+  const bottomSheet = useBottomSheetStore();
+
+  const [genre, setGenre] = useState<GenreEnum>(null);
+  const [position, setPosition] = useState<PositionEnum>(null);
+  const [level, setLevel] = useState<LevelEnum>(null);
+  const [location, setLocation] = useState<LocationEnum>(null);
 
   const [filter, setFilter] = useState<Filter_RecruitFeed>({});
+
+  useEffect(() => {
+    setFilter({
+      location: location ?? undefined,
+      genre: genre ?? undefined,
+      pos: position ?? undefined,
+      level: level ?? undefined,
+    });
+  }, [location, genre, position, level]);
 
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: ["recruit-posts", JSON.stringify(filter)],
@@ -53,6 +71,25 @@ export default function RecruitFeedPage() {
   const allPosts =
     data?.pages.flatMap((page) => page.data) ?? [];
 
+  const handleFilterClick = () => {
+    bottomSheet.set({
+      children: (
+        <RecruitBottomSheetContent
+          genre={genre}
+          position={position}
+          level={level}
+          location={location}
+          setGenre={setGenre}
+          setPosition={setPosition}
+          setLevel={setLevel}
+          setLocation={setLocation}
+        />
+      ),
+      location: "medium",
+      header: false,
+    });
+  };
+
   return (
     <div className="grow flex flex-col overflow-without-scroll">
       {/* Header */}
@@ -61,59 +98,12 @@ export default function RecruitFeedPage() {
           style={{
             fontFamily: "SBAggroB",
             fontSize: "1.125rem",
-            color: "#FFF",
+            color: "var(--foreground)",
           }}
         >
           Recruit
         </p>
-      </div>
-
-      {/* Filters */}
-      <div className="flex gap-2 px-5 pb-3 overflow-x-auto overflow-without-scroll">
-        <FilterSelect
-          label="지역"
-          value={filter.location ?? ""}
-          options={Object.values(LocationEnum)}
-          onChange={(v) =>
-            setFilter((prev) => ({
-              ...prev,
-              location: v ? (v as LocationEnum) : undefined,
-            }))
-          }
-        />
-        <FilterSelect
-          label="장르"
-          value={filter.genre ?? ""}
-          options={Object.values(GenreEnum)}
-          onChange={(v) =>
-            setFilter((prev) => ({
-              ...prev,
-              genre: v ? (v as GenreEnum) : undefined,
-            }))
-          }
-        />
-        <FilterSelect
-          label="실력"
-          value={filter.level ?? ""}
-          options={Object.values(LevelEnum)}
-          onChange={(v) =>
-            setFilter((prev) => ({
-              ...prev,
-              level: v ? (v as LevelEnum) : undefined,
-            }))
-          }
-        />
-        <FilterSelect
-          label="포지션"
-          value={filter.pos ?? ""}
-          options={Object.values(PositionEnum)}
-          onChange={(v) =>
-            setFilter((prev) => ({
-              ...prev,
-              pos: v ? (v as PositionEnum) : undefined,
-            }))
-          }
-        />
+        <FilterButton onClick={handleFilterClick} />
       </div>
 
       {/* Feed */}
@@ -160,43 +150,6 @@ export default function RecruitFeedPage() {
   );
 }
 
-function FilterSelect({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  options: string[];
-  onChange: (v: string) => void;
-}) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      style={{
-        background: "#323234",
-        border: "1px solid #444447",
-        borderRadius: "4px",
-        padding: "4px 8px",
-        color: value ? "#A3FF0C" : "#9F9FA2",
-        fontFamily: "SUIT-BODY",
-        fontSize: "16px",
-        flexShrink: 0,
-      }}
-      aria-label={`${label} 필터`}
-    >
-      <option value="">{label}</option>
-      {options.map((opt) => (
-        <option key={opt} value={opt}>
-          {opt}
-        </option>
-      ))}
-    </select>
-  );
-}
-
 function RecruitFeedItem({
   post,
   idx,
@@ -233,8 +186,8 @@ function RecruitFeedItem({
         cursor: "pointer",
       }}
       onClick={onClick}
-      whileHover={{ background: "rgba(163, 255, 12, 0.12)" }}
-      whileTap={{ background: "rgba(163, 255, 12, 0.12)" }}
+      whileHover={{ background: "rgba(163, 255, 12, 0.05)" }}
+      whileTap={{ scale: 0.98 }}
     >
       <div className="flex items-center gap-2">
         <p
@@ -311,7 +264,7 @@ function RecruitFeedItem({
             color: "#9F9FA2",
           }}
         >
-          지원 {post.commentCount ?? (post as any).recruit_comment?.length ?? 0}
+          지원 {post.commentCount ?? post.recruit_comment?.length ?? 0}
         </p>
       </div>
       <TagList tags={tags} />

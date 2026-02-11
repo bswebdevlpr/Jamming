@@ -9,6 +9,12 @@ import { GenreTag, LevelTag, LocationTag, TagList } from "@/app/ui/tags/category
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { STAGGER_CONTAINER, STAGGER_ITEM } from "@/app/lib/animations";
 import BandIcon from "@/app/ui/images/navbar/band-icon";
+import { GenreEnum } from "@/app/lib/enums/genre.enum";
+import { LevelEnum } from "@/app/lib/enums/level.enum";
+import { LocationEnum } from "@/app/lib/enums/location.enum";
+import { useBottomSheetStore } from "@/app/stores";
+import BandBottomSheetContent from "./bottom-sheet/content";
+import FilterButton from "@/app/ui/buttons/filter";
 
 interface BandWithRole {
   band: Entity_Band;
@@ -17,8 +23,14 @@ interface BandWithRole {
 
 export default function BandListPage() {
   const router = useRouter();
+  const bottomSheet = useBottomSheetStore();
+
   const [myBands, setMyBands] = useState<BandWithRole[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [genre, setGenre] = useState<GenreEnum>(null);
+  const [level, setLevel] = useState<LevelEnum>(null);
+  const [location, setLocation] = useState<LocationEnum>(null);
 
   useEffect(() => {
     (async () => {
@@ -30,8 +42,33 @@ export default function BandListPage() {
     })();
   }, []);
 
-  const leaderBands = myBands.filter((b) => b.role === "leader");
-  const memberBands = myBands.filter((b) => b.role === "member");
+  // 클라이언트 필터링
+  const filteredBands = myBands.filter((b) => {
+    if (genre && !b.band.genre?.includes(genre)) return false;
+    if (level && b.band.level !== level) return false;
+    if (location && b.band.location !== location) return false;
+    return true;
+  });
+
+  const leaderBands = filteredBands.filter((b) => b.role === "leader");
+  const memberBands = filteredBands.filter((b) => b.role === "member");
+
+  const handleFilterClick = () => {
+    bottomSheet.set({
+      children: (
+        <BandBottomSheetContent
+          genre={genre}
+          level={level}
+          location={location}
+          setGenre={setGenre}
+          setLevel={setLevel}
+          setLocation={setLocation}
+        />
+      ),
+      location: "medium",
+      header: false,
+    });
+  };
 
   return (
     <div className="grow flex flex-col overflow-without-scroll">
@@ -41,20 +78,23 @@ export default function BandListPage() {
           style={{
             fontFamily: "SBAggroB",
             fontSize: "1.125rem",
-            color: "#FFF",
+            color: "var(--foreground)",
           }}
         >
           My Band
         </p>
-        <ButtonTemplate
-          text="+ 밴드 만들기"
-          isActive
-          onClick={() => router.push("/band/create")}
-          className="w-auto"
-          style={{ padding: "6px 14px", fontSize: "0.8rem" }}
-          styleActivated={{ padding: "6px 14px", fontSize: "0.8rem" }}
-          type="button"
-        />
+        <div className="flex gap-2">
+          <FilterButton onClick={handleFilterClick} />
+          <ButtonTemplate
+            text="+ 밴드 만들기"
+            isActive
+            onClick={() => router.push("/band/create")}
+            className="w-auto"
+            style={{ padding: "6px 14px", fontSize: "0.8rem" }}
+            styleActivated={{ padding: "6px 14px", fontSize: "0.8rem" }}
+            type="button"
+          />
+        </div>
       </div>
 
       {isLoading ? (
@@ -77,6 +117,20 @@ export default function BandListPage() {
             아직 참여 중인 밴드가 없습니다.
             <br />
             밴드를 만들거나 구인 게시판에서 밴드에 지원해보세요!
+          </p>
+        </div>
+      ) : filteredBands.length === 0 ? (
+        <div className="flex flex-col justify-center items-center grow gap-4 px-5">
+          <BandIcon focused={false} />
+          <p
+            style={{
+              color: "#9F9FA2",
+              fontFamily: "SUIT-BODY",
+              fontSize: "0.875rem",
+              textAlign: "center",
+            }}
+          >
+            필터 조건에 맞는 밴드가 없습니다.
           </p>
         </div>
       ) : (
@@ -177,8 +231,8 @@ function BandCard({
         borderRadius: "4px",
       }}
       onClick={onClick}
-      whileHover={{ background: "rgba(163, 255, 12, 0.12)" }}
-      whileTap={{ background: "rgba(163, 255, 12, 0.12)" }}
+      whileHover={{ background: "rgba(163, 255, 12, 0.05)" }}
+      whileTap={{ scale: 0.98 }}
     >
       <div className="flex flex-col gap-1.5" style={{ minWidth: 0, flex: 1 }}>
         <div className="flex gap-2 items-center">
