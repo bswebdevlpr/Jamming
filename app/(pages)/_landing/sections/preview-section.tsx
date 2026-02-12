@@ -52,7 +52,7 @@ const MOCK_JAMS = [
     location: "su",        // 서울 (단축 코드)
     genre: "r",            // 락 (단일값)
     level: "a",            // 아마추어
-    datetime: "2025-03-15T19:00:00",
+    datetime: moment().add(7, "days").hour(19).minute(0).second(0).toISOString(),
     thumbnail: null,       // Logo 폴백 사용
     curHeadCnt: 3,
     maxHeadCnt: 6,
@@ -63,7 +63,7 @@ const MOCK_JAMS = [
     location: "su",
     genre: "j",            // 재즈
     level: "p",            // 프로
-    datetime: "2025-03-20T20:00:00",
+    datetime: moment().add(12, "days").hour(20).minute(0).second(0).toISOString(),
     thumbnail: null,
     curHeadCnt: 2,
     maxHeadCnt: 5,
@@ -74,7 +74,7 @@ const MOCK_JAMS = [
     location: "bs",        // 부산
     genre: "po",           // 팝
     level: "h",            // 취미
-    datetime: "2025-03-25T18:00:00",
+    datetime: moment().add(17, "days").hour(18).minute(0).second(0).toISOString(),
     thumbnail: null,
     curHeadCnt: 4,
     maxHeadCnt: 7,
@@ -155,28 +155,44 @@ export default function PreviewSection() {
   );
 }
 
+interface MockJam {
+  id: number;
+  title: string;
+  location: string;
+  genre: string;
+  level: string;
+  datetime: string;
+  thumbnail: null;
+  curHeadCnt: number;
+  maxHeadCnt: number;
+}
+
+type PreviewJam = MockJam | Entity_JamSession;
+
+function isMockJam(jam: PreviewJam): jam is MockJam {
+  return 'thumbnail' in jam;
+}
+
 function PreviewCard({
   jam,
   router,
 }: {
-  jam: (typeof MOCK_JAMS)[number] | Entity_JamSession;
+  jam: PreviewJam;
   router: AppRouterInstance;
 }) {
-  // genre를 단일값으로 처리 (Entity_JamSession과 일치)
-  const genre = typeof (jam as any).genre === 'string'
-    ? (jam as any).genre
-    : Array.isArray((jam as any).genre)
-      ? (jam as any).genre[0]
-      : undefined;
+  // genre를 단일값으로 처리
+  const genre = isMockJam(jam)
+    ? jam.genre
+    : jam.genre;
 
   const tags = [
     ...(genre ? [<GenreTag key="genre" text={genre} />] : []),
     ...(jam.level ? [<LevelTag key="level" text={jam.level} />] : []),
   ];
 
-  const curHeadCnt = (jam as any).curHeadCnt ?? 0;
-  const maxHeadCnt = (jam as any).maxHeadCnt ?? 0;
-  const thumbnail = (jam as any).thumbnail ?? null;
+  const curHeadCnt = isMockJam(jam) ? jam.curHeadCnt : (jam.curHeadCnt ?? 0);
+  const maxHeadCnt = isMockJam(jam) ? jam.maxHeadCnt : (jam.maxHeadCnt ?? 0);
+  const thumbnail = isMockJam(jam) ? jam.thumbnail : null;
 
   return (
     <motion.div

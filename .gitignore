@@ -41,3 +41,5 @@ next-env.d.ts
 
 # sql migrations
 app/api/sql/
+
+.claude/

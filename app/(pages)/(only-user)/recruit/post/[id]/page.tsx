@@ -11,7 +11,7 @@ import {
   updateRecruitComment,
   deleteRecruitComment,
 } from "@/app/api/functions/recruit/comment";
-import { Entity_RecruitPost } from "@/app/lib/interfaces/entity.interface";
+import { Entity_RecruitPost, Entity_BandMember } from "@/app/lib/interfaces/entity.interface";
 import { useSessionStore } from "@/app/stores";
 import {
   GenreTag,
@@ -42,7 +42,7 @@ export default function RecruitDetailPage() {
   const isAuthor = post?.user_id === userProfile.id;
   const isBandLeader =
     post?.band?.band_member?.some(
-      (m: any) => m.role === "leader" && m.user_id === userProfile.id
+      (m: Entity_BandMember) => m.role === "leader" && m.user_id === userProfile.id
     ) ?? isAuthor;
 
   const hasApplied = post?.recruit_comment?.some(
