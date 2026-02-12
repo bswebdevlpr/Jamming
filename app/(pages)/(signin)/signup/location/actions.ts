@@ -52,20 +52,35 @@ export default async function createUser(
       validated.tags.map((tag) => sanitize(tag))
     );
 
-    let profile_image =
-      input.profile_image &&
-      (await supabase.storage
-        .from(process.env.SUPABASE_STORAGE_NAME!)
-        .upload(
-          `user/${user.id}/profile-image/${input.profile_image.name}`,
-          input.profile_image
-        )
-        .then(
-          (res) =>
-            supabase.storage
-              .from(process.env.SUPABASE_STORAGE_NAME!)
-              .getPublicUrl(res.data.path).data.publicUrl
-        ));
+    let profile_image: string | undefined = undefined;
+
+    if (input.profile_image) {
+      try {
+        const uploadResult = await supabase.storage
+          .from(process.env.SUPABASE_STORAGE_NAME!)
+          .upload(
+            `user/${user.id}/profile-image/${input.profile_image.name}`,
+            input.profile_image
+          );
+
+        if (uploadResult.error) {
+          throw CustomError.imageUploadFailed({
+            operation: "createUser",
+            supabaseMessage: uploadResult.error.message,
+          });
+        }
+
+        profile_image = supabase.storage
+          .from(process.env.SUPABASE_STORAGE_NAME!)
+          .getPublicUrl(uploadResult.data.path).data.publicUrl;
+      } catch (error) {
+        if (error instanceof CustomError) throw error;
+        throw CustomError.imageUploadFailed({
+          operation: "createUser",
+          originalError: error,
+        });
+      }
+    }
 
     // 허용된 필드만 명시적으로 추출 (Mass Assignment 방지)
     const { data, error } = await supabase

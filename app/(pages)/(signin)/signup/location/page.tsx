@@ -15,6 +15,7 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { useSessionStore } from "@/app/stores";
+import { ErrorCode } from "@/app/lib/errors/custom-error";
 
 export default function SignUp_Location() {
   // INIT
@@ -73,10 +74,33 @@ export default function SignUp_Location() {
       router.push("/", { scroll: false });
     } else if (result.success === false) {
       console.error("SignUp failed:", result.error.message);
-      setError("회원가입에 실패했습니다. 다시 시도해주세요.");
-      setTimeout(() => {
-        router.push("/signup");
-      }, 3000);
+
+      // 에러 타입별 처리
+      const errorCode = result.error?.code;
+
+      if (errorCode === ErrorCode.IMAGE_UPLOAD_FAILED) {
+        // 이미지 업로드 실패: 현재 페이지에 머물기 (재시도 가능)
+        setError("이미지 업로드에 실패했습니다. 다시 시도해주세요.");
+      } else if (errorCode === ErrorCode.NICKNAME_NOT_UNIQUE) {
+        // 닉네임 중복: 프로필 단계로 이동
+        setError("이미 사용 중인 닉네임입니다.");
+        setTimeout(() => {
+          router.push("/signup/profile");
+        }, 2000);
+      } else if (
+        errorCode === ErrorCode.VALIDATION_FAILED ||
+        errorCode === ErrorCode.SECURITY_VIOLATION
+      ) {
+        // 입력값 검증 실패: 현재 페이지에 머물기
+        setError(result.error.message || "입력값을 확인해주세요.");
+      } else {
+        // 기타 복구 불가능한 에러: 1단계로 이동
+        setError("회원가입에 실패했습니다. 다시 시도해주세요.");
+        setTimeout(() => {
+          clearSignupData();
+          router.push("/signup");
+        }, 3000);
+      }
     }
   };
   //

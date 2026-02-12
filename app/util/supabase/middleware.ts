@@ -1,8 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { PUBLIC_PATHS } from "@/app/lib/constants/paths";
-
-const protectedPaths = ["/jamsession", "/mypage", "/myact", "/user-profile"];
+import {
+  PUBLIC_PATHS,
+  PROTECTED_PATHS,
+  GUEST_ONLY_PATHS,
+} from "@/app/lib/constants/paths";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -34,16 +36,39 @@ export async function updateSession(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     const pathname = request.nextUrl.pathname;
-    const isProtected = protectedPaths.some((path) =>
-      pathname.startsWith(path)
-    );
+
+    // 공개 예외 경로 체크
     const isPublicException = PUBLIC_PATHS.some((path) =>
       pathname.startsWith(path)
     );
+    if (isPublicException) {
+      return supabaseResponse;
+    }
 
-    if (!user && isProtected && !isPublicException) {
+    // 보호된 경로: 비로그인 사용자는 /signin으로 리다이렉트
+    const isProtected = PROTECTED_PATHS.some((path) =>
+      pathname.startsWith(path)
+    );
+    if (!user && isProtected) {
       const url = request.nextUrl.clone();
       url.pathname = "/signin";
+      return NextResponse.redirect(url);
+    }
+
+    // Guest-only 경로: 로그인 사용자는 / 또는 /signup으로 리다이렉트
+    const isGuestOnly = GUEST_ONLY_PATHS.some((path) =>
+      pathname.startsWith(path)
+    );
+    if (user && isGuestOnly) {
+      // 회원가입 완료 여부 체크 (DB 조회)
+      const { data } = await supabase
+        .from("user")
+        .select("id")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      const url = request.nextUrl.clone();
+      url.pathname = data ? "/" : "/signup";
       return NextResponse.redirect(url);
     }
   } catch {

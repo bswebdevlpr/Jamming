@@ -6,17 +6,27 @@ import { RightArrow } from "@/app/ui/images/arrows";
 import { useDebouncedRedirect } from "../buttons/next-button";
 import { usePathname } from "next/navigation";
 import ButtonTemplate from "@/app/ui/templates/buttons";
+import PolicyModal from "@/app/ui/modals/policy-modal";
+
+type PolicyType =
+  | "서비스 이용약관"
+  | "전자금융거래 이용약관"
+  | "개인정보 수집/이용 동의"
+  | "본인확인서비스 이용약관"
+  | "마케팅 수신 이용 동의";
 
 const PolicyRow = ({
   opt,
   txt,
   onClick,
   thisState,
+  onViewPolicy,
 }: {
   opt: string;
   txt: string;
   onClick: (() => void) | ((newVal: boolean) => void);
   thisState: boolean;
+  onViewPolicy: () => void;
 }) => {
   return (
     <div className="flex flex-row items-center gap-1">
@@ -29,7 +39,15 @@ const PolicyRow = ({
       >
         ({opt}) {txt}
       </p>
-      <RightArrow className="ml-auto" />
+      <div
+        className="ml-auto cursor-pointer"
+        onClick={(e) => {
+          e.stopPropagation();
+          onViewPolicy();
+        }}
+      >
+        <RightArrow />
+      </div>
     </div>
   );
 };
@@ -40,6 +58,8 @@ export default function SignUp_Policy() {
 
   const [acceptAllTermCon, setAcceptAllTermCon] = useState(false);
   const [termCons, setTermCons] = useState(Array(5).fill(false));
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPolicy, setSelectedPolicy] = useState<PolicyType | null>(null);
 
   useEffect(() => {
     if (!isInited.current) isInited.current = true;
@@ -79,6 +99,17 @@ export default function SignUp_Policy() {
     if (checkCnt === termCons.length - 1) setIsButtonActivated(true);
     else setIsButtonActivated(false);
   }, [termCons]);
+  //
+
+  // MODAL HANDLERS
+  const openPolicyModal = (policyType: PolicyType) => {
+    setSelectedPolicy(policyType);
+    setModalOpen(true);
+  };
+
+  const closePolicyModal = () => {
+    setModalOpen(false);
+  };
   //
 
   return (
@@ -164,6 +195,7 @@ export default function SignUp_Policy() {
               txt={txt}
               onClick={handleTermConAction(idx)}
               thisState={termCons[idx]}
+              onViewPolicy={() => openPolicyModal(txt as PolicyType)}
             />
           ))}
           <PolicyRow
@@ -171,6 +203,7 @@ export default function SignUp_Policy() {
             txt={"마케팅 수신 이용 동의"}
             onClick={handleTermConAction(termCons.length - 1)}
             thisState={termCons[termCons.length - 1]}
+            onViewPolicy={() => openPolicyModal("마케팅 수신 이용 동의")}
           />
         </div>
       </div>
@@ -183,6 +216,15 @@ export default function SignUp_Policy() {
           })
         }
       />
+
+      {/* Policy Modal */}
+      {selectedPolicy && (
+        <PolicyModal
+          policyType={selectedPolicy}
+          isOpen={modalOpen}
+          onClose={closePolicyModal}
+        />
+      )}
     </div>
   );
 }

@@ -23,6 +23,7 @@ export enum ErrorCode {
   ALREADY_APPLIED = "ALREADY_APPLIED",
   RECRUIT_NOT_ACTIVE = "RECRUIT_NOT_ACTIVE",
   NOT_BAND_LEADER = "NOT_BAND_LEADER",
+  RATE_LIMIT_EXCEEDED = "RATE_LIMIT_EXCEEDED",
 }
 
 /**
@@ -58,6 +59,8 @@ const USER_MESSAGES: Record<ErrorCode, string> = {
   [ErrorCode.ALREADY_APPLIED]: "이미 지원한 게시글입니다.",
   [ErrorCode.RECRUIT_NOT_ACTIVE]: "마감된 구인 게시글입니다.",
   [ErrorCode.NOT_BAND_LEADER]: "밴드장만 수행할 수 있는 작업입니다.",
+  [ErrorCode.RATE_LIMIT_EXCEEDED]:
+    "요청 횟수가 너무 많습니다. 잠시 후 다시 시도해주세요.",
 };
 
 /**
@@ -179,6 +182,10 @@ export class CustomError extends Error {
 
   static notBandLeader(context?: ErrorContext): CustomError {
     return new CustomError(ErrorCode.NOT_BAND_LEADER, context);
+  }
+
+  static rateLimitExceeded(context?: ErrorContext): CustomError {
+    return new CustomError(ErrorCode.RATE_LIMIT_EXCEEDED, context);
   }
 
   // ========== Supabase 에러 변환 헬퍼 ==========
