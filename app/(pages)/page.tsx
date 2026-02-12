@@ -7,7 +7,8 @@ import TopNavBar from "@/app/ui/navbar/jamsession/top";
 import BottomNavBar from "@/app/ui/navbar/bottom";
 
 import JamNow from "@/app/ui/buttons/jam-now";
-import FullScreenLoading from "@/app/ui/loading/fullscreen";
+import JamNowPublic from "@/app/ui/buttons/jam-now-public";
+import BottomNavBarPublic from "@/app/ui/navbar/bottom-public";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import moment from "moment";
@@ -16,11 +17,10 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 import { FeedMethods } from "@/app/ui/templates/feed";
-import { useBottomSheetStore } from "@/app/stores";
+import { useBottomSheetStore, useCalendarStore } from "@/app/stores";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/app/util/supabase/client";
 import { getDatesHavingJamPublic } from "@/app/ui/calendar/functions/fetch";
-import LandingPage from "./_landing/landing-page";
 
 export default function Home() {
   // AUTH STATE
@@ -52,6 +52,7 @@ export default function Home() {
 
   // ZUSTAND STORE
   const bottomSheet = useBottomSheetStore();
+  const resetToToday = useCalendarStore((s) => s.resetToToday);
   //
 
   // REF
@@ -100,19 +101,18 @@ export default function Home() {
       setSelectedDate(moment(paramDate));
   }, [searchParams]);
 
-  if (isAuthenticated === null) {
-    return <FullScreenLoading />;
-  }
-
-  if (isAuthenticated === false) {
-    return <LandingPage />;
-  }
+  useEffect(() => {
+    if (resetToToday > 0) {
+      setSelectedDate(moment());
+    }
+  }, [resetToToday]);
 
   return (
     <div className="h-full flex flex-col overflow-without-scroll relative">
       <TopNavBar
         filter={filter}
         setLocation={setLocation}
+        isAuthenticated={isAuthenticated}
       />
       {/* 슬라이드 캘린더 */}
       <div className="p-5">
@@ -170,13 +170,21 @@ export default function Home() {
         <div className="grow overflow-hidden flex justify-center items-center px-5">
           <JamFeed ref={childRef} filter={filter} />
         </div>
-        <JamNow
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          refetch={childRef && childRef.current && childRef.current.refetch}
-          setResetSlideCalendarDots={setResetSlideCalendarDots}
-        />
-        <BottomNavBar />
+        {isAuthenticated !== false ? (
+          <JamNow
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            refetch={childRef && childRef.current && childRef.current.refetch}
+            setResetSlideCalendarDots={setResetSlideCalendarDots}
+          />
+        ) : (
+          <JamNowPublic />
+        )}
+        {isAuthenticated !== false ? (
+          <BottomNavBar />
+        ) : (
+          <BottomNavBarPublic />
+        )}
       </div>
     </div>
   );

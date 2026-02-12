@@ -1,14 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import HomeButton from "../buttons/home";
 import FeedbackIcon from "../images/navbar/feedback";
 import LoginIcon from "../images/navbar/login";
 import FeedbackPopup from "../popup/feedback";
+import { useCalendarStore } from "@/app/stores";
 
 export default function BottomNavBarPublic() {
   const router = useRouter();
+  const pathname = usePathname();
+  const triggerResetToToday = useCalendarStore((s) => s.triggerResetToToday);
   const [isFeedbackOn, setIsFeedbackOn] = useState(false);
 
   return (
@@ -38,7 +41,13 @@ export default function BottomNavBarPublic() {
             bottom: "2.13vh",
             cursor: "pointer",
           }}
-          onClick={() => router.push("/")}
+          onClick={() => {
+            if (pathname === "/") {
+              triggerResetToToday();
+            } else {
+              router.push("/");
+            }
+          }}
         >
           <HomeButton />
         </div>

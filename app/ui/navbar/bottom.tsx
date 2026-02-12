@@ -8,6 +8,7 @@ import BandIcon from "../images/navbar/band-icon";
 import RecruitIcon from "../images/navbar/recruit-icon";
 import { motion } from "framer-motion";
 import { TAB_COLORS, TRANSITION } from "@/app/lib/animations";
+import { useCalendarStore } from "@/app/stores";
 
 interface NavTabProps {
   label: string;
@@ -60,6 +61,7 @@ function NavTab({ label, path, currentPath, icon, onClick }: NavTabProps) {
 export default function BottomNavBar() {
   const router = useRouter();
   const path = usePathname();
+  const triggerResetToToday = useCalendarStore((s) => s.triggerResetToToday);
 
   return (
     <div
@@ -96,7 +98,13 @@ export default function BottomNavBar() {
           cursor: "pointer",
           zIndex: 10,
         }}
-        onClick={() => router.push("/")}
+        onClick={() => {
+          if (path === "/") {
+            triggerResetToToday();
+          } else {
+            router.push("/");
+          }
+        }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         transition={TRANSITION.fast}
