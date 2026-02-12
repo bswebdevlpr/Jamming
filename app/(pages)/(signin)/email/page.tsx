@@ -7,6 +7,13 @@ import { AuthError } from "@supabase/supabase-js";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import { getAuthRedirectPath } from "@/app/util/auth/redirect";
+import { z } from "zod";
+
+// 이메일/비밀번호 Zod 스키마
+const emailSchema = z.string().email("올바른 이메일 형식이 아닙니다.");
+const passwordSchema = z
+  .string()
+  .min(6, "비밀번호는 최소 6자 이상이어야 합니다.");
 
 const getErrorMessage = (error: AuthError) => {
   const msg = error.message.toLowerCase();
@@ -46,20 +53,23 @@ export default function EmailAuth() {
     }
   }, [success]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError("");
     setSuccess("");
     setIsLoading(true);
 
-    // 유효성 검사
-    if (!email || !password) {
-      setError("이메일과 비밀번호를 입력해주세요.");
+    // Zod 유효성 검사
+    const emailResult = emailSchema.safeParse(email);
+    if (!emailResult.success) {
+      setError(emailResult.error.errors[0].message);
       setIsLoading(false);
       return;
     }
 
-    if (mode === "signup" && password.length < 6) {
-      setError("비밀번호는 최소 6자 이상이어야 합니다.");
+    const passwordResult = passwordSchema.safeParse(password);
+    if (!passwordResult.success) {
+      setError(passwordResult.error.errors[0].message);
       setIsLoading(false);
       return;
     }
@@ -80,6 +90,7 @@ export default function EmailAuth() {
 
         // 프로필 존재 확인 및 리다이렉트
         const redirectPath = await getAuthRedirectPath(data.user.id);
+        setIsLoading(false);
         router.push(redirectPath);
       } else {
         // 회원가입
@@ -171,110 +182,112 @@ export default function EmailAuth() {
       </div>
 
       {/* 폼 */}
-      <div className="flex-1 px-4">
-        <div className="flex flex-col gap-6">
-          {/* 이메일 입력 */}
-          <div>
-            <label
-              style={{
-                fontFamily: "SUIT-BODY",
-                fontSize: "14px",
-                color: "#C0C0C5",
-                display: "block",
-                marginBottom: "8px",
-              }}
-            >
-              이메일
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
-              style={{
-                width: "100%",
-                padding: "12px",
-                borderRadius: "8px",
-                backgroundColor: "#323234",
-                border: "1px solid #535355",
-                color: "#FFFFFF",
-                fontFamily: "SUIT-BODY",
-                fontSize: "16px",
-                outline: "none",
-              }}
-            />
+      <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
+        <div className="flex-1 px-4">
+          <div className="flex flex-col gap-6">
+            {/* 이메일 입력 */}
+            <div>
+              <label
+                style={{
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "14px",
+                  color: "#C0C0C5",
+                  display: "block",
+                  marginBottom: "8px",
+                }}
+              >
+                이메일
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="example@email.com"
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  backgroundColor: "#323234",
+                  border: "1px solid #535355",
+                  color: "#FFFFFF",
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "16px",
+                  outline: "none",
+                }}
+              />
+            </div>
+
+            {/* 비밀번호 입력 */}
+            <div>
+              <label
+                style={{
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "14px",
+                  color: "#C0C0C5",
+                  display: "block",
+                  marginBottom: "8px",
+                }}
+              >
+                비밀번호
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={mode === "signup" ? "최소 6자 이상" : "비밀번호 입력"}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  borderRadius: "8px",
+                  backgroundColor: "#323234",
+                  border: "1px solid #535355",
+                  color: "#FFFFFF",
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "16px",
+                  outline: "none",
+                }}
+              />
+            </div>
+
+            {/* 에러 메시지 */}
+            {error && (
+              <p
+                style={{
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "14px",
+                  color: "#FF3E2F",
+                  marginTop: "-8px",
+                }}
+              >
+                {error}
+              </p>
+            )}
+
+            {/* 성공 메시지 */}
+            {success && (
+              <p
+                style={{
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "14px",
+                  color: "#A3FF0C",
+                  marginTop: "-8px",
+                }}
+              >
+                {success}
+              </p>
+            )}
           </div>
-
-          {/* 비밀번호 입력 */}
-          <div>
-            <label
-              style={{
-                fontFamily: "SUIT-BODY",
-                fontSize: "14px",
-                color: "#C0C0C5",
-                display: "block",
-                marginBottom: "8px",
-              }}
-            >
-              비밀번호
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={mode === "signup" ? "최소 6자 이상" : "비밀번호 입력"}
-              style={{
-                width: "100%",
-                padding: "12px",
-                borderRadius: "8px",
-                backgroundColor: "#323234",
-                border: "1px solid #535355",
-                color: "#FFFFFF",
-                fontFamily: "SUIT-BODY",
-                fontSize: "16px",
-                outline: "none",
-              }}
-            />
-          </div>
-
-          {/* 에러 메시지 */}
-          {error && (
-            <p
-              style={{
-                fontFamily: "SUIT-BODY",
-                fontSize: "14px",
-                color: "#FF3E2F",
-                marginTop: "-8px",
-              }}
-            >
-              {error}
-            </p>
-          )}
-
-          {/* 성공 메시지 */}
-          {success && (
-            <p
-              style={{
-                fontFamily: "SUIT-BODY",
-                fontSize: "14px",
-                color: "#A3FF0C",
-                marginTop: "-8px",
-              }}
-            >
-              {success}
-            </p>
-          )}
         </div>
-      </div>
 
-      {/* 버튼 */}
-      <div className="px-4 pb-8">
-        <ButtonTemplate
-          text={isLoading ? "처리 중..." : "시작하기"}
-          onClick={handleSubmit}
-          isActive={!!isFormValid && !isLoading}
-        />
-      </div>
+        {/* 버튼 */}
+        <div className="px-4 pb-8">
+          <ButtonTemplate
+            text={isLoading ? "처리 중..." : "시작하기"}
+            onClick={handleSubmit}
+            isActive={!!isFormValid && !isLoading}
+          />
+        </div>
+      </form>
     </div>
   );
 }

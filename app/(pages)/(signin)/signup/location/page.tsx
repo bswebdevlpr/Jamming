@@ -1,9 +1,7 @@
 "use client";
 
-import {
-  LocationBackgroundURL,
-  LocationEnum,
-} from "@/app/lib/enums/location.enum";
+import { LocationEnum } from "@/app/lib/enums/location.enum";
+import { BACKGROUND_IMAGES } from "@/app/lib/backgrounds";
 import CompleteButton from "@/app/ui/buttons/complete";
 import VerticalList from "@/app/ui/lists/list";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -20,14 +18,9 @@ import { useSessionStore } from "@/app/stores";
 
 export default function SignUp_Location() {
   // INIT
-  const searchParams = useSearchParams();
-  const queries = searchParams.entries().reduce((acc, [key, val]) => {
-    acc[key] = val;
-    return acc;
-  }, {} as { [key: string]: string });
-
   const setUserProfile = useSessionStore((state) => state.setUserProfile);
   const signupProfileImage = useSessionStore((state) => state.signupProfileImage);
+  const signupData = useSessionStore((state) => state.signupData);
   const clearSignupData = useSessionStore((state) => state.clearSignupData);
 
   const router = useRouter();
@@ -41,18 +34,13 @@ export default function SignUp_Location() {
   // FORM
   const { handleSubmit, setValue, getValues } = useForm<FormData_User>({
     defaultValues: {
-      nickname: queries.nickname,
-      tags: queries.tags.split(","),
-      pos: queries.pos as PositionEnum,
-      genre: queries.genre as GenreEnum,
-      level: queries.level as LevelEnum,
+      nickname: signupData?.nickname || "",
+      tags: signupData?.tags || [],
+      pos: signupData?.pos,
+      genre: signupData?.genre,
+      level: signupData?.level,
       location,
-      accept_marketing:
-        queries.accept_marketing === "true"
-          ? true
-          : queries.accept_marketing === "false"
-          ? false
-          : undefined,
+      accept_marketing: signupData?.accept_marketing,
     },
     resolver: zodResolver(ZodSchema_User),
   });
@@ -60,8 +48,15 @@ export default function SignUp_Location() {
 
   // USE-EFFECTS
   useEffect(() => {
+    // signupData가 없으면 profile 페이지로 리다이렉트
+    if (!signupData) {
+      router.push("/signup/profile");
+    }
+  }, [signupData, router]);
+
+  useEffect(() => {
     if (location) setValue("location", location);
-  }, [location]);
+  }, [location, setValue]);
   //
 
   // HANDLER
@@ -127,7 +122,7 @@ export default function SignUp_Location() {
 
             return {
               text: LocationEnum[typeForcedKey],
-              backgroundUrl: LocationBackgroundURL[typeForcedKey],
+              backgroundUrl: BACKGROUND_IMAGES[typeForcedKey],
               style: {
                 backgroundColor: "var(--background)",
               },

@@ -20,7 +20,7 @@ async function signInWithOAuthProvider(provider: "kakao" | "google") {
   if (data.url) redirect(data.url);
   if (error) {
     if (isDev) console.error(error);
-    redirect("/signin");
+    redirect("/signin?error=oauth_failed");
   }
 }
 

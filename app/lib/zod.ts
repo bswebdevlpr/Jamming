@@ -17,7 +17,7 @@ export const ZodSchema_User = z.object({
     .min(1, { message: "닉네임을 입력해주세요" })
     .max(8, { message: "닉네임을 입력해주세요" })
     .regex(
-      /^[a-zA-Z가-힣0-9]+$/, // 알파벳, 숫자, 공백만 허용
+      /^[a-zA-Z가-힣0-9]+$/, // 알파벳, 숫자, 한글만 허용
       "올바른 닉네임을 입력해주세요"
     ),
   tags: z

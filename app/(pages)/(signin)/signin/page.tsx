@@ -4,13 +4,15 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { signInWithKakao, signInWithGoogle } from "@/app/util/supabase/auth";
 import { createClient } from "@/app/util/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import SocialLoginButton from "./social-login-button";
 
 export default function SignIn() {
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isChecking, setIsChecking] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     const checkSession = async () => {
@@ -25,7 +27,13 @@ export default function SignIn() {
       }
     };
     checkSession();
-  }, []);
+
+    // OAuth 에러 처리
+    const error = searchParams.get("error");
+    if (error === "oauth_failed") {
+      setErrorMessage("로그인에 실패했습니다. 다시 시도해주세요.");
+    }
+  }, [searchParams]);
 
   if (isChecking) return null;
 
@@ -97,6 +105,19 @@ export default function SignIn() {
         </p>
       </div>
       <div className="flex flex-col gap-3 w-full px-4 pb-8">
+        {errorMessage && (
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "14px",
+              color: "#FF3E2F",
+              textAlign: "center",
+              marginBottom: "8px",
+            }}
+          >
+            {errorMessage}
+          </p>
+        )}
         <SocialLoginButton provider="kakao" onClick={signInWithKakao} />
         <SocialLoginButton provider="google" onClick={signInWithGoogle} />
         <SocialLoginButton

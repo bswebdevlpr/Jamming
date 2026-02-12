@@ -1,5 +1,3 @@
-"use server";
-
 import { NextResponse } from "next/server";
 // The client you created from the Server-Side Auth instructions
 import { createClient } from "@/app/util/supabase/server";
@@ -28,10 +26,21 @@ export async function GET(request: Request) {
 
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === "development";
+
+      // 허용된 호스트 목록 (환경변수 또는 하드코딩)
+      const allowedHosts = process.env.ALLOWED_HOSTS?.split(",") || [];
+      const productionDomain = process.env.DOMAIN?.replace(
+        /^https?:\/\//,
+        ""
+      );
+      if (productionDomain && !allowedHosts.includes(productionDomain)) {
+        allowedHosts.push(productionDomain);
+      }
+
       if (isLocalEnv) {
         // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
         return NextResponse.redirect(`${origin}${next}`);
-      } else if (forwardedHost) {
+      } else if (forwardedHost && allowedHosts.includes(forwardedHost)) {
         return NextResponse.redirect(`https://${forwardedHost}${next}`);
       } else {
         return NextResponse.redirect(`${origin}${next}`);

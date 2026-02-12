@@ -87,6 +87,7 @@ export default function SignUp_Profile() {
   const setSignupProfileImage = useSessionStore(
     (state) => state.setSignupProfileImage
   );
+  const setSignupData = useSessionStore((state) => state.setSignupData);
 
   // Race condition 방지용 ref
   const latestNicknameRef = useRef<string>("");
@@ -162,10 +163,14 @@ export default function SignUp_Profile() {
   // USE-EFFECT
   useEffect(() => {
     const query = searchParams.get("accept_marketing");
-    if (query === null) router.push("/signup");
 
-    setValue("accept_marketing", Boolean(query));
-  }, []);
+    if (query !== null) {
+      setValue("accept_marketing", query === "true");
+    } else {
+      // query가 없으면 기본값 false 설정
+      setValue("accept_marketing", false);
+    }
+  }, [searchParams, setValue]);
 
   useEffect(() => {
     if (position) setValue("pos", position);
@@ -181,6 +186,19 @@ export default function SignUp_Profile() {
       debouncedCheckNickname.cancel();
     };
   }, [nickname]);
+
+  // Object URL cleanup (메모리 누수 방지)
+  useEffect(() => {
+    // 이전 thumbnail 저장
+    const currentThumbnail = profile_image?.thumbnail;
+
+    return () => {
+      // 컴포넌트 언마운트 또는 새 이미지 선택 시 이전 URL revoke
+      if (currentThumbnail) {
+        URL.revokeObjectURL(currentThumbnail);
+      }
+    };
+  }, [profile_image?.thumbnail]);
   //
 
   // HANDLERS
@@ -217,16 +235,14 @@ export default function SignUp_Profile() {
         return;
       }
 
-      // Zustand store에 File 객체 직접 저장
+      // Zustand store에 프로필 이미지 및 폼 데이터 저장
       if (profile_image) {
         setSignupProfileImage(profile_image.file);
       }
+      setSignupData(data);
 
-      debouncedRedirect(
-        pathname.split("/").slice(0, 2).join("/") + "/location",
-        searchParams.toString(),
-        getValues()
-      );
+      // URL query string 없이 이동
+      router.push(pathname.split("/").slice(0, 2).join("/") + "/location");
     } catch (e) {
       console.error("Profile submission failed:", e);
       setError("nickname", {
