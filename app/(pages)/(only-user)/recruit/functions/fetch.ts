@@ -71,19 +71,21 @@ export async function fetchRecruitPosts({
       );
     }
 
-    // 각 게시글에 commentCount 추가
+    // 각 게시글에 commentCount 추가 및 타입 변환
     const processedData = (data ?? []).map((row) => {
-      row.commentCount = row.recruit_comment?.length ?? 0;
-      return row;
-    });
+      const { recruit_comment, ...rest } = row;
+      return {
+        ...rest,
+        band: Array.isArray(row.band) ? row.band[0] : row.band,
+        commentCount: recruit_comment?.length ?? 0,
+      };
+    }) as Entity_RecruitPost[];
 
     // pos 필터 (positions jsonb 내부 검색)
     let filteredData = processedData;
     if (filter.pos) {
       filteredData = processedData.filter((row) =>
-        (row.positions ?? []).some(
-          (p: { pos: string; headcnt: number }) => p.pos === filter.pos
-        )
+        (row.positions ?? []).some((p) => p.pos === filter.pos)
       );
     }
 
