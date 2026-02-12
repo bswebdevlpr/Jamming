@@ -9,7 +9,7 @@ const BAND_SELECT_QUERY = `
   *,
   band_member (
     id, user_id, pos, role, joined_at,
-    user ( nickname, profile_image, pos, genre, level, bpm )
+    user!inner ( nickname, profile_image, pos, genre, level, bpm )
   )
 `;
 

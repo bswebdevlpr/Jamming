@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { ZodSchema_Band, ZodType_Band } from "@/app/lib/zod";
 import { createBand } from "@/app/api/functions/band/create";
 import { useSessionStore } from "@/app/stores";
@@ -16,6 +17,7 @@ import { toast } from "@/app/ui/components/toast";
 export default function BandCreatePage() {
   const router = useRouter();
   const { userProfile } = useSessionStore();
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -71,6 +73,8 @@ export default function BandCreatePage() {
     });
 
     if (result.success) {
+      // 캐시 무효화: 밴드 목록 새로고침
+      queryClient.invalidateQueries({ queryKey: ["my-bands"] });
       router.push("/band");
     } else if (result.success === false) {
       toast.error(result.error.message);
