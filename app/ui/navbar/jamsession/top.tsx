@@ -4,27 +4,19 @@ import Bell from "@/app/ui/images/jamsession/bell";
 // import CalendarImage from "@/app/ui/images/jamsession/calendar";
 import { DownArrow } from "../../images/arrows";
 import LocationPopup from "@/app/ui/popup/location";
-import {
-  Dispatch,
-  SetStateAction,
-  // useContext,
-  // useEffect,
-  useState,
-} from "react";
+import { useState } from "react";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
 import { Filter_JamSessionFeed } from "../../feeds/jam-feed";
 import { useRouter } from "next/navigation";
 
 export default function TopNavBar({
   filter,
-  // setFilter,
   setLocation,
-}: // setSelectedDate,
-{
+  isAuthenticated,
+}: {
   filter: Filter_JamSessionFeed;
-  // setFilter: Dispatch<SetStateAction<Filter_JamSessionFeed>>;
   setLocation: (location: LocationEnum) => void;
-  // setSelectedDate: (input: moment.Moment) => void;
+  isAuthenticated?: boolean | null;
 }) {
   const router = useRouter();
 
@@ -40,6 +32,7 @@ export default function TopNavBar({
 
   return (
     <div className="flex flex-row justify-between px-5 py-3">
+      {/* 왼쪽: 지역 선택 */}
       <div className="flex flex-row gap-1" onClick={handleLocationClick}>
         <p
           style={{
@@ -51,24 +44,29 @@ export default function TopNavBar({
         </p>
         <DownArrow />
       </div>
-      <div className="flex flex-row gap-5">
-        <Bell onClick={() => router.push("/notification")} />
-        {/* <CalendarImage
-          onClick={() =>
-            bottomSheet.set({
-              header: false,
-              location: "high",
-              children: (
-                <CalendarComponent
-                  setSelectedDate={setSelectedDate}
-                  filter={filter}
-                  setFilter={setFilter}
-                />
-              ),
-            })
-          }
-        /> */}
+
+      {/* 오른쪽: 소개 (비인증) 또는 Bell (인증) */}
+      <div className="flex flex-row gap-5 items-center">
+        {isAuthenticated === false ? (
+          <button
+            onClick={() => router.push("/about")}
+            style={{
+              fontFamily: "SUIT-TITLE",
+              fontSize: "0.875rem",
+              color: "#A3FF0C",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "0",
+            }}
+          >
+            소개
+          </button>
+        ) : (
+          <Bell onClick={() => router.push("/notification")} />
+        )}
       </div>
+
       <LocationPopup
         isTurnedOn={isLocationClicked}
         turnOff={handleLocationClick}

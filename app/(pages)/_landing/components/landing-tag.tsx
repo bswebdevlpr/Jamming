@@ -8,23 +8,23 @@
  */
 
 const LANDING_TAG_COLORS: Record<string, { color: string; background: string }> = {
-  // 장르 태그
+  // 장르 태그 (잼 세션 카드: Green/Blue/Pink/Red)
   "락": { color: "#A3FF0C", background: "rgba(163, 255, 12, 0.16)" },
-  "팝": { color: "#3994FF", background: "rgba(57, 148, 255, 0.20)" },
+  "팝": { color: "#0C7CFF", background: "rgba(12, 124, 255, 0.20)" },
 
-  // 포지션 태그
+  // 포지션 태그 (구인 게시판 카드: Pink/Green/Blue)
   "기타": { color: "#FF3773", background: "rgba(255, 55, 115, 0.24)" },
   "드럼": { color: "#FF3E2F", background: "rgba(255, 62, 47, 0.20)" },
-  "보컬": { color: "#0C7CFF", background: "rgba(12, 124, 255, 0.20)" },
+  "보컬": { color: "#FF3773", background: "rgba(255, 55, 115, 0.24)" },
   "베이스": { color: "#A3FF0C", background: "rgba(163, 255, 12, 0.16)" },
   "키보드": { color: "#3994FF", background: "rgba(57, 148, 255, 0.20)" },
 
-  // 역할 태그
+  // 역할 태그 (밴드 관리 카드: Pink/Gray)
   "리더": { color: "#FF3773", background: "rgba(255, 55, 115, 0.24)" },
   "멤버": { color: "#c0c0c5", background: "rgba(192, 192, 197, 0.16)" },
 
-  // 지역 태그
-  "서울": { color: "#0C7CFF", background: "rgba(12, 124, 255, 0.20)" },
+  // 지역 태그 (전국 어디서나 카드: Red/Blue/Green)
+  "서울": { color: "#FF3E2F", background: "rgba(255, 62, 47, 0.20)" },
   "경기": { color: "#3994FF", background: "rgba(57, 148, 255, 0.20)" },
   "부산": { color: "#A3FF0C", background: "rgba(163, 255, 12, 0.16)" },
 };
