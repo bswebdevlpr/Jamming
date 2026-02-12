@@ -45,3 +45,6 @@ app/api/sql/
 .claude/
 
 scripts/
+
+# original image backups
+assets/
