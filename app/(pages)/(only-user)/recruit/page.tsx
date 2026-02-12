@@ -27,6 +27,8 @@ import RecruitIcon from "@/app/ui/images/navbar/recruit-icon";
 import { useBottomSheetStore } from "@/app/stores";
 import RecruitBottomSheetContent from "./bottom-sheet/content";
 import FilterButton from "@/app/ui/buttons/filter";
+import LocationPopup from "@/app/ui/popup/location";
+import { DownArrow } from "@/app/ui/images/arrows";
 
 export default function RecruitFeedPage() {
   const router = useRouter();
@@ -37,6 +39,7 @@ export default function RecruitFeedPage() {
   const [position, setPosition] = useState<PositionEnum>(null);
   const [level, setLevel] = useState<LevelEnum>(null);
   const [location, setLocation] = useState<LocationEnum>(null);
+  const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false);
 
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: [
@@ -75,11 +78,9 @@ export default function RecruitFeedPage() {
           genre={genre}
           position={position}
           level={level}
-          location={location}
           setGenre={setGenre}
           setPosition={setPosition}
           setLevel={setLevel}
-          setLocation={setLocation}
         />
       ),
       location: "middle",
@@ -90,8 +91,9 @@ export default function RecruitFeedPage() {
   return (
     <div className="grow flex flex-col overflow-without-scroll">
       {/* Header */}
-      <div className="flex flex-row justify-between items-center px-5 py-3">
+      <div className="px-5 py-3">
         <p
+          className="mb-3"
           style={{
             fontFamily: "SBAggroB",
             fontSize: "1.125rem",
@@ -100,7 +102,22 @@ export default function RecruitFeedPage() {
         >
           Recruit
         </p>
-        <FilterButton onClick={handleFilterClick} />
+        <div className="flex flex-row justify-between items-center">
+          <div
+            className="flex flex-row gap-1 cursor-pointer"
+            onClick={() => setIsLocationPopupOpen(true)}
+          >
+            <p style={{
+              fontFamily: "SUIT-TITLE",
+              fontSize: "1.125rem",
+              color: "#FFF",
+            }}>
+              {LocationEnum[location] ?? "지역"}
+            </p>
+            <DownArrow />
+          </div>
+          <FilterButton onClick={handleFilterClick} />
+        </div>
       </div>
 
       {/* Feed */}
@@ -143,6 +160,12 @@ export default function RecruitFeedPage() {
           />
         </motion.div>
       )}
+
+      <LocationPopup
+        isTurnedOn={isLocationPopupOpen}
+        turnOff={() => setIsLocationPopupOpen(false)}
+        setLocation={setLocation}
+      />
     </div>
   );
 }

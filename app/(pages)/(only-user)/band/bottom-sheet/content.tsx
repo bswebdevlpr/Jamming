@@ -2,35 +2,28 @@
 
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
-import { LocationEnum } from "@/app/lib/enums/location.enum";
 import InitButton from "@/app/ui/buttons/initialize";
 import SelectButton from "@/app/ui/buttons/select";
 import { CategoryFilterItem } from "@/app/ui/categories/items";
 import Grid from "@/app/ui/grids/grid";
 import Genre from "@/app/ui/images/categories/genre";
 import Level from "@/app/ui/images/categories/level";
-import Location from "@/app/ui/images/categories/location";
 import { useEffect, useState } from "react";
 
 const BandBottomSheetContent = ({
   genre,
   level,
-  location,
   setGenre,
   setLevel,
-  setLocation,
 }: {
   genre?: GenreEnum;
   level?: LevelEnum;
-  location?: LocationEnum;
   setGenre: (input: GenreEnum) => void;
   setLevel: (input: LevelEnum) => void;
-  setLocation: (input: LocationEnum) => void;
 }) => {
   // STATES
   const [localGenre, setLocalGenre] = useState<GenreEnum>(genre);
   const [localLevel, setLocalLevel] = useState<LevelEnum>(level);
-  const [localLocation, setLocalLocation] = useState<LocationEnum>(location);
 
   const [activateSelect, setActivateSelect] = useState(false);
 
@@ -43,16 +36,12 @@ const BandBottomSheetContent = ({
     setLevel(input);
     setLocalLevel(input);
   };
-  const handleLocation = (input: LocationEnum) => {
-    setLocation(input);
-    setLocalLocation(input);
-  };
 
   useEffect(() => {
-    if (localGenre || localLevel || localLocation)
+    if (localGenre || localLevel)
       setActivateSelect(true);
     else setActivateSelect(false);
-  }, [localGenre, localLevel, localLocation]);
+  }, [localGenre, localLevel]);
 
   return (
     <div className="h-full flex flex-col justify-between pt-6 px-5">
@@ -68,26 +57,6 @@ const BandBottomSheetContent = ({
           필터 선택
         </p>
         <div className="flex flex-col gap-6">
-          {/* 지역 */}
-          <div className="flex flex-col gap-3">
-            <CategoryFilterItem text="지역">
-              <Location />
-            </CategoryFilterItem>
-            <Grid
-              colNum={4}
-              items={Object.values(LocationEnum)}
-              values={Object.values(LocationEnum)}
-              itemStyle={{ height: "2.5rem", color: "#F2F2F4" }}
-              itemStyleActivated={{
-                color: "#3994FF",
-                border: "1px solid #3994FF",
-                background: "rgba(57, 148, 255, 0.12)",
-              }}
-              state={localLocation}
-              handleState={handleLocation}
-            />
-          </div>
-
           {/* 장르 */}
           <div className="flex flex-col gap-3">
             <CategoryFilterItem text="장르">
@@ -134,7 +103,6 @@ const BandBottomSheetContent = ({
           onClick={() => {
             handleGenre(null);
             handleLevel(null);
-            handleLocation(null);
           }}
         />
         <SelectButton isActive={activateSelect} />

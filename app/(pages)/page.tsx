@@ -148,7 +148,8 @@ export default function Home() {
             <div
               onClick={() =>
                 bottomSheet.set({
-                  location: "high",
+                  location: "middle",
+                  header: false,
                   children: (
                     <BottomSheetContent
                       genre={genre}

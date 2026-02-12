@@ -16,6 +16,8 @@ import { LocationEnum } from "@/app/lib/enums/location.enum";
 import { useBottomSheetStore } from "@/app/stores";
 import BandBottomSheetContent from "./bottom-sheet/content";
 import FilterButton from "@/app/ui/buttons/filter";
+import LocationPopup from "@/app/ui/popup/location";
+import { DownArrow } from "@/app/ui/images/arrows";
 
 interface BandWithRole {
   band: Entity_Band;
@@ -29,6 +31,7 @@ export default function BandListPage() {
   const [genre, setGenre] = useState<GenreEnum>(null);
   const [level, setLevel] = useState<LevelEnum>(null);
   const [location, setLocation] = useState<LocationEnum>(null);
+  const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false);
 
   // React Query로 데이터 관리
   const { data: allBands = [], isLoading } = useQuery({
@@ -60,10 +63,8 @@ export default function BandListPage() {
         <BandBottomSheetContent
           genre={genre}
           level={level}
-          location={location}
           setGenre={setGenre}
           setLevel={setLevel}
-          setLocation={setLocation}
         />
       ),
       location: "middle",
@@ -74,27 +75,42 @@ export default function BandListPage() {
   return (
     <div className="grow flex flex-col overflow-without-scroll">
       {/* Header */}
-      <div className="flex flex-row justify-between items-center px-5 py-3">
-        <p
-          style={{
-            fontFamily: "SBAggroB",
-            fontSize: "1.125rem",
-            color: "var(--foreground)",
-          }}
-        >
-          My Band
-        </p>
-        <div className="flex gap-2">
+      <div className="px-5 py-3">
+        <div className="flex flex-row justify-between items-center mb-3">
+          <p
+            style={{
+              fontFamily: "SBAggroB",
+              fontSize: "1.125rem",
+              color: "var(--foreground)",
+            }}
+          >
+            My Band
+          </p>
+          <div className="flex gap-2">
+            <ButtonTemplate
+              text="+ 밴드 만들기"
+              isActive
+              onClick={() => router.push("/band/create")}
+              className="w-auto"
+              type="button"
+            />
+          </div>
+        </div>
+        <div className="flex flex-row justify-between items-center">
+          <div
+            className="flex flex-row gap-1 cursor-pointer"
+            onClick={() => setIsLocationPopupOpen(true)}
+          >
+            <p style={{
+              fontFamily: "SUIT-TITLE",
+              fontSize: "1.125rem",
+              color: "#FFF",
+            }}>
+              {LocationEnum[location] ?? "지역"}
+            </p>
+            <DownArrow />
+          </div>
           <FilterButton onClick={handleFilterClick} />
-          <ButtonTemplate
-            text="+ 밴드 만들기"
-            isActive
-            onClick={() => router.push("/band/create")}
-            className="w-auto"
-            style={{ padding: "6px 14px", fontSize: "0.8rem" }}
-            styleActivated={{ padding: "6px 14px", fontSize: "0.8rem" }}
-            type="button"
-          />
         </div>
       </div>
 
@@ -199,6 +215,12 @@ export default function BandListPage() {
           )}
         </div>
       )}
+
+      <LocationPopup
+        isTurnedOn={isLocationPopupOpen}
+        turnOff={() => setIsLocationPopupOpen(false)}
+        setLocation={setLocation}
+      />
     </div>
   );
 }

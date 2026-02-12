@@ -22,7 +22,7 @@ export default function PopupTemplate({
     <AnimatePresence>
       {isTurnedOn && (
         <motion.div
-          className={`fixed z-10 ${className ?? ""}`}
+          className={`fixed z-[25] ${className ?? ""}`}
           style={{
             ...style,
 

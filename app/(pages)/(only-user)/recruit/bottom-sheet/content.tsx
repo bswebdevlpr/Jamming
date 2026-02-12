@@ -3,7 +3,6 @@
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
-import { LocationEnum } from "@/app/lib/enums/location.enum";
 import InitButton from "@/app/ui/buttons/initialize";
 import SelectButton from "@/app/ui/buttons/select";
 import { CategoryFilterItem } from "@/app/ui/categories/items";
@@ -11,33 +10,27 @@ import Grid from "@/app/ui/grids/grid";
 import Genre from "@/app/ui/images/categories/genre";
 import Level from "@/app/ui/images/categories/level";
 import Position from "@/app/ui/images/categories/position";
-import Location from "@/app/ui/images/categories/location";
 import { useEffect, useState } from "react";
 
 const RecruitBottomSheetContent = ({
   genre,
   position,
   level,
-  location,
   setGenre,
   setPosition,
   setLevel,
-  setLocation,
 }: {
   genre?: GenreEnum;
   position?: PositionEnum;
   level?: LevelEnum;
-  location?: LocationEnum;
   setGenre: (input: GenreEnum) => void;
   setPosition: (input: PositionEnum) => void;
   setLevel: (input: LevelEnum) => void;
-  setLocation: (input: LocationEnum) => void;
 }) => {
   // STATES
   const [localGenre, setLocalGenre] = useState<GenreEnum>(genre);
   const [localPosition, setLocalPosition] = useState<PositionEnum>(position);
   const [localLevel, setLocalLevel] = useState<LevelEnum>(level);
-  const [localLocation, setLocalLocation] = useState<LocationEnum>(location);
 
   const [activateSelect, setActivateSelect] = useState(false);
 
@@ -54,16 +47,12 @@ const RecruitBottomSheetContent = ({
     setLevel(input);
     setLocalLevel(input);
   };
-  const handleLocation = (input: LocationEnum) => {
-    setLocation(input);
-    setLocalLocation(input);
-  };
 
   useEffect(() => {
-    if (localGenre || localPosition || localLevel || localLocation)
+    if (localGenre || localPosition || localLevel)
       setActivateSelect(true);
     else setActivateSelect(false);
-  }, [localGenre, localPosition, localLevel, localLocation]);
+  }, [localGenre, localPosition, localLevel]);
 
   return (
     <div className="h-full flex flex-col justify-between pt-6 px-5">
@@ -79,26 +68,6 @@ const RecruitBottomSheetContent = ({
           필터 선택
         </p>
         <div className="flex flex-col gap-6">
-          {/* 지역 */}
-          <div className="flex flex-col gap-3">
-            <CategoryFilterItem text="지역">
-              <Location />
-            </CategoryFilterItem>
-            <Grid
-              colNum={4}
-              items={Object.values(LocationEnum)}
-              values={Object.values(LocationEnum)}
-              itemStyle={{ height: "2.5rem", color: "#F2F2F4" }}
-              itemStyleActivated={{
-                color: "#3994FF",
-                border: "1px solid #3994FF",
-                background: "rgba(57, 148, 255, 0.12)",
-              }}
-              state={localLocation}
-              handleState={handleLocation}
-            />
-          </div>
-
           {/* 장르 */}
           <div className="flex flex-col gap-3">
             <CategoryFilterItem text="장르">
@@ -166,7 +135,6 @@ const RecruitBottomSheetContent = ({
             handleGenre(null);
             handlePosition(null);
             handleLevel(null);
-            handleLocation(null);
           }}
         />
         <SelectButton isActive={activateSelect} />
