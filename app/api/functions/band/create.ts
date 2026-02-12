@@ -8,6 +8,11 @@ import { getUser } from "../read";
 import { CreateBandDto } from "../../dtos/create";
 import { sanitize } from "@/app/lib/functions/validate";
 import { Entity_Band } from "@/app/lib/interfaces/entity.interface";
+import {
+  MapGenreToData,
+  MapLevelToData,
+  MapLocationToData,
+} from "@/app/lib/maps/jam";
 
 const MAX_LEADER_BANDS = 3;
 const MAX_TOTAL_BANDS = 5;
@@ -69,9 +74,9 @@ export async function createBand(
         leader_id: user.id,
         name: input.name,
         description: input.description,
-        genre: input.genre,
-        location: input.location,
-        level: input.level,
+        genre: input.genre.map((g) => MapGenreToData[g]),
+        location: MapLocationToData[input.location],
+        level: MapLevelToData[input.level],
         tags: input.tags ?? [],
       })
       .select()

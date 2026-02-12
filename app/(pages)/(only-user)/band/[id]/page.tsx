@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { getBand } from "@/app/api/functions/band/read";
+import { fetchBand } from "../functions/fetch";
 import { deleteBand } from "@/app/api/functions/band/delete";
 import { leaveBand } from "@/app/api/functions/band/member";
 import { Entity_Band } from "@/app/lib/interfaces/entity.interface";
@@ -28,15 +28,37 @@ export default function BandDetailPage() {
     error,
   } = useQuery({
     queryKey: ["band", bandId],
-    queryFn: () => getBand(bandId),
+    queryFn: async () => {
+      const result = await fetchBand(bandId);
+      if (result.success) return result.data;
+      throw new Error(result.error.message);
+    },
     staleTime: 1000 * 60 * 5, // 5분
     retry: false, // 에러 시 재시도 안 함
   });
 
-  // 에러 발생 시 목록으로 리다이렉트
+  // 에러 발생 시 에러 UI 표시
   if (error) {
-    router.push("/band");
-    return null;
+    return (
+      <div className="grow flex flex-col justify-center items-center gap-4 px-5">
+        <p
+          style={{
+            color: "#FF3E2F",
+            fontFamily: "SUIT-BODY",
+            fontSize: "0.875rem",
+            textAlign: "center",
+          }}
+        >
+          밴드 정보를 불러올 수 없습니다.
+        </p>
+        <ButtonTemplate
+          text="목록으로"
+          isActive
+          onClick={() => router.push("/band")}
+          type="button"
+        />
+      </div>
+    );
   }
 
   const isLeader = band?.leader_id === userProfile.id;

@@ -7,6 +7,11 @@ import { createClient } from "@/app/util/supabase/server";
 import { getUser } from "../read";
 import { CreateBandDto } from "../../dtos/create";
 import { sanitize } from "@/app/lib/functions/validate";
+import {
+  MapGenreToData,
+  MapLevelToData,
+  MapLocationToData,
+} from "@/app/lib/maps/jam";
 
 export async function updateBand(
   bandId: number,
@@ -38,9 +43,11 @@ export async function updateBand(
     const payload: Record<string, unknown> = {};
     if (input.name !== undefined) payload.name = input.name;
     if (input.description !== undefined) payload.description = input.description;
-    if (input.genre !== undefined) payload.genre = input.genre;
-    if (input.location !== undefined) payload.location = input.location;
-    if (input.level !== undefined) payload.level = input.level;
+    if (input.genre !== undefined)
+      payload.genre = input.genre.map((g) => MapGenreToData[g]);
+    if (input.location !== undefined)
+      payload.location = MapLocationToData[input.location];
+    if (input.level !== undefined) payload.level = MapLevelToData[input.level];
     if (input.tags !== undefined) payload.tags = input.tags;
 
     const { error } = await supabase

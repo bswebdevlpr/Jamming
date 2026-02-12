@@ -49,6 +49,7 @@ export const MapDataToLocation = {
   cb: LocationEnum.ChungBuk,
   cn: LocationEnum.ChungNam,
   jb: LocationEnum.JeonBuk,
+  jn: LocationEnum.JeonNam,
   gb: LocationEnum.GyeongBuk,
   gn: LocationEnum.GyeongNam,
   jj: LocationEnum.JeJu,
