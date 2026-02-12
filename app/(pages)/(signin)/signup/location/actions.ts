@@ -33,15 +33,13 @@ export default async function createUser(
 
     if (input.profile_image) {
       if (input.profile_image.size > MAX_FILE_SIZE) {
-        throw CustomError.invalidInput({
+        throw CustomError.validationFailed({
           operation: "createUser",
-          details: "파일 크기는 5MB를 초과할 수 없습니다.",
         });
       }
       if (!ALLOWED_TYPES.includes(input.profile_image.type)) {
-        throw CustomError.invalidInput({
+        throw CustomError.validationFailed({
           operation: "createUser",
-          details: "지원하지 않는 파일 형식입니다. (JPEG, PNG, WebP만 허용)",
         });
       }
     }
