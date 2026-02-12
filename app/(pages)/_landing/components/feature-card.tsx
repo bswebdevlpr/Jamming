@@ -18,7 +18,7 @@ export default function FeatureCard({
   tags,
 }: FeatureCardProps) {
   return (
-    <motion.div
+    <motion.article
       variants={STAGGER_ITEM}
       style={{
         background: "var(--deep-bg)",
@@ -39,6 +39,7 @@ export default function FeatureCard({
             justifyContent: "center",
             fontSize: "20px",
           }}
+          aria-hidden="true"
         >
           {icon}
         </div>
@@ -68,6 +69,6 @@ export default function FeatureCard({
         </p>
         {tags && <div className="flex flex-wrap gap-1 mt-1">{tags}</div>}
       </div>
-    </motion.div>
+    </motion.article>
   );
 }

@@ -58,20 +58,32 @@ export default function HeroSection() {
           />
         </motion.div>
 
-        {/* Brand Name */}
+        {/* Brand Name with SEO-optimized H1 */}
         <motion.h1
           variants={SLIDE_VARIANTS.fromBottom}
           style={{
-            fontFamily: "SBAggroM",
-            fontSize: "50px",
-            color: "var(--highlight)",
-            letterSpacing: "0",
+            fontFamily: "SUIT-TITLE",
+            fontSize: "24px",
+            color: "var(--foreground)",
+            letterSpacing: "-0.025em",
             lineHeight: "140%",
             margin: 0,
+            textAlign: "center",
             ...GPU_ACCELERATED_STYLE,
           }}
         >
-          JAMMING
+          음악인을 위한 합주 매칭 플랫폼{" "}
+          <span
+            style={{
+              fontFamily: "SBAggroM",
+              fontSize: "42px",
+              color: "var(--highlight)",
+              letterSpacing: "0",
+              display: "inline-block",
+            }}
+          >
+            JAMMING
+          </span>
         </motion.h1>
 
         {/* Slogan */}
@@ -79,7 +91,7 @@ export default function HeroSection() {
           variants={SLIDE_VARIANTS.fromBottom}
           style={{
             fontFamily: "SBAggroM",
-            fontSize: "24px",
+            fontSize: "20px",
             color: "var(--foreground)",
             letterSpacing: "0",
             lineHeight: "140%",
@@ -88,22 +100,6 @@ export default function HeroSection() {
           }}
         >
           놀기 위해 모였다!
-        </motion.p>
-
-        {/* Sub Title */}
-        <motion.p
-          variants={SLIDE_VARIANTS.fromBottom}
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "14px",
-            color: "#C0C0C5",
-            letterSpacing: "-0.025em",
-            lineHeight: "150%",
-            margin: 0,
-            ...GPU_ACCELERATED_STYLE,
-          }}
-        >
-          음악인을 위한 합주 매칭 플랫폼
         </motion.p>
 
         {/* CTA Button */}

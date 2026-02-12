@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
@@ -15,14 +15,34 @@ import {
   LocationTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
-import {
-  STAGGER_CONTAINER,
-  STAGGER_ITEM,
-  GPU_ACCELERATED_STYLE,
-} from "@/app/lib/animations";
+import { GPU_ACCELERATED_STYLE } from "@/app/lib/animations";
 import UserProfile from "@/app/ui/images/navbar/user-profile";
 import Logo from "@/app/ui/images/logo";
 import { ImageWithTxt } from "@/app/ui/templates/images";
+
+// Preview Section 전용 부드러운 애니메이션
+const PREVIEW_STAGGER_CONTAINER: Variants = {
+  hidden: { opacity: 1 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,  // 각 카드 간격 100ms (더 여유롭게)
+      delayChildren: 0.15,   // 초기 지연
+    },
+  },
+};
+
+const PREVIEW_STAGGER_ITEM: Variants = {
+  hidden: { opacity: 0, y: 6 },  // 미묘한 위치 변화
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,  // 더 부드러운 전환
+      ease: [0.25, 0.1, 0.25, 1],  // 더 자연스러운 easing
+    },
+  },
+};
 
 // 샘플 목 데이터 (실제 DB 형식과 일치)
 const MOCK_JAMS = [
@@ -91,6 +111,7 @@ export default function PreviewSection() {
   return (
     <section
       ref={ref}
+      aria-label="잼 세션 미리보기"
       style={{
         padding: "60px 20px 80px",
         background: "var(--background)",
@@ -116,7 +137,7 @@ export default function PreviewSection() {
 
       {/* 피드 카드 */}
       <motion.div
-        variants={STAGGER_CONTAINER}
+        variants={PREVIEW_STAGGER_CONTAINER}
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
         style={{
@@ -126,8 +147,8 @@ export default function PreviewSection() {
           ...GPU_ACCELERATED_STYLE,
         }}
       >
-        {jams.map((jam, idx) => (
-          <PreviewCard key={jam.id} jam={jam} idx={idx} router={router} />
+        {jams.map((jam) => (
+          <PreviewCard key={jam.id} jam={jam} router={router} />
         ))}
       </motion.div>
     </section>
@@ -136,18 +157,16 @@ export default function PreviewSection() {
 
 function PreviewCard({
   jam,
-  idx,
   router,
 }: {
   jam: (typeof MOCK_JAMS)[number] | Entity_JamSession;
-  idx: number;
   router: AppRouterInstance;
 }) {
   // genre를 단일값으로 처리 (Entity_JamSession과 일치)
-  const genre = typeof jam.genre === 'string'
-    ? jam.genre
-    : Array.isArray(jam.genre)
-      ? jam.genre[0]
+  const genre = typeof (jam as any).genre === 'string'
+    ? (jam as any).genre
+    : Array.isArray((jam as any).genre)
+      ? (jam as any).genre[0]
       : undefined;
 
   const tags = [
@@ -161,7 +180,7 @@ function PreviewCard({
 
   return (
     <motion.div
-      variants={STAGGER_ITEM}
+      variants={PREVIEW_STAGGER_ITEM}
       onClick={() => router.push("/signin")}
       style={{
         width: "100%",

@@ -35,12 +35,26 @@ export default function HowItWorksSection() {
   return (
     <section
       ref={ref}
+      aria-label="Jamming 시작 방법"
       style={{
         padding: "60px 20px",
         borderTop: "1px solid var(--border)",
       }}
     >
-      <motion.div
+      <h2
+        style={{
+          fontFamily: "SUIT-TITLE",
+          fontSize: "1.25rem",
+          color: "var(--foreground)",
+          letterSpacing: "-0.025em",
+          lineHeight: "140%",
+          margin: "0 0 28px 0",
+        }}
+      >
+        3단계로 시작하세요
+      </h2>
+
+      <motion.ol
         variants={STAGGER_CONTAINER}
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
@@ -48,31 +62,22 @@ export default function HowItWorksSection() {
           display: "flex",
           flexDirection: "column",
           gap: "28px",
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
           ...GPU_ACCELERATED_STYLE,
         }}
       >
-        <h2
-          style={{
-            fontFamily: "SUIT-TITLE",
-            fontSize: "1.25rem",
-            color: "var(--foreground)",
-            letterSpacing: "-0.025em",
-            lineHeight: "140%",
-            margin: 0,
-          }}
-        >
-          3단계로 시작하세요
-        </h2>
-
         {STEPS.map((step) => (
-          <StepCard
-            key={step.stepNumber}
-            stepNumber={step.stepNumber}
-            title={step.title}
-            description={step.description}
-          />
+          <li key={step.stepNumber}>
+            <StepCard
+              stepNumber={step.stepNumber}
+              title={step.title}
+              description={step.description}
+            />
+          </li>
         ))}
-      </motion.div>
+      </motion.ol>
     </section>
   );
 }

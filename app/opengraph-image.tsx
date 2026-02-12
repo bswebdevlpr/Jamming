@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Jamming - 음악인을 위한 합주 플랫폼";
+export const alt = "Jamming - 음악인을 위한 합주 매칭 플랫폼";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -84,7 +84,7 @@ export default function Image() {
               lineHeight: 1,
             }}
           >
-            음악인을 위한 합주 플랫폼
+            음악인을 위한 합주 매칭 플랫폼
           </p>
         </div>
       </div>

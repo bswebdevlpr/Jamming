@@ -15,7 +15,7 @@ export default function StepCard({
   description,
 }: StepCardProps) {
   return (
-    <motion.div
+    <motion.article
       variants={STAGGER_ITEM}
       style={{
         display: "flex",
@@ -26,6 +26,7 @@ export default function StepCard({
       }}
     >
       <div
+        aria-label={`단계 ${stepNumber}`}
         style={{
           fontFamily: "SBAggroB",
           fontSize: "1.5rem",
@@ -64,6 +65,6 @@ export default function StepCard({
           {description}
         </p>
       </div>
-    </motion.div>
+    </motion.article>
   );
 }

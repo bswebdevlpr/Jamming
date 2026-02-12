@@ -141,11 +141,25 @@ export default function FeaturesSection() {
   return (
     <section
       ref={ref}
+      aria-label="Jamming 주요 기능"
       style={{
         padding: "60px 20px",
       }}
     >
-      <motion.div
+      <h2
+        style={{
+          fontFamily: "SUIT-TITLE",
+          fontSize: "1.25rem",
+          color: "var(--foreground)",
+          letterSpacing: "-0.025em",
+          lineHeight: "140%",
+          margin: "0 0 24px 0",
+        }}
+      >
+        이런 것들이 가능해요
+      </h2>
+
+      <motion.ol
         variants={STAGGER_CONTAINER}
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
@@ -153,32 +167,23 @@ export default function FeaturesSection() {
           display: "flex",
           flexDirection: "column",
           gap: "16px",
+          listStyle: "none",
+          margin: 0,
+          padding: 0,
           ...GPU_ACCELERATED_STYLE,
         }}
       >
-        <h2
-          style={{
-            fontFamily: "SUIT-TITLE",
-            fontSize: "1.25rem",
-            color: "var(--foreground)",
-            letterSpacing: "-0.025em",
-            lineHeight: "140%",
-            margin: "0 0 8px 0",
-          }}
-        >
-          이런 것들이 가능해요
-        </h2>
-
         {FEATURES.map((feature) => (
-          <FeatureCard
-            key={feature.title}
-            icon={feature.icon}
-            title={feature.title}
-            description={feature.description}
-            tags={feature.tags}
-          />
+          <li key={feature.title}>
+            <FeatureCard
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+              tags={feature.tags}
+            />
+          </li>
         ))}
-      </motion.div>
+      </motion.ol>
     </section>
   );
 }

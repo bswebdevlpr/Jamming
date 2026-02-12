@@ -42,6 +42,7 @@ export default function CTASection() {
   return (
     <section
       ref={ref}
+      aria-label="지금 시작하기"
       style={{
         padding: "60px 20px 80px",
         borderTop: "1px solid var(--border)",
