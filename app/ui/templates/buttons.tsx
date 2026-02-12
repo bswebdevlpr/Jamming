@@ -24,7 +24,7 @@ export const ButtonBasicActiveStyle: CSSProperties = {
   color: "#A3FF0C",
 
   border: "1px solid #A3FF0C",
-  backgroundColor: "#304313",
+  backgroundColor: "var(--active-btn-bg)",
 };
 
 export interface ButtonTemplateProps {

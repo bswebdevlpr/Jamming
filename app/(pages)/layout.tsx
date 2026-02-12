@@ -2,6 +2,7 @@
 
 import { ReactNode, Suspense, useEffect, useState } from "react";
 import BottomSheet from "../ui/templates/bottom-sheet/body";
+import ToastContainer from "../ui/components/toast";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import moment from "moment";
@@ -96,6 +97,7 @@ function GlobalLayout({
         {children}
         <SmallLoading isTurnedOn={isSmallLoadingOn} />
         <BottomSheet width={width} height={height} />
+        <ToastContainer />
       </Suspense>
     </QueryClientProvider>
   );

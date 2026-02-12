@@ -177,7 +177,7 @@ export default function Modal({
 
               borderRadius: "8px",
               border: "1px solid #A3FF0C",
-              backgroundColor: "#304313",
+              backgroundColor: "var(--active-btn-bg)",
             }}
             onClick={() => {
               createJamEntry({

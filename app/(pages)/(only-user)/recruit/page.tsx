@@ -38,23 +38,20 @@ export default function RecruitFeedPage() {
   const [level, setLevel] = useState<LevelEnum>(null);
   const [location, setLocation] = useState<LocationEnum>(null);
 
-  const [filter, setFilter] = useState<Filter_RecruitFeed>({});
-
-  useEffect(() => {
-    setFilter({
-      location: location ?? undefined,
-      genre: genre ?? undefined,
-      pos: position ?? undefined,
-      level: level ?? undefined,
-    });
-  }, [location, genre, position, level]);
-
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    queryKey: ["recruit-posts", JSON.stringify(filter)],
+    queryKey: [
+      "recruit-posts",
+      { location, genre, position, level }, // 개별 필터값으로 쿼리키 구성
+    ],
     queryFn: ({ pageParam = 0 }) =>
       fetchRecruitPosts({
         pageParam,
-        queryFnParam: JSON.stringify(filter),
+        filter: {
+          location: location ?? undefined,
+          genre: genre ?? undefined,
+          pos: position ?? undefined,
+          level: level ?? undefined,
+        },
       }),
     getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
     initialPageParam: 0,
@@ -85,7 +82,7 @@ export default function RecruitFeedPage() {
           setLocation={setLocation}
         />
       ),
-      location: "medium",
+      location: "middle",
       header: false,
     });
   };

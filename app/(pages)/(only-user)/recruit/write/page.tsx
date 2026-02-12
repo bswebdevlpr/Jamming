@@ -14,6 +14,7 @@ import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { Entity_Band } from "@/app/lib/interfaces/entity.interface";
+import { toast } from "@/app/ui/components/toast";
 
 export default function RecruitWritePage() {
   const router = useRouter();
@@ -156,7 +157,7 @@ export default function RecruitWritePage() {
     if (result.success) {
       router.push("/recruit");
     } else if (result.success === false) {
-      alert(result.error.message);
+      toast.error(result.error.message);
     }
     setIsSubmitting(false);
   };

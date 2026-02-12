@@ -11,6 +11,7 @@ import ButtonTemplate from "@/app/ui/templates/buttons";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
+import { toast } from "@/app/ui/components/toast";
 
 export default function BandCreatePage() {
   const router = useRouter();
@@ -72,7 +73,7 @@ export default function BandCreatePage() {
     if (result.success) {
       router.push("/band");
     } else if (result.success === false) {
-      alert(result.error.message);
+      toast.error(result.error.message);
     }
     setIsSubmitting(false);
   };

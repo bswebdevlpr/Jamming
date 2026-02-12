@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -26,7 +27,7 @@ import { ImageWithTxt } from "@/app/ui/templates/images";
 // 샘플 목 데이터 (실제 DB 형식과 일치)
 const MOCK_JAMS = [
   {
-    id: "sample-1",
+    id: -1,
     title: "홍대 인디밴드 잼 세션",
     location: "su",        // 서울 (단축 코드)
     genre: "r",            // 락 (단일값)
@@ -37,7 +38,7 @@ const MOCK_JAMS = [
     maxHeadCnt: 6,
   },
   {
-    id: "sample-2",
+    id: -2,
     title: "강남 재즈 세션 모집",
     location: "su",
     genre: "j",            // 재즈
@@ -48,7 +49,7 @@ const MOCK_JAMS = [
     maxHeadCnt: 5,
   },
   {
-    id: "sample-3",
+    id: -3,
     title: "부산 합주 메이트 구해요",
     location: "bs",        // 부산
     genre: "po",           // 팝
@@ -140,7 +141,7 @@ function PreviewCard({
 }: {
   jam: (typeof MOCK_JAMS)[number] | Entity_JamSession;
   idx: number;
-  router: any;
+  router: AppRouterInstance;
 }) {
   // genre를 단일값으로 처리 (Entity_JamSession과 일치)
   const genre = typeof jam.genre === 'string'

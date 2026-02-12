@@ -29,7 +29,7 @@ const style_inactivated: CSSProperties = {
 const style_activated: CSSProperties = {
   ...common,
 
-  background: "#304313",
+  background: "var(--active-btn-bg)",
   border: "1px solid #A3FF0C",
   borderRadius: "8px",
 

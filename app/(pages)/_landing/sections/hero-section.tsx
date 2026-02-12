@@ -126,7 +126,7 @@ export default function HeroSection() {
                 fontSize: "1rem",
                 color: "var(--highlight)",
                 border: "1px solid var(--highlight)",
-                backgroundColor: "#304313",
+                backgroundColor: "var(--active-btn-bg)",
                 textAlign: "center",
                 cursor: "pointer",
               }}

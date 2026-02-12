@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { getBand } from "@/app/api/functions/band/read";
 import { deleteBand } from "@/app/api/functions/band/delete";
@@ -12,37 +12,44 @@ import { GenreTag, LevelTag, LocationTag, TagList } from "@/app/ui/tags/category
 import { PositionTag } from "@/app/ui/tags/category-tag";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { STAGGER_CONTAINER, STAGGER_ITEM } from "@/app/lib/animations";
+import { toast } from "@/app/ui/components/toast";
 
 export default function BandDetailPage() {
   const router = useRouter();
   const params = useParams();
   const bandId = Number(params.id);
   const { userProfile } = useSessionStore();
+  const queryClient = useQueryClient();
 
-  const [band, setBand] = useState<Entity_Band | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // React Query로 밴드 데이터 관리
+  const {
+    data: band,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["band", bandId],
+    queryFn: () => getBand(bandId),
+    staleTime: 1000 * 60 * 5, // 5분
+    retry: false, // 에러 시 재시도 안 함
+  });
+
+  // 에러 발생 시 목록으로 리다이렉트
+  if (error) {
+    router.push("/band");
+    return null;
+  }
 
   const isLeader = band?.leader_id === userProfile.id;
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await getBand(bandId);
-        setBand(data);
-      } catch {
-        router.push("/band");
-      }
-      setIsLoading(false);
-    })();
-  }, [bandId, router]);
 
   const handleDelete = async () => {
     if (!confirm("정말 밴드를 삭제하시겠습니까? 모든 데이터가 삭제됩니다.")) return;
     const result = await deleteBand(bandId);
     if (result.success) {
+      // 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["my-bands"] });
       router.push("/band");
     } else if (result.success === false) {
-      alert(result.error.message);
+      toast.error(result.error.message);
     }
   };
 
@@ -50,9 +57,11 @@ export default function BandDetailPage() {
     if (!confirm("밴드를 탈퇴하시겠습니까?")) return;
     const result = await leaveBand(bandId);
     if (result.success) {
+      // 캐시 무효화
+      queryClient.invalidateQueries({ queryKey: ["my-bands"] });
       router.push("/band");
     } else if (result.success === false) {
-      alert(result.error.message);
+      toast.error(result.error.message);
     }
   };
 

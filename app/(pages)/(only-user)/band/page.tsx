@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Entity_Band } from "@/app/lib/interfaces/entity.interface";
 import { fetchMyBands } from "./functions/fetch";
@@ -25,25 +26,25 @@ export default function BandListPage() {
   const router = useRouter();
   const bottomSheet = useBottomSheetStore();
 
-  const [myBands, setMyBands] = useState<BandWithRole[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
   const [genre, setGenre] = useState<GenreEnum>(null);
   const [level, setLevel] = useState<LevelEnum>(null);
   const [location, setLocation] = useState<LocationEnum>(null);
 
-  useEffect(() => {
-    (async () => {
+  // React Query로 데이터 관리
+  const { data: allBands = [], isLoading } = useQuery({
+    queryKey: ["my-bands"],
+    queryFn: async () => {
       const result = await fetchMyBands();
       if (result.success) {
-        setMyBands(result.data);
+        return result.data;
       }
-      setIsLoading(false);
-    })();
-  }, []);
+      return [];
+    },
+    staleTime: 1000 * 60 * 5, // 5분
+  });
 
   // 클라이언트 필터링
-  const filteredBands = myBands.filter((b) => {
+  const filteredBands = allBands.filter((b) => {
     if (genre && !b.band.genre?.includes(genre)) return false;
     if (level && b.band.level !== level) return false;
     if (location && b.band.location !== location) return false;
@@ -65,7 +66,7 @@ export default function BandListPage() {
           setLocation={setLocation}
         />
       ),
-      location: "medium",
+      location: "middle",
       header: false,
     });
   };
@@ -103,7 +104,7 @@ export default function BandListPage() {
             loading...
           </p>
         </div>
-      ) : myBands.length === 0 ? (
+      ) : allBands.length === 0 ? (
         <div className="flex flex-col justify-center items-center grow gap-4 px-5">
           <BandIcon focused={false} />
           <p

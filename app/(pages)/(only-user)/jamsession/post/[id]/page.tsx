@@ -490,7 +490,7 @@ export default function JamSession_Post() {
           styleActivated={{
             color: "#A3FF0C",
             border: "1px solid #A3FF0C",
-            background: "#304313",
+            background: "var(--active-btn-bg)",
           }}
           onClick={() => user ? setIsModalOn(!isModalOn) : router.push("/signin")}
           isActive={isApplyBtnActive}

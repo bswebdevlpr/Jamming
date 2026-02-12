@@ -26,10 +26,10 @@ const RECRUIT_LIST_SELECT = `
 
 export async function fetchRecruitPosts({
   pageParam = 0,
-  queryFnParam,
+  filter,
 }: {
   pageParam: number;
-  queryFnParam: string;
+  filter: Filter_RecruitFeed;
 }): Promise<{ data: Entity_RecruitPost[]; nextPage: number | null }> {
   const ret: { data: Entity_RecruitPost[]; nextPage: number | null } = {
     data: [],
@@ -37,13 +37,13 @@ export async function fetchRecruitPosts({
   };
 
   try {
-    const filter: Filter_RecruitFeed = JSON.parse(queryFnParam);
     const supabase = await createClient();
 
     let query = supabase
       .from("recruit_post")
       .select(RECRUIT_LIST_SELECT)
       .eq("is_active", true)
+      .or(`deadline.is.null,deadline.gt.${new Date().toISOString()}`)
       .order("created_at", { ascending: false })
       .range(
         pageParam * PAGE_SIZE,
@@ -71,28 +71,16 @@ export async function fetchRecruitPosts({
       );
     }
 
-    // 각 게시글에 commentCount 추가 및 deadline 체크
-    const now = new Date();
-    const processedData = (data ?? [])
-      .map((row: any) => {
-        row.commentCount = row.recruit_comment?.length ?? 0;
-
-        // deadline 자동 마감 체크
-        if (row.deadline) {
-          const deadline = new Date(row.deadline);
-          if (deadline < now) {
-            row.is_active = false;
-          }
-        }
-
-        return row;
-      })
-      .filter((row: any) => row.is_active);
+    // 각 게시글에 commentCount 추가
+    const processedData = (data ?? []).map((row) => {
+      row.commentCount = row.recruit_comment?.length ?? 0;
+      return row;
+    });
 
     // pos 필터 (positions jsonb 내부 검색)
     let filteredData = processedData;
     if (filter.pos) {
-      filteredData = processedData.filter((row: any) =>
+      filteredData = processedData.filter((row) =>
         (row.positions ?? []).some(
           (p: { pos: string; headcnt: number }) => p.pos === filter.pos
         )
@@ -100,8 +88,8 @@ export async function fetchRecruitPosts({
     }
 
     ret.data = filteredData;
-    ret.nextPage =
-      (data ?? []).length < PAGE_SIZE ? null : pageParam + 1;
+    // 필터링 후 결과 기준으로 nextPage 계산
+    ret.nextPage = filteredData.length < PAGE_SIZE ? null : pageParam + 1;
   } catch (e) {
     logger.error("fetchRecruitPosts", e);
     if (e instanceof CustomError) throw e;

@@ -150,7 +150,7 @@ const RecruitBottomSheetContent = ({
               values={Object.values(LevelEnum)}
               itemStyle={{ height: "2.5rem", color: "#F2F2F4" }}
               itemStyleActivated={{
-                color: "#6DB0FF",
+                color: "#0C7CFF",
                 border: "1px solid #0C7CFF",
                 background: "rgba(0, 94, 203, 0.12)",
               }}

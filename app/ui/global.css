@@ -104,6 +104,11 @@
   --inactive-bg: #323234;
   --backdrop: rgba(0, 0, 0, 0.5);
   --shadow-bottom-sheet: 0px 0px 10px rgba(0, 0, 0, 0.6);
+
+  /* 버튼 및 인터랙션 색상 */
+  --active-btn-bg: #304313;
+  --highlight-bg-light: rgba(163, 255, 12, 0.16);
+  --highlight-bg-hover: rgba(163, 255, 12, 0.12);
 }
 
 /* ============================================
