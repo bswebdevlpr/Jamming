@@ -16,6 +16,7 @@ export const initialize = async (): Promise<ActionResult<any>> => {
       .from("user")
       .select(
         `
+        *,
         playlist ( * )
       `
       )
@@ -32,6 +33,13 @@ export const initialize = async (): Promise<ActionResult<any>> => {
     if (!data) {
       throw CustomError.invalidSession({
         operation: "mypage.initialize",
+      });
+    }
+
+    if (process.env.NODE_ENV === "development") {
+      console.log("[mypage.initialize] Playlist data fetched:", {
+        playlistCount: data.playlist?.length ?? "null/undefined",
+        hasPlaylist: !!data.playlist,
       });
     }
 

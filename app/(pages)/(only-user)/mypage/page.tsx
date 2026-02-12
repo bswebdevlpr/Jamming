@@ -147,10 +147,37 @@ export default function MyPage() {
           </p>
         </div>
         <Grid_PlayList>
-          {userProfile.playlist &&
+          {userProfile.playlist && userProfile.playlist.length > 0 ? (
             userProfile.playlist.map((row, idx) => (
               <GridItem_PlayList key={idx} item={row} />
-            ))}
+            ))
+          ) : (
+            <div className="col-span-2 flex flex-col items-center justify-center py-16">
+              <p
+                style={{
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "0.875rem",
+                  color: "#9F9FA2",
+                  lineHeight: "150%",
+                  textAlign: "center",
+                }}
+              >
+                아직 등록된 곡이 없어요
+              </p>
+              <p
+                style={{
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "0.75rem",
+                  color: "#767678",
+                  lineHeight: "150%",
+                  textAlign: "center",
+                  marginTop: "8px",
+                }}
+              >
+                편집 버튼을 눌러 곡을 추가해보세요
+              </p>
+            </div>
+          )}
         </Grid_PlayList>
         <div
           style={{

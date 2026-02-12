@@ -42,10 +42,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             .maybeSingle();
 
           if (!data || dbError) {
+            if (process.env.NODE_ENV === "development") {
+              console.error("[layout] User data fetch failed:", {
+                hasData: !!data,
+                error: dbError,
+              });
+            }
             resetUserProfile();
             await supabase.auth.signOut();
             router.push("/signin");
             return;
+          }
+
+          if (process.env.NODE_ENV === "development") {
+            console.log("[layout] User data fetched:", {
+              userId: data.id,
+              playlistCount: data.playlist?.length ?? "null/undefined",
+              hasPlaylist: !!data.playlist,
+            });
           }
 
           setUserProfile({ ...data, isLoaded: true });

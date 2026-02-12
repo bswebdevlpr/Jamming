@@ -128,10 +128,25 @@ export default function MyPage() {
           </p>
         </div>
         <List_PlayList>
-          {targetUser &&
+          {targetUser && targetUser.playlist && targetUser.playlist.length > 0 ? (
             targetUser.playlist.map((row, idx) => (
               <ListItem_PlayList key={idx} item={row} />
-            ))}
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center py-16 px-5">
+              <p
+                style={{
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "0.875rem",
+                  color: "#9F9FA2",
+                  lineHeight: "150%",
+                  textAlign: "center",
+                }}
+              >
+                등록된 곡이 없습니다
+              </p>
+            </div>
+          )}
         </List_PlayList>
       </div>
       <BPMPopup
