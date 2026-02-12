@@ -14,27 +14,27 @@ export interface ListItemProp {
 const DEFAULT_HEIGHT = 52;
 const HOVER_HEIGHT = 80;
 
-// 각 배경 이미지의 최적 표시 위치
+// 각 배경 이미지의 최적 표시 위치 (확장자 무관)
 const IMAGE_POSITIONS: Record<string, string> = {
-  "ulsan.jpg": "center 30%",
-  "gangwon.jpg": "center 30%",
-  "chungbuk.jpg": "center 30%",
-  "jeonbuk.jpg": "center 30%",
-  "jeonnam.jpg": "center 30%",
-  "gyeongnam.jpg": "center 30%",
+  ulsan: "center 30%",
+  gangwon: "center 30%",
+  chungbuk: "center 30%",
+  jeonbuk: "center 30%",
+  jeonnam: "center 30%",
+  gyeongnam: "center 30%",
   // 사물과 하늘이 잘 보이도록 조정
-  "seoul.jpg": "center 50%", // SEOUL 구조물이 전체적으로 차지
-  "busan.jpg": "center 35%",
-  "daegu.jpg": "center 35%",
-  "daejeon.jpg": "center 40%",
-  "gwangju.jpg": "center 45%", // 돌과 산이 같이 보이게
-  "incheon.jpg": "center 50%", // 다리가 더 잘보이게 (픽스)
-  "sejong.jpg": "center 67.5%", // 돔 구조물이 가운데에
-  "gyeonggi-north.jpg": "center 40%",
-  "gyeonggi-south.jpg": "center 45%", // 성 구조물이 더 잘보이게
-  "chungnam.jpg": "center 35%",
-  "gyeongbuk.jpg": "center 40%",
-  "jeju.jpg": "center 35%",
+  seoul: "center 50%", // SEOUL 구조물이 전체적으로 차지
+  busan: "center 35%",
+  daegu: "center 35%",
+  daejeon: "center 40%",
+  gwangju: "center 45%", // 돌과 산이 같이 보이게
+  incheon: "center 50%", // 다리가 더 잘보이게 (픽스)
+  sejong: "center 67.5%", // 돔 구조물이 가운데에
+  "gyeonggi-north": "center 40%",
+  "gyeonggi-south": "center 45%", // 성 구조물이 더 잘보이게
+  chungnam: "center 35%",
+  gyeongbuk: "center 40%",
+  jeju: "center 35%",
 };
 
 const VerticalListItem = ({
@@ -49,7 +49,9 @@ const VerticalListItem = ({
   const getImagePosition = (url?: string): string => {
     if (!url) return "center 30%";
     const filename = url.split("/").pop() || "";
-    return IMAGE_POSITIONS[filename] || "center 30%";
+    // 확장자 제거 (jpg, webp, avif 등 모두 지원)
+    const basename = filename.replace(/\.(jpg|jpeg|webp|avif)$/i, "");
+    return IMAGE_POSITIONS[basename] || "center 30%";
   };
   const imagePosition = getImagePosition(backgroundUrl);
 
@@ -107,11 +109,15 @@ const VerticalListItem = ({
             src={backgroundUrl}
             alt=""
             fill
+            placeholder="empty"
+            priority={false}
+            loading="lazy"
             style={{
               objectFit: "cover",
               objectPosition: imagePosition,
             }}
-            sizes="(max-width: 600px) 100vw, 600px"
+            sizes="(max-width: 480px) 95vw, (max-width: 768px) 98vw, 600px"
+            quality={85}
           />
           {/* 오버레이 효과 */}
           <div
