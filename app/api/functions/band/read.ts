@@ -13,7 +13,7 @@ const BAND_SELECT_QUERY = `
   )
 `;
 
-export async function getBand(id: number): Promise<Entity_Band> {
+export async function getBand(id: string): Promise<Entity_Band> {
   const supabase = await createClient();
   await getUser(supabase);
 

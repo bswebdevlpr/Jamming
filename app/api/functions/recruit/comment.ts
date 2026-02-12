@@ -82,7 +82,7 @@ export async function createRecruitComment(
 }
 
 export async function updateRecruitComment(
-  commentId: number,
+  commentId: string,
   isAccepted: boolean
 ): Promise<ActionResult<boolean>> {
   return safeAction("updateRecruitComment", async () => {
@@ -175,7 +175,7 @@ export async function updateRecruitComment(
 }
 
 export async function deleteRecruitComment(
-  commentId: number
+  commentId: string
 ): Promise<ActionResult<boolean>> {
   return safeAction("deleteRecruitComment", async () => {
     const supabase = await createClient();

@@ -7,7 +7,7 @@ import { createClient } from "@/app/util/supabase/server";
 import { getUser } from "../read";
 
 export async function deleteRecruitPost(
-  postId: number
+  postId: string
 ): Promise<ActionResult<boolean>> {
   return safeAction("deleteRecruitPost", async () => {
     const supabase = await createClient();

@@ -23,3 +23,12 @@ export function ok<T>(data: T): ActionResult<T> {
 export function fail(code: ErrorCode, message: string): ActionResult<never> {
   return { success: false, error: { code, message } };
 }
+
+/**
+ * 타입 가드: 에러 결과인지 확인
+ */
+export function isError<T>(
+  result: ActionResult<T>
+): result is { success: false; error: { code: ErrorCode; message: string } } {
+  return !result.success;
+}

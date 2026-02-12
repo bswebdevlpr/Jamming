@@ -9,7 +9,7 @@ import { CreateRecruitPostDto } from "../../dtos/create";
 import { sanitize } from "@/app/lib/functions/validate";
 
 export async function updateRecruitPost(
-  postId: number,
+  postId: string,
   input: Partial<CreateRecruitPostDto>
 ): Promise<ActionResult<boolean>> {
   return safeAction("updateRecruitPost", async () => {
@@ -66,7 +66,7 @@ export async function updateRecruitPost(
 }
 
 export async function closeRecruitPost(
-  postId: number
+  postId: string
 ): Promise<ActionResult<boolean>> {
   return safeAction("closeRecruitPost", async () => {
     const supabase = await createClient();

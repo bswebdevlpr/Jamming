@@ -7,7 +7,7 @@ import { createClient } from "@/app/util/supabase/server";
 import { getUser } from "../read";
 
 export async function deleteBand(
-  bandId: number
+  bandId: string
 ): Promise<ActionResult<boolean>> {
   return safeAction("deleteBand", async () => {
     const supabase = await createClient();

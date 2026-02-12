@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 import { fetchBand } from "../functions/fetch";
 import { deleteBand } from "@/app/api/functions/band/delete";
 import { leaveBand } from "@/app/api/functions/band/member";
-import { Entity_Band } from "@/app/lib/interfaces/entity.interface";
 import { useSessionStore } from "@/app/stores";
+import { isError } from "@/app/lib/types/result";
 import { GenreTag, LevelTag, LocationTag, TagList } from "@/app/ui/tags/category-tag";
 import { PositionTag } from "@/app/ui/tags/category-tag";
 import ButtonTemplate from "@/app/ui/templates/buttons";
@@ -17,7 +17,7 @@ import { toast } from "@/app/ui/components/toast";
 export default function BandDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const bandId = Number(params.id);
+  const bandId = params.id as string;
   const { userProfile } = useSessionStore();
   const queryClient = useQueryClient();
 
@@ -30,8 +30,8 @@ export default function BandDetailPage() {
     queryKey: ["band", bandId],
     queryFn: async () => {
       const result = await fetchBand(bandId);
-      if (result.success) return result.data;
-      throw new Error(result.error.message);
+      if (isError(result)) throw new Error(result.error.message);
+      return result.data;
     },
     staleTime: 1000 * 60 * 5, // 5분
     retry: false, // 에러 시 재시도 안 함
@@ -66,25 +66,25 @@ export default function BandDetailPage() {
   const handleDelete = async () => {
     if (!confirm("정말 밴드를 삭제하시겠습니까? 모든 데이터가 삭제됩니다.")) return;
     const result = await deleteBand(bandId);
-    if (result.success) {
-      // 캐시 무효화
-      queryClient.invalidateQueries({ queryKey: ["my-bands"] });
-      router.push("/band");
-    } else if (result.success === false) {
+    if (isError(result)) {
       toast.error(result.error.message);
+      return;
     }
+    // 캐시 무효화
+    queryClient.invalidateQueries({ queryKey: ["my-bands"] });
+    router.push("/band");
   };
 
   const handleLeave = async () => {
     if (!confirm("밴드를 탈퇴하시겠습니까?")) return;
     const result = await leaveBand(bandId);
-    if (result.success) {
-      // 캐시 무효화
-      queryClient.invalidateQueries({ queryKey: ["my-bands"] });
-      router.push("/band");
-    } else if (result.success === false) {
+    if (isError(result)) {
       toast.error(result.error.message);
+      return;
     }
+    // 캐시 무효화
+    queryClient.invalidateQueries({ queryKey: ["my-bands"] });
+    router.push("/band");
   };
 
   if (isLoading) {

@@ -16,7 +16,7 @@ import { toast } from "@/app/ui/components/toast";
 export default function BandEditPage() {
   const router = useRouter();
   const params = useParams();
-  const bandId = Number(params.id);
+  const bandId = params.id as string;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 

@@ -14,7 +14,7 @@ export async function fetchMyBands(): Promise<
 }
 
 export async function fetchBand(
-  id: number
+  id: string
 ): Promise<ActionResult<Entity_Band>> {
   return safeAction("fetchBand", async () => {
     return await getBand(id);

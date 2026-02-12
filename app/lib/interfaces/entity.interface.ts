@@ -101,7 +101,7 @@ export interface Entity_Notification {
 }
 
 export interface Entity_Band {
-  id?: number;
+  id?: string;
   leader_id?: string;
   name?: string;
   description?: string;
@@ -111,6 +111,7 @@ export interface Entity_Band {
   profile_image?: string;
   tags?: string[];
   created_at?: string;
+  updated_at?: string;
 
   // Relations
   leader?: Entity_User;
@@ -121,13 +122,14 @@ export interface Entity_Band {
 }
 
 export interface Entity_BandMember {
-  id: number;
-  band_id: number;
+  id: string;
+  band_id: string;
   user_id: string;
   pos: PositionEnum;
   role: "leader" | "member";
   is_public?: boolean;
   joined_at?: string;
+  updated_at?: string;
 
   // Relations
   user?: Entity_User;
@@ -135,8 +137,8 @@ export interface Entity_BandMember {
 }
 
 export interface Entity_RecruitPost {
-  id?: number;
-  band_id?: number;
+  id?: string;
+  band_id?: string;
   user_id?: string;
   title?: string;
   body?: string;
@@ -152,6 +154,7 @@ export interface Entity_RecruitPost {
   deadline?: string;
   is_active?: boolean;
   created_at?: string;
+  updated_at?: string;
 
   // Relations
   band?: Entity_Band;
@@ -164,13 +167,14 @@ export interface Entity_RecruitPost {
 }
 
 export interface Entity_RecruitComment {
-  id: number;
-  recruit_id: number;
+  id: string;
+  recruit_id: string;
   user_id: string;
   body: string;
   applied_pos: PositionEnum;
   is_accepted: boolean | null;
   created_at?: string;
+  updated_at?: string;
 
   // Relations
   user?: Entity_User;

@@ -24,8 +24,8 @@ export default function RecruitWritePage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [myLeaderBands, setMyLeaderBands] = useState<Entity_Band[]>([]);
-  const [selectedBandId, setSelectedBandId] = useState<number | null>(
-    bandIdParam ? Number(bandIdParam) : null
+  const [selectedBandId, setSelectedBandId] = useState<string | null>(
+    bandIdParam ? (bandIdParam as string) : null
   );
 
   // Positions management
@@ -214,7 +214,7 @@ export default function RecruitWritePage() {
           <label style={labelStyle}>밴드 선택 *</label>
           <select
             value={selectedBandId ?? ""}
-            onChange={(e) => setSelectedBandId(Number(e.target.value))}
+            onChange={(e) => setSelectedBandId(e.target.value)}
             style={{
               background: "#323234",
               border: "1px solid #444447",

@@ -99,8 +99,8 @@ export async function addBandMember(
 }
 
 export async function removeBandMember(
-  bandId: number,
-  memberId: number
+  bandId: string,
+  memberId: string
 ): Promise<ActionResult<boolean>> {
   return safeAction("removeBandMember", async () => {
     const supabase = await createClient();
@@ -152,7 +152,7 @@ export async function removeBandMember(
 }
 
 export async function leaveBand(
-  bandId: number
+  bandId: string
 ): Promise<ActionResult<boolean>> {
   return safeAction("leaveBand", async () => {
     const supabase = await createClient();

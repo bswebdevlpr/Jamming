@@ -14,7 +14,7 @@ import {
 } from "@/app/lib/maps/jam";
 
 export async function updateBand(
-  bandId: number,
+  bandId: string,
   input: Partial<CreateBandDto>
 ): Promise<ActionResult<boolean>> {
   return safeAction("updateBand", async () => {

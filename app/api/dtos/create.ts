@@ -45,7 +45,7 @@ export interface CreateBandDto {
 }
 
 export interface CreateBandMemberDto {
-  band_id: number;
+  band_id: string;
   user_id: string;
   pos: PositionEnum;
   role: "leader" | "member";
@@ -55,7 +55,7 @@ export interface CreateBandMemberDto {
 // ========== 구인 게시판 ==========
 
 export interface CreateRecruitPostDto {
-  band_id: number;
+  band_id: string;
   user_id: string;
   title: string;
   body: string;
@@ -71,7 +71,7 @@ export interface CreateRecruitPostDto {
 }
 
 export interface CreateRecruitCommentDto {
-  recruit_id: number;
+  recruit_id: string;
   user_id: string;
   body: string;
   applied_pos: PositionEnum;

@@ -52,7 +52,7 @@ function processRecruitData(data: any): Entity_RecruitPost {
 }
 
 export async function getRecruitPost(
-  id: number
+  id: string
 ): Promise<Entity_RecruitPost> {
   const supabase = await createClient();
   await getUser(supabase);

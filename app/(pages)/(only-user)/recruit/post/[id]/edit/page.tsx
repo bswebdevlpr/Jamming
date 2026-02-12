@@ -16,7 +16,7 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 export default function RecruitEditPage() {
   const router = useRouter();
   const params = useParams();
-  const postId = Number(params.id);
+  const postId = params.id as string;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [posEntries, setPosEntries] = useState<

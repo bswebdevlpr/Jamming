@@ -28,7 +28,7 @@ import moment from "moment";
 export default function RecruitDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const postId = Number(params.id);
+  const postId = params.id as string;
   const { userProfile } = useSessionStore();
 
   const [post, setPost] = useState<Entity_RecruitPost | null>(null);
@@ -95,19 +95,19 @@ export default function RecruitDetailPage() {
     setIsSubmitting(false);
   };
 
-  const handleAccept = async (commentId: number) => {
+  const handleAccept = async (commentId: string) => {
     const result = await updateRecruitComment(commentId, true);
     if (result.success) loadPost();
     else if (result.success === false) alert(result.error.message);
   };
 
-  const handleReject = async (commentId: number) => {
+  const handleReject = async (commentId: string) => {
     const result = await updateRecruitComment(commentId, false);
     if (result.success) loadPost();
     else if (result.success === false) alert(result.error.message);
   };
 
-  const handleDeleteComment = async (commentId: number) => {
+  const handleDeleteComment = async (commentId: string) => {
     if (!confirm("지원을 취소하시겠습니까?")) return;
     const result = await deleteRecruitComment(commentId);
     if (result.success) loadPost();
