@@ -8,6 +8,8 @@ import ButtonTemplate from "@/app/ui/templates/buttons";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
 import { getAuthRedirectPath } from "@/app/util/auth/redirect";
 import { z } from "zod";
+import { signInWithEmail, signUpWithEmail } from "@/app/util/supabase/auth";
+import { ErrorCode } from "@/app/lib/errors/custom-error";
 
 // 이메일/비밀번호 Zod 스키마
 const emailSchema = z.string().email("올바른 이메일 형식이 아닙니다.");
@@ -76,34 +78,37 @@ export default function EmailAuth() {
 
     try {
       if (mode === "signin") {
-        // 로그인
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        // 로그인 (Server Action with rate limiting)
+        const result = await signInWithEmail(email, password);
 
-        if (error) {
-          setError(getErrorMessage(error));
+        if (result.success === false) {
+          if (result.error.code === ErrorCode.RATE_LIMIT_EXCEEDED) {
+            setError(result.error.message);
+          } else {
+            // AuthError 처리
+            const authError = new AuthError(result.error.message);
+            setError(getErrorMessage(authError));
+          }
           setIsLoading(false);
           return;
         }
 
         // 프로필 존재 확인 및 리다이렉트
-        const redirectPath = await getAuthRedirectPath(data.user.id);
+        const redirectPath = await getAuthRedirectPath(result.data.user.id);
         setIsLoading(false);
         router.push(redirectPath);
       } else {
-        // 회원가입
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${process.env.NEXT_PUBLIC_DOMAIN || window.location.origin}/api/auth/callback`,
-          },
-        });
+        // 회원가입 (Server Action with rate limiting)
+        const result = await signUpWithEmail(email, password);
 
-        if (error) {
-          setError(getErrorMessage(error));
+        if (result.success === false) {
+          if (result.error.code === ErrorCode.RATE_LIMIT_EXCEEDED) {
+            setError(result.error.message);
+          } else {
+            // AuthError 처리
+            const authError = new AuthError(result.error.message);
+            setError(getErrorMessage(authError));
+          }
           setIsLoading(false);
           return;
         }

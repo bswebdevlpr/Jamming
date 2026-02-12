@@ -32,6 +32,8 @@ export default function SignIn() {
     const error = searchParams.get("error");
     if (error === "oauth_failed") {
       setErrorMessage("로그인에 실패했습니다. 다시 시도해주세요.");
+    } else if (error === "rate_limit") {
+      setErrorMessage("요청 횟수가 너무 많습니다. 잠시 후 다시 시도해주세요.");
     }
   }, [searchParams]);
 
