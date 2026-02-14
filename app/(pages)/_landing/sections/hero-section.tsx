@@ -87,6 +87,25 @@ export default function HeroSection() {
           </span>
         </motion.h1>
 
+        {/* App Description */}
+        <motion.p
+          variants={SLIDE_VARIANTS.fromBottom}
+          style={{
+            fontFamily: "SUIT-BODY",
+            fontSize: "14px",
+            color: "#9F9FA2",
+            letterSpacing: "-0.025em",
+            lineHeight: "150%",
+            margin: "16px 0 0 0",
+            textAlign: "center",
+            ...GPU_ACCELERATED_STYLE,
+          }}
+        >
+          지역·장르·레벨별로 딱 맞는 합주 파트너를 찾고
+          <br />
+          밴드를 관리하고 음악인 커뮤니티를 만드세요
+        </motion.p>
+
         {/* Slogan */}
         <motion.p
           variants={SLIDE_VARIANTS.fromBottom}
@@ -107,9 +126,9 @@ export default function HeroSection() {
         <motion.div
           variants={SLIDE_VARIANTS.fromBottom}
           style={{
-            marginTop: "20px",
+            marginTop: "12px",
             width: "100%",
-            maxWidth: "280px",
+            maxWidth: "200px",
             ...GPU_ACCELERATED_STYLE,
           }}
         >
@@ -118,9 +137,9 @@ export default function HeroSection() {
               style={{
                 width: "100%",
                 borderRadius: "8px",
-                padding: "14px 12px",
+                padding: "12px 10px",
                 fontFamily: "SUIT-BODY",
-                fontSize: "1rem",
+                fontSize: "0.875rem",
                 color: "var(--highlight)",
                 border: "1px solid var(--highlight)",
                 backgroundColor: "var(--active-btn-bg)",

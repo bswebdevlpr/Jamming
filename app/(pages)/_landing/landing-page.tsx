@@ -1,5 +1,6 @@
 "use client";
 
+import LandingHeader from "./sections/header-section";
 import HeroSection from "./sections/hero-section";
 import FeaturesSection from "./sections/features-section";
 import HowItWorksSection from "./sections/how-it-works";
@@ -9,6 +10,7 @@ import PreviewSection from "./sections/preview-section";
 export default function LandingPage() {
   return (
     <main className="overflow-without-scroll" style={{ height: "100%" }}>
+      <LandingHeader />
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
@@ -34,7 +36,7 @@ export default function LandingPage() {
                   priceCurrency: "KRW",
                 },
                 description:
-                  "음악인을 위한 합주/잼 세션 매칭 플랫폼. 밴드 멤버 구하기, 합주 메이트 찾기, 전국 19개 지역 지원.",
+                  "음악인을 위한 합주 매칭 플랫폼. 밴드 멤버 구하기, 잼 세션 모집 및 참여, 전국 19개 지역 지원. 장르·포지션·레벨별 매칭으로 아마추어부터 프로까지 모든 음악인이 쉽게 합주 파트너를 찾고 음악 커뮤니티를 만들 수 있습니다.",
                 url: "https://jamming.co.kr",
                 featureList: [
                   "잼 세션 매칭",
