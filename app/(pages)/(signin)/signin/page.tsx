@@ -90,10 +90,11 @@ export default function SignIn() {
             fontFamily: "SBAggroM",
             color: "#A3FF0C",
             fontSize: "50px",
+            textTransform: "uppercase",
           }}
           className=""
         >
-          JAMMING
+          Jamming
         </p>
         <p
           style={{

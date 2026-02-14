@@ -80,9 +80,10 @@ export default function HeroSection() {
               color: "var(--highlight)",
               letterSpacing: "0",
               display: "inline-block",
+              textTransform: "uppercase",
             }}
           >
-            JAMMING
+            Jamming
           </span>
         </motion.h1>
 

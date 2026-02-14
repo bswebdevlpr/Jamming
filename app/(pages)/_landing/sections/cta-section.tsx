@@ -124,6 +124,64 @@ export default function CTASection() {
             </motion.div>
           </Link>
         </motion.div>
+
+        {/* Footer */}
+        <motion.footer
+          variants={ctaItem}
+          style={{
+            marginTop: "40px",
+            paddingTop: "24px",
+            borderTop: "1px solid var(--border)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "12px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+              flexWrap: "wrap",
+              justifyContent: "center",
+            }}
+          >
+            <Link
+              href="/terms-of-service"
+              style={{
+                fontFamily: "SUIT-BODY",
+                fontSize: "0.75rem",
+                color: "#9F9FA2",
+                textDecoration: "none",
+              }}
+            >
+              서비스 이용약관
+            </Link>
+            <span style={{ color: "#666669" }}>•</span>
+            <Link
+              href="/privacy-policy"
+              style={{
+                fontFamily: "SUIT-BODY",
+                fontSize: "0.75rem",
+                color: "#9F9FA2",
+                textDecoration: "none",
+              }}
+            >
+              개인정보처리방침
+            </Link>
+          </div>
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "0.75rem",
+              color: "#666669",
+              margin: 0,
+            }}
+          >
+            © 2026 Jamming. All rights reserved.
+          </p>
+        </motion.footer>
       </motion.div>
     </section>
   );
