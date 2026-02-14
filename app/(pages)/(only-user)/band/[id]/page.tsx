@@ -278,7 +278,14 @@ export default function BandDetailPage() {
                       </span>
                     )}
                   </div>
-                  <PositionTag text={member.pos} />
+                  <PositionTag
+                    text={member.pos}
+                    className=""
+                    style={{
+                      fontSize: "0.625rem",
+                      padding: "2px 6px",
+                    }}
+                  />
                 </div>
               </div>
             </motion.div>

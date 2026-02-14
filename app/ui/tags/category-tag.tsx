@@ -35,7 +35,7 @@ function Tag({ text, className, style }: TagProp) {
 export const PositionTag = ({ text, className, style }: TagProp) => {
   return (
     <Tag
-      text={MapDataToPosition[text]}
+      text={MapDataToPosition[text] || text}
       className={className}
       style={{
         color: "#FF3773",
@@ -49,7 +49,7 @@ export const PositionTag = ({ text, className, style }: TagProp) => {
 export const GenreTag = ({ text, className, style }: TagProp) => {
   return (
     <Tag
-      text={MapDataToGenre[text]}
+      text={MapDataToGenre[text] || text}
       className={className}
       style={{
         color: "#A3FF0C",
@@ -63,7 +63,7 @@ export const GenreTag = ({ text, className, style }: TagProp) => {
 export const LocationTag = ({ text, className, style }: TagProp) => {
   return (
     <Tag
-      text={MapDataToLocation[text]}
+      text={MapDataToLocation[text] || text}
       className={className}
       style={{
         color: "#3994FF",
@@ -80,7 +80,7 @@ export const LocationTag = ({ text, className, style }: TagProp) => {
 export const LevelTag = ({ text, className, style }: TagProp) => {
   return (
     <Tag
-      text={MapDataToLevel[text]}
+      text={MapDataToLevel[text] || text}
       className={className}
       style={{
         color: "#E5E5E9",
