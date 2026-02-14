@@ -6,15 +6,29 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
 
   const code = searchParams.get("code");
-  // // if "next" is in param, use it as the redirect URL
-  // const next = searchParams.get("next") ?? "/";
+  const redirectParam = searchParams.get("redirect");
 
   if (code) {
     const supabase = await createClient();
 
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-    if (!error) {
+    if (error) {
+      // 서버 측 로깅 (클라이언트에 노출 안됨)
+      console.error("[OAuth Callback] Session exchange failed:", {
+        message: error.message,
+        status: error.status,
+      });
+
+      // 에러 타입 구분
+      const errorType = error.message?.toLowerCase().includes("org")
+        ? "org_restricted"
+        : "auth_code_error";
+
+      return NextResponse.redirect(`${origin}/signin?error=${errorType}`);
+    }
+
+    if (data) {
       const user = await supabase
         .from("user")
         .select()
@@ -22,7 +36,15 @@ export async function GET(request: Request) {
         .single()
         .then((res) => res.data);
 
-      const next = user ? "/" : "/signup";
+      // 보안: 상대 경로만 허용 (Open Redirect 방지)
+      const isValidRedirect =
+        redirectParam &&
+        redirectParam.startsWith("/") &&
+        !redirectParam.startsWith("//") &&
+        !redirectParam.includes("\\") &&
+        !redirectParam.includes("%");
+
+      const next = user ? (isValidRedirect ? redirectParam : "/") : "/signup";
 
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === "development";
@@ -48,6 +70,6 @@ export async function GET(request: Request) {
     }
   }
 
-  // return the user to an error page with instructions
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+  // return the user to signin page with error
+  return NextResponse.redirect(`${origin}/signin?error=auth_code_error`);
 }

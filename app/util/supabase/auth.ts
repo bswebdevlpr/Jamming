@@ -7,7 +7,10 @@ import { CustomError } from "@/app/lib/errors/custom-error";
 
 const isDev = process.env.NODE_ENV === "development";
 
-async function signInWithOAuthProvider(provider: "kakao" | "google") {
+async function signInWithOAuthProvider(
+  provider: "kakao" | "google",
+  redirectPath?: string
+) {
   // Rate limiting: OAuth 남용 방지
   const identifier = `oauth:${provider}`;
   const { success } = await oauthLimiter.limit(identifier);
@@ -20,10 +23,16 @@ async function signInWithOAuthProvider(provider: "kakao" | "google") {
   // 재로그인의 경우 createClient()를 다시 해줘야함
   const supabase = await createClient();
 
+  // redirectPath를 콜백 URL에 포함
+  const callbackUrl = new URL(`${process.env.DOMAIN}/api/auth/callback`);
+  if (redirectPath) {
+    callbackUrl.searchParams.set("redirect", redirectPath);
+  }
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${process.env.DOMAIN}/api/auth/callback`,
+      redirectTo: callbackUrl.toString(),
     },
   });
 
@@ -34,12 +43,12 @@ async function signInWithOAuthProvider(provider: "kakao" | "google") {
   }
 }
 
-export async function signInWithKakao() {
-  return signInWithOAuthProvider("kakao");
+export async function signInWithKakao(redirectPath?: string) {
+  return signInWithOAuthProvider("kakao", redirectPath);
 }
 
-export async function signInWithGoogle() {
-  return signInWithOAuthProvider("google");
+export async function signInWithGoogle(redirectPath?: string) {
+  return signInWithOAuthProvider("google", redirectPath);
 }
 
 /**

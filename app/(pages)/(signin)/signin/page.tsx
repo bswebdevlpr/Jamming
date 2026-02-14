@@ -14,6 +14,8 @@ export default function SignIn() {
   const [isChecking, setIsChecking] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
+  const redirect = searchParams.get("redirect");
+
   useEffect(() => {
     const checkSession = async () => {
       const {
@@ -30,10 +32,16 @@ export default function SignIn() {
 
     // OAuth 에러 처리
     const error = searchParams.get("error");
-    if (error === "oauth_failed") {
-      setErrorMessage("로그인에 실패했습니다. 다시 시도해주세요.");
-    } else if (error === "rate_limit") {
-      setErrorMessage("요청 횟수가 너무 많습니다. 잠시 후 다시 시도해주세요.");
+
+    const errorMessages: Record<string, string> = {
+      oauth_failed: "로그인에 실패했습니다. 다시 시도해주세요.",
+      rate_limit: "요청 횟수가 너무 많습니다. 잠시 후 다시 시도해주세요.",
+      auth_code_error: "인증 처리 중 문제가 발생했습니다. 다시 시도해주세요.",
+      org_restricted: "해당 Google 계정은 조직 내부 전용입니다. 개인 Google 계정으로 시도해주세요.",
+    };
+
+    if (error && errorMessages[error]) {
+      setErrorMessage(errorMessages[error]);
     }
   }, [searchParams]);
 
@@ -120,8 +128,14 @@ export default function SignIn() {
             {errorMessage}
           </p>
         )}
-        <SocialLoginButton provider="kakao" onClick={signInWithKakao} />
-        <SocialLoginButton provider="google" onClick={signInWithGoogle} />
+        <SocialLoginButton
+          provider="kakao"
+          onClick={() => signInWithKakao(redirect || undefined)}
+        />
+        <SocialLoginButton
+          provider="google"
+          onClick={() => signInWithGoogle(redirect || undefined)}
+        />
         <SocialLoginButton
           provider="email"
           onClick={() => router.push("/email")}

@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           } = await supabase.auth.getUser();
 
           if (!user || error) {
-            router.push("/signin");
+            router.replace("/signin");
             return;
           }
 
@@ -50,7 +50,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             }
             resetUserProfile();
             await supabase.auth.signOut();
-            router.push("/signin");
+            router.replace("/signin");
             return;
           }
 
@@ -83,7 +83,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
         setIsLoading(false);
       } catch (e) {
-        router.push("/signin");
+        if (process.env.NODE_ENV === "development") {
+          console.error("[only-user layout] Auth validation failed:", e);
+        }
+        router.replace("/signin");
       }
     };
     validateUser();
@@ -92,7 +95,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       (event) => {
         if (event === "SIGNED_OUT") {
           resetUserProfile();
-          router.push("/signin");
+          router.replace("/signin");
+        }
+        // 토큰 갱신 성공 시 (로깅만)
+        if (event === "TOKEN_REFRESHED" && process.env.NODE_ENV === "development") {
+          console.log("[Auth] Session refreshed successfully");
         }
       }
     );

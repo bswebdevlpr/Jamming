@@ -52,6 +52,7 @@ export async function updateSession(request: NextRequest) {
     if (!user && isProtected) {
       const url = request.nextUrl.clone();
       url.pathname = "/signin";
+      url.searchParams.set("redirect", pathname); // 원래 경로 보존
       return NextResponse.redirect(url);
     }
 
@@ -71,7 +72,10 @@ export async function updateSession(request: NextRequest) {
       url.pathname = data ? "/" : "/signup";
       return NextResponse.redirect(url);
     }
-  } catch {
+  } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[Middleware] Auth check failed:", error);
+    }
     // Supabase 장애 시에도 페이지 접근은 허용
   }
 

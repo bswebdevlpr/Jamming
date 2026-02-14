@@ -7,6 +7,8 @@ export const PROTECTED_PATHS = [
   "/mypage",
   "/myact",
   "/user-profile",
+  "/band",
+  "/recruit",
 ];
 
 /** 로그인 사용자가 접근할 수 없는 경로 (signin, signup 등) */
