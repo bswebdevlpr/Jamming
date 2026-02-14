@@ -1,15 +1,17 @@
 "use server";
 
-import { getMyBands, getBand } from "@/app/api/functions/band/read";
+import { getMyBands, getBand, Filter_BandList } from "@/app/api/functions/band/read";
 import { safeAction } from "@/app/lib/functions/server-action";
 import { ActionResult } from "@/app/lib/types/result";
 import { Entity_Band } from "@/app/lib/interfaces/entity.interface";
 
-export async function fetchMyBands(): Promise<
-  ActionResult<{ band: Entity_Band; role: string }[]>
-> {
+export { type Filter_BandList } from "@/app/api/functions/band/read";
+
+export async function fetchMyBands(
+  filter?: Filter_BandList
+): Promise<ActionResult<{ band: Entity_Band; role: string }[]>> {
   return safeAction("fetchMyBands", async () => {
-    return await getMyBands();
+    return await getMyBands(filter);
   });
 }
 

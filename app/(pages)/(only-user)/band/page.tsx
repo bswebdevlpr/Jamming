@@ -34,10 +34,17 @@ export default function BandListPage() {
   const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false);
 
   // React Query로 데이터 관리
-  const { data: allBands = [], isLoading } = useQuery({
-    queryKey: ["my-bands"],
+  const { data: bands = [], isLoading } = useQuery({
+    queryKey: [
+      "my-bands",
+      { location, genre, level },
+    ],
     queryFn: async () => {
-      const result = await fetchMyBands();
+      const result = await fetchMyBands({
+        location: location ?? undefined,
+        genre: genre ?? undefined,
+        level: level ?? undefined,
+      });
       if (result.success) {
         return result.data;
       }
@@ -46,16 +53,8 @@ export default function BandListPage() {
     staleTime: 1000 * 60 * 5, // 5분
   });
 
-  // 클라이언트 필터링
-  const filteredBands = allBands.filter((b) => {
-    if (genre && !b.band.genre?.includes(genre)) return false;
-    if (level && b.band.level !== level) return false;
-    if (location && b.band.location !== location) return false;
-    return true;
-  });
-
-  const leaderBands = filteredBands.filter((b) => b.role === "leader");
-  const memberBands = filteredBands.filter((b) => b.role === "member");
+  const leaderBands = bands.filter((b) => b.role === "leader");
+  const memberBands = bands.filter((b) => b.role === "member");
 
   const handleFilterClick = () => {
     bottomSheet.set({
@@ -120,7 +119,7 @@ export default function BandListPage() {
             loading...
           </p>
         </div>
-      ) : allBands.length === 0 ? (
+      ) : bands.length === 0 ? (
         <div className="flex flex-col justify-center items-center grow gap-4 px-5">
           <BandIcon focused={false} />
           <p
@@ -131,23 +130,9 @@ export default function BandListPage() {
               textAlign: "center",
             }}
           >
-            아직 참여 중인 밴드가 없습니다.
-            <br />
-            밴드를 만들거나 구인 게시판에서 밴드에 지원해보세요!
-          </p>
-        </div>
-      ) : filteredBands.length === 0 ? (
-        <div className="flex flex-col justify-center items-center grow gap-4 px-5">
-          <BandIcon focused={false} />
-          <p
-            style={{
-              color: "#9F9FA2",
-              fontFamily: "SUIT-BODY",
-              fontSize: "0.875rem",
-              textAlign: "center",
-            }}
-          >
-            필터 조건에 맞는 밴드가 없습니다.
+            {(genre || level || location)
+              ? "필터 조건에 맞는 밴드가 없습니다."
+              : "아직 참여 중인 밴드가 없습니다.\n밴드를 만들거나 구인 게시판에서 밴드에 지원해보세요!"}
           </p>
         </div>
       ) : (
