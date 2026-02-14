@@ -44,7 +44,23 @@ export async function GET(request: Request) {
         !redirectParam.includes("\\") &&
         !redirectParam.includes("%");
 
-      const next = user ? (isValidRedirect ? redirectParam : "/") : "/signup";
+      let next: string;
+      if (user) {
+        // 기존 사용자
+        next = isValidRedirect ? redirectParam : "/";
+      } else {
+        // 신규 사용자: user_metadata에서 accept_marketing 확인
+        const acceptMarketing = data.user.user_metadata?.accept_marketing;
+
+        if (acceptMarketing !== undefined) {
+          // 이메일 가입 사용자: /email에서 이미 약관 동의 완료
+          // policy 단계 건너뛰고 profile로 직접 이동
+          next = `/signup/profile?accept_marketing=${acceptMarketing}`;
+        } else {
+          // OAuth 가입 사용자: 약관 동의 단계부터 시작
+          next = "/signup";
+        }
+      }
 
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === "development";

@@ -90,7 +90,11 @@ export async function signInWithEmail(email: string, password: string) {
 /**
  * 이메일 회원가입 (Server Action)
  */
-export async function signUpWithEmail(email: string, password: string) {
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  accept_marketing: boolean
+) {
   try {
     // Rate limiting: 이메일 기반 (같은 이메일로 반복 가입 시도 방지)
     const identifier = `email-signup:${email}`;
@@ -107,6 +111,9 @@ export async function signUpWithEmail(email: string, password: string) {
       password,
       options: {
         emailRedirectTo: `${process.env.DOMAIN}/api/auth/callback`,
+        data: {
+          accept_marketing,
+        },
       },
     });
 

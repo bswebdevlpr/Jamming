@@ -10,6 +10,16 @@ import { getAuthRedirectPath } from "@/app/util/auth/redirect";
 import { z } from "zod";
 import { signInWithEmail, signUpWithEmail } from "@/app/util/supabase/auth";
 import { ErrorCode } from "@/app/lib/errors/custom-error";
+import PolicyModal from "@/app/ui/modals/policy-modal";
+import { RoundedCheckbox } from "@/app/ui/checkbox";
+import { RightArrow } from "@/app/ui/images/arrows";
+
+type PolicyType =
+  | "서비스 이용약관"
+  | "전자금융거래 이용약관"
+  | "개인정보 수집/이용 동의"
+  | "본인확인서비스 이용약관"
+  | "마케팅 수신 이용 동의";
 
 // 이메일/비밀번호 Zod 스키마
 const emailSchema = z.string().email("올바른 이메일 형식이 아닙니다.");
@@ -41,6 +51,25 @@ export default function EmailAuth() {
   const router = useRouter();
   const supabase = createClient();
 
+  // 약관 동의 상태
+  const [acceptAllTerms, setAcceptAllTerms] = useState(false);
+  const [termConsents, setTermConsents] = useState(Array(5).fill(false));
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPolicy, setSelectedPolicy] = useState<PolicyType | null>(null);
+
+  // 전체 동의 체크박스 동기화
+  useEffect(() => {
+    if (acceptAllTerms) {
+      setTermConsents(Array(5).fill(true));
+    } else {
+      // 전체 동의 해제 시 모든 약관 해제 (단, 이미 모두 체크되어 있을 때만)
+      const allChecked = termConsents.every((consent) => consent);
+      if (allChecked) {
+        setTermConsents(Array(5).fill(false));
+      }
+    }
+  }, [acceptAllTerms]);
+
   // 회원가입 성공 후 3초 뒤 자동 탭 전환 (cleanup 포함)
   useEffect(() => {
     if (success) {
@@ -49,6 +78,8 @@ export default function EmailAuth() {
         setSuccess("");
         setEmail("");
         setPassword("");
+        setTermConsents(Array(5).fill(false));
+        setAcceptAllTerms(false);
       }, 3000);
 
       return () => clearTimeout(timer);
@@ -99,7 +130,8 @@ export default function EmailAuth() {
         router.push(redirectPath);
       } else {
         // 회원가입 (Server Action with rate limiting)
-        const result = await signUpWithEmail(email, password);
+        const acceptMarketing = termConsents[4]; // 마케팅 수신 동의 (선택)
+        const result = await signUpWithEmail(email, password, acceptMarketing);
 
         if (result.success === false) {
           if (result.error.code === ErrorCode.RATE_LIMIT_EXCEEDED) {
@@ -122,8 +154,14 @@ export default function EmailAuth() {
     }
   };
 
+  // 필수 약관 4개 모두 동의 여부
+  const requiredTermsAccepted = termConsents.slice(0, 4).every((consent) => consent);
+
   const isFormValid =
-    email && password && (mode === "signin" || password.length >= 6);
+    email &&
+    password &&
+    (mode === "signin" ||
+      (password.length >= 6 && requiredTermsAccepted));
 
   const switchMode = (newMode: "signin" | "signup") => {
     setMode(newMode);
@@ -131,6 +169,32 @@ export default function EmailAuth() {
     setPassword("");
     setError("");
     setSuccess("");
+    setTermConsents(Array(5).fill(false));
+    setAcceptAllTerms(false);
+  };
+
+  // 약관 모달 열기/닫기
+  const openPolicyModal = (policyType: PolicyType) => {
+    setSelectedPolicy(policyType);
+    setModalOpen(true);
+  };
+
+  const closePolicyModal = () => {
+    setModalOpen(false);
+  };
+
+  // 개별 약관 동의 핸들러
+  const handleTermConsent = (index: number) => {
+    const newConsents = [...termConsents];
+    newConsents[index] = !newConsents[index];
+    setTermConsents(newConsents);
+
+    // 모든 약관이 체크되면 전체 동의도 체크
+    if (newConsents.every((consent) => consent)) {
+      setAcceptAllTerms(true);
+    } else {
+      setAcceptAllTerms(false);
+    }
   };
 
   return (
@@ -281,6 +345,123 @@ export default function EmailAuth() {
                 {success}
               </p>
             )}
+
+            {/* 약관 동의 (회원가입 모드에만 표시) */}
+            {mode === "signup" && (
+              <div className="flex flex-col gap-4 mt-6">
+                {/* 약관 전체동의 */}
+                <div
+                  style={{
+                    borderTop: "1px solid #444447",
+                    borderBottom: "1px solid #444447",
+                    paddingTop: "17.5px",
+                    paddingRight: "20px",
+                    paddingBottom: "17.5px",
+                    paddingLeft: "12px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: "SUIT-BODY",
+                      fontSize: "16px",
+                      color: "#E5E5E9",
+                    }}
+                  >
+                    약관 전체동의
+                  </p>
+                  <RoundedCheckbox
+                    onClick={() => setAcceptAllTerms(!acceptAllTerms)}
+                    thisState={acceptAllTerms}
+                  />
+                </div>
+
+                {/* 만 14세 설명 */}
+                <div style={{ marginLeft: "12px", marginRight: "12px" }}>
+                  <p
+                    style={{
+                      fontFamily: "SUIT-BODY",
+                      fontSize: "13px",
+                      color: "#C0C0C5",
+                    }}
+                  >
+                    본인은 만 14세 이상이며, 로그인 진행 시 이용 약관,
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "SUIT-BODY",
+                      fontSize: "13px",
+                      color: "#C0C0C5",
+                    }}
+                  >
+                    개인정보 수집 및 이용 동의서, 운영 정책에 동의하게 됩니다.
+                  </p>
+                </div>
+
+                {/* 개별 약관 */}
+                <div className="flex flex-col gap-4" style={{ marginLeft: "12px", marginRight: "12px" }}>
+                  {[
+                    "서비스 이용약관",
+                    "전자금융거래 이용약관",
+                    "개인정보 수집/이용 동의",
+                    "본인확인서비스 이용약관",
+                  ].map((txt, idx) => (
+                    <div key={idx} className="flex flex-row items-center gap-1">
+                      <RoundedCheckbox
+                        onClick={() => handleTermConsent(idx)}
+                        thisState={termConsents[idx]}
+                      />
+                      <p
+                        style={{
+                          fontFamily: "SUIT-BODY",
+                          fontSize: "14px",
+                          color: "#E5E5E9",
+                        }}
+                      >
+                        (필수) {txt}
+                      </p>
+                      <div
+                        className="ml-auto cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openPolicyModal(txt as PolicyType);
+                        }}
+                      >
+                        <RightArrow />
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* 마케팅 수신 동의 (선택) */}
+                  <div className="flex flex-row items-center gap-1">
+                    <RoundedCheckbox
+                      onClick={() => handleTermConsent(4)}
+                      thisState={termConsents[4]}
+                    />
+                    <p
+                      style={{
+                        fontFamily: "SUIT-BODY",
+                        fontSize: "14px",
+                        color: "#E5E5E9",
+                      }}
+                    >
+                      (선택) 마케팅 수신 이용 동의
+                    </p>
+                    <div
+                      className="ml-auto cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openPolicyModal("마케팅 수신 이용 동의");
+                      }}
+                    >
+                      <RightArrow />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -293,6 +474,15 @@ export default function EmailAuth() {
           />
         </div>
       </form>
+
+      {/* Policy Modal */}
+      {selectedPolicy && (
+        <PolicyModal
+          policyType={selectedPolicy}
+          isOpen={modalOpen}
+          onClose={closePolicyModal}
+        />
+      )}
     </div>
   );
 }
