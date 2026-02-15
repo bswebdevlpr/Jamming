@@ -159,8 +159,9 @@ export default function CTASection({ hideButton = false }: CTASectionProps) {
               href="/terms-of-service"
               style={{
                 fontFamily: "SUIT-BODY",
-                fontSize: "0.75rem",
-                color: "#9F9FA2",
+                fontSize: "0.875rem",
+                color: "#E5E5E9",
+                fontWeight: "500",
                 textDecoration: "none",
               }}
             >
@@ -171,8 +172,9 @@ export default function CTASection({ hideButton = false }: CTASectionProps) {
               href="/privacy-policy"
               style={{
                 fontFamily: "SUIT-BODY",
-                fontSize: "0.75rem",
-                color: "#9F9FA2",
+                fontSize: "0.875rem",
+                color: "#E5E5E9",
+                fontWeight: "500",
                 textDecoration: "none",
               }}
             >

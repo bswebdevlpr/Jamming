@@ -3,7 +3,7 @@ import LandingPage from "../_landing/landing-page";
 import AboutBackButton from "./back-button";
 
 export const metadata: Metadata = {
-  title: "JAMMING 소개 - 음악인을 위한 합주 매칭 플랫폼",
+  title: "JAMMING - 음악인을 위한 합주 매칭 플랫폼",
   description:
     "JAMMING은 음악인을 위한 합주 매칭 플랫폼입니다. 지역·장르·레벨별로 딱 맞는 세션을 찾고, 밴드를 관리하고, 음악인 커뮤니티를 만드세요. 밴드 멤버 구하기, 잼 세션 매칭, 합주실 공유까지 한 곳에서 모두 해결합니다. 아마추어부터 프로까지, 전국 19개 지역에서 사용 가능합니다.",
   alternates: {

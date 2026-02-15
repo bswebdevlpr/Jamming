@@ -54,35 +54,41 @@ export default function HeroSection() {
           />
         </motion.div>
 
-        {/* Brand Name with SEO-optimized H1 */}
+        {/* App Name Only in H1 (for Google extraction) */}
         <motion.h1
           variants={SLIDE_VARIANTS.fromBottom}
           style={{
-            fontFamily: "SUIT-TITLE",
-            fontSize: "24px",
-            color: "var(--foreground)",
-            letterSpacing: "-0.025em",
+            fontFamily: "SBAggroM",
+            fontSize: "48px",
+            color: "var(--highlight)",
+            letterSpacing: "0",
             lineHeight: "140%",
-            margin: 0,
+            margin: "0 0 16px 0",
             textAlign: "center",
             ...GPU_ACCELERATED_STYLE,
           }}
         >
-          음악인을 위한 합주 매칭 플랫폼{" "}
-          <span
-            style={{
-              fontFamily: "SBAggroM",
-              fontSize: "42px",
-              color: "var(--highlight)",
-              letterSpacing: "0",
-              display: "inline-block",
-            }}
-          >
-            JAMMING
-          </span>
+          JAMMING
         </motion.h1>
 
-        {/* App Description */}
+        {/* Explicit App Description (Google's preferred format) */}
+        <motion.p
+          variants={SLIDE_VARIANTS.fromBottom}
+          style={{
+            fontFamily: "SUIT-TITLE",
+            fontSize: "18px",
+            color: "var(--foreground)",
+            letterSpacing: "-0.025em",
+            lineHeight: "150%",
+            margin: "0 0 12px 0",
+            textAlign: "center",
+            ...GPU_ACCELERATED_STYLE,
+          }}
+        >
+          JAMMING은 음악인을 위한 합주 매칭 플랫폼입니다.
+        </motion.p>
+
+        {/* Detailed Description */}
         <motion.p
           variants={SLIDE_VARIANTS.fromBottom}
           style={{
@@ -91,14 +97,14 @@ export default function HeroSection() {
             color: "#9F9FA2",
             letterSpacing: "-0.025em",
             lineHeight: "150%",
-            margin: "16px 0 0 0",
+            margin: "0",
             textAlign: "center",
             ...GPU_ACCELERATED_STYLE,
           }}
         >
-          지역·장르·레벨별로 딱 맞는 합주 파트너를 찾고
+          지역·장르·레벨별로 딱 맞는 합주 파트너를 찾고,
           <br />
-          밴드를 관리하고 음악인 커뮤니티를 만드세요
+          밴드를 관리하고, 음악인 커뮤니티를 만드세요.
         </motion.p>
 
         {/* Slogan */}
