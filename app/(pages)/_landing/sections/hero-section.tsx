@@ -121,39 +121,6 @@ export default function HeroSection() {
         >
           놀기 위해 모였다!
         </motion.p>
-
-        {/* CTA Button */}
-        <motion.div
-          variants={SLIDE_VARIANTS.fromBottom}
-          style={{
-            marginTop: "12px",
-            width: "100%",
-            maxWidth: "200px",
-            ...GPU_ACCELERATED_STYLE,
-          }}
-        >
-          <Link href="/signin" style={{ textDecoration: "none" }}>
-            <motion.div
-              style={{
-                width: "100%",
-                borderRadius: "8px",
-                padding: "12px 10px",
-                fontFamily: "SUIT-BODY",
-                fontSize: "0.875rem",
-                color: "var(--highlight)",
-                border: "1px solid var(--highlight)",
-                backgroundColor: "var(--active-btn-bg)",
-                textAlign: "center",
-                cursor: "pointer",
-              }}
-              whileHover={BUTTON_INTERACTION.whileHover}
-              whileTap={BUTTON_INTERACTION.whileTap}
-              transition={BUTTON_INTERACTION.transition}
-            >
-              지금 시작하기
-            </motion.div>
-          </Link>
-        </motion.div>
       </motion.div>
 
       {/* Scroll Indicator */}
