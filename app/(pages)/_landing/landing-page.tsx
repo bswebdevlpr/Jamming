@@ -7,7 +7,13 @@ import HeroSection from "./sections/hero-section";
 import HowItWorksSection from "./sections/how-it-works";
 import PreviewSection from "./sections/preview-section";
 
-export default function LandingPage() {
+interface LandingPageProps {
+  hideLoginButton?: boolean;
+}
+
+export default function LandingPage({
+  hideLoginButton = false,
+}: LandingPageProps) {
   return (
     <main className="overflow-without-scroll" style={{ height: "100%" }}>
       <LandingHeader />
@@ -15,7 +21,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <HowItWorksSection />
       <PreviewSection />
-      <CTASection />
+      <CTASection hideButton={hideLoginButton} />
 
       {/* JSON-LD Structured Data */}
       <script

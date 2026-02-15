@@ -10,6 +10,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { useInView } from "react-intersection-observer";
 
+interface CTASectionProps {
+  hideButton?: boolean;
+}
+
 const ctaContainer = {
   hidden: { opacity: 1 },
   visible: {
@@ -33,7 +37,7 @@ const ctaItem = {
   },
 };
 
-export default function CTASection() {
+export default function CTASection({ hideButton = false }: CTASectionProps) {
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -60,70 +64,74 @@ export default function CTASection() {
           ...GPU_ACCELERATED_STYLE,
         }}
       >
-        <motion.h2
-          variants={ctaItem}
-          style={{
-            fontFamily: "SUIT-TITLE",
-            fontSize: "1.25rem",
-            color: "var(--foreground)",
-            letterSpacing: "-0.025em",
-            lineHeight: "140%",
-            margin: 0,
-            textAlign: "center",
-          }}
-        >
-          지금 바로 잼 세션을 찾아보세요
-        </motion.h2>
-
-        <motion.p
-          variants={ctaItem}
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.875rem",
-            color: "#9F9FA2",
-            letterSpacing: "-0.025em",
-            lineHeight: "150%",
-            margin: 0,
-            textAlign: "center",
-          }}
-        >
-          회원가입 30초, 무료로 시작
-        </motion.p>
-
-        <motion.div
-          variants={ctaItem}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "12px",
-            width: "100%",
-            maxWidth: "320px",
-            marginTop: "16px",
-          }}
-        >
-          {/* Primary CTA */}
-          <Link href="/signin" style={{ textDecoration: "none" }}>
-            <motion.div
+        {!hideButton && (
+          <>
+            <motion.h2
+              variants={ctaItem}
               style={{
-                width: "100%",
-                borderRadius: "8px",
-                padding: "14px 12px",
-                fontFamily: "SUIT-BODY",
-                fontSize: "1rem",
-                color: "var(--highlight)",
-                border: "1px solid var(--highlight)",
-                backgroundColor: "var(--active-btn-bg)",
+                fontFamily: "SUIT-TITLE",
+                fontSize: "1.25rem",
+                color: "var(--foreground)",
+                letterSpacing: "-0.025em",
+                lineHeight: "140%",
+                margin: 0,
                 textAlign: "center",
-                cursor: "pointer",
               }}
-              whileHover={BUTTON_INTERACTION.whileHover}
-              whileTap={BUTTON_INTERACTION.whileTap}
-              transition={BUTTON_INTERACTION.transition}
             >
-              카카오로 시작하기
+              지금 바로 잼 세션을 찾아보세요
+            </motion.h2>
+
+            <motion.p
+              variants={ctaItem}
+              style={{
+                fontFamily: "SUIT-BODY",
+                fontSize: "0.875rem",
+                color: "#9F9FA2",
+                letterSpacing: "-0.025em",
+                lineHeight: "150%",
+                margin: 0,
+                textAlign: "center",
+              }}
+            >
+              회원가입 30초, 무료로 시작
+            </motion.p>
+
+            <motion.div
+              variants={ctaItem}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+                width: "100%",
+                maxWidth: "320px",
+                marginTop: "16px",
+              }}
+            >
+              {/* Primary CTA */}
+              <Link href="/signin" style={{ textDecoration: "none" }}>
+                <motion.div
+                  style={{
+                    width: "100%",
+                    borderRadius: "8px",
+                    padding: "14px 12px",
+                    fontFamily: "SUIT-BODY",
+                    fontSize: "1rem",
+                    color: "var(--highlight)",
+                    border: "1px solid var(--highlight)",
+                    backgroundColor: "var(--active-btn-bg)",
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                  whileHover={BUTTON_INTERACTION.whileHover}
+                  whileTap={BUTTON_INTERACTION.whileTap}
+                  transition={BUTTON_INTERACTION.transition}
+                >
+                  카카오로 시작하기
+                </motion.div>
+              </Link>
             </motion.div>
-          </Link>
-        </motion.div>
+          </>
+        )}
 
         {/* Footer */}
         <motion.footer

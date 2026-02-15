@@ -47,7 +47,7 @@ export default function AboutPage() {
   return (
     <>
       <AboutBackButton />
-      <LandingPage />
+      <LandingPage hideLoginButton={true} />
     </>
   );
 }
