@@ -137,9 +137,9 @@ export default function CTASection({ hideButton = false }: CTASectionProps) {
         <motion.footer
           variants={ctaItem}
           style={{
-            marginTop: "40px",
-            paddingTop: "24px",
-            borderTop: "1px solid var(--border)",
+            marginTop: hideButton ? "0" : "40px",
+            paddingTop: hideButton ? "0" : "24px",
+            borderTop: hideButton ? "none" : "1px solid var(--border)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
