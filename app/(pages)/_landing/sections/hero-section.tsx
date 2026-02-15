@@ -121,59 +121,64 @@ export default function HeroSection() {
         >
           놀기 위해 모였다!
         </motion.p>
-      </motion.div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{
-          delay: 1.2,
-          duration: DURATION.slow,
-          ease: EASING.smooth,
-        }}
-        style={{
-          position: "absolute",
-          bottom: "32px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: "4px",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            color: "#9F9FA2",
-            margin: 0,
-          }}
-        >
-          스크롤하여 더 알아보기
-        </p>
+        {/* Scroll Indicator */}
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeInOut",
+          variants={SLIDE_VARIANTS.fromBottom}
+          onClick={() => {
+            const nextSection = document.querySelector("section:nth-of-type(2)");
+            if (nextSection) {
+              nextSection.scrollIntoView({ behavior: "smooth" });
+            } else {
+              window.scrollBy({
+                top: window.innerHeight,
+                behavior: "smooth",
+              });
+            }
+          }}
+          style={{
+            marginTop: "24px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "4px",
+            cursor: "pointer",
           }}
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            aria-hidden="true"
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "0.75rem",
+              color: "#9F9FA2",
+              margin: 0,
+            }}
           >
-            <path
-              d="M10 4L10 16M10 16L5 11M10 16L15 11"
-              stroke="#9F9FA2"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+            스크롤하여 더 알아보기
+          </p>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M10 4L10 16M10 16L5 11M10 16L15 11"
+                stroke="#9F9FA2"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </motion.div>
         </motion.div>
       </motion.div>
     </section>
