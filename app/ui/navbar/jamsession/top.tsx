@@ -13,10 +13,12 @@ export default function TopNavBar({
   filter,
   setLocation,
   isAuthenticated,
+  isAuthLoading,
 }: {
   filter: Filter_JamSessionFeed;
   setLocation: (location: LocationEnum) => void;
   isAuthenticated?: boolean | null;
+  isAuthLoading?: boolean;
 }) {
   const router = useRouter();
 
@@ -46,8 +48,12 @@ export default function TopNavBar({
       </div>
 
       {/* 오른쪽: 소개 (비인증) 또는 Bell (인증) */}
-      <div className="flex flex-row gap-5 items-center">
-        {isAuthenticated === false ? (
+      <div className="flex flex-row gap-5 items-center" style={{ minWidth: "28px" }}>
+        {isAuthLoading ? (
+          <div style={{ width: "28px", height: "20px" }} />
+        ) : isAuthenticated ? (
+          <Bell onClick={() => router.push("/notification")} />
+        ) : (
           <button
             onClick={() => router.push("/about")}
             style={{
@@ -62,8 +68,6 @@ export default function TopNavBar({
           >
             소개
           </button>
-        ) : (
-          <Bell onClick={() => router.push("/notification")} />
         )}
       </div>
 

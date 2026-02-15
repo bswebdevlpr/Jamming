@@ -25,6 +25,7 @@ import { getDatesHavingJamPublic } from "@/app/ui/calendar/functions/fetch";
 export default function Home() {
   // AUTH STATE
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
     const supabase = createClient();
@@ -34,6 +35,7 @@ export default function Home() {
         data: { user },
       } = await supabase.auth.getUser();
       setIsAuthenticated(!!user);
+      setIsAuthLoading(false);
     };
 
     checkAuth();
@@ -113,9 +115,10 @@ export default function Home() {
         filter={filter}
         setLocation={setLocation}
         isAuthenticated={isAuthenticated}
+        isAuthLoading={isAuthLoading}
       />
       {/* 슬라이드 캘린더 */}
-      <div className="p-5">
+      <div className="p-5" style={{ minHeight: "80px" }}>
         <SlideCalendarComponent
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
@@ -171,7 +174,7 @@ export default function Home() {
         <div className="grow overflow-hidden flex justify-center items-center px-5">
           <JamFeed ref={childRef} filter={filter} />
         </div>
-        {isAuthenticated !== false ? (
+        {isAuthLoading ? null : isAuthenticated ? (
           <JamNow
             selectedDate={selectedDate}
             setSelectedDate={setSelectedDate}
@@ -181,7 +184,9 @@ export default function Home() {
         ) : (
           <JamNowPublic />
         )}
-        {isAuthenticated !== false ? (
+        {isAuthLoading ? (
+          <div style={{ height: "6.93vh" }} />
+        ) : isAuthenticated ? (
           <BottomNavBar />
         ) : (
           <BottomNavBarPublic />

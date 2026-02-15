@@ -2,9 +2,12 @@
 
 import Image from "next/image";
 import { useNotificationStore } from "@/app/stores";
+import { AnimatePresence, motion } from "framer-motion";
+import { FADE_VARIANTS } from "@/app/lib/animations";
 
 export default function Bell({ onClick }: { onClick?: () => void }) {
   const unreadCount = useNotificationStore((state) => state.unreadCount);
+  const isLoading = useNotificationStore((state) => state.isLoading);
 
   return (
     <div
@@ -18,32 +21,50 @@ export default function Bell({ onClick }: { onClick?: () => void }) {
         width={20.01}
         height={20.57}
       />
-      {unreadCount > 0 && (
-        <div
-          className="absolute flex items-center justify-center"
-          style={{
-            top: "-4px",
-            right: "-4px",
-            minWidth: "16px",
-            height: "16px",
-            borderRadius: "9999px",
-            backgroundColor: "#FF3E2F",
-            padding: "0 4px",
-          }}
-        >
-          <p
+      <AnimatePresence mode="wait">
+        {(isLoading || unreadCount > 0) && (
+          <motion.div
+            key={isLoading ? "loading" : "badge"}
+            className="absolute flex items-center justify-center"
             style={{
-              fontFamily: "Pretendard",
-              fontWeight: 600,
-              fontSize: "0.625rem",
-              color: "#FFF",
-              lineHeight: 1,
+              top: "-4px",
+              right: "-4px",
+              minWidth: "16px",
+              height: "16px",
+              borderRadius: "9999px",
+              backgroundColor: isLoading ? "transparent" : "#FF3E2F",
+              padding: "0 4px",
             }}
+            variants={FADE_VARIANTS}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
           >
-            {unreadCount > 99 ? "99+" : unreadCount}
-          </p>
-        </div>
-      )}
+            {isLoading ? (
+              <div
+                className="skeleton-box"
+                style={{
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "50%",
+                }}
+              />
+            ) : (
+              <p
+                style={{
+                  fontFamily: "Pretendard",
+                  fontWeight: 600,
+                  fontSize: "0.625rem",
+                  color: "#FFF",
+                  lineHeight: 1,
+                }}
+              >
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

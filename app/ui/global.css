@@ -89,6 +89,7 @@
 
   --highlight: #a3ff0c;
   --border: #323234;
+  --divider: #333335;
 
   --min-width: 375px;
   --max-width: 600px;
@@ -184,6 +185,36 @@ body {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+}
+
+/* ============================================
+   스켈레톤 로딩 애니메이션
+   ============================================ */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-box {
+  background: linear-gradient(
+    90deg,
+    var(--deep-bg) 25%,
+    var(--border) 50%,
+    var(--deep-bg) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-box {
+    animation: none;
   }
 }
 

@@ -17,13 +17,15 @@ import DeleteIcon from "@/app/ui/images/jamsession/post/delete";
 import EditIcon from "@/app/ui/images/jamsession/post/edit";
 import ReportIcon from "@/app/ui/images/jamsession/post/report";
 import Kebap from "@/app/ui/images/menu/kebap";
-import FullScreenLoading from "@/app/ui/loading/fullscreen";
+import { JamPostSkeleton } from "@/app/ui/loading/skeleton";
 import {
   GenreTag,
   LevelTag,
   LocationTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
+import { AnimatePresence, motion } from "framer-motion";
+import { FADE_VARIANTS } from "@/app/lib/animations";
 import RadixAvatar from "@/app/ui/templates/avatar";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { ImageWithTxt } from "@/app/ui/templates/images";
@@ -166,10 +168,27 @@ export default function JamSession_Post() {
   const [isModalOn, setIsModalOn] = useState(false);
   //
 
-  return isInitializing ? (
-    <FullScreenLoading />
-  ) : (
-    <div className="grow h-full max-h-full flex flex-col overflow-hidden">
+  return (
+    <AnimatePresence mode="wait">
+      {isInitializing ? (
+        <motion.div
+          key="skeleton"
+          className="grow h-full max-h-full flex flex-col overflow-hidden"
+          variants={FADE_VARIANTS}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+        >
+          <JamPostSkeleton />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="content"
+          className="grow h-full max-h-full flex flex-col overflow-hidden"
+          variants={FADE_VARIANTS}
+          initial="hidden"
+          animate="visible"
+        >
       <div className="flex flex-row justify-between items-center px-4 py-3">
         <LeftArrowWhite
           onClick={() => {
@@ -268,6 +287,10 @@ export default function JamSession_Post() {
                             fontFamily: "SUIT-BODY",
                             fontSize: "13px",
                             color: "#FF3E2F",
+                          }}
+                          onClick={() => {
+                            bottomSheet.set({ location: "hidden" });
+                            router.push(`/jamsession/post/${jam_id}/report?title=${encodeURIComponent(jam.title)}`);
                           }}
                         />
                         <ButtonTemplate
@@ -515,6 +538,8 @@ export default function JamSession_Post() {
           refetch={refetch}
         />
       )}
-    </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

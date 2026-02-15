@@ -11,7 +11,7 @@ import {
 } from "@/app/ui/tags/category-tag";
 import BPMPopup from "./popup";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
 import { getUserByNickname } from "./functions/fetch";
 import { convertBPMToTempo } from "@/app/lib/functions/convert";
@@ -22,6 +22,7 @@ import BPMBar from "@/app/ui/bpm/bpm-bar";
 
 export default function MyPage() {
   const { nickname } = useParams();
+  const router = useRouter();
 
   // STATES
   const [isBPMPopupOn, setIsBPMPopupOn] = useState(false);
@@ -36,6 +37,7 @@ export default function MyPage() {
       const result = await getUserByNickname(nickname as string);
       if (result.success === false) {
         if (process.env.NODE_ENV === "development") console.error(result.error.message);
+        router.back();
         return;
       }
 
@@ -63,12 +65,12 @@ export default function MyPage() {
       if (imagePath) imagePath += ".svg";
       setDefaultProfileImagePath(imagePath);
     })();
-  }, []);
+  }, [nickname]);
 
   return (
     <div className="grow flex flex-col items-center overflow-without-scroll px-5">
       <div className="w-full flex justify-between py-5 mb-1">
-        <LeftArrowWhite />
+        <LeftArrowWhite onClick={() => router.back()} />
         <p
           style={{
             fontFamily: "SUIT-BODY",

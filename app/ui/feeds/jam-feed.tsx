@@ -6,6 +6,7 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { fetchJams } from "@/app/lib/functions/fetch";
 import { FeedItem_Jam } from "@/app/ui/feeds/feed-item";
 import FeedTemplate from "@/app/ui/templates/feed";
+import { JamFeedSkeleton } from "@/app/ui/loading/skeleton";
 import { Dispatch, SetStateAction } from "react";
 
 export interface Filter_JamSessionFeed {
@@ -32,6 +33,7 @@ export function JamFeed({
       queryFn={fetchJams}
       queryFnParam={JSON.stringify(filter)}
       feedItem={FeedItem_Jam}
+      skeleton={<JamFeedSkeleton />}
     />
   );
 }

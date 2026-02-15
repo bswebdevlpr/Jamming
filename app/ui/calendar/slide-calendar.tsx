@@ -81,7 +81,7 @@ export default function SlideCalendarComponent({
     };
   }, [startOfPeriod, endOfPeriod, searchParams]);
 
-  const [dates, setDates] = useState<moment.Moment[]>(null);
+  const [dates, setDates] = useState<moment.Moment[]>([]);
   const [datesHavingJam, setDatesHavingJam] = useState<string[]>([]);
   //
 

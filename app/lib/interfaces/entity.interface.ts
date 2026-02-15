@@ -180,3 +180,12 @@ export interface Entity_RecruitComment {
   user?: Entity_User;
   recruit_post?: Entity_RecruitPost;
 }
+
+export interface Entity_Report {
+  id: string;
+  jam_id: number;
+  user_id: string;
+  type: string;
+  body: string;
+  created_at?: string;
+}

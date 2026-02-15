@@ -3,6 +3,7 @@ import { PositionEnum } from "./enums/position.enum";
 import { GenreEnum } from "./enums/genre.enum";
 import { LevelEnum } from "./enums/level.enum";
 import { LocationEnum } from "./enums/location.enum";
+import { ReportTypeEnum } from "./enums/report.enum";
 
 const ZodSchema_Image = z.object({
   file: z.any(),
@@ -129,3 +130,14 @@ export const ZodSchema_RecruitComment = z.object({
   applied_pos: z.nativeEnum(PositionEnum),
 });
 export type ZodType_RecruitComment = z.infer<typeof ZodSchema_RecruitComment>;
+
+// ========== 신고 ==========
+
+export const ZodSchema_Report = z.object({
+  type: z.nativeEnum(ReportTypeEnum),
+  body: z
+    .string()
+    .min(5, { message: "신고 내용을 5글자 이상 입력해주세요." })
+    .max(500, { message: "신고 내용은 500글자를 초과할 수 없습니다." }),
+});
+export type ZodType_Report = z.infer<typeof ZodSchema_Report>;

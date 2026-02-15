@@ -10,7 +10,11 @@ import { getUnreadCount } from "@/app/api/functions/notification";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { userProfile, setUserProfile, resetUserProfile } = useSessionStore();
-  const setUnreadCount = useNotificationStore((state) => state.setUnreadCount);
+  const { setUnreadCount, setIsLoading: setNotificationLoading } =
+    useNotificationStore((state) => ({
+      setUnreadCount: state.setUnreadCount,
+      setIsLoading: state.setIsLoading,
+    }));
   const router = useRouter();
   const pathname = usePathname();
 
@@ -66,12 +70,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         }
 
         // 미읽음 알림 개수 로드
+        setNotificationLoading(true);
         getUnreadCount()
           .then((result) => {
             if (result.success === true) {
               setUnreadCount(result.data);
             } else {
               setUnreadCount(0);
+              setNotificationLoading(false);
             }
           })
           .catch((e) => {
@@ -79,6 +85,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               console.error("Failed to load unread count:", e);
             }
             setUnreadCount(0);
+            setNotificationLoading(false);
           });
 
         setIsLoading(false);

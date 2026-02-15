@@ -3,6 +3,7 @@
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
 import { useLogout } from "@/app/lib/functions/logout";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
+import { useRouter } from "next/navigation";
 import RadixSwitch from "@/app/ui/templates/switch";
 import { useEffect, useState } from "react";
 import { initialize } from "./functions/fetch";
@@ -11,6 +12,7 @@ import UnregisterPopup from "./popup/unregister";
 
 export default function Setting() {
   const logout = useLogout();
+  const router = useRouter();
 
   // STATES
   const [user, setUser] = useState<Entity_User>(null);
@@ -27,13 +29,17 @@ export default function Setting() {
         setUser(result.data);
         setAcceptNoti(result.data.allow_noti);
       }
+      if (result.success === false) {
+        if (process.env.NODE_ENV === "development") console.error(result.error.message);
+        router.back();
+      }
     })();
   }, []);
 
   useEffect(() => {
     if (user && acceptNoti !== null && user.allow_noti !== acceptNoti) {
       updateNotiAccept(acceptNoti);
-      user.allow_noti = acceptNoti;
+      setUser({ ...user, allow_noti: acceptNoti });
     }
   }, [user, acceptNoti]);
 
@@ -45,7 +51,7 @@ export default function Setting() {
           marginBottom: "25px",
         }}
       >
-        <LeftArrowWhite />
+        <LeftArrowWhite onClick={() => router.back()} />
         <p
           style={{
             fontFamily: "SUIT-BODY",

@@ -11,6 +11,8 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { useBottomSheetStore } from "@/app/stores";
+import { AnimatePresence, motion } from "framer-motion";
+import { FADE_VARIANTS } from "@/app/lib/animations";
 
 export type FetchFeedFunc = ({
   pageParam,
@@ -27,6 +29,7 @@ export interface FeedProps {
   queryFn: FetchFeedFunc;
   queryFnParam: any;
   feedItem: React.FC<any>;
+  skeleton?: React.ReactNode;
   style?: CSSProperties;
 }
 export interface FeedMethods {
@@ -34,7 +37,7 @@ export interface FeedMethods {
 }
 
 const FeedTemplate = forwardRef<FeedMethods, FeedProps>(
-  ({ queryFn, queryFnParam, feedItem, style }, ref) => {
+  ({ queryFn, queryFnParam, feedItem, skeleton, style }, ref) => {
     const { ref: innerRef, inView } = useInView();
 
     const { data, isLoading, fetchNextPage, hasNextPage, refetch } =
@@ -61,24 +64,41 @@ const FeedTemplate = forwardRef<FeedMethods, FeedProps>(
       }
     }, [inView, hasNextPage, isLoading, fetchNextPage]);
 
-    return isLoading ? (
-      "loading..."
-    ) : (
-      <div
-        className="w-full h-full overflow-without-scroll"
-        style={{
-          ...style,
-        }}
-      >
-        {data?.pages.map((page, pageIndex) => (
-          <Fragment key={pageIndex}>
-            {page.data.map((data, idx) =>
-              feedItem({ idx, data, router, bottomSheet, refetch })
-            )}
-          </Fragment>
-        ))}
-        <div ref={innerRef} style={{ height: 20, background: "transparent" }} />
-      </div>
+    return (
+      <AnimatePresence mode="wait">
+        {isLoading ? (
+          <motion.div
+            key="skeleton"
+            variants={FADE_VARIANTS}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="w-full h-full"
+          >
+            {skeleton || "loading..."}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            className="w-full h-full overflow-without-scroll"
+            style={{
+              ...style,
+            }}
+            variants={FADE_VARIANTS}
+            initial="hidden"
+            animate="visible"
+          >
+            {data?.pages.map((page, pageIndex) => (
+              <Fragment key={pageIndex}>
+                {page.data.map((data, idx) =>
+                  feedItem({ idx, data, router, bottomSheet, refetch })
+                )}
+              </Fragment>
+            ))}
+            <div ref={innerRef} style={{ height: 20, background: "transparent" }} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   }
 );

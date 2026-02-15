@@ -111,7 +111,7 @@ export default function MyAct() {
   ) : (
     <div className="grow flex flex-col px-5">
       <ImageWithTxt
-        image={<LeftArrowWhite onClick={router.back} />}
+        image={<LeftArrowWhite onClick={() => router.back()} />}
         text="멤버 관리"
         className="py-3 gap-2 mb-3"
         style={{
