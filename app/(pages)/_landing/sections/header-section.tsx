@@ -25,7 +25,6 @@ export default function LandingHeader() {
             fontFamily: "SBAggroM",
             fontSize: "20px",
             color: "var(--highlight)",
-            textTransform: "uppercase",
           }}
         >
           JAMMING

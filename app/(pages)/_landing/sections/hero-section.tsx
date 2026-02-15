@@ -1,16 +1,12 @@
 "use client";
 
 import {
-    BUTTON_INTERACTION,
-    DURATION,
-    EASING,
-    GPU_ACCELERATED_STYLE,
-    POPUP_VARIANTS,
-    SLIDE_VARIANTS,
+  GPU_ACCELERATED_STYLE,
+  POPUP_VARIANTS,
+  SLIDE_VARIANTS
 } from "@/app/lib/animations";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 
 const heroContainer = {
   hidden: { opacity: 1 },
@@ -80,7 +76,6 @@ export default function HeroSection() {
               color: "var(--highlight)",
               letterSpacing: "0",
               display: "inline-block",
-              textTransform: "uppercase",
             }}
           >
             JAMMING
@@ -126,7 +121,9 @@ export default function HeroSection() {
         <motion.div
           variants={SLIDE_VARIANTS.fromBottom}
           onClick={() => {
-            const nextSection = document.querySelector("section:nth-of-type(2)");
+            const nextSection = document.querySelector(
+              "section:nth-of-type(2)",
+            );
             if (nextSection) {
               nextSection.scrollIntoView({ behavior: "smooth" });
             } else {
