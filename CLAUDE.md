@@ -14,9 +14,10 @@
 | Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
 | UI | React 19 RC, Tailwind CSS 4, Framer Motion |
-| State | React Context, TanStack React Query 5 |
+| State | Zustand, TanStack React Query 5 |
 | Backend | Supabase (Auth, DB, Storage) |
 | External API | ManiaDB (곡 검색), Naver Map (장소 검색) |
+| Testing | Vitest, Playwright, React Testing Library |
 
 ## Project Structure
 
@@ -33,8 +34,10 @@ app/
 │   ├── naver/             # 장소 검색 API
 │   └── auth/              # OAuth 콜백
 ├── lib/                   # enums, interfaces, utils
+├── stores/                # Zustand stores (session, notification, etc.)
 ├── ui/                    # 디자인 시스템, 컴포넌트
 └── util/supabase/         # Supabase client/server helpers
+__tests__/                 # 테스트 파일 (unit, integration, component, e2e)
 ```
 
 ## Key Files
@@ -42,13 +45,15 @@ app/
 | Purpose | Path |
 |---------|------|
 | 앱 진입점 | `app/layout.tsx` |
-| 글로벌 상태 | `app/(pages)/context.tsx` |
+| 글로벌 상태 (Zustand) | `app/stores/session.ts`, `notification.ts`, `feedback.ts` |
 | 인증 유틸 | `app/util/supabase/auth.ts` |
 | 타입 정의 | `app/lib/interfaces/entity.interface.ts` |
 | 잼 세션 CRUD | `app/(pages)/(only-user)/jamsession/functions/fetch.ts` |
 | API 함수 | `app/api/functions/read.ts`, `create.ts`, `delete.ts` |
 | 글로벌 CSS | `app/ui/global.css` |
 | Zod 스키마 | `app/lib/zod.ts` |
+| 테스트 설정 | `vitest.config.ts`, `playwright.config.ts` |
+| CI/CD | `.github/workflows/test.yml` |
 
 ## Documentation
 

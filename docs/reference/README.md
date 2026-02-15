@@ -578,6 +578,65 @@ const ZodSchema_Image = z.object({
 
 ---
 
+## Testing Commands
+
+### Vitest (단위/통합 테스트)
+
+```bash
+# Watch 모드 (개발 중)
+pnpm test
+
+# 전체 테스트 실행 (CI 모드)
+pnpm test:run
+
+# 커버리지 리포트 생성
+pnpm test:coverage
+
+# UI 모드 (브라우저에서 테스트 확인)
+pnpm test:ui
+```
+
+### Playwright (E2E 테스트)
+
+```bash
+# E2E 테스트 실행
+pnpm test:e2e
+
+# UI 모드 (디버깅)
+pnpm test:e2e:ui
+
+# 특정 브라우저만 실행
+pnpm test:e2e --project=chromium
+```
+
+### 테스트 구조
+
+```
+__tests__/
+├── unit/           # 단위 테스트 (185 케이스)
+│                   # - lib/ (순수 함수, 유틸)
+│                   # - stores/ (Zustand stores)
+│                   # - hooks/ (Custom hooks)
+├── integration/    # 통합 테스트 (117 케이스)
+│                   # - auth/ (인증 시스템)
+│                   # - api/ (Server Actions)
+│                   # - external/ (외부 API)
+├── component/      # 컴포넌트 테스트 (35 케이스)
+│                   # - React Testing Library
+└── e2e/            # E2E 테스트 (31 케이스)
+                    # - Playwright
+```
+
+### CI/CD
+
+GitHub Actions에서 자동 실행:
+- PR/push 시 단위/통합 테스트 실행
+- `master` push 시 E2E 테스트 실행
+
+**파일:** `.github/workflows/test.yml`
+
+---
+
 ## 관련 문서
 
 - [Context](../context/README.md) - 프로젝트 컨텍스트

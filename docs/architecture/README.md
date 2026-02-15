@@ -8,7 +8,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │                        Client (Browser)                      │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
-│  │ React Query │  │   Context   │  │ React Components    │  │
+│  │ React Query │  │   Zustand   │  │ React Components    │  │
 │  │ (서버 상태) │  │ (UI 상태)   │  │ (페이지, UI)        │  │
 │  └─────────────┘  └─────────────┘  └─────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
@@ -38,6 +38,14 @@
 │  │      ManiaDB        │  │        Naver Map            │   │
 │  │    (곡 검색)        │  │       (장소 검색)           │   │
 │  └─────────────────────┘  └─────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│                     Testing Infrastructure                   │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
+│  │   Vitest    │  │  Playwright │  │  React Testing Lib  │  │
+│  │ (단위/통합) │  │    (E2E)    │  │    (컴포넌트)       │  │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -74,6 +82,13 @@ app/
 │   ├── functions/                # 유틸리티 함수
 │   ├── maps/                     # Enum-String 매핑
 │   └── zod.ts                    # Zod 스키마
+├── stores/                       # Zustand stores
+│   ├── session.ts                # 사용자 세션 상태
+│   ├── notification.ts           # 알림 상태
+│   ├── feedback.ts               # 피드백 상태
+│   ├── calendar.ts               # 캘린더 상태
+│   ├── ui.ts                     # UI 상태
+│   └── bottom-sheet.ts           # 바텀 시트 상태
 ├── ui/                           # UI 컴포넌트
 │   ├── templates/                # 재사용 템플릿 (feed, popup)
 │   ├── buttons/                  # 버튼 컴포넌트
@@ -84,6 +99,17 @@ app/
 │   ├── server.ts                 # 서버용
 │   └── auth.ts                   # 인증 함수
 └── hooks/                        # Custom Hooks
+__tests__/                        # 테스트 파일
+├── setup.ts                      # 글로벌 테스트 셋업
+├── mocks/                        # 모킹 시스템
+│   ├── supabase.ts               # Supabase 모킹
+│   ├── redis.ts                  # Redis 모킹
+│   ├── handlers.ts               # MSW 핸들러
+│   └── fixtures/                 # 테스트 데이터 팩토리
+├── unit/                         # 단위 테스트 (lib, stores, hooks)
+├── integration/                  # 통합 테스트 (auth, API, external)
+├── component/                    # 컴포넌트 테스트
+└── e2e/                          # E2E 테스트 (Playwright)
 ```
 
 ## 인증 플로우 (카카오 OAuth → Supabase)
@@ -192,48 +218,54 @@ export async function createJamEntry(input: CreateJamEntryDto): Promise<boolean>
 }
 ```
 
-## 상태 관리 (React Context + React Query)
+## 상태 관리 (Zustand + React Query)
 
-### Global Context (UI 상태)
+### Zustand Stores (클라이언트 상태)
 
 ```typescript
-// app/lib/interfaces/global.interface.ts
-interface GlobalContext {
-  // 뷰포트
-  bodyWidth: number;
-  bodyHeight: number;
+// app/stores/session.ts
+interface SessionStore {
+  userProfile: UserProfile;
+  setUserProfile: (input: Partial<UserProfile>) => void;
+  resetUserProfile: () => void;
+  signupProfileImage: string | null;
+  setSignupProfileImage: (image: string | null) => void;
+  signupData: Partial<SignupFormData>;
+  setSignupData: (data: Partial<SignupFormData>) => void;
+}
 
-  // 로딩
-  isSmallLoadingOn: boolean;
-  setSmallLoading: () => void;
+// app/stores/bottom-sheet.ts
+interface BottomSheetStore {
+  children: ReactNode;
+  location: BottomSheetHeight;
+  header: boolean;
+  set: (input: Partial<BottomSheetStore>) => void;
+  close: () => void;
+}
 
-  // Bottom Sheet
-  bottomSheet: BottomSheetContext;
-
-  // 세션 (사용자 프로필)
-  session: {
-    userProfile: UserProfile;
-    setUserProfile: (input: Partial<UserProfile>) => void;
-  };
-
-  // 캘린더
-  resetSlideCalendarDots: boolean;
-  setResetSlideCalendarDots: Dispatch<SetStateAction<boolean>>;
+// app/stores/notification.ts
+interface NotificationStore {
+  unreadCount: number;
+  setUnreadCount: (count: number) => void;
+  incrementUnread: () => void;
+  decrementUnread: () => void;
 }
 ```
 
 **사용:**
 ```typescript
-const { bottomSheet, session } = useContext(globalContext);
+import { useBottomSheetStore, useSessionStore } from '@/app/stores';
 
 // Bottom Sheet 열기
-bottomSheet.set({
+const { set } = useBottomSheetStore();
+set({
   children: <MyComponent />,
   location: BottomSheetHeight.Full,
 });
 
 // 사용자 프로필 업데이트
-session.setUserProfile({ nickname: "새 닉네임" });
+const { setUserProfile } = useSessionStore();
+setUserProfile({ nickname: "새 닉네임" });
 ```
 
 ### React Query (서버 상태)
