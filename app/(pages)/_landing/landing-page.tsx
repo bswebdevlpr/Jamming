@@ -1,10 +1,10 @@
 "use client";
 
+import CTASection from "./sections/cta-section";
+import FeaturesSection from "./sections/features-section";
 import LandingHeader from "./sections/header-section";
 import HeroSection from "./sections/hero-section";
-import FeaturesSection from "./sections/features-section";
 import HowItWorksSection from "./sections/how-it-works";
-import CTASection from "./sections/cta-section";
 import PreviewSection from "./sections/preview-section";
 
 export default function LandingPage() {
@@ -27,7 +27,7 @@ export default function LandingPage() {
               {
                 "@type": "SoftwareApplication",
                 "@id": "https://jamming.co.kr/#software",
-                name: "Jamming",
+                name: "JAMMING",
                 applicationCategory: "EntertainmentApplication",
                 operatingSystem: "Web",
                 offers: {
@@ -49,7 +49,7 @@ export default function LandingPage() {
               {
                 "@type": "Organization",
                 "@id": "https://jamming.co.kr/#organization",
-                name: "Jamming",
+                name: "JAMMING",
                 url: "https://jamming.co.kr",
                 logo: "https://jamming.co.kr/logo.svg",
                 sameAs: [],
@@ -58,7 +58,7 @@ export default function LandingPage() {
                 "@type": "WebSite",
                 "@id": "https://jamming.co.kr/#website",
                 url: "https://jamming.co.kr",
-                name: "Jamming",
+                name: "JAMMING",
                 description: "음악인을 위한 합주 매칭 플랫폼",
                 publisher: {
                   "@id": "https://jamming.co.kr/#organization",

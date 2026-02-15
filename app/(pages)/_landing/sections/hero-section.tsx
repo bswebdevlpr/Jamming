@@ -1,16 +1,16 @@
 "use client";
 
+import {
+    BUTTON_INTERACTION,
+    DURATION,
+    EASING,
+    GPU_ACCELERATED_STYLE,
+    POPUP_VARIANTS,
+    SLIDE_VARIANTS,
+} from "@/app/lib/animations";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import {
-  POPUP_VARIANTS,
-  SLIDE_VARIANTS,
-  BUTTON_INTERACTION,
-  GPU_ACCELERATED_STYLE,
-  DURATION,
-  EASING,
-} from "@/app/lib/animations";
 
 const heroContainer = {
   hidden: { opacity: 1 },
@@ -51,7 +51,7 @@ export default function HeroSection() {
         <motion.div variants={POPUP_VARIANTS} style={GPU_ACCELERATED_STYLE}>
           <Image
             src="/logo.svg"
-            alt="Jamming Logo"
+            alt="JAMMING Logo"
             width={100}
             height={92}
             priority
@@ -83,7 +83,7 @@ export default function HeroSection() {
               textTransform: "uppercase",
             }}
           >
-            Jamming
+            JAMMING
           </span>
         </motion.h1>
 
@@ -160,7 +160,11 @@ export default function HeroSection() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: DURATION.slow, ease: EASING.smooth }}
+        transition={{
+          delay: 1.2,
+          duration: DURATION.slow,
+          ease: EASING.smooth,
+        }}
         style={{
           position: "absolute",
           bottom: "32px",

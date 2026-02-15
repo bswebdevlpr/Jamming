@@ -28,7 +28,7 @@ export default function LandingHeader() {
             textTransform: "uppercase",
           }}
         >
-          Jamming
+          JAMMING
         </span>
       </div>
 

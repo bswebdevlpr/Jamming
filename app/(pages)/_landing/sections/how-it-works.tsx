@@ -1,11 +1,8 @@
 "use client";
 
+import { GPU_ACCELERATED_STYLE, STAGGER_CONTAINER } from "@/app/lib/animations";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import {
-  STAGGER_CONTAINER,
-  GPU_ACCELERATED_STYLE,
-} from "@/app/lib/animations";
 import StepCard from "../components/step-card";
 
 const STEPS = [
@@ -35,7 +32,7 @@ export default function HowItWorksSection() {
   return (
     <section
       ref={ref}
-      aria-label="Jamming 시작 방법"
+      aria-label="JAMMING 시작 방법"
       style={{
         padding: "60px 20px",
         borderTop: "1px solid var(--border)",

@@ -5,8 +5,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   metadataBase: new URL("https://jamming.co.kr"),
   title: {
-    default: "Jamming - 음악인을 위한 합주 플랫폼",
-    template: "%s | Jamming",
+    default: "JAMMING - 음악인을 위한 합주 플랫폼",
+    template: "%s | JAMMING",
   },
   description:
     "놀기 위해 모였다! 전국 밴드 합주, 잼세션 모집 및 참여. 모든 뮤지션을 위한 합주 매칭 플랫폼.",
@@ -24,22 +24,22 @@ export const metadata: Metadata = {
     "락밴드",
     "인디밴드",
     "잼",
-    "Jamming",
+    "JAMMING",
     "Jam Session",
     "밴드 매칭",
     "음악 플랫폼",
   ],
   openGraph: {
-    title: "Jamming - 음악인을 위한 합주 플랫폼",
+    title: "JAMMING - 음악인을 위한 합주 플랫폼",
     description: "놀기 위해 모였다! 다양한 사람과 음악을 공유하고 즐기세요.",
     url: "https://jamming.co.kr",
-    siteName: "Jamming",
+    siteName: "JAMMING",
     type: "website",
     locale: "ko_KR",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jamming - 음악인을 위한 합주 플랫폼",
+    title: "JAMMING - 음악인을 위한 합주 플랫폼",
     description: "놀기 위해 모였다! 다양한 사람과 음악을 공유하고 즐기세요.",
   },
   robots: {
@@ -80,14 +80,8 @@ export default function RootLayout({
           href="https://niiidqqsxsiowmzumcgw.supabase.co"
         />
         {/* 폰트 CDN 최적화 */}
-        <link
-          rel="preconnect"
-          href="https://fastly.jsdelivr.net"
-        />
-        <link
-          rel="dns-prefetch"
-          href="https://fastly.jsdelivr.net"
-        />
+        <link rel="preconnect" href="https://fastly.jsdelivr.net" />
+        <link rel="dns-prefetch" href="https://fastly.jsdelivr.net" />
       </head>
       <body className={`antialiased`}>
         <script
@@ -96,7 +90,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: "Jamming",
+              name: "JAMMING",
               url: "https://jamming.co.kr",
               description: "음악인을 위한 합주 매칭 플랫폼",
               inLanguage: "ko",
@@ -109,7 +103,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "Jamming",
+              name: "JAMMING",
               url: "https://jamming.co.kr",
               logo: "https://jamming.co.kr/og-image.png",
             }),

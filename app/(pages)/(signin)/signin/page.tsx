@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { signInWithKakao, signInWithGoogle } from "@/app/util/supabase/auth";
+import { signInWithGoogle, signInWithKakao } from "@/app/util/supabase/auth";
 import { createClient } from "@/app/util/supabase/client";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import SocialLoginButton from "./social-login-button";
 
 export default function SignIn() {
@@ -37,7 +37,8 @@ export default function SignIn() {
       oauth_failed: "로그인에 실패했습니다. 다시 시도해주세요.",
       rate_limit: "요청 횟수가 너무 많습니다. 잠시 후 다시 시도해주세요.",
       auth_code_error: "인증 처리 중 문제가 발생했습니다. 다시 시도해주세요.",
-      org_restricted: "해당 Google 계정은 조직 내부 전용입니다. 개인 Google 계정으로 시도해주세요.",
+      org_restricted:
+        "해당 Google 계정은 조직 내부 전용입니다. 개인 Google 계정으로 시도해주세요.",
     };
 
     if (error && errorMessages[error]) {
@@ -94,7 +95,7 @@ export default function SignIn() {
           }}
           className=""
         >
-          Jamming
+          JAMMING
         </p>
         <p
           style={{

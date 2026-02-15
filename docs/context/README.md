@@ -4,15 +4,15 @@
 
 ## 프로젝트 개요
 
-**Jamming** - 음악인을 위한 합주/잼 세션 매칭 모바일 웹 플랫폼
+**JAMMING** - 음악인을 위한 합주/잼 세션 매칭 모바일 웹 플랫폼
 
 음악인들이 함께 연주할 파트너를 찾고, 잼 세션을 개최하거나 참여하는 과정을 간편하게 만드는 서비스입니다.
 
-| 항목 | 내용 |
-|------|------|
-| 서비스 URL | https://jamming.co.kr |
-| 플랫폼 | 모바일 웹 (PWA) |
-| 주요 타겟 | 한국 내 아마추어/취미 음악인 |
+| 항목       | 내용                         |
+| ---------- | ---------------------------- |
+| 서비스 URL | https://jamming.co.kr        |
+| 플랫폼     | 모바일 웹 (PWA)              |
+| 주요 타겟  | 한국 내 아마추어/취미 음악인 |
 
 ## 핵심 목표 및 가치
 
@@ -56,16 +56,17 @@
 
 ```typescript
 {
-  jam_id: number;             // 신청할 세션
-  user_id: string;            // 신청자
-  appeal: string;             // 자기소개
-  applied_pos: PositionEnum;  // 신청 포지션
-  is_allowed: boolean;        // 호스트 승인 여부
-  is_rejam: boolean;          // 재잼(재신청) 여부
+  jam_id: number; // 신청할 세션
+  user_id: string; // 신청자
+  appeal: string; // 자기소개
+  applied_pos: PositionEnum; // 신청 포지션
+  is_allowed: boolean; // 호스트 승인 여부
+  is_rejam: boolean; // 재잼(재신청) 여부
 }
 ```
 
 **플로우:**
+
 1. 사용자가 세션 상세 페이지에서 참가 신청
 2. 호스트가 신청 목록 확인 후 승인/거절
 3. 승인된 사용자만 참가 확정
@@ -88,15 +89,19 @@
 ### Enum 분류 체계
 
 **장르 (GenreEnum)**
+
 - 종합, 락, 팝, 인디, 재즈, 펑크, 메탈
 
 **포지션 (PositionEnum)**
+
 - 기타, 베이스, 드럼, 보컬, 키보드, 그 외
 
 **레벨 (LevelEnum)**
+
 - 프로, 아마추어, 스터디, 취미
 
 **지역 (LocationEnum)**
+
 - 전체, 서울, 경기 북부, 경기 남부, 인천, 부산, 대구, 대전, 광주, 울산, 세종, 강원, 충북, 충남, 전북, 전남, 경북, 경남, 제주 (19개)
 
 ## 기술적 제약조건
@@ -118,13 +123,13 @@
 
 ### 기술 스택 제약
 
-| 항목 | 버전/기술 | 비고 |
-|------|----------|------|
-| Framework | Next.js 16 | App Router 사용 |
-| React | 19 RC | RC 버전 |
-| Tailwind | 4 | 최신 버전 |
-| Backend | Supabase | Auth, DB, Storage 통합 |
-| 배포 | Vercel | Analytics 활성화 |
+| 항목      | 버전/기술  | 비고                   |
+| --------- | ---------- | ---------------------- |
+| Framework | Next.js 16 | App Router 사용        |
+| React     | 19 RC      | RC 버전                |
+| Tailwind  | 4          | 최신 버전              |
+| Backend   | Supabase   | Auth, DB, Storage 통합 |
+| 배포      | Vercel     | Analytics 활성화       |
 
 ### 외부 API 의존성
 

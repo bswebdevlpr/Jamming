@@ -1,14 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
 import {
-  BUTTON_INTERACTION,
-  GPU_ACCELERATED_STYLE,
-  DURATION,
-  EASING,
+    BUTTON_INTERACTION,
+    DURATION,
+    EASING,
+    GPU_ACCELERATED_STYLE,
 } from "@/app/lib/animations";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { useInView } from "react-intersection-observer";
 
 const ctaContainer = {
   hidden: { opacity: 1 },
@@ -179,7 +179,7 @@ export default function CTASection() {
               margin: 0,
             }}
           >
-            © 2026 Jamming. All rights reserved.
+            © 2026 JAMMING. All rights reserved.
           </p>
         </motion.footer>
       </motion.div>
