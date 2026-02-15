@@ -157,6 +157,87 @@ describe("Middleware - updateSession", () => {
     });
   });
 
+  describe("Signup redirect loop prevention", () => {
+    it("should allow new user (no DB record) to access /signup without redirect", async () => {
+      // OAuth 신규 사용자: 세션 있음, DB 레코드 없음
+      mockGetUser.mockResolvedValue({
+        data: { user: { id: "new-oauth-user" } },
+        error: null,
+      });
+      mockSupabaseFrom.mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            maybeSingle: vi.fn().mockResolvedValue({
+              data: null,
+              error: null,
+            }),
+          }),
+        }),
+      });
+
+      const request = createMockRequest("/signup");
+      const response = await updateSession(request);
+      // 무한 루프 방지: 200 (통과)이어야 함, 307 (리디렉션)이면 안됨
+      expect(response.status).toBe(200);
+    });
+
+    it("should allow new user to access /signup/profile", async () => {
+      mockGetUser.mockResolvedValue({
+        data: { user: { id: "new-oauth-user" } },
+        error: null,
+      });
+      mockSupabaseFrom.mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            maybeSingle: vi.fn().mockResolvedValue({
+              data: null,
+              error: null,
+            }),
+          }),
+        }),
+      });
+
+      const request = createMockRequest(
+        "/signup/profile?accept_marketing=true"
+      );
+      const response = await updateSession(request);
+      expect(response.status).toBe(200);
+    });
+
+    it("should redirect existing user from /signup to /", async () => {
+      mockGetUser.mockResolvedValue({
+        data: { user: { id: "existing-user" } },
+        error: null,
+      });
+      mockSupabaseFrom.mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            maybeSingle: vi.fn().mockResolvedValue({
+              data: { id: "existing-user" },
+              error: null,
+            }),
+          }),
+        }),
+      });
+
+      const request = createMockRequest("/signup");
+      const response = await updateSession(request);
+      expect(response.status).toBe(307);
+      const location = response.headers.get("location")!;
+      expect(location).toContain("/");
+      expect(location).not.toContain("/signup");
+    });
+  });
+
+  describe("API auth callback", () => {
+    it("should pass through /api/auth/callback without redirect", async () => {
+      mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+      const request = createMockRequest("/api/auth/callback?code=test123");
+      const response = await updateSession(request);
+      expect(response.status).toBe(200);
+    });
+  });
+
   describe("Error handling", () => {
     it("should allow page access even when Supabase auth check fails", async () => {
       mockGetUser.mockRejectedValue(new Error("Supabase is down"));

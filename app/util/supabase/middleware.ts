@@ -68,8 +68,21 @@ export async function updateSession(request: NextRequest) {
         .eq("id", user.id)
         .maybeSingle();
 
+      if (data) {
+        // 기존 사용자: 이미 가입 완료 → 홈으로
+        const url = request.nextUrl.clone();
+        url.pathname = "/";
+        return NextResponse.redirect(url);
+      }
+
+      // 신규 사용자 (DB 미등록): /signup 경로는 접근 허용 (회원가입 진행 중)
+      if (pathname.startsWith("/signup")) {
+        return supabaseResponse;
+      }
+
+      // 신규 사용자가 /signin, /email 등에 접근 → /signup으로
       const url = request.nextUrl.clone();
-      url.pathname = data ? "/" : "/signup";
+      url.pathname = "/signup";
       return NextResponse.redirect(url);
     }
   } catch (error) {

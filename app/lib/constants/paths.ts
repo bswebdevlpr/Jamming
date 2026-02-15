@@ -1,5 +1,5 @@
 /** 비인증 사용자에게 접근을 허용하는 경로 목록 */
-export const PUBLIC_PATHS = ["/jamsession/post/"];
+export const PUBLIC_PATHS = ["/jamsession/post/", "/api/auth/callback"];
 
 /** 인증이 필요한 경로 목록 (Middleware에서 사용) */
 export const PROTECTED_PATHS = [
