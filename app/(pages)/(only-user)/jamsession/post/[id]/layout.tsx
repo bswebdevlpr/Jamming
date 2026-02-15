@@ -3,6 +3,7 @@ import { getJamPublic } from "@/app/api/functions/read";
 import { MapDataToGenre, MapDataToLocation } from "@/app/lib/maps/jam";
 import WorkSpace from "@/app/ui/layouts/workspace";
 import { cache, ReactNode } from "react";
+import { sanitizeForJsonLd } from "@/app/lib/functions/validate";
 
 const getJamPublicCached = cache((id: number) => getJamPublic(id));
 
@@ -62,20 +63,22 @@ export default async function Layout({
       jsonLd = {
         "@context": "https://schema.org",
         "@type": "MusicEvent",
-        name: jam.title || "잼세션",
-        description: jam.body?.slice(0, 200) || `${location} ${genre} 잼세션`,
+        name: sanitizeForJsonLd(jam.title) || "잼세션",
+        description:
+          sanitizeForJsonLd(jam.body?.slice(0, 200)) ||
+          `${location} ${genre} 잼세션`,
         startDate: jam.datetime || undefined,
         location: jam.location_detail
           ? {
               "@type": "Place",
-              name: jam.location_detail.name,
-              address: jam.location_detail.address,
+              name: sanitizeForJsonLd(jam.location_detail.name),
+              address: sanitizeForJsonLd(jam.location_detail.address),
             }
           : undefined,
         organizer: jam.user
           ? {
               "@type": "Person",
-              name: jam.user.nickname,
+              name: sanitizeForJsonLd(jam.user.nickname),
             }
           : undefined,
         eventStatus: "https://schema.org/EventScheduled",

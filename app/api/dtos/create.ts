@@ -76,3 +76,11 @@ export interface CreateRecruitCommentDto {
   body: string;
   applied_pos: PositionEnum;
 }
+
+// ========== 신고 ==========
+
+export interface CreateReportDto {
+  jam_id: number;
+  type: string;
+  body: string;
+}

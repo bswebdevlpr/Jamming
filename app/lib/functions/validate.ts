@@ -52,3 +52,13 @@ export async function sanitizePublic(text: string): Promise<string> {
     });
   }
 }
+
+export function sanitizeForJsonLd(text: string | null | undefined): string {
+  if (!text) return "";
+
+  // HTML 태그 제거 (JSON.stringify가 자동으로 특수문자 이스케이프 처리)
+  return sanitizeHtml(text, {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
+}
