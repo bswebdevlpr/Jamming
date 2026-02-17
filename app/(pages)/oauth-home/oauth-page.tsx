@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 export default function OAuthPage() {
@@ -40,7 +38,8 @@ export default function OAuthPage() {
 
         {/* 개인정보처리방침 링크 - 극대화 */}
         <Link
-          href="/privacy-policy"
+          href="https://jamming.co.kr/privacy-policy"
+          aria-label="Privacy Policy"
           style={{
             fontFamily: "SUIT-BODY",
             fontSize: "1rem", // 16px - 크게
@@ -92,6 +91,7 @@ export default function OAuthPage() {
 
         {/* 명시적 앱 설명 */}
         <p
+          aria-label="JAMMING is a jam session matching platform for musicians."
           style={{
             fontFamily: "SUIT-TITLE",
             fontSize: "20px", // 크게
@@ -184,7 +184,8 @@ export default function OAuthPage() {
           }}
         >
           <Link
-            href="/privacy-policy"
+            href="https://jamming.co.kr/privacy-policy"
+            aria-label="Privacy Policy"
             style={{
               fontFamily: "SUIT-BODY",
               fontSize: "1rem", // 16px - 크게
@@ -266,6 +267,7 @@ export default function OAuthPage() {
                 url: "https://jamming.co.kr",
                 name: "JAMMING",
                 description: "JAMMING은 음악인을 위한 합주 매칭 플랫폼입니다.",
+                privacyPolicy: "https://jamming.co.kr/privacy-policy",
                 publisher: {
                   "@id": "https://jamming.co.kr/#organization",
                 },
