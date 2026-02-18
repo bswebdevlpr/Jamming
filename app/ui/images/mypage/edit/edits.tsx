@@ -1,13 +1,21 @@
 import Image from "next/image";
 import { CSSProperties } from "react";
 
-export const EditLightGrayIcon = () => {
+export const EditLightGrayIcon = ({
+  style,
+  onClick,
+}: {
+  style?: CSSProperties;
+  onClick?: () => void;
+}) => {
   return (
     <Image
       src={"/mypage/edit/edit-light-gray.svg"}
       alt="edit"
       width={12}
       height={12}
+      style={style}
+      onClick={onClick}
     />
   );
 };
