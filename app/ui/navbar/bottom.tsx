@@ -89,27 +89,19 @@ export default function BottomNavBar() {
       />
 
       {/* 가운데 홈 버튼 전용 공간 - 좌/우 절반으로 분리 (합쳐서 flex-1) */}
-      <motion.div
-        style={{ flex: 0.5 }}
-        animate={{
-          borderTop: `1px solid ${
-            path.startsWith("/band")
-              ? TAB_COLORS.activeBorder
-              : TAB_COLORS.inactiveBorder
-          }`,
+      <div
+        style={{
+          flex: 0.5,
+          borderTop: `1px solid ${path.startsWith("/band") ? TAB_COLORS.activeBorder : TAB_COLORS.inactiveBorder}`,
+          transition: "border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
-        transition={TRANSITION.normal}
       />
-      <motion.div
-        style={{ flex: 0.5 }}
-        animate={{
-          borderTop: `1px solid ${
-            path.startsWith("/recruit")
-              ? TAB_COLORS.activeBorder
-              : TAB_COLORS.inactiveBorder
-          }`,
+      <div
+        style={{
+          flex: 0.5,
+          borderTop: `1px solid ${path.startsWith("/recruit") ? TAB_COLORS.activeBorder : TAB_COLORS.inactiveBorder}`,
+          transition: "border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
-        transition={TRANSITION.normal}
       />
 
       {/* 홈 버튼 (컨테이너 기준 절대 위치) */}

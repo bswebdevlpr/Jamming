@@ -60,6 +60,9 @@ export default async function createUser(
     let profile_image: string | undefined = undefined;
 
     if (input.profile_image) {
+      const storageName = process.env.SUPABASE_STORAGE_NAME;
+      if (!storageName) throw new Error("SUPABASE_STORAGE_NAME is not defined");
+
       try {
         // sharp로 이미지 최적화: 500×500 이내 리사이즈 + WebP 변환 + EXIF 제거
         const buffer = Buffer.from(await input.profile_image.arrayBuffer());
@@ -69,7 +72,7 @@ export default async function createUser(
           .toBuffer();
 
         const uploadResult = await supabase.storage
-          .from(process.env.SUPABASE_STORAGE_NAME!)
+          .from(storageName)
           .upload(`user/${user.id}/profile-image/profile.webp`, optimized, {
             contentType: "image/webp",
             upsert: true,
@@ -83,7 +86,7 @@ export default async function createUser(
         }
 
         profile_image = supabase.storage
-          .from(process.env.SUPABASE_STORAGE_NAME!)
+          .from(storageName)
           .getPublicUrl(uploadResult.data.path).data.publicUrl;
       } catch (error) {
         if (error instanceof CustomError) throw error;

@@ -32,7 +32,7 @@ export default function JamSessionEmpty() {
             style={{
               fontFamily: "SBAggroL",
               fontSize: note.size,
-              color: note.highlight ? "#A3FF0C" : "#535355",
+              color: note.highlight ? "var(--highlight)" : "var(--mid-gray-border)",
               lineHeight: 1,
             }}
           >
@@ -52,7 +52,7 @@ export default function JamSessionEmpty() {
           style={{
             fontFamily: "SBAggroM",
             fontSize: "1.125rem",
-            color: "#ededed",
+            color: "var(--foreground)",
             lineHeight: "140%",
           }}
         >

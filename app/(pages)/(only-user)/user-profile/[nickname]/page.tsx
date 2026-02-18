@@ -9,7 +9,6 @@ import {
   PositionTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
-import BPMPopup from "./popup";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
@@ -23,9 +22,7 @@ export default function MyPage() {
   const router = useRouter();
 
   // STATES
-  const [isBPMPopupOn, setIsBPMPopupOn] = useState(false);
-
-  const [targetUser, setTargetUser] = useState<Entity_User>(null);
+  const [targetUser, setTargetUser] = useState<Entity_User | null>(null);
   //
 
   useEffect(() => {
@@ -69,14 +66,18 @@ export default function MyPage() {
         }}
       >
         <p>{targetUser?.nickname ?? "닉네임"}</p>
-        <p>|</p>
-        <p
-          style={{
-            color: "var(--highlight)",
-          }}
-        >
-          {convertBPMToTempo(targetUser?.bpm) ?? "빠르기"}
-        </p>
+        {targetUser?.is_bpm_public !== false && (
+          <>
+            <p>|</p>
+            <p
+              style={{
+                color: "var(--highlight)",
+              }}
+            >
+              {convertBPMToTempo(targetUser?.bpm) ?? "빠르기"}
+            </p>
+          </>
+        )}
       </div>
       <TagList
         tags={[
@@ -86,7 +87,7 @@ export default function MyPage() {
           <LevelTag key="lv" text={targetUser?.level ?? "레벨"} />,
         ]}
       />
-      <BPMBar user={targetUser} className="mt-7 mb-5.5" />
+      <BPMBar user={targetUser} className="mt-7 mb-5.5" hideIfPrivate />
       <div className="w-full flex flex-col">
         <div
           className="flex justify-between px-4"
@@ -125,10 +126,6 @@ export default function MyPage() {
           )}
         </List_PlayList>
       </div>
-      <BPMPopup
-        isTurnedOn={isBPMPopupOn}
-        turnOff={() => setIsBPMPopupOn(false)}
-      />
     </div>
   );
 }

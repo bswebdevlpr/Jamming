@@ -25,6 +25,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 const TOP_OFFSET = 3.75;
 const LEFT_OFFSET = 4.27;
 
+const SECTION_1_HEIGHT = "32.22%";
+const SECTION_2_HEIGHT = "33.33%";
+const SECTION_3_TOP = "65.56%";
+const SECTION_OVERLAP = "3vh";
+const SECTION_LAST_OVERLAP = "3.5vh";
+
 const TextBox = ({
   upTxt,
   downTxt,
@@ -107,7 +113,7 @@ const ProfileSection = ({
     >
       <motion.div
         style={{ position: "absolute", inset: 0 }}
-        whileHover={{ scale: 1.07 }}
+        whileTap={{ scale: 1.07 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
         {backgroundImage}
@@ -562,7 +568,7 @@ export default function SignUp_Profile() {
           </div>
           <div className="grow relative min-h-0">
             <ProfileSection
-              containerStyle={{ top: 0, height: "32.22%", zIndex: 0 }}
+              containerStyle={{ top: 0, height: SECTION_1_HEIGHT, zIndex: 0 }}
               textBoxProps={{
                 upTxt: "포지션",
                 downTxt: position ?? "선택",
@@ -583,8 +589,8 @@ export default function SignUp_Profile() {
             />
             <ProfileSection
               containerStyle={{
-                top: "calc(32.22% - 3vh)",
-                height: "calc(33.33% + 3vh)",
+                top: `calc(${SECTION_1_HEIGHT} - ${SECTION_OVERLAP})`,
+                height: `calc(${SECTION_2_HEIGHT} + ${SECTION_OVERLAP})`,
                 zIndex: 1,
               }}
               textBoxProps={{
@@ -609,7 +615,7 @@ export default function SignUp_Profile() {
             />
             <ProfileSection
               containerStyle={{
-                top: "calc(65.56% - 3.5vh)",
+                top: `calc(${SECTION_3_TOP} - ${SECTION_LAST_OVERLAP})`,
                 bottom: 0,
                 zIndex: 2,
               }}

@@ -42,7 +42,7 @@ export default function MyActEmpty() {
                     top: 0,
                     fontFamily: "SBAggroB",
                     fontSize: "0.4375rem",
-                    color: "#535355",
+                    color: "var(--mid-gray-border)",
                     letterSpacing: "0.08em",
                     whiteSpace: "nowrap",
                   }}
@@ -62,7 +62,7 @@ export default function MyActEmpty() {
                   width: bar.today ? 14 : 12,
                   height: bar.height,
                   borderRadius: "3px 3px 0 0",
-                  background: bar.past ? "#304313" : bar.today ? "#535355" : "#323234",
+                  background: bar.past ? "var(--active-btn-bg)" : bar.today ? "var(--mid-gray-border)" : "var(--border)",
                   transformOrigin: "bottom",
                 }}
               />
@@ -96,7 +96,7 @@ export default function MyActEmpty() {
           style={{
             fontFamily: "SBAggroM",
             fontSize: "1.0625rem",
-            color: "#ededed",
+            color: "var(--foreground)",
             lineHeight: "140%",
           }}
         >
