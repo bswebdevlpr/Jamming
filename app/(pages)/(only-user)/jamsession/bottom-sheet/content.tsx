@@ -141,7 +141,7 @@ const BottomSheetContent = ({
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-row justify-center gap-2">
+      <div className="w-full flex flex-row justify-center gap-2 pt-3">
         <InitButton
           onClick={() => {
             // setIsInit(!isInit);

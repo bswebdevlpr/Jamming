@@ -151,7 +151,7 @@ export default function Home() {
             <div
               onClick={() =>
                 bottomSheet.set({
-                  location: "middle",
+                  location: "high",
                   header: false,
                   children: (
                     <BottomSheetContent

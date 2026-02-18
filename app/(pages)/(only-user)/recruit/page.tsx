@@ -83,7 +83,7 @@ export default function RecruitFeedPage() {
           setLevel={setLevel}
         />
       ),
-      location: "middle",
+      location: "high",
       header: false,
     });
   };
