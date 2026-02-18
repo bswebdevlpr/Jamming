@@ -2,6 +2,7 @@
   "name": "jamming-fe",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.9.0",
   "scripts": {
     "dev": "PORT=3038 next dev",
     "build": "next build",
