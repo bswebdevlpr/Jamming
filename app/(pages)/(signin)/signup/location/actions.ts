@@ -14,6 +14,7 @@ import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 import { FormData_User, ZodSchema_User } from "@/app/lib/zod";
 import { sanitize } from "@/app/lib/functions/validate";
+import sharp from "sharp";
 
 type CreateUserInput = FormData_User & { profile_image?: File };
 
@@ -28,8 +29,14 @@ export default async function createUser(
     const user = await getUser(supabase);
 
     // 파일 업로드 검증
-    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB (압축 전 원본 기준)
+    const ALLOWED_TYPES = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/heic",
+      "image/heif",
+    ];
 
     if (input.profile_image) {
       if (input.profile_image.size > MAX_FILE_SIZE) {
@@ -54,12 +61,19 @@ export default async function createUser(
 
     if (input.profile_image) {
       try {
+        // sharp로 이미지 최적화: 500×500 이내 리사이즈 + WebP 변환 + EXIF 제거
+        const buffer = Buffer.from(await input.profile_image.arrayBuffer());
+        const optimized = await sharp(buffer)
+          .resize(500, 500, { fit: "inside", withoutEnlargement: true })
+          .webp({ quality: 85 })
+          .toBuffer();
+
         const uploadResult = await supabase.storage
           .from(process.env.SUPABASE_STORAGE_NAME!)
-          .upload(
-            `user/${user.id}/profile-image/${input.profile_image.name}`,
-            input.profile_image
-          );
+          .upload(`user/${user.id}/profile-image/profile.webp`, optimized, {
+            contentType: "image/webp",
+            upsert: true,
+          });
 
         if (uploadResult.error) {
           throw CustomError.imageUploadFailed({
