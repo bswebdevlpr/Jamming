@@ -1,8 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { LeftArrowWhite } from "@/app/ui/images/arrows";
 
-export default function LandingHeader() {
+interface LandingHeaderProps {
+  showBackButton?: boolean;
+}
+
+export default function LandingHeader({ showBackButton = false }: LandingHeaderProps) {
+  const router = useRouter();
+
   return (
     <header
       style={{
@@ -20,6 +28,23 @@ export default function LandingHeader() {
     >
       {/* 로고 & 앱 이름 */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        {showBackButton && (
+          <div
+            style={{
+              width: "32px",
+              height: "32px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "50%",
+              backgroundColor: "rgba(17, 17, 19, 0.7)",
+              cursor: "pointer",
+            }}
+            onClick={() => router.back()}
+          >
+            <LeftArrowWhite />
+          </div>
+        )}
         <span
           style={{
             fontFamily: "SBAggroM",

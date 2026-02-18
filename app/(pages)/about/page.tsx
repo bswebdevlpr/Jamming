@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import LandingPage from "../_landing/landing-page";
-import AboutBackButton from "./back-button";
 
 export const metadata: Metadata = {
   title: "JAMMING - 음악인을 위한 합주 매칭 플랫폼",
@@ -44,10 +43,5 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  return (
-    <>
-      <AboutBackButton />
-      <LandingPage hideLoginButton={true} />
-    </>
-  );
+  return <LandingPage hideLoginButton={true} showBackButton={true} />;
 }

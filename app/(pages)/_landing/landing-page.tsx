@@ -9,14 +9,16 @@ import PreviewSection from "./sections/preview-section";
 
 interface LandingPageProps {
   hideLoginButton?: boolean;
+  showBackButton?: boolean;
 }
 
 export default function LandingPage({
   hideLoginButton = false,
+  showBackButton = false,
 }: LandingPageProps) {
   return (
     <main className="overflow-without-scroll" style={{ height: "100%" }}>
-      <LandingHeader />
+      <LandingHeader showBackButton={showBackButton} />
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />
