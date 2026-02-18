@@ -31,13 +31,14 @@ export interface FeedProps {
   feedItem: React.FC<any>;
   skeleton?: React.ReactNode;
   style?: CSSProperties;
+  emptyState?: React.ReactNode;
 }
 export interface FeedMethods {
   refetch: (args?: any) => any;
 }
 
 const FeedTemplate = forwardRef<FeedMethods, FeedProps>(
-  ({ queryFn, queryFnParam, feedItem, skeleton, style }, ref) => {
+  ({ queryFn, queryFnParam, feedItem, skeleton, style, emptyState }, ref) => {
     const { ref: innerRef, inView } = useInView();
 
     const { data, isLoading, fetchNextPage, hasNextPage, refetch } =
@@ -88,14 +89,20 @@ const FeedTemplate = forwardRef<FeedMethods, FeedProps>(
             initial="hidden"
             animate="visible"
           >
-            {data?.pages.map((page, pageIndex) => (
-              <Fragment key={pageIndex}>
-                {page.data.map((data, idx) =>
-                  feedItem({ idx, data, router, bottomSheet, refetch })
-                )}
-              </Fragment>
-            ))}
-            <div ref={innerRef} style={{ height: 20, background: "transparent" }} />
+            {data?.pages.every((page) => page.data.length === 0) ? (
+              emptyState ?? null
+            ) : (
+              <>
+                {data?.pages.map((page, pageIndex) => (
+                  <Fragment key={pageIndex}>
+                    {page.data.map((data, idx) =>
+                      feedItem({ idx, data, router, bottomSheet, refetch })
+                    )}
+                  </Fragment>
+                ))}
+                <div ref={innerRef} style={{ height: 20, background: "transparent" }} />
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

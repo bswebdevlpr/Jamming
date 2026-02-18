@@ -8,6 +8,7 @@ import { FeedItem_Jam } from "@/app/ui/feeds/feed-item";
 import FeedTemplate from "@/app/ui/templates/feed";
 import { JamFeedSkeleton } from "@/app/ui/loading/skeleton";
 import { Dispatch, SetStateAction } from "react";
+import JamSessionEmpty from "@/app/ui/empty-states/jam-session-empty";
 
 export interface Filter_JamSessionFeed {
   selectedDate: moment.Moment;
@@ -23,9 +24,11 @@ export interface Filter_JamSessionFeed {
 export function JamFeed({
   filter,
   ref,
+  emptyState,
 }: {
   filter: Filter_JamSessionFeed;
   ref;
+  emptyState?: React.ReactNode;
 }) {
   return (
     <FeedTemplate
@@ -34,6 +37,7 @@ export function JamFeed({
       queryFnParam={JSON.stringify(filter)}
       feedItem={FeedItem_Jam}
       skeleton={<JamFeedSkeleton />}
+      emptyState={emptyState ?? <JamSessionEmpty />}
     />
   );
 }

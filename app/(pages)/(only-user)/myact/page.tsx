@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import SlideCalendarComponent from "@/app/ui/calendar/slide-calendar";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
+import MyActEmpty from "@/app/ui/empty-states/myact-empty";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FeedMethods } from "@/app/ui/templates/feed";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
@@ -146,7 +147,7 @@ export default function MyAct() {
         </p>
       </div>
       <div className="grow overflow-hidden flex justify-center items-center px-5">
-        <JamFeed filter={filter} ref={childRef} />
+        <JamFeed filter={filter} ref={childRef} emptyState={<MyActEmpty />} />
       </div>
     </div>
   );
