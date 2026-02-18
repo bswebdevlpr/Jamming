@@ -1,19 +1,13 @@
 import Image from "next/image";
-import { CSSProperties } from "react";
 
-export const SignUp_Profile_Background_Level = ({
-  style,
-}: {
-  style: CSSProperties;
-}) => {
+export const SignUp_Profile_Background_Level = () => {
   return (
     <Image
-      style={style}
-      className="w-full h-auto"
+      fill
       src="/signup/profile/band-type.webp"
       alt="band type"
-      width={340}
-      height={124}
+      style={{ objectFit: "fill" }}
+      sizes="100vw"
     />
   );
 };

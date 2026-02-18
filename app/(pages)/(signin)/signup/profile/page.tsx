@@ -1,49 +1,54 @@
 "use client";
 
-import { Camera } from "@/app/ui/images/camera";
-import { useEffect, useState, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import BottomSheetContent from "./(bottom-sheet)/content";
-import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
+import { PositionEnum } from "@/app/lib/enums/position.enum";
+import { Camera } from "@/app/ui/images/camera";
 import { SignUp_Profile_Background_Genre } from "@/app/ui/images/signup/genre";
 import { SignUp_Profile_Background_Level } from "@/app/ui/images/signup/level";
 import { SignUp_Profile_Background_Position } from "@/app/ui/images/signup/position";
-import { useDebouncedRedirect } from "../buttons/next-button";
-import Image from "next/image";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import BottomSheetContent from "./(bottom-sheet)/content";
+
 import { isNicknameUnique } from "@/app/api/functions/validation";
 import { CustomErrMsg } from "@/app/lib/errors/custom-error";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { FormData_User, ZodSchema_User, ZodType_Image } from "@/app/lib/zod";
-import ButtonTemplate from "@/app/ui/templates/buttons";
 import { useBottomSheetStore, useSessionStore } from "@/app/stores";
+import ButtonTemplate from "@/app/ui/templates/buttons";
+import { motion } from "framer-motion";
 import _ from "lodash";
+import Image from "next/image";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const TextBox = ({
   upTxt,
   downTxt,
-  moveTo,
   onClick,
+  upTxtOffset = 0,
+  downTxtOffset = 0,
 }: {
   upTxt: string;
   downTxt: string;
-  moveTo: string;
   onClick: (state: any) => void;
+  upTxtOffset?: number;
+  downTxtOffset?: number;
 }) => {
+  const TOP_OFFSET = 3.75;
+  const LEFT_OFFSET = 4.27;
+
   return (
     <div
-      className="w-full h-20 absolute z-10 flex flex-col justify-between"
-      style={{
-        padding: "14px 16px 16px",
-        transform: `translate(0px, ${moveTo})`,
-        cursor: "pointer",
-      }}
+      className="absolute inset-0 z-10"
+      style={{ cursor: "pointer" }}
       onClick={onClick}
     >
       <p
         style={{
+          position: "absolute",
+          top: `${TOP_OFFSET + upTxtOffset}vh`,
+          left: `${LEFT_OFFSET}%`,
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
@@ -53,6 +58,9 @@ const TextBox = ({
       </p>
       <p
         style={{
+          position: "absolute",
+          top: `${TOP_OFFSET + 4 + downTxtOffset}vh`,
+          left: `${LEFT_OFFSET}%`,
           fontFamily: "SUIT-BODY",
           fontSize: "14px",
           color: "#E5E5E9",
@@ -79,13 +87,14 @@ export default function SignUp_Profile() {
   const [level, setLevel] = useState<LevelEnum>();
 
   const [profile_image, setProfileImage] = useState<ZodType_Image>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
   const [nicknameStatus, setNicknameStatus] = useState<
     "idle" | "checking" | "valid" | "invalid"
   >("idle");
 
   // Zustand store
   const setSignupProfileImage = useSessionStore(
-    (state) => state.setSignupProfileImage
+    (state) => state.setSignupProfileImage,
   );
   const setSignupData = useSessionStore((state) => state.setSignupData);
 
@@ -156,7 +165,7 @@ export default function SignUp_Profile() {
         setNicknameStatus("idle");
         console.error("Nickname check failed:", e);
       }
-    }, 500)
+    }, 500),
   ).current;
   //
 
@@ -208,15 +217,21 @@ export default function SignUp_Profile() {
     if (fileList) {
       const file = Array.from(fileList)[0];
 
+      const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+      if (file.size > MAX_SIZE) {
+        setImageError("10MB 이하의 이미지를 선택해주세요");
+        event.target.value = "";
+        return;
+      }
+
+      setImageError(null);
       const newImage: ZodType_Image = {
         file,
-        thumbnail: URL.createObjectURL(file), // 미리보기 URL 생성
+        thumbnail: URL.createObjectURL(file),
       };
       setProfileImage(newImage);
     }
   };
-
-  const debouncedRedirect = useDebouncedRedirect(300);
 
   const onSubmit = async (data: FormData_User) => {
     try {
@@ -253,7 +268,7 @@ export default function SignUp_Profile() {
   //
 
   return (
-    <div className="h-full flex flex-col relative overflow-without-scroll">
+    <div className="grow min-h-0 flex flex-col relative overflow-without-scroll">
       <p
         style={{
           fontFamily: "SBAggroM",
@@ -266,14 +281,14 @@ export default function SignUp_Profile() {
       </p>
       <form
         name="profile_form"
-        className="grow flex flex-col justify-between"
+        className="grow flex flex-col"
         onSubmit={handleSubmit(onSubmit, (e) => {
           console.log(e, getValues());
           console.error("validation failed");
           // TODO: validation FAIL popup
         })}
       >
-        <div className="flex flex-col">
+        <div className="grow flex flex-col min-h-0">
           <div className="flex flex-row justify-between min-w-full">
             <div
               style={{
@@ -306,6 +321,18 @@ export default function SignUp_Profile() {
                   }}
                   sizes="100vw"
                 />
+              )}
+              {imageError && (
+                <p
+                  className="absolute z-30 bottom-2 left-2 right-2"
+                  style={{
+                    fontFamily: "SUIT-BODY",
+                    fontSize: "10px",
+                    color: "#FF3E2F",
+                  }}
+                >
+                  {imageError}
+                </p>
               )}
               <span
                 className="inline-block"
@@ -479,8 +506,8 @@ export default function SignUp_Profile() {
                               ? e.target.value.startsWith("#")
                                 ? e.target.value
                                 : "#" + e.target.value
-                              : tag
-                          )
+                              : tag,
+                          ),
                         )
                       }
                     />
@@ -489,12 +516,21 @@ export default function SignUp_Profile() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col justify-center items-center">
-            <div className="relative w-full h-auto">
+          <div className="grow relative min-h-0">
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "32.22%",
+                zIndex: 0,
+                overflow: "hidden",
+              }}
+            >
               <TextBox
                 upTxt="포지션"
                 downTxt={position ?? "선택"}
-                moveTo="2.16vh"
                 onClick={() =>
                   bottomSheet.set({
                     location: "high",
@@ -508,13 +544,38 @@ export default function SignUp_Profile() {
                   })
                 }
               />
-              <SignUp_Profile_Background_Position />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  overflow: "hidden",
+                  clipPath:
+                    "polygon(0 0, 100% 0, 100% calc(100% - 2vh), 0 100%)",
+                }}
+              >
+                <motion.div
+                  style={{ position: "absolute", inset: 0 }}
+                  whileHover={{ scale: 1.07 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                  <SignUp_Profile_Background_Position />
+                </motion.div>
+              </div>
             </div>
-            <div className="relative w-full h-auto">
+            <div
+              style={{
+                position: "absolute",
+                top: "calc(32.22% - 3vh)",
+                left: 0,
+                right: 0,
+                height: "calc(33.33% + 3vh)",
+                zIndex: 1,
+                overflow: "hidden",
+              }}
+            >
               <TextBox
                 upTxt="선호장르"
                 downTxt={genre ?? "선택"}
-                moveTo="0px"
                 onClick={() =>
                   bottomSheet.set({
                     location: "high",
@@ -527,18 +588,41 @@ export default function SignUp_Profile() {
                     ),
                   })
                 }
+                upTxtOffset={1.5}
+                downTxtOffset={2}
               />
-              <SignUp_Profile_Background_Genre
+              <div
                 style={{
-                  transform: "translate(0vw, -2.52vh)",
+                  position: "absolute",
+                  inset: 0,
+                  overflow: "hidden",
+                  clipPath:
+                    "polygon(0 0, 100% 0, 100% calc(100% - 2vh), 0 100%)",
                 }}
-              />
+              >
+                <motion.div
+                  style={{ position: "absolute", inset: 0 }}
+                  whileHover={{ scale: 1.07 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                  <SignUp_Profile_Background_Genre />
+                </motion.div>
+              </div>
             </div>
-            <div className="relative w-full h-auto">
+            <div
+              style={{
+                position: "absolute",
+                top: "calc(65.56% - 3.5vh)",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 2,
+                overflow: "hidden",
+              }}
+            >
               <TextBox
                 upTxt="레벨"
                 downTxt={level ?? "선택"}
-                moveTo="-2.25vh" //"-17px"
                 onClick={() =>
                   bottomSheet.set({
                     location: "high",
@@ -551,17 +635,26 @@ export default function SignUp_Profile() {
                     ),
                   })
                 }
+                upTxtOffset={3}
+                downTxtOffset={3.5}
               />
-              <SignUp_Profile_Background_Level
-                style={{
-                  transform: "translate(0vw, -5.44vh)",
-                }}
-              />
+              <div
+                style={{ position: "absolute", inset: 0, overflow: "hidden" }}
+              >
+                <motion.div
+                  style={{ position: "absolute", inset: 0 }}
+                  whileHover={{ scale: 1.07 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                >
+                  <SignUp_Profile_Background_Level />
+                </motion.div>
+              </div>
             </div>
           </div>
         </div>
         <ButtonTemplate
           text="다음"
+          className="mt-4"
           isActive={
             !!(
               nickname &&

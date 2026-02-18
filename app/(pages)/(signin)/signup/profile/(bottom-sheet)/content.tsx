@@ -10,7 +10,6 @@ import Grid from "@/app/ui/grids/grid";
 import Genre from "@/app/ui/images/categories/genre";
 import Level from "@/app/ui/images/categories/level";
 import Position from "@/app/ui/images/categories/position";
-import { BOTTOMSHEET_HEIGHT_HIGH } from "@/app/ui/templates/bottom-sheet/body";
 import { useEffect, useState } from "react";
 
 export type BottomSheetContentType = null | "position" | "genre" | "level";
@@ -64,9 +63,6 @@ const BottomSheetContent = ({
   return (
     <div
       className="h-full flex flex-col justify-between px-4"
-      style={{
-        height: `${BOTTOMSHEET_HEIGHT_HIGH}%`,
-      }}
     >
       <div className="flex justify-center">
         <p
