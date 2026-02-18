@@ -15,8 +15,6 @@ import { useParams, useRouter } from "next/navigation";
 import { Entity_User } from "@/app/lib/interfaces/entity.interface";
 import { getUserByNickname } from "./functions/fetch";
 import { convertBPMToTempo } from "@/app/lib/functions/convert";
-import { PositionEnum } from "@/app/lib/enums/position.enum";
-import { MapDataToPosition } from "@/app/lib/maps/jam";
 import { List_PlayList, ListItem_PlayList } from "@/app/ui/lists/playlist.list";
 import BPMBar from "@/app/ui/bpm/bpm-bar";
 
@@ -28,8 +26,6 @@ export default function MyPage() {
   const [isBPMPopupOn, setIsBPMPopupOn] = useState(false);
 
   const [targetUser, setTargetUser] = useState<Entity_User>(null);
-  const [defaultProfileImagePath, setDefaultProfileImagePath] =
-    useState<string>(null);
   //
 
   useEffect(() => {
@@ -41,29 +37,7 @@ export default function MyPage() {
         return;
       }
 
-      const foundTargetUser = result.data;
-      setTargetUser(foundTargetUser);
-
-      // TODO: 만약 유저 프로필 이미지가 있다면 하단 로직 생략
-      const convertedPos = MapDataToPosition[foundTargetUser.pos];
-      let imagePath = null;
-      switch (convertedPos) {
-        case PositionEnum.Guitar:
-        case PositionEnum.Base:
-          imagePath = "guitar-base";
-          break;
-        case PositionEnum.Drum:
-          imagePath = "drum";
-          break;
-        case PositionEnum.Keyboard:
-          imagePath = "keyboard";
-          break;
-        case PositionEnum.Vocal:
-          imagePath = "vocal";
-          break;
-      }
-      if (imagePath) imagePath += ".svg";
-      setDefaultProfileImagePath(imagePath);
+      setTargetUser(result.data);
     })();
   }, [nickname]);
 
@@ -82,7 +56,7 @@ export default function MyPage() {
         </p>
         <div className="w-5 h-5" />
       </div>
-      <RadixAvatar src={defaultProfileImagePath} />
+      <RadixAvatar src={targetUser?.profile_image} pos={targetUser?.pos} />
       <div
         className="flex gap-1.5"
         style={{

@@ -10,11 +10,8 @@ import { getUnreadCount } from "@/app/api/functions/notification";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { userProfile, setUserProfile, resetUserProfile } = useSessionStore();
-  const { setUnreadCount, setIsLoading: setNotificationLoading } =
-    useNotificationStore((state) => ({
-      setUnreadCount: state.setUnreadCount,
-      setIsLoading: state.setIsLoading,
-    }));
+  const setUnreadCount = useNotificationStore((state) => state.setUnreadCount);
+  const setNotificationLoading = useNotificationStore((state) => state.setIsLoading);
   const router = useRouter();
   const pathname = usePathname();
 

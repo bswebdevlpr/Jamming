@@ -87,7 +87,7 @@ export default function Edit() {
         </p>
       </div>
       <div className="relative">
-        <RadixAvatar src="/samples/mypage.svg" />
+        <RadixAvatar src={userProfile?.profile_image} pos={userProfile?.pos} />
         <EditGrayIcon
           style={{
             position: "absolute",
