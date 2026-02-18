@@ -32,7 +32,7 @@ export default function MyActEmpty() {
           {BARS.map((bar, i) => (
             <div key={i} className="relative flex flex-col items-center justify-end" style={{ height: 52 }}>
               {/* TODAY 레이블 */}
-              {bar.today && (
+              {("today" in bar && bar.today) && (
                 <motion.span
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -59,10 +59,10 @@ export default function MyActEmpty() {
                   delay: 0.08 + i * 0.05,
                 }}
                 style={{
-                  width: bar.today ? 14 : 12,
+                  width: ("today" in bar && bar.today) ? 14 : 12,
                   height: bar.height,
                   borderRadius: "3px 3px 0 0",
-                  background: bar.past ? "var(--active-btn-bg)" : bar.today ? "var(--mid-gray-border)" : "var(--border)",
+                  background: bar.past ? "var(--active-btn-bg)" : ("today" in bar && bar.today) ? "var(--mid-gray-border)" : "var(--border)",
                   transformOrigin: "bottom",
                 }}
               />
