@@ -5,7 +5,7 @@ import { LocationEnum } from "@/app/lib/enums/location.enum";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { fetchJams } from "@/app/lib/functions/fetch";
 import { FeedItem_Jam } from "@/app/ui/feeds/feed-item";
-import FeedTemplate from "@/app/ui/templates/feed";
+import FeedTemplate, { FeedMethods } from "@/app/ui/templates/feed";
 import { JamFeedSkeleton } from "@/app/ui/loading/skeleton";
 import { Dispatch, SetStateAction } from "react";
 import JamSessionEmpty from "@/app/ui/empty-states/jam-session-empty";
@@ -27,7 +27,7 @@ export function JamFeed({
   emptyState,
 }: {
   filter: Filter_JamSessionFeed;
-  ref;
+  ref?: React.Ref<FeedMethods>;
   emptyState?: React.ReactNode;
 }) {
   return (

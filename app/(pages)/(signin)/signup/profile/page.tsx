@@ -22,6 +22,9 @@ import _ from "lodash";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+const TOP_OFFSET = 3.75;
+const LEFT_OFFSET = 4.27;
+
 const TextBox = ({
   upTxt,
   downTxt,
@@ -31,46 +34,87 @@ const TextBox = ({
 }: {
   upTxt: string;
   downTxt: string;
-  onClick: (state: any) => void;
+  onClick: () => void;
   upTxtOffset?: number;
   downTxtOffset?: number;
-}) => {
-  const TOP_OFFSET = 3.75;
-  const LEFT_OFFSET = 4.27;
-
-  return (
-    <div
-      className="absolute inset-0 z-10"
-      style={{ cursor: "pointer" }}
-      onClick={onClick}
+}) => (
+  <div
+    className="absolute inset-0 z-10"
+    style={{ cursor: "pointer" }}
+    onClick={onClick}
+  >
+    <p
+      style={{
+        position: "absolute",
+        top: `${TOP_OFFSET + upTxtOffset}vh`,
+        left: `${LEFT_OFFSET}%`,
+        fontFamily: "SUIT-BODY",
+        fontSize: "14px",
+        color: "#E5E5E9",
+      }}
     >
-      <p
-        style={{
-          position: "absolute",
-          top: `${TOP_OFFSET + upTxtOffset}vh`,
-          left: `${LEFT_OFFSET}%`,
-          fontFamily: "SUIT-BODY",
-          fontSize: "14px",
-          color: "#E5E5E9",
-        }}
+      {upTxt}
+    </p>
+    <p
+      style={{
+        position: "absolute",
+        top: `${TOP_OFFSET + 4 + downTxtOffset}vh`,
+        left: `${LEFT_OFFSET}%`,
+        fontFamily: "SUIT-BODY",
+        fontSize: "14px",
+        color: "#E5E5E9",
+      }}
+    >
+      {downTxt}
+    </p>
+  </div>
+);
+
+const ProfileSection = ({
+  containerStyle,
+  textBoxProps,
+  clipPath,
+  backgroundImage,
+}: {
+  containerStyle: React.CSSProperties;
+  textBoxProps: {
+    upTxt: string;
+    downTxt: string;
+    onClick: () => void;
+    upTxtOffset?: number;
+    downTxtOffset?: number;
+  };
+  clipPath?: string;
+  backgroundImage: React.ReactNode;
+}) => (
+  <div
+    style={{
+      position: "absolute",
+      left: 0,
+      right: 0,
+      overflow: "hidden",
+      ...containerStyle,
+    }}
+  >
+    <TextBox {...textBoxProps} />
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        overflow: "hidden",
+        ...(clipPath ? { clipPath } : {}),
+      }}
+    >
+      <motion.div
+        style={{ position: "absolute", inset: 0 }}
+        whileHover={{ scale: 1.07 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
       >
-        {upTxt}
-      </p>
-      <p
-        style={{
-          position: "absolute",
-          top: `${TOP_OFFSET + 4 + downTxtOffset}vh`,
-          left: `${LEFT_OFFSET}%`,
-          fontFamily: "SUIT-BODY",
-          fontSize: "14px",
-          color: "#E5E5E9",
-        }}
-      >
-        {downTxt}
-      </p>
+        {backgroundImage}
+      </motion.div>
     </div>
-  );
-};
+  </div>
+);
 
 export default function SignUp_Profile() {
   // INIT
@@ -214,8 +258,8 @@ export default function SignUp_Profile() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
 
-    if (fileList) {
-      const file = Array.from(fileList)[0];
+    if (fileList && fileList.length > 0) {
+      const file = fileList[0];
 
       const MAX_SIZE = 10 * 1024 * 1024; // 10MB
       if (file.size > MAX_SIZE) {
@@ -517,21 +561,12 @@ export default function SignUp_Profile() {
             </div>
           </div>
           <div className="grow relative min-h-0">
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: "32.22%",
-                zIndex: 0,
-                overflow: "hidden",
-              }}
-            >
-              <TextBox
-                upTxt="포지션"
-                downTxt={position ?? "선택"}
-                onClick={() =>
+            <ProfileSection
+              containerStyle={{ top: 0, height: "32.22%", zIndex: 0 }}
+              textBoxProps={{
+                upTxt: "포지션",
+                downTxt: position ?? "선택",
+                onClick: () =>
                   bottomSheet.set({
                     location: "high",
                     children: (
@@ -541,42 +576,21 @@ export default function SignUp_Profile() {
                         handleState={(value) => setPosition(value)}
                       />
                     ),
-                  })
-                }
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  overflow: "hidden",
-                  clipPath:
-                    "polygon(0 0, 100% 0, 100% calc(100% - 2vh), 0 100%)",
-                }}
-              >
-                <motion.div
-                  style={{ position: "absolute", inset: 0 }}
-                  whileHover={{ scale: 1.07 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                >
-                  <SignUp_Profile_Background_Position />
-                </motion.div>
-              </div>
-            </div>
-            <div
-              style={{
-                position: "absolute",
+                  }),
+              }}
+              clipPath="polygon(0 0, 100% 0, 100% calc(100% - 2vh), 0 100%)"
+              backgroundImage={<SignUp_Profile_Background_Position />}
+            />
+            <ProfileSection
+              containerStyle={{
                 top: "calc(32.22% - 3vh)",
-                left: 0,
-                right: 0,
                 height: "calc(33.33% + 3vh)",
                 zIndex: 1,
-                overflow: "hidden",
               }}
-            >
-              <TextBox
-                upTxt="선호장르"
-                downTxt={genre ?? "선택"}
-                onClick={() =>
+              textBoxProps={{
+                upTxt: "선호장르",
+                downTxt: genre ?? "선택",
+                onClick: () =>
                   bottomSheet.set({
                     location: "high",
                     children: (
@@ -586,44 +600,23 @@ export default function SignUp_Profile() {
                         handleState={(value) => setGenre(value)}
                       />
                     ),
-                  })
-                }
-                upTxtOffset={1.5}
-                downTxtOffset={2}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  overflow: "hidden",
-                  clipPath:
-                    "polygon(0 0, 100% 0, 100% calc(100% - 2vh), 0 100%)",
-                }}
-              >
-                <motion.div
-                  style={{ position: "absolute", inset: 0 }}
-                  whileHover={{ scale: 1.07 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                >
-                  <SignUp_Profile_Background_Genre />
-                </motion.div>
-              </div>
-            </div>
-            <div
-              style={{
-                position: "absolute",
+                  }),
+                upTxtOffset: 1.5,
+                downTxtOffset: 2,
+              }}
+              clipPath="polygon(0 0, 100% 0, 100% calc(100% - 2vh), 0 100%)"
+              backgroundImage={<SignUp_Profile_Background_Genre />}
+            />
+            <ProfileSection
+              containerStyle={{
                 top: "calc(65.56% - 3.5vh)",
-                left: 0,
-                right: 0,
                 bottom: 0,
                 zIndex: 2,
-                overflow: "hidden",
               }}
-            >
-              <TextBox
-                upTxt="레벨"
-                downTxt={level ?? "선택"}
-                onClick={() =>
+              textBoxProps={{
+                upTxt: "레벨",
+                downTxt: level ?? "선택",
+                onClick: () =>
                   bottomSheet.set({
                     location: "high",
                     children: (
@@ -633,23 +626,12 @@ export default function SignUp_Profile() {
                         handleState={(value) => setLevel(value)}
                       />
                     ),
-                  })
-                }
-                upTxtOffset={3}
-                downTxtOffset={3.5}
-              />
-              <div
-                style={{ position: "absolute", inset: 0, overflow: "hidden" }}
-              >
-                <motion.div
-                  style={{ position: "absolute", inset: 0 }}
-                  whileHover={{ scale: 1.07 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                >
-                  <SignUp_Profile_Background_Level />
-                </motion.div>
-              </div>
-            </div>
+                  }),
+                upTxtOffset: 3,
+                downTxtOffset: 3.5,
+              }}
+              backgroundImage={<SignUp_Profile_Background_Level />}
+            />
           </div>
         </div>
         <ButtonTemplate
