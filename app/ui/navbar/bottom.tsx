@@ -73,7 +73,6 @@ export default function BottomNavBar() {
       role="tablist"
       aria-label="메인 네비게이션"
     >
-      {/* 왼쪽 2탭 */}
       <NavTab
         label="내 활동"
         path="/myact"
@@ -89,7 +88,31 @@ export default function BottomNavBar() {
         onClick={() => router.push("/band")}
       />
 
-      {/* 가운데 Home 버튼 (절대 위치) */}
+      {/* 가운데 홈 버튼 전용 공간 - 좌/우 절반으로 분리 (합쳐서 flex-1) */}
+      <motion.div
+        style={{ flex: 0.5 }}
+        animate={{
+          borderTop: `1px solid ${
+            path.startsWith("/band")
+              ? TAB_COLORS.activeBorder
+              : TAB_COLORS.inactiveBorder
+          }`,
+        }}
+        transition={TRANSITION.normal}
+      />
+      <motion.div
+        style={{ flex: 0.5 }}
+        animate={{
+          borderTop: `1px solid ${
+            path.startsWith("/recruit")
+              ? TAB_COLORS.activeBorder
+              : TAB_COLORS.inactiveBorder
+          }`,
+        }}
+        transition={TRANSITION.normal}
+      />
+
+      {/* 홈 버튼 (컨테이너 기준 절대 위치) */}
       <motion.div
         style={{
           position: "absolute",
@@ -114,7 +137,6 @@ export default function BottomNavBar() {
         <HomeButton />
       </motion.div>
 
-      {/* 오른쪽 2탭 */}
       <NavTab
         label="구인"
         path="/recruit"
