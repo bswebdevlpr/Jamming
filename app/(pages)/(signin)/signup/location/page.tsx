@@ -107,7 +107,7 @@ export default function SignUp_Location() {
 
   return (
     <div
-      className="flex flex-col justify-between overflow-without-scroll"
+      className="flex flex-col justify-between"
       style={{
         height: "93.79%",
       }}
