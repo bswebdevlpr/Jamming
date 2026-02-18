@@ -119,7 +119,8 @@ const BottomSheetContent = memo(({ children }: { children: ReactNode }) => (
     style={{
       overflow: "auto",
       WebkitOverflowScrolling: "touch",
-      height: "100%",
+      flex: 1,
+      minHeight: 0,
     }}
   >
     {children}
