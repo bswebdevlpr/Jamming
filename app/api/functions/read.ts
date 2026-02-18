@@ -55,13 +55,13 @@ function processJamData(data: any): Entity_JamSession {
 
 const JAM_SELECT_QUERY = `
   *,
-  user ( nickname, pos, genre, level, bpm, profile_image ),
+  user ( nickname, pos, genre, level, bpm, is_bpm_public, profile_image ),
   jamentry ( id, jam_id, user_id, applied_pos )
 `;
 
 const JAM_PUBLIC_SELECT_QUERY = `
   *,
-  user ( nickname, pos, genre, level, bpm, profile_image ),
+  user ( nickname, pos, genre, level, bpm, is_bpm_public, profile_image ),
   jamentry ( applied_pos )
 `;
 

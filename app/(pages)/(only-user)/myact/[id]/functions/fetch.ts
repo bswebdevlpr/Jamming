@@ -9,6 +9,7 @@ import { createNotification } from "@/app/api/functions/notification";
 import moment from "moment";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { REJAM_CONSTANTS } from "@/app/lib/constants/rejam";
+import { BPM_CONSTANTS } from "@/app/lib/constants/bpm";
 
 export const allowEntry = async (
   entryId: number
@@ -30,6 +31,11 @@ export const allowEntry = async (
         "allowEntry"
       );
     }
+
+    // BPM은 부수 효과이므로 실패해도 메인 동작에 영향 없음
+    try {
+      await adjustBpm(supabase, entryId, BPM_CONSTANTS.ATTEND_REWARD);
+    } catch {}
 
     return true;
   });
@@ -55,6 +61,11 @@ export const refuseEntry = async (
       );
     }
 
+    // 승인 취소 시 BPM 복구
+    try {
+      await adjustBpm(supabase, entryId, -BPM_CONSTANTS.ATTEND_REWARD);
+    } catch {}
+
     return true;
   });
 };
@@ -79,6 +90,15 @@ export const setNoShow = async (
         "setNoShow"
       );
     }
+
+    // 노쇼 설정 시 -2, 노쇼 취소 시 +2 / BPM은 부수 효과이므로 실패해도 메인 동작에 영향 없음
+    try {
+      await adjustBpm(
+        supabase,
+        entryId,
+        noshow ? BPM_CONSTANTS.NOSHOW_PENALTY : -BPM_CONSTANTS.NOSHOW_PENALTY
+      );
+    } catch {}
 
     return true;
   });
@@ -281,6 +301,36 @@ export const sendRejam = async (
 
     return true;
   });
+};
+
+const adjustBpm = async (
+  supabase: SupabaseClient,
+  entryId: number,
+  delta: number
+) => {
+  const { data: entry } = await supabase
+    .from("jamentry")
+    .select("user_id")
+    .eq("id", entryId)
+    .single();
+
+  if (!entry?.user_id) return;
+
+  const { data: userData } = await supabase
+    .from("user")
+    .select("bpm")
+    .eq("id", entry.user_id)
+    .single();
+
+  if (!userData) return;
+
+  const currentBpm = userData.bpm ?? BPM_CONSTANTS.DEFAULT;
+  const newBpm = Math.min(
+    BPM_CONSTANTS.MAX,
+    Math.max(BPM_CONSTANTS.MIN, currentBpm + delta)
+  );
+
+  await supabase.from("user").update({ bpm: newBpm }).eq("id", entry.user_id);
 };
 
 const getUser = async (supabase: SupabaseClient) => {

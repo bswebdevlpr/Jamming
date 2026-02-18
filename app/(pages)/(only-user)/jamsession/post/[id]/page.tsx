@@ -336,15 +336,17 @@ export default function JamSession_Post() {
             >
               {jam.user?.nickname ?? "탈퇴한 유저에요"}
             </p>
-            <p
-              style={{
-                fontFamily: "SUIT-TITLE",
-                fontSize: "0.875rem",
-                color: "#A3FF0C",
-              }}
-            >
-              {jam.user?.bpm ?? 0}BPM
-            </p>
+            {jam.user?.is_bpm_public !== false && (
+              <p
+                style={{
+                  fontFamily: "SUIT-TITLE",
+                  fontSize: "0.875rem",
+                  color: "#A3FF0C",
+                }}
+              >
+                {jam.user?.bpm ?? 0}BPM
+              </p>
+            )}
           </div>
           <div className="flex flex-row justify-between items-center">
             <p

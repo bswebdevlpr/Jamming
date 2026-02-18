@@ -6,13 +6,15 @@ export default function RadixSelect({
   items,
   color,
   placeholder,
+  onValueChange,
 }: {
   items: string[];
   color: string;
   placeholder: string;
+  onValueChange?: (value: string) => void;
 }) {
   return (
-    <Select.Root>
+    <Select.Root onValueChange={onValueChange}>
       <Select.Trigger
         style={{
           display: "inline-flex",

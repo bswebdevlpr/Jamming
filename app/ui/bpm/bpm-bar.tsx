@@ -9,11 +9,15 @@ import BPMPopup from "./popup";
 export default function BPMBar({
   user,
   className,
+  hideIfPrivate,
 }: {
   user: Entity_User;
   className?: string;
+  hideIfPrivate?: boolean;
 }) {
   const [isBPMPopupOn, setIsBPMPopupOn] = useState(false);
+
+  if (hideIfPrivate && user?.is_bpm_public === false) return null;
 
   return (
     <div

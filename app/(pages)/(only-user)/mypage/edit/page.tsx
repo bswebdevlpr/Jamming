@@ -23,6 +23,7 @@ import {
   MapDataToPosition,
 } from "@/app/lib/maps/jam";
 import { useRouter } from "next/navigation";
+import { updateProfile } from "./functions/update";
 
 const FlexRow = ({
   tag,
@@ -33,6 +34,7 @@ const FlexRow = ({
     items: string[];
     color: string;
     placeholder: string;
+    onValueChange?: (value: string) => void;
   };
 }) => {
   return (
@@ -50,6 +52,7 @@ const FlexRow = ({
         items={opt.items}
         color={opt.color}
         placeholder={opt.placeholder}
+        onValueChange={opt.onValueChange}
       />
     </div>
   );
@@ -58,10 +61,59 @@ const FlexRow = ({
 export default function Edit() {
   const router = useRouter();
   const userProfile = useSessionStore((state) => state.userProfile);
+  const setUserProfile = useSessionStore((state) => state.setUserProfile);
 
   // STATES
   const [isBPMChecked, setIsBPMChecked] = useState(userProfile?.is_bpm_public ?? false);
+  const [location, setLocation] = useState<LocationEnum | undefined>(undefined);
+  const [pos, setPos] = useState<PositionEnum | undefined>(undefined);
+  const [genre, setGenre] = useState<GenreEnum | undefined>(undefined);
+  const [level, setLevel] = useState<LevelEnum | undefined>(undefined);
+  const [isSaving, setIsSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined);
   //
+
+  const handleSave = async () => {
+    if (isSaving) return;
+
+    const hasChanges =
+      location !== undefined ||
+      pos !== undefined ||
+      genre !== undefined ||
+      level !== undefined ||
+      isBPMChecked !== (userProfile?.is_bpm_public ?? false);
+
+    if (!hasChanges) {
+      router.back();
+      return;
+    }
+
+    setIsSaving(true);
+    setErrorMessage(undefined);
+
+    const result = await updateProfile({
+      location,
+      pos,
+      genre,
+      level,
+      is_bpm_public: isBPMChecked,
+    });
+
+    if (result.success) {
+      setUserProfile({
+        ...(location && { location }),
+        ...(pos && { pos }),
+        ...(genre && { genre }),
+        ...(level && { level }),
+        is_bpm_public: isBPMChecked,
+      });
+      router.back();
+    } else if (result.success === false) {
+      if (process.env.NODE_ENV === "development") console.error(result.error.message);
+      setErrorMessage("저장에 실패했습니다. 다시 시도해주세요.");
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="grow flex flex-col items-center px-5">
@@ -80,10 +132,12 @@ export default function Edit() {
           style={{
             fontFamily: "SUIT-BODY",
             fontSize: "1rem",
-            color: "#FF3773",
+            color: isSaving ? "#9F9FA2" : "#FF3773",
+            cursor: isSaving ? "default" : "pointer",
           }}
+          onClick={handleSave}
         >
-          저장
+          {isSaving ? "저장 중..." : "저장"}
         </p>
       </div>
       <div className="relative">
@@ -116,6 +170,18 @@ export default function Edit() {
         <EditLightGrayIcon />
       </div>
       <BPMBar user={userProfile as Entity_User} />
+      {errorMessage && (
+        <p
+          style={{
+            fontFamily: "SUIT-BODY",
+            fontSize: "0.75rem",
+            color: "#FF3773",
+            marginBottom: "8px",
+          }}
+        >
+          {errorMessage}
+        </p>
+      )}
       <div
         className="flex gap-2"
         style={{
@@ -132,7 +198,7 @@ export default function Edit() {
           BPM 공개
         </p>
         <CheckboxOnEditPage
-          isClicked={userProfile?.is_bpm_public}
+          isClicked={isBPMChecked}
           onClick={() => setIsBPMChecked(!isBPMChecked)}
         />
       </div>
@@ -143,6 +209,7 @@ export default function Edit() {
             items: Object.values(LocationEnum),
             color: "#0C7CFF",
             placeholder: MapDataToLocation[userProfile?.location],
+            onValueChange: (v) => setLocation(v as LocationEnum),
           }}
         />
         <FlexRow
@@ -151,6 +218,7 @@ export default function Edit() {
             items: Object.values(PositionEnum),
             color: "#FF3773",
             placeholder: MapDataToPosition[userProfile?.pos],
+            onValueChange: (v) => setPos(v as PositionEnum),
           }}
         />
         <FlexRow
@@ -159,6 +227,7 @@ export default function Edit() {
             items: Object.values(GenreEnum),
             color: "#A3FF0C",
             placeholder: MapDataToGenre[userProfile?.genre],
+            onValueChange: (v) => setGenre(v as GenreEnum),
           }}
         />
         <FlexRow
@@ -167,6 +236,7 @@ export default function Edit() {
             items: Object.values(LevelEnum),
             color: "#FFFFFF",
             placeholder: MapDataToLevel[userProfile?.level],
+            onValueChange: (v) => setLevel(v as LevelEnum),
           }}
         />
       </div>
