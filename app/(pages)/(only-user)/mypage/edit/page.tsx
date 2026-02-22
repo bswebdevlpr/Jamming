@@ -16,8 +16,8 @@ import {
   EditLightGrayIcon,
 } from "@/app/ui/images/mypage/edit/edits";
 import RadixAvatar from "@/app/ui/templates/avatar";
-import RadixSelect from "@/app/ui/templates/select";
-import { useEffect, useRef, useState } from "react";
+import { ProfileSelect } from "@/app/ui/templates/profile-select";
+import { useEffect, useRef, useState, useCallback } from "react";
 import _ from "lodash";
 import { useSessionStore } from "@/app/stores";
 import {
@@ -28,39 +28,6 @@ import {
 } from "@/app/lib/maps/jam";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "./functions/update";
-
-const FlexRow = ({
-  tag,
-  opt,
-}: {
-  tag: string;
-  opt: {
-    items: string[];
-    color: string;
-    placeholder: string;
-    onValueChange?: (value: string) => void;
-  };
-}) => {
-  return (
-    <div
-      className="flex justify-between items-center"
-      style={{
-        width: "230px",
-        fontFamily: "SUIT-BODY",
-        fontSize: "0.875rem",
-        color: "#F2F2F4",
-      }}
-    >
-      <p>{tag}</p>
-      <RadixSelect
-        items={opt.items}
-        color={opt.color}
-        placeholder={opt.placeholder}
-        onValueChange={opt.onValueChange}
-      />
-    </div>
-  );
-};
 
 export default function Edit() {
   const router = useRouter();
@@ -89,6 +56,25 @@ export default function Edit() {
   const [nicknameError, setNicknameError] = useState<string | undefined>(undefined);
   const latestNicknameRef = useRef<string>("");
   //
+
+  // 드롭다운 핸들러 (useCallback으로 최적화)
+  const handleLocationChange = useCallback((v: LocationEnum) => setLocation(v), []);
+  const handlePosChange = useCallback((v: PositionEnum) => setPos(v), []);
+  const handleGenreChange = useCallback((v: GenreEnum) => setGenre(v), []);
+  const handleLevelChange = useCallback((v: LevelEnum) => setLevel(v), []);
+
+  // 드롭다운 필드 설정
+  const profileFields: Array<{
+    type: "location" | "position" | "genre" | "level";
+    label: string;
+    value: LocationEnum | PositionEnum | GenreEnum | LevelEnum | undefined;
+    onChange: (value: any) => void;
+  }> = [
+    { type: "location", label: "지역", value: userProfile?.location ? MapDataToLocation[userProfile.location] : undefined, onChange: handleLocationChange },
+    { type: "position", label: "포지션", value: userProfile?.pos ? MapDataToPosition[userProfile.pos] : undefined, onChange: handlePosChange },
+    { type: "genre", label: "장르", value: userProfile?.genre ? MapDataToGenre[userProfile.genre] : undefined, onChange: handleGenreChange },
+    { type: "level", label: "레벨", value: userProfile?.level ? MapDataToLevel[userProfile.level] : undefined, onChange: handleLevelChange },
+  ];
 
   const cancelNicknameEdit = () => {
     setIsNicknameEditing(false);
@@ -401,7 +387,7 @@ export default function Edit() {
           }}
         />
       </div>
-      <BPMBar user={userProfile as Entity_User} />
+      {userProfile && <BPMBar user={userProfile} />}
       {errorMessage && (
         <p
           style={{
@@ -435,42 +421,25 @@ export default function Edit() {
         />
       </div>
       <div className="flex flex-col gap-3">
-        <FlexRow
-          tag="지역"
-          opt={{
-            items: Object.values(LocationEnum),
-            color: "#0C7CFF",
-            placeholder: MapDataToLocation[userProfile?.location],
-            onValueChange: (v) => setLocation(v as LocationEnum),
-          }}
-        />
-        <FlexRow
-          tag="포지션"
-          opt={{
-            items: Object.values(PositionEnum),
-            color: "#FF3773",
-            placeholder: MapDataToPosition[userProfile?.pos],
-            onValueChange: (v) => setPos(v as PositionEnum),
-          }}
-        />
-        <FlexRow
-          tag="장르"
-          opt={{
-            items: Object.values(GenreEnum),
-            color: "#A3FF0C",
-            placeholder: MapDataToGenre[userProfile?.genre],
-            onValueChange: (v) => setGenre(v as GenreEnum),
-          }}
-        />
-        <FlexRow
-          tag="레벨"
-          opt={{
-            items: Object.values(LevelEnum),
-            color: "#FFFFFF",
-            placeholder: MapDataToLevel[userProfile?.level],
-            onValueChange: (v) => setLevel(v as LevelEnum),
-          }}
-        />
+        {profileFields.map(({ type, label, value, onChange }) => (
+          <div
+            key={type}
+            className="flex justify-between items-center"
+            style={{
+              width: "230px",
+              fontFamily: "SUIT-BODY",
+              fontSize: "0.875rem",
+              color: "#F2F2F4",
+            }}
+          >
+            <p>{label}</p>
+            <ProfileSelect
+              type={type}
+              value={value}
+              onValueChange={onChange}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -252,3 +252,30 @@ textarea::placeholder {
 select {
   -webkit-appearance: menulist;
 }
+
+/* ============================================
+   Profile Select 스크롤바 커스터마이징
+   ============================================ */
+
+/* Radix Select Viewport 스크롤바 */
+[data-radix-select-viewport] {
+  scrollbar-width: thin;
+  scrollbar-color: #535355 #242426;
+}
+
+[data-radix-select-viewport]::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-radix-select-viewport]::-webkit-scrollbar-track {
+  background: #242426;
+}
+
+[data-radix-select-viewport]::-webkit-scrollbar-thumb {
+  background: #535355;
+  border-radius: 3px;
+}
+
+[data-radix-select-viewport]::-webkit-scrollbar-thumb:hover {
+  background: #9F9FA2;
+}
