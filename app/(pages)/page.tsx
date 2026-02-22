@@ -17,10 +17,11 @@ import { PositionEnum } from "@/app/lib/enums/position.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { Filter_JamSessionFeed, JamFeed } from "@/app/ui/feeds/jam-feed";
 import { FeedMethods } from "@/app/ui/templates/feed";
-import { useBottomSheetStore, useCalendarStore } from "@/app/stores";
+import { useBottomSheetStore, useCalendarStore, useSessionStore } from "@/app/stores";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/app/util/supabase/client";
 import { getDatesHavingJamPublic } from "@/app/ui/calendar/functions/fetch";
+import { dbLocationToEnum } from "@/app/lib/utils/location";
 
 export default function Home() {
   // AUTH STATE
@@ -55,6 +56,7 @@ export default function Home() {
   // ZUSTAND STORE
   const bottomSheet = useBottomSheetStore();
   const resetToToday = useCalendarStore((s) => s.resetToToday);
+  const { userProfile } = useSessionStore();
   //
 
   // REF
@@ -79,6 +81,44 @@ export default function Home() {
     setResetSlideCalendarDots,
   });
   //
+
+  // 로그인한 사용자의 지역 설정을 초기 필터로 적용
+  useEffect(() => {
+    const initializeLocation = async () => {
+      if (!isAuthenticated) return;
+
+      // 프로필이 이미 로드되었으면 해당 location 사용
+      if (userProfile.isLoaded) {
+        const mapped = dbLocationToEnum(userProfile.location);
+        setLocation(mapped ?? LocationEnum.Everywhere);
+        return;
+      }
+
+      // 프로필이 아직 로드되지 않았으면 location만 fetch
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("user")
+        .select("location")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Failed to fetch user location:", error);
+        setLocation(LocationEnum.Everywhere);
+        return;
+      }
+
+      const mapped = dbLocationToEnum(data?.location);
+      setLocation(mapped ?? LocationEnum.Everywhere);
+    };
+
+    initializeLocation();
+  }, [isAuthenticated, userProfile.isLoaded]);
 
   useEffect(() => {
     setFilter({

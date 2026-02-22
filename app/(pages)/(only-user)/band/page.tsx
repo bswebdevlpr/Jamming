@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -13,11 +13,12 @@ import BandIcon from "@/app/ui/images/navbar/band-icon";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
-import { useBottomSheetStore } from "@/app/stores";
+import { useBottomSheetStore, useSessionStore } from "@/app/stores";
 import BandBottomSheetContent from "./bottom-sheet/content";
 import FilterButton from "@/app/ui/buttons/filter";
 import LocationPopup from "@/app/ui/popup/location";
 import { DownArrow } from "@/app/ui/images/arrows";
+import { dbLocationToEnum, getLocationDisplay } from "@/app/lib/utils/location";
 
 interface BandWithRole {
   band: Entity_Band;
@@ -27,11 +28,22 @@ interface BandWithRole {
 export default function BandListPage() {
   const router = useRouter();
   const bottomSheet = useBottomSheetStore();
+  const { userProfile } = useSessionStore();
 
   const [genre, setGenre] = useState<GenreEnum>(null);
   const [level, setLevel] = useState<LevelEnum>(null);
-  const [location, setLocation] = useState<LocationEnum>(null);
+  const [location, setLocation] = useState<LocationEnum>();
   const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false);
+
+  // 사용자 설정 지역으로 초기화
+  useEffect(() => {
+    if (userProfile.isLoaded && userProfile.location) {
+      const mapped = dbLocationToEnum(userProfile.location);
+      setLocation(mapped ?? LocationEnum.Everywhere);
+    } else if (userProfile.isLoaded && !userProfile.location) {
+      setLocation(LocationEnum.Everywhere);
+    }
+  }, [userProfile.isLoaded, userProfile.location]);
 
   // React Query로 데이터 관리
   const { data: bands = [], isLoading } = useQuery({
@@ -105,7 +117,7 @@ export default function BandListPage() {
               fontSize: "1.125rem",
               color: "#FFF",
             }}>
-              {LocationEnum[location] ?? "지역"}
+              {getLocationDisplay(location)}
             </p>
             <DownArrow />
           </div>

@@ -8,6 +8,7 @@ import { useState } from "react";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
 import { Filter_JamSessionFeed } from "../../feeds/jam-feed";
 import { useRouter } from "next/navigation";
+import { getLocationDisplay } from "@/app/lib/utils/location";
 
 export default function TopNavBar({
   filter,
@@ -42,7 +43,7 @@ export default function TopNavBar({
             fontSize: "1.125rem",
             color: "#FFF",
           }}>
-          {LocationEnum[filter.location] ?? "지역"}
+          {getLocationDisplay(filter.location)}
         </p>
         <DownArrow />
       </div>

@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import { useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   fetchRecruitPosts,
@@ -24,22 +23,34 @@ import {
 } from "@/app/ui/tags/category-tag";
 import { STAGGER_CONTAINER, STAGGER_ITEM } from "@/app/lib/animations";
 import RecruitIcon from "@/app/ui/images/navbar/recruit-icon";
-import { useBottomSheetStore } from "@/app/stores";
+import { useBottomSheetStore, useSessionStore } from "@/app/stores";
 import RecruitBottomSheetContent from "./bottom-sheet/content";
 import FilterButton from "@/app/ui/buttons/filter";
 import LocationPopup from "@/app/ui/popup/location";
 import { DownArrow } from "@/app/ui/images/arrows";
+import { dbLocationToEnum, getLocationDisplay } from "@/app/lib/utils/location";
 
 export default function RecruitFeedPage() {
   const router = useRouter();
   const { ref: scrollRef, inView } = useInView();
   const bottomSheet = useBottomSheetStore();
+  const { userProfile } = useSessionStore();
 
   const [genre, setGenre] = useState<GenreEnum>(null);
   const [position, setPosition] = useState<PositionEnum>(null);
   const [level, setLevel] = useState<LevelEnum>(null);
-  const [location, setLocation] = useState<LocationEnum>(null);
+  const [location, setLocation] = useState<LocationEnum>();
   const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false);
+
+  // 사용자 설정 지역으로 초기화
+  useEffect(() => {
+    if (userProfile.isLoaded && userProfile.location) {
+      const mapped = dbLocationToEnum(userProfile.location);
+      setLocation(mapped ?? LocationEnum.Everywhere);
+    } else if (userProfile.isLoaded && !userProfile.location) {
+      setLocation(LocationEnum.Everywhere);
+    }
+  }, [userProfile.isLoaded, userProfile.location]);
 
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: [
@@ -112,7 +123,7 @@ export default function RecruitFeedPage() {
               fontSize: "1.125rem",
               color: "#FFF",
             }}>
-              {LocationEnum[location] ?? "지역"}
+              {getLocationDisplay(location)}
             </p>
             <DownArrow />
           </div>
