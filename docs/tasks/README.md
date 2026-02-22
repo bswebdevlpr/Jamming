@@ -67,7 +67,7 @@ AI가 알아야 할 추가 정보
 
 | 작업 | 설명 | 관련 파일 |
 |------|------|----------|
-| - | - | - |
+| 실시간 세션 관심자 표시 | Supabase Realtime Presence로 "누가 지금 세션을 보고 있는지" 실시간 표시. 세션 상세 페이지(조회자 수), 홈 화면(지역별 활성 통계), 피드 카드 뱃지(선택). 상세 계획: `/Users/coolguy/.claude/plans/tranquil-juggling-spark.md` | `app/hooks/usePresence.ts`, `app/hooks/useSessionViewers.ts`, `app/hooks/useRegionPresence.ts`, `app/ui/components/viewer-count.tsx`, `app/ui/components/region-activity.tsx`, `app/(pages)/(only-user)/jamsession/post/[id]/page.tsx`, `app/(pages)/page.tsx` |
 
 ### 낮은 우선순위
 
