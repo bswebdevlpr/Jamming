@@ -20,7 +20,8 @@ import MyListIcon from "@/app/ui/images/mypage/note";
 import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import BPMBar from "@/app/ui/bpm/bpm-bar";
-import { useSessionStore } from "@/app/stores";
+import { useSessionStore, useFeedbackStore } from "@/app/stores";
+import { FEEDBACK_CONFIG } from "@/app/lib/config/feedback";
 
 export default function MyPage() {
   // HOOOKS
@@ -29,11 +30,16 @@ export default function MyPage() {
   //
 
   const userProfile = useSessionStore((state) => state.userProfile);
+  const { canSubmit, recordSubmission, getCooldownRemaining } =
+    useFeedbackStore();
 
   // STATES
   const [feedback, setFeedback] = useState<string>("");
   const [placeholder, setPlaceholder] = useState<string>("");
   //
+
+  const isAvailable = canSubmit();
+  const cooldown = getCooldownRemaining();
 
   return (
     <div className="grow flex flex-col overflow-without-scroll px-5">
@@ -240,23 +246,48 @@ export default function MyPage() {
               {feedback.length} / 100
             </p>
           </div>
+          {!isAvailable && cooldown > 0 && (
+            <p
+              style={{
+                fontFamily: "SUIT-BODY",
+                fontSize: "0.875rem",
+                color: "#FF3E2F",
+                textAlign: "center",
+                marginBottom: "12px",
+              }}
+            >
+              너무 많은 요청이 발생했습니다. {Math.ceil(cooldown / 60)}분 후에
+              다시 시도해주세요.
+            </p>
+          )}
           <ButtonTemplate
             text="보내기"
             style={{
               backgroundColor: "#242426",
               border: "1px solid #333335",
             }}
-            isActive={feedback.length > 0}
-            onClick={() =>
+            isActive={isAvailable && feedback.length > 0}
+            onClick={() => {
+              if (!isAvailable || feedback.length === 0) return;
               createFeedback(feedback).then((result) => {
                 setFeedback("");
-                if (result.success === true) setPlaceholder("피드백 전송이 완료되었어요");
-                else if (result.success === false)
-                  setPlaceholder(
-                    result.error.message || "피드백 전송이 실패했어요. 나중에 다시 시도해주세요."
-                  );
-              })
-            }
+                if (result.success === true) {
+                  recordSubmission();
+                  setPlaceholder(FEEDBACK_CONFIG.ERROR_MESSAGES.SUCCESS);
+                } else if (result.success === false) {
+                  if (result.error.code === "RATE_LIMIT_EXCEEDED") {
+                    setPlaceholder(
+                      FEEDBACK_CONFIG.ERROR_MESSAGES.RATE_LIMIT_EXCEEDED
+                    );
+                  } else {
+                    setPlaceholder(
+                      result.error.message ||
+                        FEEDBACK_CONFIG.ERROR_MESSAGES.VALIDATION_FAILED
+                    );
+                  }
+                }
+              });
+            }}
             // TODO: 메일전송 연동
           />
         </div>

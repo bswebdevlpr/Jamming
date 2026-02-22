@@ -1,5 +1,7 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { headers } from "next/headers";
+import { FEEDBACK_CONFIG } from "@/app/lib/config/feedback";
 
 // Upstash Redis 클라이언트 초기화
 const redis = new Redis({
@@ -44,6 +46,22 @@ export const oauthLimiter = new Ratelimit({
 });
 
 /**
+ * 피드백 제출 Rate Limiter
+ * - 1시간 내 3회 제한
+ * - Sliding Window 방식
+ * - 클라이언트 Zustand store와 동일한 정책
+ */
+export const feedbackLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(
+    FEEDBACK_CONFIG.RATE_LIMIT.MAX_ATTEMPTS,
+    FEEDBACK_CONFIG.RATE_LIMIT.WINDOW_DURATION
+  ),
+  analytics: true,
+  prefix: FEEDBACK_CONFIG.RATE_LIMIT.PREFIX,
+});
+
+/**
  * 클라이언트 IP 주소 가져오기
  * - Vercel/Next.js 환경에서 x-forwarded-for 헤더 사용
  * - 로컬 개발 환경에서는 fallback 제공
@@ -59,4 +77,22 @@ export function getClientIP(request?: Request): string {
   const ip = forwarded ? forwarded.split(",")[0] : "127.0.0.1";
 
   return ip;
+}
+
+/**
+ * Server Action에서 클라이언트 IP 주소 가져오기
+ * - Next.js headers() API 사용
+ * - Vercel 환경에서는 x-forwarded-for 또는 x-real-ip 사용
+ */
+export async function getClientIPFromHeaders(): Promise<string> {
+  const headersList = await headers();
+  const forwarded = headersList.get("x-forwarded-for");
+  if (forwarded) {
+    return forwarded.split(",")[0].trim();
+  }
+  const realIp = headersList.get("x-real-ip");
+  if (realIp) {
+    return realIp;
+  }
+  return "unknown";
 }

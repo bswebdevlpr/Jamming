@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const { mockClient } = vi.hoisted(() => {
+const { mockClient, mockLimit, mockHeaders } = vi.hoisted(() => {
   return {
     mockClient: {
       auth: {
@@ -16,7 +16,24 @@ const { mockClient } = vi.hoisted(() => {
         })),
       },
     },
+    mockLimit: vi.fn().mockResolvedValue({ success: true }),
+    mockHeaders: vi.fn(),
   };
+});
+
+vi.mock("@upstash/redis", () => {
+  function RedisClass() {
+    return {};
+  }
+  return { Redis: RedisClass };
+});
+
+vi.mock("@upstash/ratelimit", () => {
+  function RatelimitClass() {
+    return { limit: mockLimit };
+  }
+  RatelimitClass.slidingWindow = vi.fn().mockReturnValue({});
+  return { Ratelimit: RatelimitClass };
 });
 
 vi.mock("@/app/util/supabase/server", () => ({
@@ -32,6 +49,10 @@ vi.mock("@/app/lib/logger", () => ({
   logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn() },
 }));
 
+vi.mock("next/headers", () => ({
+  headers: mockHeaders,
+}));
+
 import { createJamEntry, createPublicFeedback } from "@/app/api/functions/create";
 import { deleteJamSession, deleteJamEntry } from "@/app/api/functions/delete";
 import { getUser } from "@/app/api/functions/read";
@@ -43,6 +64,10 @@ describe("Jam Session CRUD", () => {
       data: { user: { id: "test-user-id" } },
       error: null,
     });
+    mockLimit.mockResolvedValue({ success: true });
+    mockHeaders.mockResolvedValue(
+      new Map([["x-forwarded-for", "203.0.113.1"]])
+    );
   });
 
   describe("createJamEntry", () => {

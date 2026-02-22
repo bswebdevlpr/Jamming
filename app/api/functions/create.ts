@@ -6,6 +6,11 @@ import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
 import { CreateJamEntryDto } from "../dtos/create";
 import { sanitize, sanitizePublic } from "@/app/lib/functions/validate";
+import {
+  feedbackLimiter,
+  getClientIPFromHeaders,
+} from "@/app/lib/rate-limit";
+import { FEEDBACK_CONFIG } from "@/app/lib/config/feedback";
 
 export async function createJamEntry(
   input: CreateJamEntryDto
@@ -35,7 +40,10 @@ export async function createPublicFeedback(
   return safeAction("createPublicFeedback", async () => {
     const sanitized = await sanitizePublic(input);
 
-    if (sanitized.length === 0 || sanitized.length > 100) {
+    if (
+      sanitized.length === 0 ||
+      sanitized.length > FEEDBACK_CONFIG.MAX_LENGTH
+    ) {
       throw CustomError.validationFailed({
         operation: "createPublicFeedback",
       });
@@ -51,6 +59,18 @@ export async function createPublicFeedback(
       userId = user?.id ?? null;
     } catch {
       userId = null;
+    }
+
+    // 서버 측 Rate Limiting
+    const identifier = userId
+      ? `${FEEDBACK_CONFIG.IDENTIFIER_PREFIX.USER}:${userId}`
+      : `${FEEDBACK_CONFIG.IDENTIFIER_PREFIX.IP}:${await getClientIPFromHeaders()}`;
+
+    const { success } = await feedbackLimiter.limit(identifier);
+    if (!success) {
+      throw CustomError.rateLimitExceeded({
+        operation: "createPublicFeedback",
+      });
     }
 
     const { error } = await supabase.from("feedback").insert({
