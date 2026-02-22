@@ -35,8 +35,8 @@ export default function JamNow({
           borderRadius: "6.25rem",
 
           position: "absolute",
-          bottom: "9.6%",
-          right: "5.33%",
+          bottom: "var(--jam-now-bottom)",
+          right: "var(--jam-now-right)",
 
           cursor: "pointer",
         }}

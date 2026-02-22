@@ -4,7 +4,7 @@ import { useBottomSheetStore } from "@/app/stores";
 import { CSSProperties } from "react";
 
 const commonStyle = {
-  width: "67.76%",
+  width: "var(--select-btn-width)",
   height: "2.75rem",
 
   border: "1px solid #535355",

@@ -110,6 +110,14 @@
   --active-btn-bg: #304313;
   --highlight-bg-light: rgba(163, 255, 12, 0.16);
   --highlight-bg-hover: rgba(163, 255, 12, 0.12);
+
+  /* 네비게이션 레이아웃 토큰 */
+  --nav-height: 52px;
+  --nav-home-bottom: 16px;
+  --nav-home-size: 56px;
+  --jam-now-bottom: 68px;
+  --jam-now-right: 20px;
+  --select-btn-width: 67.76%;
 }
 
 /* ============================================

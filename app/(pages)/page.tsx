@@ -225,7 +225,7 @@ export default function Home() {
           <JamNowPublic />
         )}
         {isAuthLoading ? (
-          <div style={{ height: "6.93vh" }} />
+          <div style={{ height: "var(--nav-height)" }} />
         ) : isAuthenticated ? (
           <BottomNavBar />
         ) : (

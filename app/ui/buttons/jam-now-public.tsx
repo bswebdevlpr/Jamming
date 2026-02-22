@@ -15,8 +15,8 @@ export default function JamNowPublic() {
           border: "1px solid #A3FF0C",
           borderRadius: "6.25rem",
           position: "absolute",
-          bottom: "9.6%",
-          right: "5.33%",
+          bottom: "var(--jam-now-bottom)",
+          right: "var(--jam-now-right)",
           cursor: "pointer",
         }}
         onClick={() => router.push("/signin")}

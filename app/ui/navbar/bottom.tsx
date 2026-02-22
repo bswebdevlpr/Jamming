@@ -67,7 +67,7 @@ export default function BottomNavBar() {
     <div
       className="w-full flex flex-row relative"
       style={{
-        height: "6.93vh", // 52px
+        height: "var(--nav-height)",
         background: "var(--background)",
       }}
       role="tablist"
@@ -108,8 +108,9 @@ export default function BottomNavBar() {
       <motion.div
         style={{
           position: "absolute",
-          left: "calc(50% - 28px)",
-          bottom: "2.13vh",
+          left: "50%",
+          x: "-50%",
+          bottom: "var(--nav-home-bottom)",
           cursor: "pointer",
           zIndex: 10,
         }}

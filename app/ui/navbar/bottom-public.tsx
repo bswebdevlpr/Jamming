@@ -19,7 +19,7 @@ export default function BottomNavBarPublic() {
       <div
         className="w-full flex flex-row relative"
         style={{
-          height: "6.93vh",
+          height: "var(--nav-height)",
           background: "var(--background)",
         }}
       >
@@ -37,8 +37,9 @@ export default function BottomNavBarPublic() {
         <div
           style={{
             position: "absolute",
-            left: "calc(50% - 28px)",
-            bottom: "2.13vh",
+            left: "50%",
+            transform: "translateX(-50%)",
+            bottom: "var(--nav-home-bottom)",
             cursor: "pointer",
           }}
           onClick={() => {
