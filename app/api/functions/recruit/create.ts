@@ -16,10 +16,10 @@ export async function createRecruitPost(
     const supabase = await createClient();
     const user = await getUser(supabase);
 
-    // 밴드장 권한 확인
+    // 밴드장 권한 확인 및 밴드 설정 조회
     const { data: band, error: bandErr } = await supabase
       .from("band")
-      .select("id, leader_id")
+      .select("id, leader_id, genre, location, level")
       .eq("id", input.band_id)
       .single();
 
@@ -63,8 +63,8 @@ export async function createRecruitPost(
       }
     }
 
-    // 구인글 생성
-    const { data: post, error: postErr } = await supabase
+    // 구인글 생성 (밴드 설정 자동 반영)
+    const { data: post, error: postErr} = await supabase
       .from("recruit_post")
       .insert({
         band_id: input.band_id,
@@ -72,9 +72,9 @@ export async function createRecruitPost(
         title: input.title,
         body: input.body,
         positions: input.positions,
-        genre: input.genre,
-        level: input.level,
-        location: input.location,
+        genre: band.genre,
+        level: band.level,
+        location: band.location,
         songs: input.songs ?? [],
         images: input.images ?? [],
         video_url: input.video_url || null,

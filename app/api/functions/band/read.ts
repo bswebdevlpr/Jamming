@@ -7,12 +7,23 @@ import { getUser } from "../read";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
+import {
+  MapLocationToData,
+  MapLevelToData,
+  MapGenreToData,
+  MapDataToLocation,
+  MapDataToLevel,
+  MapDataToGenre,
+} from "@/app/lib/maps/jam";
 
 export interface Filter_BandList {
   location?: LocationEnum;
   genre?: GenreEnum;
   level?: LevelEnum;
 }
+
+// 상수
+const BAND_PAGE_SIZE = 15;
 
 const BAND_SELECT_QUERY = `
   *,
@@ -21,6 +32,22 @@ const BAND_SELECT_QUERY = `
     user!inner ( nickname, profile_image, pos, genre, level, bpm )
   )
 `;
+
+// DB 형식을 Enum으로 변환하는 헬퍼 함수
+function transformBandFromDB(band: any): Entity_Band {
+  if (band.location) {
+    band.location = MapDataToLocation[band.location as keyof typeof MapDataToLocation];
+  }
+  if (band.level) {
+    band.level = MapDataToLevel[band.level as keyof typeof MapDataToLevel];
+  }
+  if (band.genre && Array.isArray(band.genre)) {
+    band.genre = band.genre.map(
+      (g: string) => MapDataToGenre[g as keyof typeof MapDataToGenre]
+    );
+  }
+  return band;
+}
 
 export async function getBand(id: string): Promise<Entity_Band> {
   const supabase = await createClient();
@@ -43,8 +70,9 @@ export async function getBand(id: string): Promise<Entity_Band> {
     throw CustomError.invalidBand({ operation: "getBand" });
   }
 
-  data.memberCount = data.band_member?.length ?? 0;
-  return data;
+  const transformed = transformBandFromDB(data);
+  transformed.memberCount = data.band_member?.length ?? 0;
+  return transformed;
 }
 
 export async function getMyBands(
@@ -67,14 +95,17 @@ export async function getMyBands(
     .eq("user_id", user.id);
 
   // 서버 측 필터링 (nested relation)
-  if (filter?.location) {
-    query = query.eq("band.location", filter.location);
+  if (filter?.location && filter.location !== LocationEnum.Everywhere) {
+    const dbLocation = MapLocationToData[filter.location];
+    query = query.eq("band.location", dbLocation);
   }
   if (filter?.genre) {
-    query = query.contains("band.genre", [filter.genre]);
+    const dbGenre = MapGenreToData[filter.genre];
+    query = query.contains("band.genre", [dbGenre]);
   }
   if (filter?.level) {
-    query = query.eq("band.level", filter.level);
+    const dbLevel = MapLevelToData[filter.level];
+    query = query.eq("band.level", dbLevel);
   }
 
   const { data, error } = await query;
@@ -87,11 +118,70 @@ export async function getMyBands(
     );
   }
 
-  return (data ?? []).map((row: any) => ({
-    band: {
-      ...row.band,
-      memberCount: row.band.band_member?.length ?? 0,
-    },
-    role: row.role,
-  }));
+  return (data ?? []).map((row: any) => {
+    const band = transformBandFromDB(row.band);
+    band.memberCount = band.band_member?.length ?? 0;
+
+    return {
+      band,
+      role: row.role,
+    };
+  });
+}
+
+export async function getAllBands(
+  filter?: Filter_BandList,
+  page?: number
+): Promise<{ data: Entity_Band[]; nextPage: number | null }> {
+  const supabase = await createClient();
+  await getUser(supabase); // 인증 확인
+
+  const currentPage = page ?? 0;
+
+  let query = supabase
+    .from("band")
+    .select(
+      `
+      id, name, description, genre, location, level, profile_image, tags, created_at,
+      band_member ( id )
+    `
+    )
+    .order("created_at", { ascending: false })
+    .range(currentPage * BAND_PAGE_SIZE, (currentPage + 1) * BAND_PAGE_SIZE - 1);
+
+  // 필터 적용
+  if (filter?.location && filter.location !== LocationEnum.Everywhere) {
+    const dbLocation = MapLocationToData[filter.location];
+    query = query.eq("location", dbLocation);
+  }
+  if (filter?.genre) {
+    const dbGenre = MapGenreToData[filter.genre];
+    query = query.contains("genre", [dbGenre]);
+  }
+  if (filter?.level) {
+    const dbLevel = MapLevelToData[filter.level];
+    query = query.eq("level", dbLevel);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw CustomError.fromSupabaseError(
+      ErrorCode.UNEXPECTED,
+      error,
+      "getAllBands"
+    );
+  }
+
+  // DB 형식을 Enum으로 변환
+  const bands = (data ?? []).map((band: any) => {
+    const transformed = transformBandFromDB(band);
+    transformed.memberCount = band.band_member?.length ?? 0;
+    return transformed;
+  });
+
+  // 다음 페이지 확인
+  const nextPage = bands.length === BAND_PAGE_SIZE ? currentPage + 1 : null;
+
+  return { data: bands, nextPage };
 }

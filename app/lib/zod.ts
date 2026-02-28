@@ -111,9 +111,6 @@ export const ZodSchema_RecruitPost = z.object({
     .string()
     .max(1000, { message: "내용은 1000글자를 초과할 수 없습니다." }),
   positions: z.array(ZodSchema_HeadCnt).nonempty(),
-  genre: z.array(z.nativeEnum(GenreEnum)).nonempty(),
-  level: z.array(z.nativeEnum(LevelEnum)).nonempty(),
-  location: z.nativeEnum(LocationEnum),
   songs: z.array(ZodSchema_Song).optional(),
   images: z.array(ZodSchema_Image).optional(),
   video_url: z.string().url().optional().or(z.literal("")),

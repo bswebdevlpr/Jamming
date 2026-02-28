@@ -144,7 +144,7 @@ export interface Entity_RecruitPost {
   body?: string;
   positions?: ZodType_HeadCnt[];
   genre?: GenreEnum[];
-  level?: LevelEnum[];
+  level?: LevelEnum;
   location?: LocationEnum;
   songs?: ZodType_Song[];
   images?: string[];

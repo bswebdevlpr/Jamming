@@ -8,11 +8,46 @@ import { deleteBand } from "@/app/api/functions/band/delete";
 import { leaveBand } from "@/app/api/functions/band/member";
 import { useSessionStore } from "@/app/stores";
 import { isError } from "@/app/lib/types/result";
-import { GenreTag, LevelTag, LocationTag, TagList } from "@/app/ui/tags/category-tag";
+import { GenreTag, LevelTag, LocationTag } from "@/app/ui/tags/category-tag";
 import { PositionTag } from "@/app/ui/tags/category-tag";
-import ButtonTemplate from "@/app/ui/templates/buttons";
 import { STAGGER_CONTAINER, STAGGER_ITEM } from "@/app/lib/animations";
 import { toast } from "@/app/ui/components/toast";
+
+// 색상 상수
+const COLORS = {
+  band: {
+    primary: "#6C9EFF",
+    background: "rgba(100, 150, 255, 0.15)",
+    border: "rgba(108, 158, 255, 0.3)",
+    hover: "rgba(108, 158, 255, 0.05)",
+  },
+} as const;
+
+// 섹션 라벨 스타일
+const SECTION_LABEL_STYLE = {
+  display: "inline-flex" as const,
+  alignItems: "center" as const,
+  gap: "4px",
+  fontFamily: "SUIT-BODY",
+  fontSize: "0.625rem",
+  fontWeight: 600,
+  letterSpacing: "0.5px",
+  textTransform: "uppercase" as const,
+  padding: "2px 8px",
+  borderRadius: "4px",
+  marginBottom: "12px",
+  background: COLORS.band.background,
+  color: COLORS.band.primary,
+  border: `1px solid ${COLORS.band.border}`,
+};
+
+const INFO_LABEL_STYLE = {
+  fontFamily: "SUIT-BODY",
+  fontSize: "0.625rem",
+  color: "#9F9FA2",
+  textTransform: "uppercase" as const,
+  letterSpacing: "0.5px",
+};
 
 export default function BandDetailPage() {
   const router = useRouter();
@@ -51,12 +86,23 @@ export default function BandDetailPage() {
         >
           밴드 정보를 불러올 수 없습니다.
         </p>
-        <ButtonTemplate
-          text="목록으로"
-          isActive
+        <button
           onClick={() => router.push("/band")}
+          style={{
+            padding: "12px 16px",
+            borderRadius: "8px",
+            fontFamily: "SUIT-BODY",
+            fontSize: "1rem",
+            fontWeight: 500,
+            cursor: "pointer",
+            background: "rgba(163, 255, 12, 0.12)",
+            color: "#A3FF0C",
+            border: "1px solid #A3FF0C",
+          }}
           type="button"
-        />
+        >
+          목록으로
+        </button>
       </div>
     );
   }
@@ -97,39 +143,46 @@ export default function BandDetailPage() {
 
   if (!band) return null;
 
-  const tags = [
-    ...(band.location ? [<LocationTag key="loc" text={band.location} />] : []),
-    ...(band.genre
-      ? band.genre.map((g, i) => <GenreTag key={`g-${i}`} text={g} />)
-      : []),
-    ...(band.level ? [<LevelTag key="lvl" text={band.level} />] : []),
-  ];
-
   return (
     <div className="grow flex flex-col overflow-without-scroll">
       {/* Header */}
-      <div className="flex items-center px-5 py-3">
+      <div className="flex items-center justify-between px-5 py-3">
         <button
           onClick={() => router.back()}
           style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.875rem",
-            color: "#9F9FA2",
-            background: "none",
-            border: "none",
+            width: "36px",
+            height: "36px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "8px",
+            background: "#242426",
+            border: "1px solid #323234",
+            color: "#E5E5E9",
+            fontSize: "1.25rem",
             cursor: "pointer",
+            transition: "all 0.2s",
           }}
           type="button"
           aria-label="뒤로가기"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = COLORS.band.hover;
+            e.currentTarget.style.borderColor = COLORS.band.border;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#242426";
+            e.currentTarget.style.borderColor = "#323234";
+          }}
         >
-          &lt; 뒤로
+          ←
         </button>
         <p
           className="flex-1 text-center"
           style={{
             fontFamily: "SUIT-TITLE",
-            fontSize: "1.125rem",
-            color: "#FFF",
+            fontSize: "1.25rem",
+            color: COLORS.band.primary,
+            margin: "0 16px",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -137,97 +190,194 @@ export default function BandDetailPage() {
         >
           {band.name}
         </p>
-        <div style={{ width: "40px" }}>
-          {isLeader && (
-            <button
-              onClick={() => router.push(`/band/${bandId}/edit`)}
+        {isLeader ? (
+          <button
+            onClick={() => router.push(`/band/${bandId}/edit`)}
+            style={{
+              width: "36px",
+              height: "36px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "8px",
+              background: "#242426",
+              border: "1px solid #323234",
+              color: "#9F9FA2",
+              fontSize: "1rem",
+              cursor: "pointer",
+              transition: "all 0.2s",
+            }}
+            type="button"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = COLORS.band.hover;
+              e.currentTarget.style.borderColor = COLORS.band.border;
+              e.currentTarget.style.color = COLORS.band.primary;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#242426";
+              e.currentTarget.style.borderColor = "#323234";
+              e.currentTarget.style.color = "#9F9FA2";
+            }}
+          >
+            ✎
+          </button>
+        ) : (
+          <div style={{ width: "36px" }} />
+        )}
+      </div>
+
+      {/* Header와 Content 사이 구분선 */}
+      <div style={{ height: "1px", background: "#323234", margin: "0 20px 24px" }} />
+
+      {/* Band Info */}
+      <div className="px-5 pb-4">
+        <span style={SECTION_LABEL_STYLE}>Band Info</span>
+
+        {/* 카드 */}
+        <div
+          style={{
+            background: "#242426",
+            border: "1px solid #323234",
+            borderRadius: "8px",
+            padding: "16px",
+          }}
+        >
+          {/* 2열 그리드: 지역 + 실력대 */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "12px",
+              marginBottom: "16px",
+            }}
+          >
+            {/* 지역 */}
+            {band.location && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <span style={INFO_LABEL_STYLE}>지역</span>
+                <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+                  <LocationTag text={band.location} />
+                </div>
+              </div>
+            )}
+
+            {/* 실력대 */}
+            {band.level && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                <span style={INFO_LABEL_STYLE}>실력대</span>
+                <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+                  <LevelTag text={band.level} />
+                </div>
+              </div>
+            )}
+
+            {/* 장르 (full width) */}
+            {band.genre && band.genre.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "6px",
+                  gridColumn: "1 / -1",
+                }}
+              >
+                <span style={INFO_LABEL_STYLE}>장르</span>
+                <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+                  {band.genre.map((g, i) => (
+                    <GenreTag key={`g-${i}`} text={g} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* 설명 */}
+          {band.description && (
+            <div
               style={{
+                fontSize: "0.875rem",
                 fontFamily: "SUIT-BODY",
-                fontSize: "0.75rem",
-                color: "#A3FF0C",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
+                color: "#c0c0c5",
+                lineHeight: "1.6",
+                paddingTop: "12px",
+                borderTop: "1px solid #323234",
+                whiteSpace: "pre-wrap",
               }}
-              type="button"
             >
-              수정
-            </button>
+              {band.description}
+            </div>
+          )}
+
+          {/* 커스텀 태그 */}
+          {band.tags && band.tags.length > 0 && (
+            <div style={{ display: "flex", gap: "4px", flexWrap: "wrap", marginTop: "12px" }}>
+              {band.tags.map((tag, i) => (
+                <span
+                  key={i}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    padding: "4px 8px",
+                    borderRadius: "4px",
+                    fontSize: "0.75rem",
+                    fontFamily: "SUIT-BODY",
+                    fontWeight: 500,
+                    background: "rgba(108, 158, 255, 0.1)",
+                    color: "#6C9EFF",
+                    border: "1px solid rgba(108, 158, 255, 0.2)",
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           )}
         </div>
       </div>
 
-      {/* Band Info */}
-      <div className="px-5 pb-4">
-        <TagList tags={tags} />
-        {band.description && (
-          <p
-            className="mt-3"
-            style={{
-              fontFamily: "SUIT-BODY",
-              fontSize: "0.875rem",
-              color: "#c0c0c5",
-              lineHeight: "150%",
-              whiteSpace: "pre-wrap",
-            }}
-          >
-            {band.description}
-          </p>
-        )}
-        {band.tags && band.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
-            {band.tags.map((tag, i) => (
-              <span
-                key={i}
-                style={{
-                  fontFamily: "SUIT-BODY",
-                  fontSize: "0.75rem",
-                  color: "#9F9FA2",
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
       {/* Members */}
       <div className="px-5 pb-4">
+        <span style={SECTION_LABEL_STYLE}>Members</span>
         <p
           className="mb-3"
           style={{
-            fontFamily: "SBAggroB",
+            fontFamily: "SUIT-TITLE",
             fontSize: "0.875rem",
-            color: "#A3FF0C",
+            color: "#E5E5E9",
           }}
         >
-          Members ({band.band_member?.length ?? 0})
+          총 {band.band_member?.length ?? 0}명
         </p>
         <motion.div
           variants={STAGGER_CONTAINER}
           initial="hidden"
           animate="visible"
-          className="flex flex-col gap-1"
+          className="flex flex-col gap-2"
         >
           {band.band_member?.map((member) => (
             <motion.div
               key={member.id}
               variants={STAGGER_ITEM}
-              className="flex items-center justify-between py-2"
-              style={{ borderBottom: "1px solid var(--border)" }}
+              className="p-3"
+              style={{
+                background: "#242426",
+                border: "1px solid #323234",
+                borderRadius: "8px",
+              }}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-start gap-3">
                 <div
                   style={{
-                    width: "32px",
-                    height: "32px",
+                    width: "40px",
+                    height: "40px",
                     borderRadius: "50%",
                     background: "#323234",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     overflow: "hidden",
+                    flexShrink: 0,
+                    border: member.role === "leader" ? "1px solid #6C9EFF" : "1px solid #444447",
                   }}
                 >
                   {member.user?.profile_image ? (
@@ -244,7 +394,7 @@ export default function BandDetailPage() {
                     <span
                       style={{
                         fontFamily: "SUIT-BODY",
-                        fontSize: "0.75rem",
+                        fontSize: "0.875rem",
                         color: "#9F9FA2",
                       }}
                     >
@@ -252,8 +402,8 @@ export default function BandDetailPage() {
                     </span>
                   )}
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
+                <div className="flex-1" style={{ minWidth: 0 }}>
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <p
                       style={{
                         fontFamily: "SUIT-BODY",
@@ -268,10 +418,14 @@ export default function BandDetailPage() {
                         style={{
                           fontFamily: "SUIT-BODY",
                           fontSize: "0.625rem",
-                          color: "#A3FF0C",
-                          background: "rgba(163, 255, 12, 0.16)",
-                          padding: "1px 6px",
+                          color: "#6C9EFF",
+                          background: "rgba(108, 158, 255, 0.15)",
+                          padding: "2px 6px",
                           borderRadius: "2px",
+                          fontWeight: 600,
+                          textTransform: "uppercase" as const,
+                          letterSpacing: "0.5px",
+                          border: "1px solid rgba(108, 158, 255, 0.3)",
                         }}
                       >
                         Leader
@@ -293,30 +447,60 @@ export default function BandDetailPage() {
         </motion.div>
       </div>
 
+      {/* 구분선 */}
+      <div style={{ height: "1px", background: "#323234", margin: "0 20px 24px" }} />
+
       {/* Action Buttons */}
       <div className="px-5 pb-6 mt-auto flex flex-col gap-2">
         {isLeader ? (
           <>
-            <ButtonTemplate
-              text="구인글 작성하기"
-              isActive
-              onClick={() =>
-                router.push(`/recruit/write?band_id=${bandId}`)
-              }
+            <button
+              onClick={() => router.push(`/recruit/write?band_id=${bandId}`)}
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "8px",
+                fontFamily: "SUIT-BODY",
+                fontSize: "1rem",
+                fontWeight: 500,
+                cursor: "pointer",
+                transition: "all 0.2s",
+                background: "rgba(163, 255, 12, 0.12)",
+                color: "#A3FF0C",
+                border: "1px solid #A3FF0C",
+              }}
               type="button"
-            />
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(163, 255, 12, 0.2)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(163, 255, 12, 0.12)";
+              }}
+            >
+              구인글 작성하기
+            </button>
             <button
               onClick={handleDelete}
               style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: "8px",
                 fontFamily: "SUIT-BODY",
-                fontSize: "0.875rem",
-                color: "#FF3E2F",
-                background: "none",
-                border: "none",
+                fontSize: "1rem",
+                fontWeight: 500,
                 cursor: "pointer",
-                padding: "8px",
+                transition: "all 0.2s",
+                background: "rgba(255, 62, 47, 0.15)",
+                color: "#FF3E2F",
+                border: "1px solid rgba(255, 62, 47, 0.3)",
               }}
               type="button"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(255, 62, 47, 0.25)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255, 62, 47, 0.15)";
+              }}
             >
               밴드 삭제
             </button>
@@ -325,15 +509,27 @@ export default function BandDetailPage() {
           <button
             onClick={handleLeave}
             style={{
+              width: "100%",
+              padding: "12px 16px",
+              borderRadius: "8px",
               fontFamily: "SUIT-BODY",
-              fontSize: "0.875rem",
-              color: "#FF3E2F",
-              background: "none",
-              border: "none",
+              fontSize: "1rem",
+              fontWeight: 500,
               cursor: "pointer",
-              padding: "8px",
+              transition: "all 0.2s",
+              background: "#242426",
+              color: "#9F9FA2",
+              border: "1px solid #444447",
             }}
             type="button"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#323234";
+              e.currentTarget.style.borderColor = "#535355";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "#242426";
+              e.currentTarget.style.borderColor = "#444447";
+            }}
           >
             밴드 탈퇴
           </button>

@@ -74,7 +74,8 @@ export default function BandCreatePage() {
 
     if (result.success) {
       // 캐시 무효화: 밴드 목록 새로고침
-      queryClient.invalidateQueries({ queryKey: ["my-bands"] });
+      await queryClient.invalidateQueries({ queryKey: ["my-bands"] });
+      toast.success("밴드가 생성되었습니다!");
       router.push("/band");
     } else if (result.success === false) {
       toast.error(result.error.message);

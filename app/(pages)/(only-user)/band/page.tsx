@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Entity_Band } from "@/app/lib/interfaces/entity.interface";
-import { fetchMyBands } from "./functions/fetch";
+import { fetchMyBands, fetchAllBands } from "./functions/fetch";
 import { GenreTag, LevelTag, LocationTag, TagList } from "@/app/ui/tags/category-tag";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { STAGGER_CONTAINER, STAGGER_ITEM } from "@/app/lib/animations";
@@ -30,10 +30,12 @@ export default function BandListPage() {
   const bottomSheet = useBottomSheetStore();
   const { userProfile } = useSessionStore();
 
+  const [tab, setTab] = useState<"my" | "all">("my");
   const [genre, setGenre] = useState<GenreEnum>(null);
   const [level, setLevel] = useState<LevelEnum>(null);
   const [location, setLocation] = useState<LocationEnum>();
   const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
   // 사용자 설정 지역으로 초기화
   useEffect(() => {
@@ -46,7 +48,7 @@ export default function BandListPage() {
   }, [userProfile.isLoaded, userProfile.location]);
 
   // React Query로 데이터 관리
-  const { data: bands = [], isLoading } = useQuery({
+  const { data: bands = [], isLoading, error } = useQuery({
     queryKey: [
       "my-bands",
       { location, genre, level },
@@ -60,13 +62,63 @@ export default function BandListPage() {
       if (result.success) {
         return result.data;
       }
-      return [];
+      throw new Error(result.error?.message ?? "밴드 목록을 불러오는데 실패했습니다");
     },
     staleTime: 1000 * 60 * 5, // 5분
   });
 
   const leaderBands = bands.filter((b) => b.role === "leader");
   const memberBands = bands.filter((b) => b.role === "member");
+
+  // 모든 밴드 무한 스크롤 쿼리
+  const {
+    data: allBandsData,
+    isLoading: allBandsLoading,
+    error: allBandsError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["all-bands", { location, genre, level }],
+    queryFn: async ({ pageParam = 0 }) => {
+      const result = await fetchAllBands(
+        { location: location ?? undefined, genre: genre ?? undefined, level: level ?? undefined },
+        pageParam
+      );
+      if (result.success) return result.data;
+      throw new Error(result.error?.message ?? "밴드 목록을 불러오는데 실패했습니다");
+    },
+    getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
+    initialPageParam: 0,
+    enabled: tab === "all", // "모든 밴드" 탭일 때만 활성화
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const allBands = allBandsData?.pages.flatMap((page) => page.data) ?? [];
+
+  // 무한 스크롤
+  useEffect(() => {
+    if (tab !== "all") return;
+    if (!hasNextPage || isFetchingNextPage) return;
+    if (!bottomRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    const element = bottomRef.current;
+    observer.observe(element);
+
+    return () => {
+      observer.unobserve(element);
+      observer.disconnect();
+    };
+  }, [tab, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleFilterClick = () => {
     bottomSheet.set({
@@ -95,7 +147,7 @@ export default function BandListPage() {
               color: "var(--foreground)",
             }}
           >
-            My Band
+            Band
           </p>
           <div className="flex gap-2">
             <ButtonTemplate
@@ -106,6 +158,54 @@ export default function BandListPage() {
               type="button"
             />
           </div>
+        </div>
+
+        {/* Segment Control */}
+        <div
+          className="flex mb-3"
+          style={{
+            background: "#242426",
+            borderRadius: "8px",
+            padding: "2px",
+            border: "1px solid #323234",
+          }}
+        >
+          <button
+            onClick={() => setTab("my")}
+            style={{
+              flex: 1,
+              padding: "8px 16px",
+              borderRadius: "6px",
+              fontFamily: "SUIT-BODY",
+              fontSize: "0.875rem",
+              border: "none",
+              cursor: "pointer",
+              color: tab === "my" ? "#A3FF0C" : "#9F9FA2",
+              background: tab === "my" ? "#323234" : "transparent",
+              transition: "all 0.2s",
+            }}
+            type="button"
+          >
+            내 밴드
+          </button>
+          <button
+            onClick={() => setTab("all")}
+            style={{
+              flex: 1,
+              padding: "8px 16px",
+              borderRadius: "6px",
+              fontFamily: "SUIT-BODY",
+              fontSize: "0.875rem",
+              border: "none",
+              cursor: "pointer",
+              color: tab === "all" ? "#A3FF0C" : "#9F9FA2",
+              background: tab === "all" ? "#323234" : "transparent",
+              transition: "all 0.2s",
+            }}
+            type="button"
+          >
+            모든 밴드
+          </button>
         </div>
         <div className="flex flex-row justify-between items-center">
           <div
@@ -125,81 +225,157 @@ export default function BandListPage() {
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="flex justify-center items-center grow">
-          <p style={{ color: "#9F9FA2", fontFamily: "SUIT-BODY" }}>
-            loading...
-          </p>
-        </div>
-      ) : bands.length === 0 ? (
-        <div className="flex flex-col justify-center items-center grow gap-4 px-5">
-          <BandIcon focused={false} />
-          <p
-            style={{
-              color: "#9F9FA2",
-              fontFamily: "SUIT-BODY",
-              fontSize: "0.875rem",
-              textAlign: "center",
-            }}
-          >
-            {(genre || level || location)
-              ? "필터 조건에 맞는 밴드가 없습니다."
-              : "아직 참여 중인 밴드가 없습니다.\n밴드를 만들거나 구인 게시판에서 밴드에 지원해보세요!"}
-          </p>
-        </div>
-      ) : (
-        <div className="px-5 pb-20 overflow-without-scroll">
-          {/* 내 밴드 (리더) */}
-          {leaderBands.length > 0 && (
-            <div className="mb-6">
+      {tab === "my" ? (
+        // "내 밴드" 탭
+        <>
+          {isLoading ? (
+            <div className="flex justify-center items-center grow">
+              <p style={{ color: "#9F9FA2", fontFamily: "SUIT-BODY" }}>
+                loading...
+              </p>
+            </div>
+          ) : error ? (
+            <div className="flex flex-col justify-center items-center grow gap-4 px-5">
               <p
-                className="mb-3"
                 style={{
-                  fontFamily: "SBAggroB",
+                  color: "#FF3E2F",
+                  fontFamily: "SUIT-BODY",
                   fontSize: "0.875rem",
-                  color: "#A3FF0C",
+                  textAlign: "center",
                 }}
               >
-                My Band
+                {error.message}
               </p>
-              <motion.div
-                variants={STAGGER_CONTAINER}
-                initial="hidden"
-                animate="visible"
-                className="flex flex-col gap-2"
+            </div>
+          ) : bands.length === 0 ? (
+            <div className="flex flex-col justify-center items-center grow gap-4 px-5">
+              <BandIcon focused={false} />
+              <p
+                style={{
+                  color: "#9F9FA2",
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "0.875rem",
+                  textAlign: "center",
+                }}
               >
-                {leaderBands.map(({ band }) => (
-                  <BandCard
-                    key={band.id}
-                    band={band}
-                    isLeader
-                    onClick={() => router.push(`/band/${band.id}`)}
-                  />
-                ))}
-              </motion.div>
+                {(genre || level || (location && location !== LocationEnum.Everywhere))
+                  ? "필터 조건에 맞는 밴드가 없습니다."
+                  : "아직 참여 중인 밴드가 없습니다.\n밴드를 만들거나 구인 게시판에서 밴드에 지원해보세요!"}
+              </p>
+            </div>
+          ) : (
+            <div className="px-5 pb-20 overflow-without-scroll">
+              {/* 내 밴드 (리더) */}
+              {leaderBands.length > 0 && (
+                <div className="mb-6">
+                  <p
+                    className="mb-3"
+                    style={{
+                      fontFamily: "SBAggroB",
+                      fontSize: "0.875rem",
+                      color: "#A3FF0C",
+                    }}
+                  >
+                    My Band
+                  </p>
+                  <motion.div
+                    variants={STAGGER_CONTAINER}
+                    initial="hidden"
+                    animate="visible"
+                    className="flex flex-col gap-2"
+                  >
+                    {leaderBands.map(({ band }) => (
+                      <BandCard
+                        key={band.id}
+                        band={band}
+                        isLeader
+                        onClick={() => router.push(`/band/${band.id}`)}
+                      />
+                    ))}
+                  </motion.div>
+                </div>
+              )}
+
+              {/* 참여 밴드 (멤버) */}
+              {memberBands.length > 0 && (
+                <div>
+                  <p
+                    className="mb-3"
+                    style={{
+                      fontFamily: "SBAggroB",
+                      fontSize: "0.875rem",
+                      color: "#9F9FA2",
+                    }}
+                  >
+                    Joined Band
+                  </p>
+                  <motion.div
+                    variants={STAGGER_CONTAINER}
+                    initial="hidden"
+                    animate="visible"
+                    className="flex flex-col gap-2"
+                  >
+                    {memberBands.map(({ band }) => (
+                      <BandCard
+                        key={band.id}
+                        band={band}
+                        isLeader={false}
+                        onClick={() => router.push(`/band/${band.id}`)}
+                      />
+                    ))}
+                  </motion.div>
+                </div>
+              )}
             </div>
           )}
-
-          {/* 참여 밴드 (멤버) */}
-          {memberBands.length > 0 && (
-            <div>
+        </>
+      ) : (
+        // "모든 밴드" 탭
+        <>
+          {allBandsLoading ? (
+            <div className="flex justify-center items-center grow">
+              <p style={{ color: "#9F9FA2", fontFamily: "SUIT-BODY" }}>
+                loading...
+              </p>
+            </div>
+          ) : allBandsError ? (
+            <div className="flex flex-col justify-center items-center grow gap-4 px-5">
               <p
-                className="mb-3"
                 style={{
-                  fontFamily: "SBAggroB",
+                  color: "#FF3E2F",
+                  fontFamily: "SUIT-BODY",
                   fontSize: "0.875rem",
-                  color: "#9F9FA2",
+                  textAlign: "center",
                 }}
               >
-                Joined Band
+                {allBandsError.message}
               </p>
+            </div>
+          ) : allBands.length === 0 ? (
+            <div className="flex flex-col justify-center items-center grow gap-4 px-5">
+              <BandIcon focused={false} />
+              <p
+                style={{
+                  color: "#9F9FA2",
+                  fontFamily: "SUIT-BODY",
+                  fontSize: "0.875rem",
+                  textAlign: "center",
+                }}
+              >
+                {(genre || level || (location && location !== LocationEnum.Everywhere))
+                  ? "필터 조건에 맞는 밴드가 없습니다."
+                  : "등록된 밴드가 없습니다."}
+              </p>
+            </div>
+          ) : (
+            <div className="px-5 pb-20 overflow-without-scroll">
               <motion.div
                 variants={STAGGER_CONTAINER}
                 initial="hidden"
                 animate="visible"
                 className="flex flex-col gap-2"
               >
-                {memberBands.map(({ band }) => (
+                {allBands.map((band) => (
                   <BandCard
                     key={band.id}
                     band={band}
@@ -208,9 +384,20 @@ export default function BandListPage() {
                   />
                 ))}
               </motion.div>
+
+              {/* 무한 스크롤 로더 */}
+              {hasNextPage && (
+                <div ref={bottomRef} className="py-4 text-center">
+                  {isFetchingNextPage ? (
+                    <p style={{ color: "#9F9FA2", fontFamily: "SUIT-BODY", fontSize: "0.875rem" }}>
+                      loading...
+                    </p>
+                  ) : null}
+                </div>
+              )}
             </div>
           )}
-        </div>
+        </>
       )}
 
       <LocationPopup
