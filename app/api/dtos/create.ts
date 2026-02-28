@@ -42,6 +42,7 @@ export interface CreateBandDto {
   location: LocationEnum;
   level: LevelEnum;
   tags?: string[];
+  profile_image?: File;
 }
 
 export interface CreateBandMemberDto {

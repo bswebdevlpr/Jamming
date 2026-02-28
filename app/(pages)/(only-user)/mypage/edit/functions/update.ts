@@ -17,6 +17,7 @@ import {
 } from "@/app/lib/maps/jam";
 import { ActionResult } from "@/app/lib/types/result";
 import { createClient } from "@/app/util/supabase/server";
+import { IMAGE_UPLOAD } from "@/app/lib/constants/image";
 import sharp from "sharp";
 
 export interface UpdateProfileInput {
@@ -99,13 +100,10 @@ export const updateProfile = async (
 
     if (input.profile_image) {
       // E1: 서버 측 파일 타입/크기 검증
-      const MAX_FILE_SIZE = 10 * 1024 * 1024;
-      const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
-
-      if (input.profile_image.size > MAX_FILE_SIZE) {
+      if (input.profile_image.size > IMAGE_UPLOAD.MAX_SIZE) {
         throw CustomError.validationFailed({ operation: "updateProfile" });
       }
-      if (!ALLOWED_TYPES.includes(input.profile_image.type)) {
+      if (input.profile_image.type && !input.profile_image.type.startsWith("image/")) {
         throw CustomError.validationFailed({ operation: "updateProfile" });
       }
 
