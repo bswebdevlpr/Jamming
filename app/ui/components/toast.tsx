@@ -125,6 +125,10 @@ function ToastItem({ toast }: { toast: ToastMessage }) {
           color: colors.text,
           lineHeight: "140%",
           flex: 1,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
         }}
       >
         {toast.message}

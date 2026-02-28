@@ -23,21 +23,24 @@ const RECRUIT_DETAIL_SELECT = `
 
 function processRecruitData(data: any): Entity_RecruitPost {
   data.commentCount = data.recruit_comment?.length ?? 0;
-  data.appliedPosDict = (data.recruit_comment ?? []).reduce(
-    (acc: Record<string, number>, cur: { applied_pos: string }) => {
-      const pos = cur.applied_pos;
-      if (typeof acc[pos] === "number") acc[pos]++;
-      else acc[pos] = 1;
-      return acc;
-    },
-    (data.positions ?? []).reduce(
-      (acc: Record<string, number>, cur: { pos: string; headcnt: number }) => {
-        if (cur.headcnt > 0) acc[cur.pos] = 0;
+  // 수락된 지원자만 집계 (is_accepted === true) → 충원된 슬롯 수 표시
+  data.appliedPosDict = (data.recruit_comment ?? [])
+    .filter((cur: { is_accepted: boolean | null }) => cur.is_accepted === true)
+    .reduce(
+      (acc: Record<string, number>, cur: { applied_pos: string }) => {
+        const pos = cur.applied_pos;
+        if (typeof acc[pos] === "number") acc[pos]++;
+        else acc[pos] = 1;
         return acc;
       },
-      {} as Record<string, number>
-    )
-  );
+      (data.positions ?? []).reduce(
+        (acc: Record<string, number>, cur: { pos: string; headcnt: number }) => {
+          if (cur.headcnt > 0) acc[cur.pos] = 0;
+          return acc;
+        },
+        {} as Record<string, number>
+      )
+    );
 
   // deadline 자동 마감 체크
   if (data.is_active && data.deadline) {
@@ -55,7 +58,7 @@ export async function getRecruitPost(
   id: string
 ): Promise<Entity_RecruitPost> {
   const supabase = await createClient();
-  await getUser(supabase);
+  const user = await getUser(supabase);
 
   const { data, error } = await supabase
     .from("recruit_post")
@@ -74,11 +77,26 @@ export async function getRecruitPost(
     throw CustomError.invalidRecruit({ operation: "getRecruitPost" });
   }
 
-  // 조회수 증가 (별도 update, 에러 무시)
-  await supabase
-    .from("recruit_post")
-    .update({ view_count: (data.view_count ?? 0) + 1 })
-    .eq("id", id);
+  // 조회수 중복 방지: 동일 유저 첫 방문 시에만 증가
+  const { data: existingView, error: viewError } = await supabase
+    .from("recruit_view")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .eq("recruit_id", id)
+    .maybeSingle();
+
+  if (!viewError && !existingView) {
+    const { error: insertError } = await supabase
+      .from("recruit_view")
+      .insert({ user_id: user.id, recruit_id: id });
+
+    if (!insertError) {
+      await supabase
+        .from("recruit_post")
+        .update({ view_count: (data.view_count ?? 0) + 1 })
+        .eq("id", id);
+    }
+  }
 
   return processRecruitData(data);
 }

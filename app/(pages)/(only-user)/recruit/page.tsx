@@ -181,6 +181,10 @@ export default function RecruitFeedPage() {
   );
 }
 
+function MetaSeparator() {
+  return <MetaSeparator />;
+}
+
 function RecruitFeedItem({
   post,
   idx,
@@ -194,6 +198,9 @@ function RecruitFeedItem({
     pos: string;
     headcnt: number;
   }[];
+  const totalHeadcnt = positions.reduce((sum, p) => sum + p.headcnt, 0);
+  const acceptedCount = post.acceptedCount ?? 0;
+  const commentCount = post.commentCount ?? post.recruit_comment?.length ?? 0;
 
   const tags = [
     ...(post.location ? [<LocationTag key="loc" text={post.location} />] : []),
@@ -251,7 +258,7 @@ function RecruitFeedItem({
           </span>
         )}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         <p
           style={{
             fontFamily: "SUIT-BODY",
@@ -261,15 +268,7 @@ function RecruitFeedItem({
         >
           {post.band?.name ?? "밴드"}
         </p>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            color: "#535355",
-          }}
-        >
-          |
-        </span>
+        <MetaSeparator />
         <p
           style={{
             fontFamily: "SUIT-BODY",
@@ -277,17 +276,9 @@ function RecruitFeedItem({
             color: "#9F9FA2",
           }}
         >
-          조회 {post.view_count ?? 0}
+          모집 {totalHeadcnt}명
         </p>
-        <span
-          style={{
-            fontFamily: "SUIT-BODY",
-            fontSize: "0.75rem",
-            color: "#535355",
-          }}
-        >
-          |
-        </span>
+        <MetaSeparator />
         <p
           style={{
             fontFamily: "SUIT-BODY",
@@ -295,7 +286,17 @@ function RecruitFeedItem({
             color: "#9F9FA2",
           }}
         >
-          지원 {post.commentCount ?? post.recruit_comment?.length ?? 0}
+          지원 {commentCount}명
+        </p>
+        <MetaSeparator />
+        <p
+          style={{
+            fontFamily: "SUIT-BODY",
+            fontSize: "0.75rem",
+            color: acceptedCount >= totalHeadcnt && totalHeadcnt > 0 ? "#FFD700" : "#A3FF0C",
+          }}
+        >
+          충원 {acceptedCount}/{totalHeadcnt}명
         </p>
       </div>
       <TagList tags={tags} />

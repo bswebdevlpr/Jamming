@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { getRecruitPost } from "@/app/api/functions/recruit/read";
@@ -86,13 +87,14 @@ export default function RecruitDetailPage() {
   const params = useParams();
   const postId = params.id as string;
   const { userProfile } = useSessionStore();
+  const queryClient = useQueryClient();
 
   const [post, setPost] = useState<Entity_RecruitPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Comment form
   const [commentBody, setCommentBody] = useState("");
-  const [appliedPos, setAppliedPos] = useState<PositionEnum>(PositionEnum.Guitar);
+  const [appliedPos, setAppliedPos] = useState<PositionEnum | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isAuthor = post?.user_id === userProfile.id;
@@ -135,6 +137,14 @@ export default function RecruitDetailPage() {
     };
   }, [loadPost]);
 
+  // post 로드 후 첫 번째 포지션으로 초기화 (하드코딩 방지)
+  useEffect(() => {
+    if (post?.positions && Array.isArray(post.positions) && post.positions.length > 0) {
+      const firstPos = post.positions[0].pos;
+      setAppliedPos(firstPos as PositionEnum);
+    }
+  }, [post]);
+
   const handleClose = async () => {
     if (!confirm("구인글을 마감하시겠습니까?")) return;
     const result = await closeRecruitPost(postId);
@@ -154,7 +164,7 @@ export default function RecruitDetailPage() {
       alert("로그인이 필요합니다.");
       return;
     }
-    if (isSubmitting || !commentBody.trim()) return;
+    if (isSubmitting || !commentBody.trim() || !appliedPos) return;
     setIsSubmitting(true);
     const result = await createRecruitComment({
       recruit_id: postId,
@@ -173,14 +183,18 @@ export default function RecruitDetailPage() {
 
   const handleAccept = async (commentId: string) => {
     const result = await updateRecruitComment(commentId, true);
-    if (result.success) loadPost();
-    else if (result.success === false) alert(result.error.message);
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ["recruit-posts"] });
+      loadPost();
+    } else if (result.success === false) alert(result.error.message);
   };
 
   const handleReject = async (commentId: string) => {
     const result = await updateRecruitComment(commentId, false);
-    if (result.success) loadPost();
-    else if (result.success === false) alert(result.error.message);
+    if (result.success) {
+      queryClient.invalidateQueries({ queryKey: ["recruit-posts"] });
+      loadPost();
+    } else if (result.success === false) alert(result.error.message);
   };
 
   const handleDeleteComment = async (commentId: string) => {
@@ -843,7 +857,7 @@ export default function RecruitDetailPage() {
             </p>
             <div className="flex flex-col gap-3">
               <select
-                value={appliedPos}
+                value={appliedPos ?? ""}
                 onChange={(e) => {
                   const value = e.target.value;
                   // PositionEnum 타입 가드

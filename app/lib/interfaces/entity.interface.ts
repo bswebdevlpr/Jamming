@@ -38,6 +38,7 @@ export interface Entity_JamSession {
   images?: string[];
   openchat?: string;
   created_at?: string;
+  view_count?: number;
 
   // NOT COLUMNS
   curHeadCnt?: number;
@@ -163,6 +164,7 @@ export interface Entity_RecruitPost {
 
   // NOT COLUMNS (계산 필드)
   commentCount?: number;
+  acceptedCount?: number;
   appliedPosDict?: Record<string, number>;
 }
 

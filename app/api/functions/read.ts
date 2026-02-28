@@ -69,7 +69,7 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
   const supabase = await createClient();
 
   // 인증 확인
-  await getUser(supabase);
+  const user = await getUser(supabase);
 
   const { data, error } = await supabase
     .from("jamsession")
@@ -86,6 +86,27 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
   }
   if (!data) {
     throw CustomError.invalidJam({ operation: "getJam" });
+  }
+
+  // 조회수 중복 방지: 동일 유저 첫 방문 시에만 증가
+  const { data: existingView, error: viewError } = await supabase
+    .from("jam_view")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .eq("jam_id", id)
+    .maybeSingle();
+
+  if (!viewError && !existingView) {
+    const { error: insertError } = await supabase
+      .from("jam_view")
+      .insert({ user_id: user.id, jam_id: id });
+
+    if (!insertError) {
+      await supabase
+        .from("jamsession")
+        .update({ view_count: (data.view_count ?? 0) + 1 })
+        .eq("id", id);
+    }
   }
 
   return processJamData(data);

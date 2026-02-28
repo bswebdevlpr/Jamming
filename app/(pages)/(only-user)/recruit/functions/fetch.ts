@@ -21,7 +21,7 @@ const PAGE_SIZE = 10;
 const RECRUIT_LIST_SELECT = `
   id, title, positions, genre, level, location, view_count, deadline, is_active, created_at,
   band ( id, name, profile_image ),
-  recruit_comment ( id )
+  recruit_comment ( id, is_accepted )
 `;
 
 export async function fetchRecruitPosts({
@@ -71,13 +71,14 @@ export async function fetchRecruitPosts({
       );
     }
 
-    // 각 게시글에 commentCount 추가 및 타입 변환
+    // 각 게시글에 commentCount/acceptedCount 추가 및 타입 변환
     const processedData = (data ?? []).map((row) => {
       const { recruit_comment, ...rest } = row;
       return {
         ...rest,
         band: Array.isArray(row.band) ? row.band[0] : row.band,
         commentCount: recruit_comment?.length ?? 0,
+        acceptedCount: (recruit_comment ?? []).filter((c: { is_accepted: boolean | null }) => c.is_accepted === true).length,
       };
     }) as Entity_RecruitPost[];
 

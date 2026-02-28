@@ -18,7 +18,7 @@ export async function createRecruitComment(
     // 게시글 활성 여부 확인
     const { data: post, error: postErr } = await supabase
       .from("recruit_post")
-      .select("id, is_active, deadline")
+      .select("id, is_active, deadline, positions")
       .eq("id", input.recruit_id)
       .single();
 
@@ -41,6 +41,16 @@ export async function createRecruitComment(
     if (!post.is_active) {
       throw CustomError.recruitNotActive({
         operation: "createRecruitComment",
+      });
+    }
+
+    // 게시글에 존재하는 포지션인지 검증
+    const validPositions = (post.positions ?? []).map(
+      (p: { pos: string }) => p.pos
+    );
+    if (!validPositions.includes(input.applied_pos)) {
+      throw CustomError.invalidRecruit({
+        operation: "createRecruitComment: invalid applied_pos",
       });
     }
 

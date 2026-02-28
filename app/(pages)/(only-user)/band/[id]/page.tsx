@@ -447,7 +447,7 @@ export default function BandDetailPage() {
           variants={STAGGER_CONTAINER}
           initial="hidden"
           animate="visible"
-          className="flex flex-col gap-2"
+          className="grid grid-cols-2 gap-2"
         >
           {band.band_member?.map((member) => (
             <motion.div
@@ -529,10 +529,10 @@ export default function BandDetailPage() {
                   </div>
                   <PositionTag
                     text={member.pos}
-                    className=""
                     style={{
                       fontSize: "0.625rem",
                       padding: "2px 6px",
+                      display: "inline-flex",
                     }}
                   />
                 </div>
@@ -594,21 +594,17 @@ export default function BandDetailPage() {
                 disabled={isSubmitting}
                 style={{
                   ...ACTION_BUTTON_BASE,
-                  background: "#242426",
-                  color: "#9F9FA2",
-                  border: "1px solid #444447",
+                  background: "rgba(255, 62, 47, 0.15)",
+                  color: "#FF3E2F",
+                  border: "1px solid rgba(255, 62, 47, 0.3)",
                   opacity: isSubmitting ? 0.5 : 1,
                 }}
                 type="button"
                 onMouseEnter={(e) => {
-                  if (!isSubmitting) {
-                    e.currentTarget.style.background = "#323234";
-                    e.currentTarget.style.borderColor = "#535355";
-                  }
+                  if (!isSubmitting) e.currentTarget.style.background = "rgba(255, 62, 47, 0.25)";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "#242426";
-                  e.currentTarget.style.borderColor = "#444447";
+                  e.currentTarget.style.background = "rgba(255, 62, 47, 0.15)";
                 }}
               >
                 {isSubmitting ? "탈퇴 중..." : "밴드 탈퇴"}
