@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, type CSSProperties } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
@@ -47,6 +48,17 @@ const INFO_LABEL_STYLE = {
   color: "#9F9FA2",
   textTransform: "uppercase" as const,
   letterSpacing: "0.5px",
+};
+
+const ACTION_BUTTON_BASE: CSSProperties = {
+  width: "100%",
+  padding: "12px 16px",
+  borderRadius: "8px",
+  fontFamily: "SUIT-BODY",
+  fontSize: "1rem",
+  fontWeight: 500,
+  cursor: "pointer",
+  transition: "all 0.2s",
 };
 
 export default function BandDetailPage() {
@@ -108,28 +120,39 @@ export default function BandDetailPage() {
   }
 
   const isLeader = band?.leader_id === userProfile.id;
+  const isMember = band?.band_member?.some((m) => m.user_id === userProfile.id) ?? false;
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleDelete = async () => {
+    if (isSubmitting) return;
     if (!confirm("정말 밴드를 삭제하시겠습니까? 모든 데이터가 삭제됩니다.")) return;
+    setIsSubmitting(true);
     const result = await deleteBand(bandId);
     if (isError(result)) {
       toast.error(result.error.message);
+      setIsSubmitting(false);
       return;
     }
-    // 캐시 무효화
     queryClient.invalidateQueries({ queryKey: ["my-bands"] });
+    queryClient.invalidateQueries({ queryKey: ["all-bands"] });
+    toast.success("밴드가 삭제되었습니다.");
     router.push("/band");
   };
 
   const handleLeave = async () => {
+    if (isSubmitting) return;
     if (!confirm("밴드를 탈퇴하시겠습니까?")) return;
+    setIsSubmitting(true);
     const result = await leaveBand(bandId);
     if (isError(result)) {
       toast.error(result.error.message);
+      setIsSubmitting(false);
       return;
     }
-    // 캐시 무효화
     queryClient.invalidateQueries({ queryKey: ["my-bands"] });
+    queryClient.invalidateQueries({ queryKey: ["all-bands"] });
+    toast.success("밴드에서 탈퇴했습니다.");
     router.push("/band");
   };
 
@@ -227,6 +250,78 @@ export default function BandDetailPage() {
       </div>
 
       {/* Header와 Content 사이 구분선 */}
+      <div style={{ height: "1px", background: "#323234", margin: "0 20px" }} />
+
+      {/* Hero: 프로필 이미지 + 밴드명 + 메타 */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: "24px 20px 20px",
+          gap: "10px",
+        }}
+      >
+        {/* 아바타 */}
+        <div
+          style={{
+            width: "80px",
+            height: "80px",
+            borderRadius: "50%",
+            overflow: "hidden",
+            background: "#242426",
+            border: "2px solid rgba(108, 158, 255, 0.5)",
+            boxShadow: "0 0 0 4px rgba(108, 158, 255, 0.1)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          {band.profile_image ? (
+            <img
+              src={band.profile_image}
+              alt={band.name ?? ""}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <span style={{ fontSize: "2rem", color: "#535355" }}>♪</span>
+          )}
+        </div>
+
+        {/* 밴드명 */}
+        <p
+          style={{
+            fontFamily: "SUIT-TITLE",
+            fontSize: "1.125rem",
+            fontWeight: 700,
+            color: "#fff",
+            letterSpacing: "-0.3px",
+          }}
+        >
+          {band.name}
+        </p>
+
+        {/* 메타: 지역 · 인원 · 실력대 */}
+        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          {band.location && (
+            <span style={{ fontFamily: "SUIT-BODY", fontSize: "0.75rem", color: "#9F9FA2" }}>
+              {band.location}
+            </span>
+          )}
+          {band.location && <div style={{ width: "3px", height: "3px", borderRadius: "50%", background: "#535355" }} />}
+          <span style={{ fontFamily: "SUIT-BODY", fontSize: "0.75rem", color: "#9F9FA2" }}>
+            {band.band_member?.length ?? 0}명
+          </span>
+          {band.level && <div style={{ width: "3px", height: "3px", borderRadius: "50%", background: "#535355" }} />}
+          {band.level && (
+            <span style={{ fontFamily: "SUIT-BODY", fontSize: "0.75rem", color: "#9F9FA2" }}>
+              {band.level}
+            </span>
+          )}
+        </div>
+      </div>
+
       <div style={{ height: "1px", background: "#323234", margin: "0 20px 24px" }} />
 
       {/* Band Info */}
@@ -447,94 +542,81 @@ export default function BandDetailPage() {
         </motion.div>
       </div>
 
-      {/* 구분선 */}
-      <div style={{ height: "1px", background: "#323234", margin: "0 20px 24px" }} />
-
-      {/* Action Buttons */}
-      <div className="px-5 pb-6 mt-auto flex flex-col gap-2">
-        {isLeader ? (
-          <>
-            <button
-              onClick={() => router.push(`/recruit/write?band_id=${bandId}`)}
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: "8px",
-                fontFamily: "SUIT-BODY",
-                fontSize: "1rem",
-                fontWeight: 500,
-                cursor: "pointer",
-                transition: "all 0.2s",
-                background: "rgba(163, 255, 12, 0.12)",
-                color: "#A3FF0C",
-                border: "1px solid #A3FF0C",
-              }}
-              type="button"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(163, 255, 12, 0.2)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(163, 255, 12, 0.12)";
-              }}
-            >
-              구인글 작성하기
-            </button>
-            <button
-              onClick={handleDelete}
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                borderRadius: "8px",
-                fontFamily: "SUIT-BODY",
-                fontSize: "1rem",
-                fontWeight: 500,
-                cursor: "pointer",
-                transition: "all 0.2s",
-                background: "rgba(255, 62, 47, 0.15)",
-                color: "#FF3E2F",
-                border: "1px solid rgba(255, 62, 47, 0.3)",
-              }}
-              type="button"
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(255, 62, 47, 0.25)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(255, 62, 47, 0.15)";
-              }}
-            >
-              밴드 삭제
-            </button>
-          </>
-        ) : (
-          <button
-            onClick={handleLeave}
-            style={{
-              width: "100%",
-              padding: "12px 16px",
-              borderRadius: "8px",
-              fontFamily: "SUIT-BODY",
-              fontSize: "1rem",
-              fontWeight: 500,
-              cursor: "pointer",
-              transition: "all 0.2s",
-              background: "#242426",
-              color: "#9F9FA2",
-              border: "1px solid #444447",
-            }}
-            type="button"
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#323234";
-              e.currentTarget.style.borderColor = "#535355";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#242426";
-              e.currentTarget.style.borderColor = "#444447";
-            }}
-          >
-            밴드 탈퇴
-          </button>
-        )}
-      </div>
+      {/* Action Buttons (멤버/리더만 표시) */}
+      {(isLeader || isMember) && (
+        <>
+          <div style={{ height: "1px", background: "#323234", margin: "0 20px 24px" }} />
+          <div className="px-5 pb-6 mt-auto flex flex-col gap-2">
+            {isLeader ? (
+              <>
+                <button
+                  onClick={() => router.push(`/recruit/write?band_id=${bandId}`)}
+                  style={{
+                    ...ACTION_BUTTON_BASE,
+                    background: "rgba(163, 255, 12, 0.12)",
+                    color: "#A3FF0C",
+                    border: "1px solid #A3FF0C",
+                  }}
+                  type="button"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "rgba(163, 255, 12, 0.2)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "rgba(163, 255, 12, 0.12)";
+                  }}
+                >
+                  구인글 작성하기
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={isSubmitting}
+                  style={{
+                    ...ACTION_BUTTON_BASE,
+                    background: "rgba(255, 62, 47, 0.15)",
+                    color: "#FF3E2F",
+                    border: "1px solid rgba(255, 62, 47, 0.3)",
+                    opacity: isSubmitting ? 0.5 : 1,
+                  }}
+                  type="button"
+                  onMouseEnter={(e) => {
+                    if (!isSubmitting) e.currentTarget.style.background = "rgba(255, 62, 47, 0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "rgba(255, 62, 47, 0.15)";
+                  }}
+                >
+                  {isSubmitting ? "삭제 중..." : "밴드 삭제"}
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={handleLeave}
+                disabled={isSubmitting}
+                style={{
+                  ...ACTION_BUTTON_BASE,
+                  background: "#242426",
+                  color: "#9F9FA2",
+                  border: "1px solid #444447",
+                  opacity: isSubmitting ? 0.5 : 1,
+                }}
+                type="button"
+                onMouseEnter={(e) => {
+                  if (!isSubmitting) {
+                    e.currentTarget.style.background = "#323234";
+                    e.currentTarget.style.borderColor = "#535355";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#242426";
+                  e.currentTarget.style.borderColor = "#444447";
+                }}
+              >
+                {isSubmitting ? "탈퇴 중..." : "밴드 탈퇴"}
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

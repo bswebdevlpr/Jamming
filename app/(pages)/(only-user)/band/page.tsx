@@ -431,7 +431,7 @@ function BandCard({
   return (
     <motion.div
       variants={STAGGER_ITEM}
-      className="w-full flex justify-between items-center py-3 px-3"
+      className="w-full flex items-center gap-3 py-3 px-3"
       style={{
         borderBottom: "1px solid var(--border)",
         cursor: "pointer",
@@ -441,6 +441,33 @@ function BandCard({
       whileHover={{ background: "rgba(163, 255, 12, 0.05)" }}
       whileTap={{ scale: 0.98 }}
     >
+      {/* 아바타 */}
+      <div
+        style={{
+          width: "44px",
+          height: "44px",
+          borderRadius: "50%",
+          background: "#242426",
+          border: isLeader ? "1px solid rgba(108, 158, 255, 0.5)" : "1px solid #323234",
+          overflow: "hidden",
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {band.profile_image ? (
+          <img
+            src={band.profile_image}
+            alt={band.name ?? ""}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : (
+          <span style={{ fontSize: "1.25rem", color: "#535355" }}>♪</span>
+        )}
+      </div>
+
+      {/* 텍스트 영역 */}
       <div className="flex flex-col gap-1.5" style={{ minWidth: 0, flex: 1 }}>
         <div className="flex gap-2 items-center">
           <p

@@ -44,8 +44,10 @@ export async function deleteBand(
     }
 
     if (imagesToDelete.length > 0) {
+      const storageName = process.env.SUPABASE_STORAGE_NAME;
+      if (!storageName) throw new Error("SUPABASE_STORAGE_NAME is not defined");
       await supabase.storage
-        .from(process.env.SUPABASE_STORAGE_NAME!)
+        .from(storageName)
         .remove(imagesToDelete);
     }
 
