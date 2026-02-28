@@ -28,7 +28,8 @@ export const MemberComponent = (
   bottomSheet: BottomSheetContext,
   onClickRejam: Dispatch<SetStateAction<boolean>>,
   handleNoShow: (noShowState: boolean, entryId: number) => void,
-  setRejamTargetUserId: (targetUserId: string) => void
+  setRejamTargetUserId: (targetUserId: string) => void,
+  onClickProfile: (nickname: string) => void
 ) => {
   const { nickname, bpm, location, pos, genre, level, profile_image } =
     entry.user;
@@ -43,7 +44,12 @@ export const MemberComponent = (
         borderBottom: "1px solid #323234",
       }}
     >
-      <RadixAvatar width={52} height={52} src={profile_image} pos={pos} />
+      <div
+        style={{ cursor: nickname ? "pointer" : "default" }}
+        onClick={() => nickname && onClickProfile(nickname)}
+      >
+        <RadixAvatar width={52} height={52} src={profile_image} pos={pos} />
+      </div>
       <div className="grow flex flex-row justify-between">
         <div className="flex flex-col gap-1">
           <div className="flex gap-2">

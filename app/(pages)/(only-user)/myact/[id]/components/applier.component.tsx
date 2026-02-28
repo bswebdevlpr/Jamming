@@ -12,11 +12,13 @@ import {
 } from "@/app/ui/tags/category-tag";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { allowEntry, refuseEntry } from "../functions/fetch";
+import RadixAvatar from "@/app/ui/templates/avatar";
 
 export const ApplierComponent = (
   entry: Entity_JamEntry,
   refuseEntryState: () => void,
-  allowEntryState: () => void
+  allowEntryState: () => void,
+  onClickProfile: (nickname: string) => void
 ) => {
   const user = entry.user;
 
@@ -24,14 +26,11 @@ export const ApplierComponent = (
     <div className="flex flex-col gap-6 mt-3 mb-2">
       <div className="grow flex flex-row gap-4 items-center">
         <div
-          style={{
-            width: "60px",
-            height: "60px",
-            borderRadius: "100px",
-            background:
-              "linear-gradient(0deg, rgba(255, 187, 12, 0.70) 0%, rgba(255, 187, 12, 0.70) 100%)",
-          }}
-        />
+          style={{ cursor: user.nickname ? "pointer" : "default" }}
+          onClick={() => user.nickname && onClickProfile(user.nickname)}
+        >
+          <RadixAvatar width={60} height={60} src={user.profile_image} pos={user.pos} />
+        </div>
         <div className="grow flex flex-row justify-between">
           <div className="flex flex-col gap-1">
             <p

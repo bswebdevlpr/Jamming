@@ -138,7 +138,8 @@ export default function MyAct() {
             ApplierComponent(
               applierEntries[0],
               refuseEntryState,
-              allowEntryState
+              allowEntryState,
+              (nickname) => router.push(`/user-profile/${nickname}`)
             )}
         </>
       )}
@@ -167,7 +168,8 @@ export default function MyAct() {
             bottomSheet,
             setIsRejamOn,
             handleNoShow,
-            setRejamTargetUserId
+            setRejamTargetUserId,
+            (nickname) => router.push(`/user-profile/${nickname}`)
           )
         )}
       </div>

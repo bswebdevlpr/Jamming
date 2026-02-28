@@ -458,7 +458,9 @@ export default function BandDetailPage() {
                 background: "#242426",
                 border: "1px solid #323234",
                 borderRadius: "8px",
+                cursor: member.user?.nickname ? "pointer" : "default",
               }}
+              onClick={() => member.user?.nickname && router.push(`/user-profile/${member.user.nickname}`)}
             >
               <div className="flex items-start gap-3">
                 <div

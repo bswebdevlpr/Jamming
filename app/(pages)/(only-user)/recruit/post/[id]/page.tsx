@@ -680,7 +680,9 @@ export default function RecruitDetailPage() {
                       alignItems: "center",
                       overflow: "hidden",
                       flexShrink: 0,
+                      cursor: comment.user?.nickname ? "pointer" : "default",
                     }}
+                    onClick={() => comment.user?.nickname && router.push(`/user-profile/${comment.user.nickname}`)}
                   >
                     {comment.user?.profile_image ? (
                       <img
@@ -710,7 +712,9 @@ export default function RecruitDetailPage() {
                           fontFamily: "SUIT-BODY",
                           fontSize: "0.875rem",
                           color: "#ededed",
+                          cursor: comment.user?.nickname ? "pointer" : "default",
                         }}
+                        onClick={() => comment.user?.nickname && router.push(`/user-profile/${comment.user.nickname}`)}
                       >
                         {comment.user?.nickname ?? "알 수 없음"}
                       </p>

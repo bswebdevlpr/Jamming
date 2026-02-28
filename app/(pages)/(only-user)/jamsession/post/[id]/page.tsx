@@ -317,7 +317,9 @@ export default function JamSession_Post() {
         className="flex flex-row px-4 py-2 gap-3"
         style={{
           borderBottom: "1px solid #333335",
+          cursor: jam.user?.nickname ? "pointer" : "default",
         }}
+        onClick={() => jam.user?.nickname && router.push(`/user-profile/${jam.user.nickname}`)}
       >
         <RadixAvatar
           width={44}

@@ -7,6 +7,7 @@ import { createClient } from "@/app/util/supabase/server";
 import { getUser } from "../read";
 import { CreateRecruitCommentDto } from "../../dtos/create";
 import { sanitize } from "@/app/lib/functions/validate";
+import { createNotification } from "../notification";
 
 export async function createRecruitComment(
   input: CreateRecruitCommentDto
@@ -18,7 +19,7 @@ export async function createRecruitComment(
     // 게시글 활성 여부 확인
     const { data: post, error: postErr } = await supabase
       .from("recruit_post")
-      .select("id, is_active, deadline, positions")
+      .select("id, is_active, deadline, positions, band_id, title")
       .eq("id", input.recruit_id)
       .single();
 
@@ -87,6 +88,24 @@ export async function createRecruitComment(
       );
     }
 
+    // 밴드장에게 지원 알림 전송
+    if (post.band_id) {
+      const [{ data: band }, { data: applicant }] = await Promise.all([
+        supabase.from("band").select("leader_id, name").eq("id", post.band_id).maybeSingle(),
+        supabase.from("user").select("nickname").eq("id", user.id).maybeSingle(),
+      ]);
+
+      if (band?.leader_id && band.leader_id !== user.id) {
+        await createNotification(
+          band.leader_id,
+          "recruit_apply",
+          "구인글에 새 지원이 도착했어요",
+          `${applicant?.nickname ?? "누군가"}님이 '${post.title ?? "구인글"}'에 지원했어요.`,
+          { recruit_id: input.recruit_id }
+        );
+      }
+    }
+
     return true;
   });
 }
@@ -127,7 +146,7 @@ export async function updateRecruitComment(
 
     const { data: band } = await supabase
       .from("band")
-      .select("id, leader_id")
+      .select("id, leader_id, name")
       .eq("id", post.band_id)
       .single();
 
@@ -151,8 +170,16 @@ export async function updateRecruitComment(
       );
     }
 
-    // 수락 시 밴드 멤버 자동 추가
+    // 수락 시: 알림 전송 + 밴드 멤버 자동 추가
     if (isAccepted) {
+      await createNotification(
+        comment.user_id,
+        "recruit_accept",
+        "구인 지원이 수락됐어요",
+        `'${band.name ?? "밴드"}' 밴드에 합류하게 됐어요!`,
+        { recruit_id: comment.recruit_id, band_id: band.id }
+      );
+
       // 멤버 수 제한 체크
       const { count: memberCount } = await supabase
         .from("band_member")

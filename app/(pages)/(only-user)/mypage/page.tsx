@@ -1,8 +1,19 @@
 "use client";
 
+import { getMyBands } from "@/app/api/functions/band/read";
+import { FEEDBACK_CONFIG } from "@/app/lib/config/feedback";
+import {
+  Entity_Band,
+  Entity_User,
+} from "@/app/lib/interfaces/entity.interface";
+import { useFeedbackStore, useSessionStore } from "@/app/stores";
+import BPMBar from "@/app/ui/bpm/bpm-bar";
+import BandRow from "@/app/ui/components/band-row";
+import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
 import { LeftArrowWhite } from "@/app/ui/images/arrows";
+import { EditGrayIcon } from "@/app/ui/images/mypage/edit/edits";
+import MyListIcon from "@/app/ui/images/mypage/note";
 import SettingIcon from "@/app/ui/images/mypage/setting";
-import RadixAvatar from "@/app/ui/templates/avatar";
 import {
   GenreTag,
   LevelTag,
@@ -10,18 +21,12 @@ import {
   PositionTag,
   TagList,
 } from "@/app/ui/tags/category-tag";
-import { useState } from "react";
-import { redirect, usePathname, useRouter } from "next/navigation";
-import { EditGrayIcon } from "@/app/ui/images/mypage/edit/edits";
-import { Entity_User } from "@/app/lib/interfaces/entity.interface";
-import { createFeedback } from "./functions/fetch";
-import { ImageWithTxt } from "@/app/ui/templates/images";
-import MyListIcon from "@/app/ui/images/mypage/note";
-import { Grid_PlayList, GridItem_PlayList } from "@/app/ui/grids/playlist.grid";
+import RadixAvatar from "@/app/ui/templates/avatar";
 import ButtonTemplate from "@/app/ui/templates/buttons";
-import BPMBar from "@/app/ui/bpm/bpm-bar";
-import { useSessionStore, useFeedbackStore } from "@/app/stores";
-import { FEEDBACK_CONFIG } from "@/app/lib/config/feedback";
+import { ImageWithTxt } from "@/app/ui/templates/images";
+import { redirect, usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createFeedback } from "./functions/fetch";
 
 export default function MyPage() {
   // HOOOKS
@@ -36,7 +41,18 @@ export default function MyPage() {
   // STATES
   const [feedback, setFeedback] = useState<string>("");
   const [placeholder, setPlaceholder] = useState<string>("");
+  const [myBands, setMyBands] = useState<{ band: Entity_Band; role: string }[]>(
+    [],
+  );
   //
+
+  useEffect(() => {
+    let cancelled = false;
+    getMyBands()
+      .then((bands) => { if (!cancelled) setMyBands(bands); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const isAvailable = canSubmit();
   const cooldown = getCooldownRemaining();
@@ -116,11 +132,35 @@ export default function MyPage() {
                   </span>
                   {tag}
                 </p>
-              )
+              ),
           )}
         </div>
       )}
       <BPMBar user={userProfile as Entity_User} className="mt-9" />
+      {myBands.length > 0 && (
+        <div className="w-full mt-2 mb-8">
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "1rem",
+              color: "#FFF",
+              marginBottom: "12px",
+            }}
+          >
+            소속 밴드
+          </p>
+          <div className="flex flex-col gap-2">
+            {myBands.map(({ band, role }) => (
+              <BandRow
+                key={band.id}
+                band={band}
+                role={role}
+                onClick={() => router.push(`/band/${band.id}`)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
       <div className="w-full flex flex-col">
         <div
           className="flex justify-between mb-4"
@@ -277,12 +317,12 @@ export default function MyPage() {
                 } else if (result.success === false) {
                   if (result.error.code === "RATE_LIMIT_EXCEEDED") {
                     setPlaceholder(
-                      FEEDBACK_CONFIG.ERROR_MESSAGES.RATE_LIMIT_EXCEEDED
+                      FEEDBACK_CONFIG.ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
                     );
                   } else {
                     setPlaceholder(
                       result.error.message ||
-                        FEEDBACK_CONFIG.ERROR_MESSAGES.VALIDATION_FAILED
+                        FEEDBACK_CONFIG.ERROR_MESSAGES.VALIDATION_FAILED,
                     );
                   }
                 }

@@ -11,11 +11,13 @@ import {
 } from "@/app/ui/tags/category-tag";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Entity_User } from "@/app/lib/interfaces/entity.interface";
+import { Entity_Band, Entity_User } from "@/app/lib/interfaces/entity.interface";
 import { getUserByNickname } from "./functions/fetch";
+import { getBandsByUserId } from "@/app/api/functions/band/read";
 import { convertBPMToTempo } from "@/app/lib/functions/convert";
 import { List_PlayList, ListItem_PlayList } from "@/app/ui/lists/playlist.list";
 import BPMBar from "@/app/ui/bpm/bpm-bar";
+import BandRow from "@/app/ui/components/band-row";
 
 export default function MyPage() {
   const { nickname } = useParams();
@@ -23,9 +25,12 @@ export default function MyPage() {
 
   // STATES
   const [targetUser, setTargetUser] = useState<Entity_User | null>(null);
+  const [userBands, setUserBands] = useState<{ band: Entity_Band; role: string }[]>([]);
   //
 
   useEffect(() => {
+    let cancelled = false;
+
     (async () => {
       const result = await getUserByNickname(nickname as string);
       if (result.success === false) {
@@ -34,8 +39,17 @@ export default function MyPage() {
         return;
       }
 
-      setTargetUser(result.data);
+      if (!cancelled) setTargetUser(result.data);
+
+      if (result.data?.id) {
+        try {
+          const bands = await getBandsByUserId(result.data.id);
+          if (!cancelled) setUserBands(bands);
+        } catch {}
+      }
     })();
+
+    return () => { cancelled = true; };
   }, [nickname]);
 
   return (
@@ -88,6 +102,30 @@ export default function MyPage() {
         ]}
       />
       <BPMBar user={targetUser} className="mt-7 mb-5.5" hideIfPrivate />
+      {userBands.length > 0 && (
+        <div className="w-full mb-6">
+          <p
+            style={{
+              fontFamily: "SUIT-BODY",
+              fontSize: "1rem",
+              color: "#FFF",
+              marginBottom: "12px",
+            }}
+          >
+            소속 밴드
+          </p>
+          <div className="flex flex-col gap-2">
+            {userBands.map(({ band, role }) => (
+              <BandRow
+                key={band.id}
+                band={band}
+                role={role}
+                onClick={() => router.push(`/band/${band.id}`)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
       <div className="w-full flex flex-col">
         <div
           className="flex justify-between px-4"

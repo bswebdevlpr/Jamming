@@ -129,6 +129,40 @@ export async function getMyBands(
   });
 }
 
+export async function getBandsByUserId(
+  userId: string
+): Promise<{ band: Entity_Band; role: string }[]> {
+  const supabase = await createClient();
+  await getUser(supabase);
+
+  const { data, error } = await supabase
+    .from("band_member")
+    .select(
+      `
+      role,
+      band!inner (
+        id, name, genre, location, level, profile_image,
+        band_member ( id )
+      )
+    `
+    )
+    .eq("user_id", userId);
+
+  if (error) {
+    throw CustomError.fromSupabaseError(
+      ErrorCode.UNEXPECTED,
+      error,
+      "getBandsByUserId"
+    );
+  }
+
+  return (data ?? []).map((row: any) => {
+    const band = transformBandFromDB(row.band);
+    band.memberCount = band.band_member?.length ?? 0;
+    return { band, role: row.role };
+  });
+}
+
 export async function getAllBands(
   filter?: Filter_BandList,
   page?: number
