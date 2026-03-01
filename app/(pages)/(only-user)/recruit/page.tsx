@@ -12,7 +12,6 @@ import {
 import { Entity_RecruitPost } from "@/app/lib/interfaces/entity.interface";
 import { GenreEnum } from "@/app/lib/enums/genre.enum";
 import { LevelEnum } from "@/app/lib/enums/level.enum";
-import { LocationEnum } from "@/app/lib/enums/location.enum";
 import { PositionEnum } from "@/app/lib/enums/position.enum";
 import {
   GenreTag,
@@ -23,34 +22,24 @@ import {
 } from "@/app/ui/tags/category-tag";
 import { STAGGER_CONTAINER, STAGGER_ITEM } from "@/app/lib/animations";
 import RecruitIcon from "@/app/ui/images/navbar/recruit-icon";
-import { useBottomSheetStore, useSessionStore } from "@/app/stores";
+import { useBottomSheetStore } from "@/app/stores";
 import RecruitBottomSheetContent from "./bottom-sheet/content";
 import FilterButton from "@/app/ui/buttons/filter";
 import LocationPopup from "@/app/ui/popup/location";
 import { DownArrow } from "@/app/ui/images/arrows";
-import { dbLocationToEnum, getLocationDisplay } from "@/app/lib/utils/location";
+import { getLocationDisplay } from "@/app/lib/utils/location";
+import { useLocationFilter } from "@/app/lib/hooks/useLocationFilter";
 
 export default function RecruitFeedPage() {
   const router = useRouter();
   const { ref: scrollRef, inView } = useInView();
   const bottomSheet = useBottomSheetStore();
-  const { userProfile } = useSessionStore();
 
   const [genre, setGenre] = useState<GenreEnum>(null);
   const [position, setPosition] = useState<PositionEnum>(null);
   const [level, setLevel] = useState<LevelEnum>(null);
-  const [location, setLocation] = useState<LocationEnum>();
+  const { location, setLocation } = useLocationFilter();
   const [isLocationPopupOpen, setIsLocationPopupOpen] = useState(false);
-
-  // 사용자 설정 지역으로 초기화
-  useEffect(() => {
-    if (userProfile.isLoaded && userProfile.location) {
-      const mapped = dbLocationToEnum(userProfile.location);
-      setLocation(mapped ?? LocationEnum.Everywhere);
-    } else if (userProfile.isLoaded && !userProfile.location) {
-      setLocation(LocationEnum.Everywhere);
-    }
-  }, [userProfile.isLoaded, userProfile.location]);
 
   const { data, isLoading, fetchNextPage, hasNextPage } = useInfiniteQuery({
     queryKey: [
@@ -182,7 +171,7 @@ export default function RecruitFeedPage() {
 }
 
 function MetaSeparator() {
-  return <MetaSeparator />;
+  return <span style={{ color: "#9F9FA2" }}>·</span>;
 }
 
 function RecruitFeedItem({
