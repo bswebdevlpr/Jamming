@@ -210,9 +210,7 @@ function RecruitFeedItem({
     ...(post.genre
       ? post.genre.map((g, i) => <GenreTag key={`g-${i}`} text={g} />)
       : []),
-    ...(post.level
-      ? post.level.map((l, i) => <LevelTag key={`l-${i}`} text={l} />)
-      : []),
+    ...(post.level ? [<LevelTag key="lvl" text={post.level} />] : []),
   ];
 
   return (

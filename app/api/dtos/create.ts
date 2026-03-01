@@ -61,6 +61,9 @@ export interface CreateRecruitPostDto {
   title: string;
   body: string;
   positions: { pos: string; headcnt: number }[];
+  genre?: GenreEnum[];
+  level?: LevelEnum[];
+  location?: LocationEnum;
   songs?: { title: string; artist: string; album_cover_url: string }[];
   images?: string[];
   video_url?: string;

@@ -6,6 +6,7 @@ import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Entity_Band } from "@/app/lib/interfaces/entity.interface";
 import { fetchMyBands, fetchAllBands } from "./functions/fetch";
+import { isError } from "@/app/lib/types/result";
 import { GenreTag, LevelTag, LocationTag, TagList } from "@/app/ui/tags/category-tag";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { STAGGER_CONTAINER, STAGGER_ITEM } from "@/app/lib/animations";
@@ -59,10 +60,10 @@ export default function BandListPage() {
         genre: genre ?? undefined,
         level: level ?? undefined,
       });
-      if (result.success) {
-        return result.data;
+      if (isError(result)) {
+        throw new Error(result.error.message ?? "밴드 목록을 불러오는데 실패했습니다");
       }
-      throw new Error(result.error?.message ?? "밴드 목록을 불러오는데 실패했습니다");
+      return result.data;
     },
     staleTime: 1000 * 60 * 5, // 5분
   });
@@ -85,8 +86,10 @@ export default function BandListPage() {
         { location: location ?? undefined, genre: genre ?? undefined, level: level ?? undefined },
         pageParam
       );
-      if (result.success) return result.data;
-      throw new Error(result.error?.message ?? "밴드 목록을 불러오는데 실패했습니다");
+      if (isError(result)) {
+        throw new Error(result.error.message ?? "밴드 목록을 불러오는데 실패했습니다");
+      }
+      return result.data;
     },
     getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
     initialPageParam: 0,
