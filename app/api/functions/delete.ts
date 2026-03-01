@@ -28,10 +28,16 @@ export const deleteJamSession = async (
       );
     }
 
-    if (data && data.length > 0 && data[0].images?.length > 0)
-      await supabase.storage
-        .from(process.env.SUPABASE_STORAGE_NAME)
+    if (data && data.length > 0 && data[0].images?.length > 0) {
+      const storageName = process.env.SUPABASE_STORAGE_NAME;
+      if (!storageName) throw new Error("SUPABASE_STORAGE_NAME is not defined");
+      const { error: storageErr } = await supabase.storage
+        .from(storageName)
         .remove(data[0].images);
+      if (storageErr) {
+        console.error("[deleteJamSession] Storage image removal failed:", storageErr.message);
+      }
+    }
 
     return true;
   });

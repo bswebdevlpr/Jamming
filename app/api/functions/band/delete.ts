@@ -46,9 +46,12 @@ export async function deleteBand(
     if (imagesToDelete.length > 0) {
       const storageName = process.env.SUPABASE_STORAGE_NAME;
       if (!storageName) throw new Error("SUPABASE_STORAGE_NAME is not defined");
-      await supabase.storage
+      const { error: storageErr } = await supabase.storage
         .from(storageName)
         .remove(imagesToDelete);
+      if (storageErr) {
+        console.error("[deleteBand] Storage image removal failed:", storageErr.message);
+      }
     }
 
     // CASCADE로 band_member, recruit_post, recruit_comment 자동 삭제

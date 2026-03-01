@@ -103,7 +103,10 @@ export async function createBand(
 
     if (memberErr) {
       // 멤버 추가 실패 시 밴드 삭제 (롤백)
-      await supabase.from("band").delete().eq("id", band.id);
+      const { error: rollbackErr } = await supabase.from("band").delete().eq("id", band.id);
+      if (rollbackErr) {
+        console.error("[createBand] Rollback failed:", rollbackErr.message);
+      }
       throw CustomError.fromSupabaseError(
         ErrorCode.UNEXPECTED,
         memberErr,
@@ -150,10 +153,18 @@ export async function createBand(
           .from(storageName)
           .getPublicUrl(uploadResult.data.path).data.publicUrl;
 
-        await supabase
+        const { error: updateErr } = await supabase
           .from("band")
           .update({ profile_image: publicUrl })
           .eq("id", band.id);
+
+        if (updateErr) {
+          throw CustomError.fromSupabaseError(
+            ErrorCode.UNEXPECTED,
+            updateErr,
+            "createBand.updateProfileImage"
+          );
+        }
 
         band.profile_image = publicUrl;
       } catch (error) {
