@@ -93,7 +93,10 @@ export interface Entity_Notification {
     | "band_new_member"
     | "recruit_apply"
     | "recruit_accept"
-    | "recruit_reject";
+    | "recruit_reject"
+    | "jam_apply"
+    | "jam_accepted"
+    | "jam_rejected";
   title: string;
   body?: string;
   data?: Record<string, any> | RejamNotificationData;

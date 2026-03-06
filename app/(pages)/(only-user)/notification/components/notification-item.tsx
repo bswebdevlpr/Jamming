@@ -12,8 +12,21 @@ export default function NotificationItem({
   const router = useRouter();
 
   const handleClick = () => {
-    if (notification.type === "rejam") {
-      router.push("/myact");
+    const data = notification.data as Record<string, any> | undefined;
+    const jamId = data?.jam_id;
+    switch (notification.type) {
+      case "rejam":
+        router.push("/myact");
+        break;
+      case "jam_apply":
+        router.push(jamId ? `/myact/${jamId}` : "/myact");
+        break;
+      case "jam_accepted":
+        router.push(jamId ? `/jamsession/post/${jamId}` : "/jamsession");
+        break;
+      case "jam_rejected":
+        router.push("/jamsession");
+        break;
     }
   };
 
@@ -51,6 +64,17 @@ export default function NotificationItem({
             }}
           >
             REJAM!
+          </p>
+        )}
+        {notification.type === "jam_accepted" && (
+          <p
+            style={{
+              fontFamily: "SBAggroB",
+              fontSize: "0.75rem",
+              color: "#A3FF0C",
+            }}
+          >
+            ACCEPTED!
           </p>
         )}
 

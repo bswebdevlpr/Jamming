@@ -3,6 +3,7 @@
 import { CustomError, ErrorCode } from "@/app/lib/errors/custom-error";
 import { safeAction } from "@/app/lib/functions/server-action";
 import { ActionResult } from "@/app/lib/types/result";
+import { Entity_Notification } from "@/app/lib/interfaces/entity.interface";
 import { createClient } from "@/app/util/supabase/server";
 import { sanitize } from "@/app/lib/functions/validate";
 import { createNotification } from "@/app/api/functions/notification";
@@ -37,6 +38,13 @@ export const allowEntry = async (
       await adjustBpm(supabase, entryId, BPM_CONSTANTS.ATTEND_REWARD);
     } catch {}
 
+    // 신청자에게 승인 알림 (부수 효과)
+    try {
+      await notifyApplicant(supabase, entryId, "jam_accepted", "잼 신청이 수락되었어요!", "참가가 확정되었어요");
+    } catch (e) {
+      if (process.env.NODE_ENV !== "production") console.error("[알림 발송 실패] allowEntry:", e);
+    }
+
     return true;
   });
 };
@@ -65,6 +73,13 @@ export const refuseEntry = async (
     try {
       await adjustBpm(supabase, entryId, -BPM_CONSTANTS.ATTEND_REWARD);
     } catch {}
+
+    // 신청자에게 거절 알림 (부수 효과)
+    try {
+      await notifyApplicant(supabase, entryId, "jam_rejected", "잼 신청 결과 안내", "신청이 반려되었어요");
+    } catch (e) {
+      if (process.env.NODE_ENV !== "production") console.error("[알림 발송 실패] refuseEntry:", e);
+    }
 
     return true;
   });
@@ -301,6 +316,36 @@ export const sendRejam = async (
 
     return true;
   });
+};
+
+const notifyApplicant = async (
+  supabase: SupabaseClient,
+  entryId: number,
+  type: Entity_Notification["type"],
+  title: string,
+  bodySuffix: string
+) => {
+  const { data: entry } = await supabase
+    .from("jamentry")
+    .select("user_id, jam_id")
+    .eq("id", entryId)
+    .single();
+
+  if (!entry?.user_id) return;
+
+  const { data: jamData } = await supabase
+    .from("jamsession")
+    .select("title")
+    .eq("id", entry.jam_id)
+    .single();
+
+  await createNotification(
+    entry.user_id,
+    type,
+    title,
+    `'${jamData?.title ?? "잼 세션"}' ${bodySuffix}`,
+    { jam_id: entry.jam_id }
+  );
 };
 
 const adjustBpm = async (

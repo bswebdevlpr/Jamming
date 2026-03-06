@@ -11,6 +11,7 @@ import {
   getClientIPFromHeaders,
 } from "@/app/lib/rate-limit";
 import { FEEDBACK_CONFIG } from "@/app/lib/config/feedback";
+import { createNotification } from "./notification";
 
 export async function createJamEntry(
   input: CreateJamEntryDto
@@ -28,6 +29,35 @@ export async function createJamEntry(
         error,
         "createJamEntry"
       );
+    }
+
+    // 호스트에게 알림 (부수 효과 — 실패해도 신청 자체는 성공)
+    try {
+      const [{ data: jamData }, { data: userData }] = await Promise.all([
+        supabase
+          .from("jamsession")
+          .select("user_id, title")
+          .eq("id", input.jam_id)
+          .single(),
+        supabase
+          .from("user")
+          .select("nickname")
+          .eq("id", input.user_id)
+          .single(),
+      ]);
+
+      if (jamData?.user_id && jamData.user_id !== input.user_id) {
+        const nickname = userData?.nickname ?? "누군가";
+        await createNotification(
+          jamData.user_id,
+          "jam_apply",
+          "새로운 잼 신청이 도착했어요",
+          `${nickname}님이 '${jamData.title}'에 참가 신청했어요`,
+          { jam_id: input.jam_id, applicant_id: input.user_id }
+        );
+      }
+    } catch (e) {
+      if (process.env.NODE_ENV !== "production") console.error("[알림 발송 실패] createJamEntry:", e);
     }
 
     return true;

@@ -503,6 +503,34 @@ export default function JamSession_Post() {
               </div>
             ))}
         </div>
+        {jam.openchat && user && (
+          user.id === jam.user_id ||
+          jam.jamentry?.some((je) => je.user_id === user.id && je.is_allowed === true)
+        ) ? (
+          <div className="px-4 pb-4">
+            <a
+              href={jam.openchat}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background: "rgba(163, 255, 12, 0.12)",
+                border: "1px solid #A3FF0C",
+                borderRadius: "8px",
+                padding: "12px 16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                fontFamily: "SUIT-BODY",
+                fontSize: "0.875rem",
+                color: "#A3FF0C",
+                textDecoration: "none",
+              }}
+            >
+              <span>오픈채팅 참여</span>
+              <span>&gt;</span>
+            </a>
+          </div>
+        ) : null}
       </div>
       <div
         className="w-full flex justify-center items-center px-4 py-2"
