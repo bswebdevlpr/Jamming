@@ -21,6 +21,9 @@ vi.mock("@/app/lib/functions/validate", () => ({
 vi.mock("@/app/lib/logger", () => ({
   logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn() },
 }));
+vi.mock("@/app/api/functions/notification", () => ({
+  createNotification: vi.fn().mockResolvedValue({ success: true }),
+}));
 
 import {
   createRecruitComment,
@@ -52,6 +55,7 @@ describe("Recruit Comment", () => {
                     id: "recruit-1",
                     is_active: true,
                     deadline: null,
+                    positions: [{ pos: "기타", headcnt: 1 }],
                   },
                   error: null,
                 }),
@@ -153,7 +157,12 @@ describe("Recruit Comment", () => {
             select: vi.fn().mockReturnValue({
               eq: vi.fn().mockReturnValue({
                 single: vi.fn().mockResolvedValue({
-                  data: { id: "recruit-1", is_active: true, deadline: null },
+                  data: {
+                    id: "recruit-1",
+                    is_active: true,
+                    deadline: null,
+                    positions: [{ pos: "기타", headcnt: 1 }],
+                  },
                   error: null,
                 }),
               }),
@@ -236,7 +245,7 @@ describe("Recruit Comment", () => {
             select: vi.fn().mockReturnValue({
               eq: vi.fn().mockReturnValue({
                 single: vi.fn().mockResolvedValue({
-                  data: { id: "band-1", leader_id: "leader-id" },
+                  data: { id: "band-1", leader_id: "leader-id", name: "테스트밴드" },
                   error: null,
                 }),
               }),

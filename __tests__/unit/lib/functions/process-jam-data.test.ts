@@ -22,13 +22,36 @@ vi.mock("@/app/lib/logger", () => ({
 
 import { getJam } from "@/app/api/functions/read";
 
+/** 체이닝 가능한 query builder (eq/neq 등이 자기 자신 반환) */
+function chainableBuilder(terminal: Record<string, any> = {}) {
+  const builder: Record<string, any> = {
+    select: vi.fn(),
+    insert: vi.fn(),
+    update: vi.fn(),
+    eq: vi.fn(),
+    neq: vi.fn(),
+    single: vi.fn().mockResolvedValue({ data: null, error: null }),
+    maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+    ...terminal,
+  };
+  for (const key of ["select", "insert", "update", "eq", "neq"]) {
+    if (!terminal[key]) builder[key] = vi.fn().mockReturnValue(builder);
+  }
+  return builder;
+}
+
 function mockJamQuery(jamData: object) {
-  mockClient.from.mockReturnValue({
-    select: vi.fn().mockReturnValue({
-      eq: vi.fn().mockReturnValue({
+  let callIndex = 0;
+  mockClient.from.mockImplementation(() => {
+    callIndex++;
+    if (callIndex === 1) {
+      // 1) from("jamsession").select().eq().single()
+      return chainableBuilder({
         single: vi.fn().mockResolvedValue({ data: jamData, error: null }),
-      }),
-    }),
+      });
+    }
+    // 2+) from("jam_view") 등 후속 호출 — 부수 효과이므로 기본 chainable 반환
+    return chainableBuilder();
   });
 }
 
