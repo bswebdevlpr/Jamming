@@ -2,7 +2,11 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "./server";
-import { emailAuthLimiter, oauthLimiter } from "@/app/lib/rate-limit";
+import {
+  emailAuthLimiter,
+  oauthLimiter,
+  getClientIPFromHeaders,
+} from "@/app/lib/rate-limit";
 import { CustomError } from "@/app/lib/errors/custom-error";
 
 const isDev = process.env.NODE_ENV === "development";
@@ -11,8 +15,9 @@ async function signInWithOAuthProvider(
   provider: "kakao" | "google",
   redirectPath?: string
 ) {
-  // Rate limiting: OAuth 남용 방지
-  const identifier = `oauth:${provider}`;
+  // Rate limiting: OAuth 남용 방지 (프로바이더 + 클라이언트 IP 기준)
+  const ip = await getClientIPFromHeaders();
+  const identifier = `oauth:${provider}:${ip}`;
   const { success } = await oauthLimiter.limit(identifier);
 
   if (!success) {
@@ -80,9 +85,14 @@ export async function signInWithEmail(email: string, password: string) {
     if (error instanceof CustomError) {
       return { success: false as const, error: error.toClientSafe() };
     }
+    // 원문 에러는 서버에서만 로깅, 클라이언트에는 일반 메시지 (계정 존재 탐지 방지)
+    if (isDev) console.error("[signInWithEmail]", error);
     return {
       success: false as const,
-      error: { code: "AUTH_ERROR", message: error.message },
+      error: {
+        code: "AUTH_ERROR",
+        message: "이메일 또는 비밀번호가 올바르지 않습니다.",
+      },
     };
   }
 }
@@ -126,9 +136,14 @@ export async function signUpWithEmail(
     if (error instanceof CustomError) {
       return { success: false as const, error: error.toClientSafe() };
     }
+    // 원문 에러는 서버에서만 로깅, 클라이언트에는 일반 메시지
+    if (isDev) console.error("[signUpWithEmail]", error);
     return {
       success: false as const,
-      error: { code: "AUTH_ERROR", message: error.message },
+      error: {
+        code: "AUTH_ERROR",
+        message: "회원가입에 실패했습니다. 잠시 후 다시 시도해주세요.",
+      },
     };
   }
 }

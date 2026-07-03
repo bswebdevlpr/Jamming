@@ -11,6 +11,7 @@ import {
 } from "@/app/lib/maps/jam";
 import { ZodType_Post } from "@/app/lib/zod";
 import { createClient } from "@/app/util/supabase/server";
+import { sanitize } from "@/app/lib/functions/validate";
 
 export const createJam = async (
   input: ZodType_Post
@@ -18,6 +19,10 @@ export const createJam = async (
   return safeAction("createJam", async () => {
     const supabase = await createClient();
     const user = await getUser(supabase);
+
+    // 사용자 입력 sanitize (다른 콘텐츠 작성 액션과 일관성 유지)
+    input.title = await sanitize(input.title);
+    input.body = await sanitize(input.body);
 
     const result = await supabase
       .from("jamsession")
@@ -118,6 +123,10 @@ export const updateJam = async (
     if (jam.user_id !== user.id) {
       throw CustomError.forbidden({ operation: "updateJam" });
     }
+
+    // 사용자 입력 sanitize
+    input.title = await sanitize(input.title);
+    input.body = await sanitize(input.body);
 
     const preservedImages =
       options?.preservedImages ?? (Array.isArray(jam.images) ? jam.images : []);

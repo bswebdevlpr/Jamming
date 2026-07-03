@@ -7,7 +7,7 @@ import { createClient } from "@/app/util/supabase/server";
 import { getUser } from "../read";
 import { CreateRecruitCommentDto } from "../../dtos/create";
 import { sanitize } from "@/app/lib/functions/validate";
-import { createNotification } from "../notification";
+import { createNotification } from "@/app/lib/notifications";
 
 export async function createRecruitComment(
   input: CreateRecruitCommentDto

@@ -11,7 +11,7 @@ import {
   getClientIPFromHeaders,
 } from "@/app/lib/rate-limit";
 import { FEEDBACK_CONFIG } from "@/app/lib/config/feedback";
-import { createNotification } from "./notification";
+import { createNotification } from "@/app/lib/notifications";
 
 export async function createJamEntry(
   input: CreateJamEntryDto

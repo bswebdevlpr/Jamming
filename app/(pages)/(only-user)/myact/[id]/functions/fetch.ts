@@ -6,7 +6,7 @@ import { ActionResult } from "@/app/lib/types/result";
 import { Entity_Notification } from "@/app/lib/interfaces/entity.interface";
 import { createClient } from "@/app/util/supabase/server";
 import { sanitize } from "@/app/lib/functions/validate";
-import { createNotification } from "@/app/api/functions/notification";
+import { createNotification } from "@/app/lib/notifications";
 import moment from "moment";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { REJAM_CONSTANTS } from "@/app/lib/constants/rejam";

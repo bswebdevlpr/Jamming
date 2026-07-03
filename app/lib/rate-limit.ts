@@ -46,6 +46,18 @@ export const oauthLimiter = new Ratelimit({
 });
 
 /**
+ * 외부 검색 프록시 (곡/장소 검색) Rate Limiter
+ * - 분당 30회 제한 (클라이언트 IP 기준)
+ * - 인증된 사용자만 접근하지만, 유료 외부 API 쿼터 남용 방지
+ */
+export const externalSearchLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(30, "1 m"),
+  analytics: true,
+  prefix: "ratelimit:search",
+});
+
+/**
  * 피드백 제출 Rate Limiter
  * - 1시간 내 3회 제한
  * - Sliding Window 방식

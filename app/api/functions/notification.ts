@@ -148,32 +148,3 @@ export async function markAllAsRead(): Promise<ActionResult<boolean>> {
   });
 }
 
-export async function createNotification(
-  userId: string,
-  type: string,
-  title: string,
-  body?: string,
-  data?: Record<string, any>
-): Promise<ActionResult<boolean>> {
-  return safeAction("createNotification", async () => {
-    const supabase = await createClient();
-
-    const { error } = await supabase.from("notification").insert({
-      user_id: userId,
-      type,
-      title,
-      body,
-      data: data ?? {},
-    });
-
-    if (error) {
-      throw CustomError.fromSupabaseError(
-        ErrorCode.UNEXPECTED,
-        error,
-        "createNotification"
-      );
-    }
-
-    return true;
-  });
-}
