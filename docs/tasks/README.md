@@ -1,116 +1,116 @@
 # Tasks
 
-> 현재 진행 중인 작업 및 백로그를 추적하여 AI가 연속 작업을 지원할 수 있도록 함
+> Tracks current in-progress work and the backlog so the AI can support continuous work
 
-## 작업 추적 가이드
+## Task Tracking Guide
 
-### 이 문서의 목적
+### Purpose of This Document
 
-AI가 프로젝트의 현재 맥락을 빠르게 파악하여:
-- 이전 작업을 이어서 진행
-- 관련 컨텍스트를 고려한 코드 작성
-- 우선순위에 맞는 작업 제안
+Helps the AI quickly grasp the project's current context to:
+- Continue previous work
+- Write code that accounts for relevant context
+- Suggest tasks aligned with priority
 
-### 작업 상태
+### Task Status
 
-| 상태 | 설명 |
+| Status | Description |
 |------|------|
-| `진행 중` | 현재 작업 중인 항목 |
-| `대기` | 다음에 처리할 항목 |
-| `검토 필요` | 완료되었으나 확인 필요 |
-| `완료` | 완전히 끝난 항목 |
-| `보류` | 일시 중단된 항목 |
+| `In progress` | Item currently being worked on |
+| `Waiting` | Item to handle next |
+| `Needs review` | Completed but requires confirmation |
+| `Done` | Fully finished item |
+| `On hold` | Temporarily suspended item |
 
 ---
 
-## 현재 진행 중인 작업
+## Current In-Progress Work
 
-> 이 섹션은 작업 시작/완료 시 업데이트
+> Update this section when work starts/completes
 
-### [작업 없음]
+### [No tasks]
 
-현재 진행 중인 작업이 없습니다.
+There are no tasks currently in progress.
 
 <!--
-### 예시: 새 기능 구현
+### Example: Implementing a New Feature
 
-**상태:** 진행 중
-**시작일:** YYYY-MM-DD
-**관련 파일:**
+**Status:** In progress
+**Start date:** YYYY-MM-DD
+**Related files:**
 - `app/(pages)/(only-user)/jamsession/...`
 
-**설명:**
-작업 내용 설명
+**Description:**
+Description of the task
 
-**진행 상황:**
-- [x] 완료된 단계
-- [ ] 진행 중인 단계
-- [ ] 예정된 단계
+**Progress:**
+- [x] Completed step
+- [ ] In-progress step
+- [ ] Planned step
 
-**메모:**
-AI가 알아야 할 추가 정보
+**Notes:**
+Additional information the AI should know
 -->
 
 ---
 
-## 백로그
+## Backlog
 
-> 우선순위 순으로 정렬
+> Sorted by priority
 
-### 높은 우선순위
+### High Priority
 
-| 작업 | 설명 | 관련 파일 |
+| Task | Description | Related Files |
 |------|------|----------|
 | - | - | - |
 
-### 중간 우선순위
+### Medium Priority
 
-| 작업 | 설명 | 관련 파일 |
+| Task | Description | Related Files |
 |------|------|----------|
-| 실시간 세션 관심자 표시 | Supabase Realtime Presence로 "누가 지금 세션을 보고 있는지" 실시간 표시. 세션 상세 페이지(조회자 수), 홈 화면(지역별 활성 통계), 피드 카드 뱃지(선택). 상세 계획: `/Users/coolguy/.claude/plans/tranquil-juggling-spark.md` | `app/hooks/usePresence.ts`, `app/hooks/useSessionViewers.ts`, `app/hooks/useRegionPresence.ts`, `app/ui/components/viewer-count.tsx`, `app/ui/components/region-activity.tsx`, `app/(pages)/(only-user)/jamsession/post/[id]/page.tsx`, `app/(pages)/page.tsx` |
+| Real-time session viewer display | Use Supabase Realtime Presence to show "who is viewing the session right now" in real time. Session detail page (viewer count), home screen (active stats by region), feed card badge (optional). Detailed plan: `/Users/coolguy/.claude/plans/tranquil-juggling-spark.md` | `app/hooks/usePresence.ts`, `app/hooks/useSessionViewers.ts`, `app/hooks/useRegionPresence.ts`, `app/ui/components/viewer-count.tsx`, `app/ui/components/region-activity.tsx`, `app/(pages)/(only-user)/jamsession/post/[id]/page.tsx`, `app/(pages)/page.tsx` |
 
-### 낮은 우선순위
+### Low Priority
 
-| 작업 | 설명 | 관련 파일 |
+| Task | Description | Related Files |
 |------|------|----------|
 | - | - | - |
 
 ---
 
-## 최근 완료된 작업
+## Recently Completed Work
 
-> 최근 5개 항목 유지
+> Keep the most recent 5 items
 
-| 작업 | 완료일 | 관련 커밋 |
+| Task | Completion Date | Related Commit |
 |------|--------|----------|
-| 프로젝트 문서화 구조 생성 | 2026-01-31 | - |
-| Vercel 15~16 취약점 핫픽스 | - | `6c338ab` |
-| 피드백 보내기, SEO 활성화 | - | `5b1966c` |
-| iOS Safari 자동 확대 방지 | - | `007b15a` |
+| Create project documentation structure | 2026-01-31 | - |
+| Vercel 15–16 vulnerability hotfix | - | `6c338ab` |
+| Send feedback, enable SEO | - | `5b1966c` |
+| Prevent iOS Safari auto-zoom | - | `007b15a` |
 
 ---
 
-## 알려진 이슈
+## Known Issues
 
-> 수정이 필요하지만 아직 백로그에 없는 항목
+> Items that need fixing but are not yet in the backlog
 
-| 이슈 | 심각도 | 설명 |
+| Issue | Severity | Description |
 |------|--------|------|
 | - | - | - |
 
 ---
 
-## 기술 부채
+## Technical Debt
 
-> 리팩토링이 필요한 영역
+> Areas that need refactoring
 
-| 영역 | 현재 상태 | 개선 방향 |
+| Area | Current State | Improvement Direction |
 |------|----------|----------|
-| iOS Safari 대응 | 다수의 핫픽스 적용 | 체계적인 모바일 호환성 레이어 구축 |
+| iOS Safari support | Numerous hotfixes applied | Build a systematic mobile compatibility layer |
 
 ---
 
-## 관련 문서
+## Related Documents
 
-- [Context](../context/README.md) - 프로젝트 컨텍스트
-- [Decisions](../decisions/README.md) - 기술 결정 기록
+- [Context](../context/README.md) - Project context
+- [Decisions](../decisions/README.md) - Technical decision records

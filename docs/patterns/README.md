@@ -1,50 +1,50 @@
 # Patterns
 
-> 일관된 코드 작성을 위한 패턴 및 컨벤션 가이드
+> A guide to patterns and conventions for writing consistent code
 
-## 네이밍 규칙
+## Naming Conventions
 
-### 파일/폴더
+### Files/Folders
 
-| 유형 | 규칙 | 예시 |
-|------|------|------|
-| 페이지 | Next.js 예약어 | `page.tsx`, `layout.tsx` |
-| 컴포넌트 | kebab-case | `jam-now.tsx`, `bottom-sheet.tsx` |
-| 복합 컴포넌트 | `.component.tsx` suffix | `member.component.tsx` |
-| Server Action | 동사 기반 | `create.ts`, `read.ts`, `delete.ts` |
+| Type | Convention | Example |
+|------|------------|---------|
+| Page | Next.js reserved names | `page.tsx`, `layout.tsx` |
+| Component | kebab-case | `jam-now.tsx`, `bottom-sheet.tsx` |
+| Compound component | `.component.tsx` suffix | `member.component.tsx` |
+| Server Action | verb-based | `create.ts`, `read.ts`, `delete.ts` |
 | Enum | `.enum.ts` suffix | `genre.enum.ts`, `position.enum.ts` |
 | Interface | `.interface.ts` suffix | `entity.interface.ts` |
-| 유틸리티 | 동사 기반 | `validate.ts`, `convert.ts` |
+| Utility | verb-based | `validate.ts`, `convert.ts` |
 
-### 변수/함수
+### Variables/Functions
 
-| 유형 | 규칙 | 예시 |
-|------|------|------|
-| 함수 | camelCase, 동사 시작 | `createJamEntry`, `fetchJams` |
-| 변수 | camelCase | `isLoading`, `userProfile` |
-| 상수 | UPPER_SNAKE_CASE | `MAX_HEADCOUNT` |
-| Interface | PascalCase, 접두어 | `Entity_User`, `CreateJamDto` |
+| Type | Convention | Example |
+|------|------------|---------|
+| Function | camelCase, starts with a verb | `createJamEntry`, `fetchJams` |
+| Variable | camelCase | `isLoading`, `userProfile` |
+| Constant | UPPER_SNAKE_CASE | `MAX_HEADCOUNT` |
+| Interface | PascalCase, prefixed | `Entity_User`, `CreateJamDto` |
 | Enum | PascalCase | `GenreEnum`, `PositionEnum` |
 | Context | camelCase | `globalContext` |
 
-### TypeScript 타입 접두어
+### TypeScript Type Prefixes
 
-| 접두어 | 용도 | 예시 |
-|--------|------|------|
-| `Entity_` | DB 엔티티 | `Entity_User`, `Entity_JamSession` |
-| `Create` | 생성 DTO | `CreateJamDto`, `CreateJamEntryDto` |
-| `ZodType_` | Zod 추론 타입 | `ZodType_Song`, `ZodType_HeadCnt` |
-| `Filter_` | 필터 파라미터 | `Filter_JamSessionFeed` |
+| Prefix | Purpose | Example |
+|--------|---------|---------|
+| `Entity_` | DB entity | `Entity_User`, `Entity_JamSession` |
+| `Create` | Creation DTO | `CreateJamDto`, `CreateJamEntryDto` |
+| `ZodType_` | Zod inferred type | `ZodType_Song`, `ZodType_HeadCnt` |
+| `Filter_` | Filter parameters | `Filter_JamSessionFeed` |
 
-## 컴포넌트 패턴
+## Component Patterns
 
-### 페이지 컴포넌트
+### Page Component
 
 ```typescript
 // app/(pages)/(only-user)/jamsession/page.tsx
 "use client";
 
-// 1. Imports (표준 라이브러리 → 외부 → 내부)
+// 1. Imports (standard library → external → internal)
 import { useContext, useEffect, useRef, useState } from "react";
 import moment from "moment";
 import { LocationEnum } from "@/app/lib/enums/location.enum";
@@ -64,10 +64,10 @@ export default function JamSession() {
 
   // 5. Effects
   useEffect(() => {
-    // 초기화 로직
+    // Initialization logic
   }, [dependencies]);
 
-  // 6. Handlers (필요시)
+  // 6. Handlers (if needed)
   const handleClick = () => { /* ... */ };
 
   // 7. Render
@@ -80,7 +80,7 @@ export default function JamSession() {
 }
 ```
 
-### UI 컴포넌트
+### UI Component
 
 ```typescript
 // app/ui/buttons/jam-now.tsx
@@ -88,7 +88,7 @@ export default function JamSession() {
 
 import { Dispatch, SetStateAction, useState } from "react";
 
-// Props를 인라인 타입으로 정의
+// Define Props as an inline type
 export default function JamNow({
   selectedDate,
   setSelectedDate,
@@ -98,7 +98,7 @@ export default function JamNow({
   setSelectedDate: Dispatch<SetStateAction<moment.Moment>>;
   refetch: () => void;
 }) {
-  // 로컬 상태
+  // Local state
   const [isTurnedOn, setIsTurnedOn] = useState(false);
 
   return (
@@ -109,9 +109,9 @@ export default function JamNow({
 }
 ```
 
-### 복합 컴포넌트 (Render Function)
+### Compound Component (Render Function)
 
-많은 props가 필요한 경우 함수형으로 작성:
+When many props are required, write it as a function:
 
 ```typescript
 // app/(pages)/(only-user)/myact/[id]/components/member.component.tsx
@@ -135,13 +135,13 @@ export const MemberComponent = (
   );
 };
 
-// 사용
+// Usage
 {entries.map((entry, idx) => MemberComponent(idx, jam, entry, isMyJam, letOutMember, bottomSheet))}
 ```
 
-## Server Action 패턴
+## Server Action Patterns
 
-### 기본 구조
+### Basic Structure
 
 ```typescript
 // app/api/functions/create.ts
@@ -158,19 +158,19 @@ export async function createJamEntry(
   let ret: boolean = false;
 
   try {
-    // 1. 입력 검증/새니타이징
+    // 1. Validate/sanitize input
     input.appeal = await sanitize(input.appeal);
 
-    // 2. Supabase 클라이언트 생성
+    // 2. Create Supabase client
     const supabase = await createClient();
 
-    // 3. DB 작업
+    // 3. DB operation
     const { error } = await supabase.from("jamentry").insert(input);
 
-    // 4. 결과 처리
+    // 4. Handle result
     ret = !error;
   } catch (e) {
-    // 5. 에러 처리
+    // 5. Error handling
     if (process.env.NODE_ENV === "development") console.error(e);
     if (e instanceof CustomError) throw e;
     else throw CustomError.UnExpected;
@@ -180,7 +180,7 @@ export async function createJamEntry(
 }
 ```
 
-### Read 패턴 (Relation Query)
+### Read Pattern (Relation Query)
 
 ```typescript
 // app/api/functions/read.ts
@@ -193,7 +193,7 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
     const supabase = await createClient();
     const user = await getUser(supabase);
 
-    // Relation 쿼리
+    // Relation query
     const { data, error } = await supabase
       .from("jamsession")
       .select(`
@@ -207,7 +207,7 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
     if (error) throw CustomError.UnExpected;
     if (!data) throw CustomError.InvalidJam;
 
-    // 계산 필드 추가
+    // Add computed fields
     data.curHeadCnt = data.jamentry.length;
     data.maxHeadCnt = data.headcnt_by_pos.reduce(
       (acc, cur) => acc + cur.headcnt, 0
@@ -223,7 +223,7 @@ export async function getJam(id: number): Promise<Entity_JamSession> {
 }
 ```
 
-### API Route Handler 패턴
+### API Route Handler Pattern
 
 ```typescript
 // app/api/maniadb/route.ts
@@ -232,10 +232,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { FetchResult } from "../types/response.interface";
 
 export async function POST(req: NextRequest) {
-  // 1. 요청 파싱
+  // 1. Parse request
   const { songName } = await req.json();
 
-  // 2. 입력 검증
+  // 2. Validate input
   if (!songName) {
     return NextResponse.json({
       status: 500,
@@ -245,7 +245,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // 3. 외부 API 호출
+    // 3. Call external API
     const data: FetchResult = await axios
       .get(`https://www.maniadb.com/api/search/${songName}/?...`)
       .then((res) => ({
@@ -259,7 +259,7 @@ export async function POST(req: NextRequest) {
         data: null,
       }));
 
-    // 4. 응답 반환
+    // 4. Return response
     return NextResponse.json(data);
   } catch (e) {
     return NextResponse.json({
@@ -271,9 +271,9 @@ export async function POST(req: NextRequest) {
 }
 ```
 
-## 에러 처리 패턴
+## Error Handling Patterns
 
-### CustomError 클래스
+### CustomError Class
 
 ```typescript
 // app/lib/errors/custom-error.ts
@@ -285,53 +285,53 @@ export class CustomError extends Error {
     this.name = "CustomError";
   }
 
-  // 공통 에러
+  // Common errors
   static Forbidden = new CustomError("권한이 없습니다.");
   static UnExpected = new CustomError("예기치 못한 문제가 발생했습니다." + postfix);
   static InvalidUserSession = new CustomError("회원정보를 불러오는 데에 실패했습니다." + postfix);
   static InvalidJam = new CustomError("유효하지 않은 잼세션입니다.");
   static InvalidUser = new CustomError("일치하는 유저를 찾을 수 없습니다.");
 
-  // 서버 전용
+  // Server-only
   static UpdatePlaylistItem = new CustomError("연주목록 항목 업데이트에 실패했습니다." + postfix);
   static UploadImage = new CustomError("이미지 업로드에 실패했습니다." + postfix);
 
-  // 클라이언트 전용
+  // Client-only
   static CreateJamSession = new CustomError("잼세션을 생성하는데에 실패했습니다." + postfix);
   static SearchSong = new CustomError("곡 검색에 실패했습니다." + postfix);
 }
 ```
 
-### 에러 처리 패턴
+### Error Handling Pattern
 
 ```typescript
 try {
-  // 비즈니스 로직
+  // Business logic
   const { data, error } = await supabase.from("...").select();
 
   if (error) throw CustomError.UnExpected;
   if (!data) throw CustomError.InvalidJam;
 
-  // 성공 처리
+  // Handle success
   return data;
 } catch (e) {
-  // 개발 환경에서만 로깅
+  // Log only in the development environment
   if (process.env.NODE_ENV === "development") console.error(e);
 
-  // CustomError는 그대로 던지기
+  // Rethrow CustomError as-is
   if (e instanceof CustomError) throw e;
 
-  // 알 수 없는 에러는 UnExpected로 래핑
+  // Wrap unknown errors as UnExpected
   else throw CustomError.UnExpected;
 }
 ```
 
-## Supabase 쿼리 패턴
+## Supabase Query Patterns
 
 ### Relation Query
 
 ```typescript
-// FK 관계 데이터 포함
+// Include FK-related data
 const { data } = await supabase
   .from("jamsession")
   .select(`
@@ -343,12 +343,12 @@ const { data } = await supabase
   .single();
 ```
 
-### 필터 쿼리 (조건부)
+### Filter Query (Conditional)
 
 ```typescript
 let query = supabase.from("jamsession").select(`*`);
 
-// 조건부 필터 추가
+// Add conditional filters
 if (filter.location) {
   query = query.contains("location", [MapLocationToData[filter.location]]);
 }
@@ -359,7 +359,7 @@ if (filter.level) {
   query = query.contains("level", [MapLevelToData[filter.level]]);
 }
 
-// 정렬 및 페이지네이션
+// Sorting and pagination
 query = query
   .order("datetime", { ascending: true })
   .range(pageParam * 6, pageParam * 6 + 5);
@@ -367,42 +367,42 @@ query = query
 const { data } = await query;
 ```
 
-### Storage 업로드
+### Storage Upload
 
 ```typescript
-// 이미지 업로드
+// Upload image
 const { data, error } = await supabase.storage
   .from(process.env.SUPABASE_STORAGE_NAME!)
   .upload(`jamsession/${sessionId}/${filename}`, file);
 
-// 공개 URL 생성
+// Generate public URL
 const { data: { publicUrl } } = supabase.storage
   .from(process.env.SUPABASE_STORAGE_NAME!)
   .getPublicUrl(data.path);
 ```
 
-## 상태 관리 패턴
+## State Management Patterns
 
-### Context 사용
+### Using Context
 
 ```typescript
-// 가져오기
+// Retrieve
 const { bottomSheet, session, setSmallLoading } = useContext(globalContext);
 
-// Bottom Sheet 열기
+// Open Bottom Sheet
 bottomSheet.set({
   children: <MyComponent onClose={() => bottomSheet.set({ children: null })} />,
   location: BottomSheetHeight.Half,
 });
 
-// 사용자 프로필 업데이트
+// Update user profile
 session.setUserProfile({ nickname: "새닉네임" });
 
-// 로딩 토글
+// Toggle loading
 setSmallLoading();
 ```
 
-### React Query 무한 스크롤
+### React Query Infinite Scroll
 
 ```typescript
 const { data, fetchNextPage, hasNextPage, isLoading, refetch } = useInfiniteQuery({
@@ -410,11 +410,11 @@ const { data, fetchNextPage, hasNextPage, isLoading, refetch } = useInfiniteQuer
   queryFn: ({ pageParam = 0 }) => fetchJams({ pageParam, filter }),
   getNextPageParam: (lastPage) => lastPage.nextPage ?? undefined,
   initialPageParam: 0,
-  staleTime: 1000 * 60 * 5,  // 5분 캐싱
+  staleTime: 1000 * 60 * 5,  // 5-minute caching
   refetchOnWindowFocus: false,
 });
 
-// Intersection Observer 연동
+// Intersection Observer integration
 const { ref, inView } = useInView();
 
 useEffect(() => {
@@ -423,20 +423,20 @@ useEffect(() => {
   }
 }, [inView, hasNextPage, isLoading]);
 
-// 렌더링
+// Rendering
 return (
   <>
     {data?.pages.map((page) =>
       page.data.map((item) => <Card key={item.id} {...item} />)
     )}
-    <div ref={ref} />  {/* 트리거 요소 */}
+    <div ref={ref} />  {/* Trigger element */}
   </>
 );
 ```
 
-## 관련 문서
+## Related Documents
 
-- [Context](../context/README.md) - 프로젝트 컨텍스트
-- [Architecture](../architecture/README.md) - 시스템 구조
-- [Design](../design/README.md) - 디자인 시스템 가이드
-- [Reference](../reference/README.md) - API/스키마 레퍼런스
+- [Context](../context/README.md) - Project context
+- [Architecture](../architecture/README.md) - System structure
+- [Design](../design/README.md) - Design system guide
+- [Reference](../reference/README.md) - API/schema reference

@@ -1,28 +1,28 @@
 # Reference
 
-> API, 데이터베이스 스키마, 타입 정의 레퍼런스
+> API, database schema, and type definition reference
 
 ## Database Schema
 
-### user 테이블
+### `user` table
 
-사용자 프로필 정보를 저장합니다.
+Stores user profile information.
 
-| 컬럼 | 타입 | 설명 |
+| Column | Type | Description |
 |------|------|------|
 | `id` | string (UUID) | PK, Supabase Auth ID |
-| `nickname` | string | 닉네임 (1-8자, 영문/한글/숫자) |
-| `profile_image` | string | 프로필 이미지 URL |
-| `location` | LocationEnum | 활동 지역 |
-| `pos` | PositionEnum | 주 포지션 |
-| `genre` | GenreEnum | 선호 장르 |
-| `level` | LevelEnum | 실력 수준 |
-| `tags` | string[] | 태그 배열 (`#rock`, `#blues`) |
-| `bpm` | number | BPM (선택) |
-| `is_bpm_public` | boolean | BPM 공개 여부 |
-| `allow_noti` | boolean | 알림 허용 |
-| `accept_marketing` | boolean | 마케팅 수신 동의 |
-| `status` | 'a' \| 'i' | 활성/비활성 |
+| `nickname` | string | Nickname (1-8 characters, alphanumeric/Korean) |
+| `profile_image` | string | Profile image URL |
+| `location` | LocationEnum | Activity region |
+| `pos` | PositionEnum | Primary position |
+| `genre` | GenreEnum | Preferred genre |
+| `level` | LevelEnum | Skill level |
+| `tags` | string[] | Tag array (`#rock`, `#blues`) |
+| `bpm` | number | BPM (optional) |
+| `is_bpm_public` | boolean | Whether BPM is public |
+| `allow_noti` | boolean | Notifications allowed |
+| `accept_marketing` | boolean | Consent to marketing communications |
+| `status` | 'a' \| 'i' | Active/inactive |
 
 **TypeScript Interface:**
 ```typescript
@@ -44,36 +44,36 @@ interface Entity_User {
 }
 ```
 
-### jamsession 테이블
+### `jamsession` table
 
-잼 세션 정보를 저장합니다.
+Stores jam session information.
 
-| 컬럼 | 타입 | 설명 |
+| Column | Type | Description |
 |------|------|------|
 | `id` | number | PK, auto-increment |
-| `user_id` | string | FK → user.id (호스트) |
-| `title` | string | 제목 (5-20자) |
-| `body` | string | 설명 (최대 1000자) |
-| `location` | LocationEnum[] | 지역 (복수 선택) |
-| `genre` | GenreEnum[] | 장르 (복수 선택) |
-| `level` | LevelEnum[] | 실력대 (복수 선택) |
-| `pos` | PositionEnum[] | 모집 포지션 |
-| `datetime` | string | 일시 (ISO8601) |
-| `location_detail` | JSON | 상세 장소 정보 |
-| `headcnt_by_pos` | JSON[] | 포지션별 모집 인원 |
-| `songs` | JSON[] | 합주곡 목록 |
-| `images` | string[] | 이미지 URL 배열 |
-| `openchat` | string | 오픈채팅 링크 (선택) |
-| `created_at` | string | 생성일시 |
+| `user_id` | string | FK → user.id (host) |
+| `title` | string | Title (5-20 characters) |
+| `body` | string | Description (max 1000 characters) |
+| `location` | LocationEnum[] | Region (multiple selection) |
+| `genre` | GenreEnum[] | Genre (multiple selection) |
+| `level` | LevelEnum[] | Skill level (multiple selection) |
+| `pos` | PositionEnum[] | Positions being recruited |
+| `datetime` | string | Date and time (ISO8601) |
+| `location_detail` | JSON | Detailed venue information |
+| `headcnt_by_pos` | JSON[] | Number of members recruited per position |
+| `songs` | JSON[] | Ensemble song list |
+| `images` | string[] | Image URL array |
+| `openchat` | string | Open chat link (optional) |
+| `created_at` | string | Creation date and time |
 
-**JSON 필드 상세:**
+**JSON field details:**
 
 ```typescript
 // location_detail
 {
-  name: string;      // 장소명
-  address: string;   // 주소
-  category: string;  // 카테고리
+  name: string;      // Venue name
+  address: string;   // Address
+  category: string;  // Category
 }
 
 // headcnt_by_pos
@@ -107,10 +107,10 @@ interface Entity_JamSession {
   openchat?: string;
   created_at?: string;
 
-  // 계산 필드 (DB 컬럼 아님)
-  curHeadCnt?: number;          // 현재 참가 인원
-  maxHeadCnt?: number;          // 최대 인원
-  appliedPosDict?: Record<string, number>;  // 포지션별 신청 수
+  // Computed fields (not DB columns)
+  curHeadCnt?: number;          // Current number of participants
+  maxHeadCnt?: number;          // Maximum number of members
+  appliedPosDict?: Record<string, number>;  // Application count per position
 
   // Relations
   user?: Entity_User;
@@ -118,20 +118,20 @@ interface Entity_JamSession {
 }
 ```
 
-### jamentry 테이블
+### `jamentry` table
 
-잼 세션 참가 신청 정보를 저장합니다.
+Stores jam session application information.
 
-| 컬럼 | 타입 | 설명 |
+| Column | Type | Description |
 |------|------|------|
 | `id` | number | PK, auto-increment |
 | `jam_id` | number | FK → jamsession.id |
 | `user_id` | string | FK → user.id |
-| `appeal` | string | 자기소개 (HTML sanitized) |
-| `applied_pos` | PositionEnum | 신청 포지션 |
-| `is_allowed` | boolean | 승인 여부 |
-| `is_rejam` | boolean | 재잼(재신청) 여부 |
-| `noshow` | boolean | 노쇼 여부 |
+| `appeal` | string | Self-introduction (HTML sanitized) |
+| `applied_pos` | PositionEnum | Applied position |
+| `is_allowed` | boolean | Whether approved |
+| `is_rejam` | boolean | Whether re-jam (re-application) |
+| `noshow` | boolean | Whether no-show |
 
 **TypeScript Interface:**
 ```typescript
@@ -148,28 +148,28 @@ interface Entity_JamEntry {
 }
 ```
 
-### playlist 테이블
+### `playlist` table
 
-사용자 플레이리스트 정보를 저장합니다.
+Stores user playlist information.
 
-| 컬럼 | 타입 | 설명 |
+| Column | Type | Description |
 |------|------|------|
 | `id` | number | PK |
 | `user_id` | string | FK → user.id |
-| `title` | string | 곡 제목 |
-| `thumbnail_path` | string | 썸네일 URL |
-| `author` | string | 아티스트 |
-| `date` | string | 추가 날짜 |
-| `is_public` | boolean | 공개 여부 |
-| `origin` | string | 출처 (spotify 등) |
+| `title` | string | Song title |
+| `thumbnail_path` | string | Thumbnail URL |
+| `author` | string | Artist |
+| `date` | string | Date added |
+| `is_public` | boolean | Whether public |
+| `origin` | string | Source (spotify, etc.) |
 
-### user_nickname 테이블
+### `user_nickname` table
 
-닉네임 중복 검사용 테이블입니다.
+Table used for nickname uniqueness checks.
 
-| 컬럼 | 타입 | 설명 |
+| Column | Type | Description |
 |------|------|------|
-| `nickname` | string | PK, 닉네임 |
+| `nickname` | string | PK, nickname |
 
 ---
 
@@ -177,31 +177,31 @@ interface Entity_JamEntry {
 
 ### `/api/auth/callback` (GET)
 
-OAuth 콜백 처리
+Handles the OAuth callback
 
-| 파라미터 | 타입 | 설명 |
+| Parameter | Type | Description |
 |----------|------|------|
-| `code` | query | OAuth 인증 코드 |
+| `code` | query | OAuth authorization code |
 
-**응답:**
-- 기존 사용자 → `/jamsession` 리다이렉트
-- 신규 사용자 → `/signup` 리다이렉트
-- 에러 → `/auth/auth-code-error` 리다이렉트
+**Response:**
+- Existing user → redirect to `/jamsession`
+- New user → redirect to `/signup`
+- Error → redirect to `/auth/auth-code-error`
 
-**파일:** `app/api/auth/callback/route.ts`
+**File:** `app/api/auth/callback/route.ts`
 
 ### `/api/maniadb` (POST)
 
-ManiaDB 곡 검색
+ManiaDB song search
 
-**요청:**
+**Request:**
 ```json
 {
   "songName": "검색어"
 }
 ```
 
-**응답:**
+**Response:**
 ```json
 {
   "status": 200,
@@ -216,20 +216,20 @@ ManiaDB 곡 검색
 }
 ```
 
-**파일:** `app/api/maniadb/route.ts`
+**File:** `app/api/maniadb/route.ts`
 
 ### `/api/naver/map` (POST)
 
 Naver Local Search API
 
-**요청:**
+**Request:**
 ```json
 {
   "query": "장소 검색어"
 }
 ```
 
-**응답:**
+**Response:**
 ```json
 {
   "status": 200,
@@ -244,7 +244,7 @@ Naver Local Search API
 }
 ```
 
-**파일:** `app/api/naver/map/route.ts`
+**File:** `app/api/naver/map/route.ts`
 
 ---
 
@@ -252,52 +252,52 @@ Naver Local Search API
 
 ### Create (`app/api/functions/create.ts`)
 
-| 함수 | 파라미터 | 반환 | 설명 |
+| Function | Parameters | Returns | Description |
 |------|----------|------|------|
-| `createJamEntry` | `CreateJamEntryDto` | `Promise<boolean>` | 참가 신청 생성 |
+| `createJamEntry` | `CreateJamEntryDto` | `Promise<boolean>` | Create an application |
 
 ### Read (`app/api/functions/read.ts`)
 
-| 함수 | 파라미터 | 반환 | 설명 |
+| Function | Parameters | Returns | Description |
 |------|----------|------|------|
-| `getUser` | `supabase` | `Promise<User>` | 현재 사용자 조회 |
-| `getJam` | `id: number` | `Promise<Entity_JamSession>` | 잼 세션 상세 조회 |
+| `getUser` | `supabase` | `Promise<User>` | Retrieve the current user |
+| `getJam` | `id: number` | `Promise<Entity_JamSession>` | Retrieve jam session details |
 
 ### Delete (`app/api/functions/delete.ts`)
 
-| 함수 | 파라미터 | 반환 | 설명 |
+| Function | Parameters | Returns | Description |
 |------|----------|------|------|
-| `deleteJamSession` | `jam_id: number` | `Promise<boolean>` | 잼 세션 삭제 |
-| `deleteJamEntry` | `entryId: number` | `Promise<boolean>` | 참가 신청 삭제 |
+| `deleteJamSession` | `jam_id: number` | `Promise<boolean>` | Delete a jam session |
+| `deleteJamEntry` | `entryId: number` | `Promise<boolean>` | Delete an application |
 
 ### Validation (`app/api/functions/validation.ts`)
 
-| 함수 | 파라미터 | 반환 | 설명 |
+| Function | Parameters | Returns | Description |
 |------|----------|------|------|
-| `isNicknameUnique` | `nickname: string` | `Promise<boolean>` | 닉네임 중복 검사 |
+| `isNicknameUnique` | `nickname: string` | `Promise<boolean>` | Check nickname uniqueness |
 
 ### Fetch (`app/lib/functions/fetch.ts`)
 
-| 함수 | 파라미터 | 반환 | 설명 |
+| Function | Parameters | Returns | Description |
 |------|----------|------|------|
-| `fetchJams` | `{ pageParam, queryFnParam }` | `Promise<{ data, nextPage }>` | 잼 세션 목록 (페이지네이션) |
+| `fetchJams` | `{ pageParam, queryFnParam }` | `Promise<{ data, nextPage }>` | Jam session list (pagination) |
 
 ### JamSession Actions (`app/(pages)/(only-user)/jamsession/functions/fetch.ts`)
 
-| 함수 | 설명 |
+| Function | Description |
 |------|------|
-| `createJamSession` | 잼 세션 생성 (이미지 업로드 포함) |
-| `updateJamSession` | 잼 세션 수정 |
-| `initialize` | 세션 상세 페이지 초기화 (권한 확인) |
+| `createJamSession` | Create a jam session (including image upload) |
+| `updateJamSession` | Update a jam session |
+| `initialize` | Initialize the session detail page (permission check) |
 
 ### MyAct Actions (`app/(pages)/(only-user)/myact/[id]/functions/fetch.ts`)
 
-| 함수 | 설명 |
+| Function | Description |
 |------|------|
-| `allowEntry` | 참가 신청 승인 |
-| `refuseEntry` | 참가 신청 거절 |
-| `setNoShow` | 노쇼 처리 |
-| `letOutMember` | 참가자 내보내기 |
+| `allowEntry` | Approve an application |
+| `refuseEntry` | Reject an application |
+| `setNoShow` | Mark as no-show |
+| `letOutMember` | Remove a participant |
 
 ---
 
@@ -409,9 +409,9 @@ interface CreatePlaylistItemDto {
 
 ```typescript
 interface FetchResult {
-  status: number;   // 200: 성공, 500: 실패
-  msg: string;      // 상태 메시지
-  data: any;        // 응답 데이터
+  status: number;   // 200: success, 500: failure
+  msg: string;      // Status message
+  data: any;        // Response data
 }
 ```
 
@@ -455,9 +455,9 @@ interface UserProfile {
 
 ---
 
-## Enum-String 매핑 (`app/lib/maps/jam.ts`)
+## Enum-String Mapping (`app/lib/maps/jam.ts`)
 
-데이터베이스에 축약형으로 저장하기 위한 매핑입니다.
+Mapping used to store values in abbreviated form in the database.
 
 ```typescript
 // Position
@@ -498,7 +498,7 @@ const MapDataToLocation = {
   su: LocationEnum.SeoUl,
   gn: LocationEnum.GyeonGgiNorth,
   gs: LocationEnum.GyeonGgiSouth,
-  // ... (19개 지역)
+  // ... (19 regions)
 };
 const MapLocationToData = _.invert(MapDataToLocation);
 ```
@@ -580,65 +580,65 @@ const ZodSchema_Image = z.object({
 
 ## Testing Commands
 
-### Vitest (단위/통합 테스트)
+### Vitest (unit/integration tests)
 
 ```bash
-# Watch 모드 (개발 중)
+# Watch mode (during development)
 pnpm test
 
-# 전체 테스트 실행 (CI 모드)
+# Run all tests (CI mode)
 pnpm test:run
 
-# 커버리지 리포트 생성
+# Generate coverage report
 pnpm test:coverage
 
-# UI 모드 (브라우저에서 테스트 확인)
+# UI mode (view tests in the browser)
 pnpm test:ui
 ```
 
-### Playwright (E2E 테스트)
+### Playwright (E2E tests)
 
 ```bash
-# E2E 테스트 실행
+# Run E2E tests
 pnpm test:e2e
 
-# UI 모드 (디버깅)
+# UI mode (debugging)
 pnpm test:e2e:ui
 
-# 특정 브라우저만 실행
+# Run a specific browser only
 pnpm test:e2e --project=chromium
 ```
 
-### 테스트 구조
+### Test Structure
 
 ```
 __tests__/
-├── unit/           # 단위 테스트 (185 케이스)
-│                   # - lib/ (순수 함수, 유틸)
+├── unit/           # Unit tests (185 cases)
+│                   # - lib/ (pure functions, utils)
 │                   # - stores/ (Zustand stores)
 │                   # - hooks/ (Custom hooks)
-├── integration/    # 통합 테스트 (117 케이스)
-│                   # - auth/ (인증 시스템)
+├── integration/    # Integration tests (117 cases)
+│                   # - auth/ (authentication system)
 │                   # - api/ (Server Actions)
-│                   # - external/ (외부 API)
-├── component/      # 컴포넌트 테스트 (35 케이스)
+│                   # - external/ (external APIs)
+├── component/      # Component tests (35 cases)
 │                   # - React Testing Library
-└── e2e/            # E2E 테스트 (31 케이스)
+└── e2e/            # E2E tests (31 cases)
                     # - Playwright
 ```
 
 ### CI/CD
 
-GitHub Actions에서 자동 실행:
-- PR/push 시 단위/통합 테스트 실행
-- `master` push 시 E2E 테스트 실행
+Runs automatically via GitHub Actions:
+- Unit/integration tests run on PR/push
+- E2E tests run on `master` push
 
-**파일:** `.github/workflows/test.yml`
+**File:** `.github/workflows/test.yml`
 
 ---
 
-## 관련 문서
+## Related Documents
 
-- [Context](../context/README.md) - 프로젝트 컨텍스트
-- [Architecture](../architecture/README.md) - 시스템 구조
-- [Patterns](../patterns/README.md) - 코드 패턴
+- [Context](../context/README.md) - Project context
+- [Architecture](../architecture/README.md) - System structure
+- [Patterns](../patterns/README.md) - Code patterns

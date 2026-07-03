@@ -1,145 +1,145 @@
 # Context
 
-> AI가 프로젝트를 처음 접할 때 가장 먼저 읽어야 할 문서
+> The first document AI should read when encountering the project for the first time
 
-## 프로젝트 개요
+## Project Overview
 
-**JAMMING** - 음악인을 위한 합주/잼 세션 매칭 모바일 웹 플랫폼
+**JAMMING** - An ensemble/jam session matching mobile web platform for musicians
 
-음악인들이 함께 연주할 파트너를 찾고, 잼 세션을 개최하거나 참여하는 과정을 간편하게 만드는 서비스입니다.
+A service that simplifies the process of finding partners to play with, hosting jam sessions, or joining them.
 
-| 항목       | 내용                         |
-| ---------- | ---------------------------- |
-| 서비스 URL | https://jamming.co.kr        |
-| 플랫폼     | 모바일 웹 (PWA)              |
-| 주요 타겟  | 한국 내 아마추어/취미 음악인 |
+| Item        | Details                                    |
+| ----------- | ------------------------------------------ |
+| Service URL | https://jamming.co.kr                      |
+| Platform    | Mobile web (PWA)                           |
+| Main target | Amateur/hobbyist musicians in Korea        |
 
-## 핵심 목표 및 가치
+## Core Goals and Values
 
-1. **매칭 간소화**: 지역 기반으로 음악인들이 쉽게 만날 수 있도록
-2. **다양성 존중**: 장르, 실력 수준에 관계없이 누구나 참여 가능
-3. **모바일 최적화**: 언제 어디서나 빠르게 세션 확인/신청
+1. **Simplified matching**: Enable musicians to meet easily based on region
+2. **Respect for diversity**: Anyone can participate regardless of genre or skill level
+3. **Mobile optimization**: Quickly check/apply for sessions anytime, anywhere
 
-## 비즈니스 도메인
+## Business Domain
 
-### JamSession (잼 세션)
+### JamSession (Jam Session)
 
-호스트가 개최하는 합주 모임입니다.
+An ensemble gathering hosted by a host.
 
 ```typescript
-// 핵심 필드
+// Core fields
 {
-  title: string;              // 세션 제목 (5-20자)
-  body: string;               // 상세 설명 (최대 1000자)
-  datetime: string;           // 일시
-  location: LocationEnum[];   // 지역 (복수 선택)
-  location_detail: {          // 정확한 장소
+  title: string;              // Session title (5-20 chars)
+  body: string;               // Detailed description (max 1000 chars)
+  datetime: string;           // Date and time
+  location: LocationEnum[];   // Region (multiple selection)
+  location_detail: {          // Exact venue
     name: string;
     address: string;
   };
-  genre: GenreEnum[];         // 장르 (복수 선택)
-  level: LevelEnum[];         // 실력대 (복수 선택)
-  headcnt_by_pos: Array<{     // 포지션별 모집 인원
+  genre: GenreEnum[];         // Genre (multiple selection)
+  level: LevelEnum[];         // Skill level (multiple selection)
+  headcnt_by_pos: Array<{     // Headcount by position
     pos: PositionEnum;
     headcnt: number;
   }>;
-  songs: Array<{              // 합주할 곡 목록
+  songs: Array<{              // List of songs to play
     title: string;
     artist: string;
   }>;
 }
 ```
 
-### JamEntry (참가 신청)
+### JamEntry (Application)
 
-사용자가 잼 세션에 참가 신청하는 것입니다.
-
-```typescript
-{
-  jam_id: number; // 신청할 세션
-  user_id: string; // 신청자
-  appeal: string; // 자기소개
-  applied_pos: PositionEnum; // 신청 포지션
-  is_allowed: boolean; // 호스트 승인 여부
-  is_rejam: boolean; // 재잼(재신청) 여부
-}
-```
-
-**플로우:**
-
-1. 사용자가 세션 상세 페이지에서 참가 신청
-2. 호스트가 신청 목록 확인 후 승인/거절
-3. 승인된 사용자만 참가 확정
-
-### User (사용자)
+A user's application to join a jam session.
 
 ```typescript
 {
-  nickname: string;           // 닉네임 (1-8자, 영문/한글/숫자)
-  profile_image: string;      // 프로필 이미지 URL
-  pos: PositionEnum;          // 주 포지션
-  genre: GenreEnum;           // 선호 장르
-  level: LevelEnum;           // 실력 수준
-  location: LocationEnum;     // 활동 지역
-  tags: string[];             // 태그 (#rock, #blues 등)
-  bpm: number;                // BPM (선택)
+  jam_id: number; // Session to apply for
+  user_id: string; // Applicant
+  appeal: string; // Self-introduction
+  applied_pos: PositionEnum; // Position applied for
+  is_allowed: boolean; // Host approval status
+  is_rejam: boolean; // Rejam (re-application) status
 }
 ```
 
-### Enum 분류 체계
+**Flow:**
 
-**장르 (GenreEnum)**
+1. User applies from the session detail page
+2. Host reviews the application list and approves/rejects
+3. Only approved users are confirmed to participate
 
-- 종합, 락, 팝, 인디, 재즈, 펑크, 메탈
+### User
 
-**포지션 (PositionEnum)**
+```typescript
+{
+  nickname: string;           // Nickname (1-8 chars, English/Korean/numbers)
+  profile_image: string;      // Profile image URL
+  pos: PositionEnum;          // Main position
+  genre: GenreEnum;           // Preferred genre
+  level: LevelEnum;           // Skill level
+  location: LocationEnum;     // Active region
+  tags: string[];             // Tags (#rock, #blues, etc.)
+  bpm: number;                // BPM (optional)
+}
+```
 
-- 기타, 베이스, 드럼, 보컬, 키보드, 그 외
+### Enum Classification System
 
-**레벨 (LevelEnum)**
+**Genre (GenreEnum)**
 
-- 프로, 아마추어, 스터디, 취미
+- General, Rock, Pop, Indie, Jazz, Funk, Metal
 
-**지역 (LocationEnum)**
+**Position (PositionEnum)**
 
-- 전체, 서울, 경기 북부, 경기 남부, 인천, 부산, 대구, 대전, 광주, 울산, 세종, 강원, 충북, 충남, 전북, 전남, 경북, 경남, 제주 (19개)
+- Guitar, Bass, Drums, Vocals, Keyboard, Other
 
-## 기술적 제약조건
+**Level (LevelEnum)**
 
-### 모바일 퍼스트
+- Pro, Amateur, Study, Hobby
 
-- **뷰포트 제한**: `min-width: 375px`, `max-width: 600px`
-- **터치 최적화**: Bottom Sheet, 스와이프 제스처 지원
-- **반응형 아님**: 모바일 전용 레이아웃
+**Region (LocationEnum)**
 
-### iOS Safari 호환
+- All, Seoul, Northern Gyeonggi, Southern Gyeonggi, Incheon, Busan, Daegu, Daejeon, Gwangju, Ulsan, Sejong, Gangwon, North Chungcheong, South Chungcheong, North Jeolla, South Jeolla, North Gyeongsang, South Gyeongsang, Jeju (19 total)
 
-프로젝트에서 가장 많은 디버깅 리소스가 투입된 영역입니다.
+## Technical Constraints
 
-- **자동 확대 방지**: `maximum-scale=1` 설정
-- **주소창 높이 대응**: `--vh` CSS 변수로 동적 계산
-- **스크롤 동작 최적화**: `overflow-without-scroll` 클래스
-- **키보드 입력 시 화면 움직임 제어**
+### Mobile First
 
-### 기술 스택 제약
+- **Viewport constraints**: `min-width: 375px`, `max-width: 600px`
+- **Touch optimization**: Bottom Sheet, swipe gesture support
+- **Not responsive**: Mobile-only layout
 
-| 항목      | 버전/기술  | 비고                   |
-| --------- | ---------- | ---------------------- |
-| Framework | Next.js 16 | App Router 사용        |
-| React     | 19 RC      | RC 버전                |
-| Tailwind  | 4          | 최신 버전              |
-| Backend   | Supabase   | Auth, DB, Storage 통합 |
-| 배포      | Vercel     | Analytics 활성화       |
+### iOS Safari Compatibility
 
-### 외부 API 의존성
+The area where the most debugging resources were invested in the project.
 
-- **ManiaDB**: 곡 검색 (한국 음악 DB)
-- **Naver Map**: 장소 검색 (Local Search API)
-- **Kakao**: OAuth 로그인
+- **Prevent auto-zoom**: `maximum-scale=1` setting
+- **Address bar height handling**: Dynamic calculation via the `--vh` CSS variable
+- **Scroll behavior optimization**: `overflow-without-scroll` class
+- **Controlling screen movement during keyboard input**
 
-## 관련 문서
+### Tech Stack Constraints
 
-- [Architecture](../architecture/README.md) - 시스템 구조
-- [Patterns](../patterns/README.md) - 코드 패턴
-- [Design](../design/README.md) - 디자인 시스템 가이드
-- [Reference](../reference/README.md) - API/스키마 레퍼런스
+| Item      | Version/Tech | Notes                       |
+| --------- | ------------ | --------------------------- |
+| Framework | Next.js 16   | Uses App Router             |
+| React     | 19 RC        | RC version                  |
+| Tailwind  | 4            | Latest version              |
+| Backend   | Supabase     | Integrated Auth, DB, Storage |
+| Deployment | Vercel      | Analytics enabled           |
+
+### External API Dependencies
+
+- **ManiaDB**: Song search (Korean music DB)
+- **Naver Map**: Venue search (Local Search API)
+- **Kakao**: OAuth login
+
+## Related Documents
+
+- [Architecture](../architecture/README.md) - System structure
+- [Patterns](../patterns/README.md) - Code patterns
+- [Design](../design/README.md) - Design system guide
+- [Reference](../reference/README.md) - API/schema reference

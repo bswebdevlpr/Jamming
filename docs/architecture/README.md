@@ -1,15 +1,15 @@
 # Architecture
 
-> 시스템 구조, 데이터 흐름, 라우팅을 이해하기 위한 문서
+> A document for understanding the system structure, data flow, and routing
 
-## 시스템 구조 개요
+## System Structure Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        Client (Browser)                      │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
 │  │ React Query │  │   Zustand   │  │ React Components    │  │
-│  │ (서버 상태) │  │ (UI 상태)   │  │ (페이지, UI)        │  │
+│  │ (server st) │  │ (UI state)  │  │ (pages, UI)         │  │
 │  └─────────────┘  └─────────────┘  └─────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
                               │
@@ -36,7 +36,7 @@
 │                      External APIs                           │
 │  ┌─────────────────────┐  ┌─────────────────────────────┐   │
 │  │      ManiaDB        │  │        Naver Map            │   │
-│  │    (곡 검색)        │  │       (장소 검색)           │   │
+│  │   (song search)     │  │      (place search)         │   │
 │  └─────────────────────┘  └─────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 
@@ -44,113 +44,114 @@
 │                     Testing Infrastructure                   │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐  │
 │  │   Vitest    │  │  Playwright │  │  React Testing Lib  │  │
-│  │ (단위/통합) │  │    (E2E)    │  │    (컴포넌트)       │  │
+│  │ (unit/integ)│  │    (E2E)    │  │    (components)     │  │
 │  └─────────────┘  └─────────────┘  └─────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 디렉토리 구조
+## Directory Structure
 
 ```
 app/
-├── layout.tsx                    # Root 레이아웃 (메타데이터, Analytics)
+├── layout.tsx                    # Root layout (metadata, Analytics)
 ├── (pages)/
 │   ├── layout.tsx                # GlobalLayout (Context, React Query Provider)
-│   ├── context.tsx               # GlobalContext 정의
-│   ├── (only-user)/              # 인증 필수 라우트 그룹
-│   │   ├── layout.tsx            # 인증 검증 레이아웃
-│   │   ├── jamsession/           # 잼 세션 관련
-│   │   │   ├── page.tsx          # 피드 페이지
+│   ├── context.tsx               # GlobalContext definition
+│   ├── (only-user)/              # Authentication-required route group
+│   │   ├── layout.tsx            # Auth verification layout
+│   │   ├── jamsession/           # Jam session related
+│   │   │   ├── page.tsx          # Feed page
 │   │   │   ├── functions/        # Server Actions
-│   │   │   └── post/[id]/        # 상세 페이지
-│   │   ├── myact/                # 내 활동
-│   │   ├── mypage/               # 마이페이지
+│   │   │   └── post/[id]/        # Detail page
+│   │   ├── myact/                # My activity
+│   │   ├── mypage/               # My page
 │   │   └── user-profile/[nickname]/
-│   └── (signin)/                 # 비인증 라우트 그룹
-│       ├── layout.tsx            # 로그인 상태 체크
-│       └── signup/               # 회원가입
+│   └── (signin)/                 # Unauthenticated route group
+│       ├── layout.tsx            # Login state check
+│       └── signup/               # Sign up
 ├── api/
-│   ├── auth/callback/route.ts    # OAuth 콜백
+│   ├── auth/callback/route.ts    # OAuth callback
 │   ├── functions/                # Server Actions (create, read, delete)
 │   ├── dtos/                     # Data Transfer Objects
-│   ├── maniadb/route.ts          # ManiaDB 프록시
-│   └── naver/map/route.ts        # Naver Map 프록시
+│   ├── maniadb/route.ts          # ManiaDB proxy
+│   └── naver/map/route.ts        # Naver Map proxy
 ├── lib/
-│   ├── interfaces/               # TypeScript 인터페이스
-│   ├── enums/                    # Enum 정의
-│   ├── errors/                   # 에러 클래스
-│   ├── functions/                # 유틸리티 함수
-│   ├── maps/                     # Enum-String 매핑
-│   └── zod.ts                    # Zod 스키마
+│   ├── interfaces/               # TypeScript interfaces
+│   ├── enums/                    # Enum definitions
+│   ├── errors/                   # Error classes
+│   ├── functions/                # Utility functions
+│   ├── maps/                     # Enum-String mappings
+│   └── zod.ts                    # Zod schemas
 ├── stores/                       # Zustand stores
-│   ├── session.ts                # 사용자 세션 상태
-│   ├── notification.ts           # 알림 상태
-│   ├── feedback.ts               # 피드백 상태
-│   ├── calendar.ts               # 캘린더 상태
-│   ├── ui.ts                     # UI 상태
-│   └── bottom-sheet.ts           # 바텀 시트 상태
-├── ui/                           # UI 컴포넌트
-│   ├── templates/                # 재사용 템플릿 (feed, popup)
-│   ├── buttons/                  # 버튼 컴포넌트
-│   ├── layouts/                  # 레이아웃 컴포넌트
+│   ├── session.ts                # User session state
+│   ├── notification.ts           # Notification state
+│   ├── feedback.ts               # Feedback state
+│   ├── calendar.ts               # Calendar state
+│   ├── ui.ts                     # UI state
+│   └── bottom-sheet.ts           # Bottom sheet state
+├── ui/                           # UI components
+│   ├── templates/                # Reusable templates (feed, popup)
+│   ├── buttons/                  # Button components
+│   ├── layouts/                  # Layout components
 │   └── ...
-├── util/supabase/                # Supabase 클라이언트
-│   ├── client.ts                 # 브라우저용
-│   ├── server.ts                 # 서버용
-│   └── auth.ts                   # 인증 함수
+├── util/supabase/                # Supabase client
+│   ├── client.ts                 # For the browser
+│   ├── server.ts                 # For the server
+│   └── auth.ts                   # Auth functions
 └── hooks/                        # Custom Hooks
-__tests__/                        # 테스트 파일
-├── setup.ts                      # 글로벌 테스트 셋업
-├── mocks/                        # 모킹 시스템
-│   ├── supabase.ts               # Supabase 모킹
-│   ├── redis.ts                  # Redis 모킹
-│   ├── handlers.ts               # MSW 핸들러
-│   └── fixtures/                 # 테스트 데이터 팩토리
-├── unit/                         # 단위 테스트 (lib, stores, hooks)
-├── integration/                  # 통합 테스트 (auth, API, external)
-├── component/                    # 컴포넌트 테스트
-└── e2e/                          # E2E 테스트 (Playwright)
+__tests__/                        # Test files
+├── setup.ts                      # Global test setup
+├── mocks/                        # Mocking system
+│   ├── supabase.ts               # Supabase mocking
+│   ├── redis.ts                  # Redis mocking
+│   ├── handlers.ts               # MSW handlers
+│   └── fixtures/                 # Test data factories
+├── unit/                         # Unit tests (lib, stores, hooks)
+├── integration/                  # Integration tests (auth, API, external)
+├── component/                    # Component tests
+└── e2e/                          # E2E tests (Playwright)
 ```
 
-## 인증 플로우 (카카오 OAuth → Supabase)
+## Authentication Flow (Kakao OAuth → Supabase)
 
 ```
 ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
-│  사용자  │────▶│  /signin │────▶│  Kakao   │────▶│ Callback │
-│          │     │  페이지  │     │  OAuth   │     │  /api/   │
+│   User   │────▶│  /signin │────▶│  Kakao   │────▶│ Callback │
+│          │     │   page   │     │  OAuth   │     │  /api/   │
 └──────────┘     └──────────┘     └──────────┘     └──────────┘
                                                         │
                                                         ▼
                                                  ┌──────────────┐
                                                  │ Supabase     │
-                                                 │ Session 생성 │
+                                                 │ Session      │
+                                                 │ created      │
                                                  └──────────────┘
                                                         │
                                          ┌──────────────┴──────────────┐
                                          ▼                             ▼
                                   ┌──────────────┐              ┌──────────────┐
-                                  │ user 테이블  │              │ user 테이블  │
-                                  │ 데이터 있음  │              │ 데이터 없음  │
+                                  │ user table   │              │ user table   │
+                                  │ has data     │              │ no data      │
                                   └──────────────┘              └──────────────┘
                                          │                             │
                                          ▼                             ▼
                                   ┌──────────────┐              ┌──────────────┐
                                   │ /jamsession  │              │   /signup    │
-                                  │  (메인)      │              │  (회원가입)  │
+                                  │  (main)      │              │  (sign up)   │
                                   └──────────────┘              └──────────────┘
 ```
 
-**관련 파일:**
-- `app/util/supabase/auth.ts:signInWithKakao()` - OAuth 시작
-- `app/api/auth/callback/route.ts` - 콜백 처리
-- `app/(pages)/(only-user)/layout.tsx` - 인증 검증
+**Related files:**
+- `app/util/supabase/auth.ts:signInWithKakao()` - Initiates OAuth
+- `app/api/auth/callback/route.ts` - Handles the callback
+- `app/(pages)/(only-user)/layout.tsx` - Auth verification
 
-## 데이터 흐름 (Client → Server → Supabase)
+## Data Flow (Client → Server → Supabase)
 
-### 읽기 (Read)
+### Read
 
 ```
-컴포넌트                Server Action              Supabase
+Component               Server Action              Supabase
    │                        │                         │
    │  useInfiniteQuery()    │                         │
    ├───────────────────────▶│                         │
@@ -163,13 +164,13 @@ __tests__/                        # 테스트 파일
    │    Entity[]            │                         │
 ```
 
-**예시 (잼 세션 목록):**
+**Example (jam session list):**
 ```typescript
 // app/ui/templates/feed.tsx
 const { data, fetchNextPage } = useInfiniteQuery({
   queryKey: ["data", filter],
   queryFn: ({ pageParam }) => fetchJams({ pageParam, queryFnParam: filter }),
-  staleTime: 1000 * 60 * 5,  // 5분 캐싱
+  staleTime: 1000 * 60 * 5,  // 5-minute caching
 });
 
 // app/lib/functions/fetch.ts
@@ -183,10 +184,10 @@ export const fetchJams = async ({ pageParam, queryFnParam }) => {
 };
 ```
 
-### 쓰기 (Create)
+### Create
 
 ```
-컴포넌트                Server Action              Supabase
+Component               Server Action              Supabase
    │                        │                         │
    │  form.handleSubmit()   │                         │
    ├───────────────────────▶│                         │
@@ -199,9 +200,9 @@ export const fetchJams = async ({ pageParam, queryFnParam }) => {
    │     boolean            │                         │
 ```
 
-**예시 (참가 신청):**
+**Example (application):**
 ```typescript
-// 컴포넌트에서 호출
+// Called from the component
 const result = await createJamEntry({
   jam_id,
   user_id,
@@ -211,16 +212,16 @@ const result = await createJamEntry({
 
 // app/api/functions/create.ts
 export async function createJamEntry(input: CreateJamEntryDto): Promise<boolean> {
-  input.appeal = await sanitize(input.appeal);  // XSS 방지
+  input.appeal = await sanitize(input.appeal);  // XSS prevention
   const supabase = await createClient();
   const { error } = await supabase.from("jamentry").insert(input);
   return !error;
 }
 ```
 
-## 상태 관리 (Zustand + React Query)
+## State Management (Zustand + React Query)
 
-### Zustand Stores (클라이언트 상태)
+### Zustand Stores (client state)
 
 ```typescript
 // app/stores/session.ts
@@ -252,26 +253,26 @@ interface NotificationStore {
 }
 ```
 
-**사용:**
+**Usage:**
 ```typescript
 import { useBottomSheetStore, useSessionStore } from '@/app/stores';
 
-// Bottom Sheet 열기
+// Open the bottom sheet
 const { set } = useBottomSheetStore();
 set({
   children: <MyComponent />,
   location: BottomSheetHeight.Full,
 });
 
-// 사용자 프로필 업데이트
+// Update the user profile
 const { setUserProfile } = useSessionStore();
-setUserProfile({ nickname: "새 닉네임" });
+setUserProfile({ nickname: "New nickname" });
 ```
 
-### React Query (서버 상태)
+### React Query (server state)
 
 ```typescript
-// 무한 스크롤 피드
+// Infinite scroll feed
 const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery({
   queryKey: ["jamsessions", filter],
   queryFn: ({ pageParam }) => fetchJams({ pageParam, filter }),
@@ -280,27 +281,27 @@ const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery({
   refetchOnWindowFocus: false,
 });
 
-// Intersection Observer와 연동
+// Integrated with the Intersection Observer
 useEffect(() => {
   if (inView && hasNextPage) fetchNextPage();
 }, [inView, hasNextPage]);
 ```
 
-## 라우팅 구조
+## Routing Structure
 
 ### Route Groups
 
-Next.js App Router에서 `(폴더명)`은 URL에 포함되지 않는 그룹입니다.
+In the Next.js App Router, `(folderName)` is a group that is not included in the URL.
 
-| 그룹 | 용도 | 보호 |
+| Group | Purpose | Protection |
 |------|------|------|
-| `(pages)` | 모든 페이지의 공통 레이아웃 | - |
-| `(only-user)` | 로그인 필수 페이지 | 인증 검증 |
-| `(signin)` | 로그인/회원가입 페이지 | 이미 로그인 시 리다이렉트 |
+| `(pages)` | Common layout for all pages | - |
+| `(only-user)` | Login-required pages | Auth verification |
+| `(signin)` | Login/sign-up pages | Redirect if already logged in |
 
-### URL 매핑
+### URL Mapping
 
-| 파일 경로 | URL |
+| File path | URL |
 |----------|-----|
 | `app/(pages)/(signin)/page.tsx` | `/` |
 | `app/(pages)/(signin)/signup/page.tsx` | `/signup` |
@@ -310,16 +311,16 @@ Next.js App Router에서 `(폴더명)`은 URL에 포함되지 않는 그룹입�
 | `app/(pages)/(only-user)/myact/page.tsx` | `/myact` |
 | `app/(pages)/(only-user)/user-profile/[nickname]/page.tsx` | `/user-profile/john` |
 
-### 레이아웃 계층
+### Layout Hierarchy
 
 ```
-app/layout.tsx (Root: 메타데이터, Analytics)
+app/layout.tsx (Root: metadata, Analytics)
 └── app/(pages)/layout.tsx (Global: Context, QueryClient)
-    ├── app/(pages)/(signin)/layout.tsx (비인증: 로그인 체크)
+    ├── app/(pages)/(signin)/layout.tsx (unauthenticated: login check)
     │   └── page.tsx (/)
     │   └── signup/page.tsx (/signup)
     │
-    └── app/(pages)/(only-user)/layout.tsx (인증: 세션 검증)
+    └── app/(pages)/(only-user)/layout.tsx (authenticated: session verification)
         └── jamsession/layout.tsx
             └── page.tsx (/jamsession)
             └── post/[id]/page.tsx (/jamsession/post/:id)
@@ -327,9 +328,9 @@ app/layout.tsx (Root: 메타데이터, Analytics)
         └── myact/page.tsx (/myact)
 ```
 
-## 관련 문서
+## Related Documents
 
-- [Context](../context/README.md) - 프로젝트 컨텍스트
-- [Patterns](../patterns/README.md) - 코드 패턴
-- [Design](../design/README.md) - 디자인 시스템 가이드
-- [Reference](../reference/README.md) - API/스키마 레퍼런스
+- [Context](../context/README.md) - Project context
+- [Patterns](../patterns/README.md) - Code patterns
+- [Design](../design/README.md) - Design system guide
+- [Reference](../reference/README.md) - API/schema reference

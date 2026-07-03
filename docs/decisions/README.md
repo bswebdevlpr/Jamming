@@ -1,207 +1,207 @@
 # Decisions (ADR)
 
-> Architecture Decision Records - 주요 기술 결정 사항과 그 근거를 기록
+> Architecture Decision Records - Documenting key technical decisions and their rationale
 
-## ADR이란?
+## What is an ADR?
 
-ADR(Architecture Decision Record)은 프로젝트에서 내린 중요한 기술적 결정과 그 배경을 문서화한 것입니다. AI가 "왜 이렇게 구현했는가"를 이해하는 데 도움이 됩니다.
+An ADR (Architecture Decision Record) documents the important technical decisions made in a project along with their background. It helps AI understand "why something was implemented this way."
 
-## ADR 작성 가이드
+## ADR Writing Guide
 
-### 언제 작성하나요?
+### When to write one?
 
-- 새로운 기술 스택 도입
-- 아키텍처 패턴 선택
-- 라이브러리 선택 (여러 대안 중)
-- 성능/보안 관련 중요 결정
-- 기존 방식을 변경하는 결정
+- Introducing a new tech stack
+- Choosing an architecture pattern
+- Selecting a library (among several alternatives)
+- Important performance/security decisions
+- Decisions that change an existing approach
 
-### 작성 원칙
+### Writing Principles
 
-1. **간결하게**: 핵심만 기록
-2. **맥락 포함**: 결정 당시 상황 설명
-3. **대안 기록**: 고려했던 다른 옵션
-4. **결과 기록**: 결정으로 인한 영향
+1. **Be concise**: Record only the essentials
+2. **Include context**: Explain the situation at the time of the decision
+3. **Record alternatives**: The other options that were considered
+4. **Record consequences**: The impact resulting from the decision
 
 ---
 
-## ADR 템플릿
+## ADR Template
 
 ```markdown
-# ADR-XXX: [결정 제목]
+# ADR-XXX: [Decision Title]
 
-## 상태
+## Status
 
-[제안됨 | 승인됨 | 폐기됨 | 대체됨]
+[Proposed | Accepted | Deprecated | Superseded]
 
-## 날짜
+## Date
 
 YYYY-MM-DD
 
-## 맥락
+## Context
 
-[결정이 필요했던 배경과 상황]
+[The background and situation that required the decision]
 
-## 고려한 옵션
+## Options Considered
 
-### 옵션 1: [이름]
-- 장점: ...
-- 단점: ...
+### Option 1: [Name]
+- Pros: ...
+- Cons: ...
 
-### 옵션 2: [이름]
-- 장점: ...
-- 단점: ...
+### Option 2: [Name]
+- Pros: ...
+- Cons: ...
 
-## 결정
+## Decision
 
-[선택한 옵션과 이유]
+[The chosen option and the reason]
 
-## 결과
+## Consequences
 
-[결정으로 인한 영향, 트레이드오프]
+[The impact and trade-offs resulting from the decision]
 ```
 
 ---
 
-## 기록된 결정 목록
+## List of Recorded Decisions
 
-### ADR-001: 모바일 웹 전용 설계
+### ADR-001: Mobile Web-Only Design
 
-**상태:** 승인됨
-**날짜:** 프로젝트 시작 시점
+**Status:** Accepted
+**Date:** Project start
 
-**맥락:**
-- 음악인들이 외부에서 빠르게 잼 세션을 확인/신청하는 사용 패턴
-- 네이티브 앱 개발 리소스 부족
+**Context:**
+- Musicians' usage pattern of quickly checking/applying to jam sessions while out and about
+- Lack of resources for native app development
 
-**고려한 옵션:**
-1. 반응형 웹 (데스크톱 + 모바일)
-2. 모바일 전용 웹
-3. 네이티브 앱 (React Native)
+**Options Considered:**
+1. Responsive web (desktop + mobile)
+2. Mobile-only web
+3. Native app (React Native)
 
-**결정:** 모바일 전용 웹 선택
-- 뷰포트 고정 (`min-width: 375px`, `max-width: 600px`)
-- 터치 최적화 UI (Bottom Sheet, 스와이프)
+**Decision:** Chose mobile-only web
+- Fixed viewport (`min-width: 375px`, `max-width: 600px`)
+- Touch-optimized UI (Bottom Sheet, swipe)
 
-**결과:**
-- 빠른 개발 속도
-- iOS Safari 호환성 이슈 해결에 많은 리소스 투입
-- 데스크톱 사용자 경험 제한
+**Consequences:**
+- Fast development speed
+- Significant resources invested in resolving iOS Safari compatibility issues
+- Limited desktop user experience
 
 ---
 
-### ADR-002: Supabase 선택
+### ADR-002: Choosing Supabase
 
-**상태:** 승인됨
-**날짜:** 프로젝트 시작 시점
+**Status:** Accepted
+**Date:** Project start
 
-**맥락:**
-- 풀스택 솔루션 필요 (Auth, DB, Storage)
-- 빠른 MVP 개발 필요
-- 1인 개발 환경
+**Context:**
+- Need for a full-stack solution (Auth, DB, Storage)
+- Need for fast MVP development
+- Solo development environment
 
-**고려한 옵션:**
+**Options Considered:**
 1. Supabase (PostgreSQL + Auth + Storage)
 2. Firebase (NoSQL + Auth + Storage)
-3. 직접 구축 (Express + PostgreSQL + S3)
+3. Build from scratch (Express + PostgreSQL + S3)
 
-**결정:** Supabase 선택
-- SQL 기반으로 복잡한 쿼리 지원
-- Row Level Security로 보안 처리
-- 실시간 기능 내장
+**Decision:** Chose Supabase
+- SQL-based support for complex queries
+- Security handled via Row Level Security
+- Built-in real-time features
 
-**결과:**
-- 빠른 개발 속도
-- Relation 쿼리 편리
-- 일부 고급 기능 제한
+**Consequences:**
+- Fast development speed
+- Convenient relational queries
+- Some advanced features are limited
 
 ---
 
-### ADR-003: React Query로 서버 상태 관리
+### ADR-003: Server State Management with React Query
 
-**상태:** 승인됨
-**날짜:** 개발 초기
+**Status:** Accepted
+**Date:** Early development
 
-**맥락:**
-- 무한 스크롤 피드 구현 필요
-- 캐싱 및 리페칭 로직 필요
-- 로딩/에러 상태 관리
+**Context:**
+- Need to implement an infinite scroll feed
+- Need for caching and refetching logic
+- Loading/error state management
 
-**고려한 옵션:**
+**Options Considered:**
 1. React Query (TanStack Query)
 2. SWR
 3. Redux + RTK Query
-4. 직접 구현 (useState + useEffect)
+4. Custom implementation (useState + useEffect)
 
-**결정:** React Query 선택
-- `useInfiniteQuery`로 무한 스크롤 쉽게 구현
-- 자동 캐싱 및 백그라운드 리페칭
-- Next.js App Router와 호환
+**Decision:** Chose React Query
+- Easy infinite scroll implementation with `useInfiniteQuery`
+- Automatic caching and background refetching
+- Compatible with the Next.js App Router
 
-**결과:**
-- 서버 상태 관리 코드 간소화
-- 5분 캐싱으로 불필요한 요청 감소
-- 번들 크기 증가
-
----
-
-### ADR-004: Server Actions 사용
-
-**상태:** 승인됨
-**날짜:** Next.js 16 도입 시점
-
-**맥락:**
-- Next.js 16의 Server Actions 안정화
-- API Route vs Server Action 선택 필요
-
-**고려한 옵션:**
-1. API Routes (기존 방식)
-2. Server Actions (새로운 방식)
-3. 혼합 사용
-
-**결정:** Server Actions 주로 사용, 외부 API 프록시는 API Routes 유지
-- CRUD 작업: Server Actions (`app/api/functions/`)
-- 외부 API 프록시: API Routes (`app/api/maniadb/`, `app/api/naver/`)
-
-**결과:**
-- 타입 안정성 향상
-- 클라이언트 코드 간소화
-- 디버깅이 다소 어려움
+**Consequences:**
+- Simplified server state management code
+- Reduced unnecessary requests with 5-minute caching
+- Increased bundle size
 
 ---
 
-### ADR-005: iOS Safari 대응 방식
+### ADR-004: Using Server Actions
 
-**상태:** 승인됨
-**날짜:** 지속적 업데이트
+**Status:** Accepted
+**Date:** When Next.js 16 was adopted
 
-**맥락:**
-- iOS Safari에서 다양한 레이아웃 이슈 발생
-- 주소창 높이 변화, 자동 확대, 스크롤 문제
+**Context:**
+- Stabilization of Server Actions in Next.js 16
+- Need to choose between API Route vs Server Action
 
-**적용된 해결책:**
-1. `maximum-scale=1` 메타 태그로 자동 확대 방지
-2. `--vh` CSS 변수로 동적 뷰포트 높이 계산
-3. `overflow-without-scroll` 클래스로 스크롤바 숨김
-4. 입력 필드 포커스 시 스크롤 제어
+**Options Considered:**
+1. API Routes (existing approach)
+2. Server Actions (new approach)
+3. Mixed use
 
-**결과:**
-- 18회 이상의 디버깅 시도
-- 현재 안정적인 모바일 경험 제공
-- 코드 복잡도 증가
+**Decision:** Primarily use Server Actions, keep API Routes for external API proxying
+- CRUD operations: Server Actions (`app/api/functions/`)
+- External API proxying: API Routes (`app/api/maniadb/`, `app/api/naver/`)
 
----
-
-## 향후 결정 필요 사항
-
-- [ ] 실시간 알림 구현 방식 (Supabase Realtime vs FCM)
-- [ ] 이미지 최적화 방식 (Vercel Image vs Supabase Transform)
-- [ ] 테스트 전략 (E2E vs Unit)
+**Consequences:**
+- Improved type safety
+- Simplified client code
+- Somewhat harder to debug
 
 ---
 
-## 관련 문서
+### ADR-005: Handling iOS Safari
 
-- [Context](../context/README.md) - 프로젝트 컨텍스트
-- [Architecture](../architecture/README.md) - 시스템 구조
-- [Patterns](../patterns/README.md) - 코드 패턴
+**Status:** Accepted
+**Date:** Continuously updated
+
+**Context:**
+- Various layout issues occur in iOS Safari
+- Address bar height changes, auto-zoom, scroll problems
+
+**Solutions Applied:**
+1. Prevent auto-zoom with the `maximum-scale=1` meta tag
+2. Calculate dynamic viewport height with the `--vh` CSS variable
+3. Hide the scrollbar with the `overflow-without-scroll` class
+4. Control scrolling when input fields are focused
+
+**Consequences:**
+- More than 18 debugging attempts
+- Currently provides a stable mobile experience
+- Increased code complexity
+
+---
+
+## Decisions Still to Be Made
+
+- [ ] Real-time notification implementation approach (Supabase Realtime vs FCM)
+- [ ] Image optimization approach (Vercel Image vs Supabase Transform)
+- [ ] Testing strategy (E2E vs Unit)
+
+---
+
+## Related Documents
+
+- [Context](../context/README.md) - Project context
+- [Architecture](../architecture/README.md) - System structure
+- [Patterns](../patterns/README.md) - Code patterns

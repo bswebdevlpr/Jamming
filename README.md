@@ -145,7 +145,7 @@ pnpm test:e2e        # e2e
 
 ## 📚 Documentation
 
-Detailed design docs live in [`docs/`](./docs) (written in Korean).
+Detailed design docs live in [`docs/`](./docs).
 
 | Doc | Contents |
 | --- | --- |
