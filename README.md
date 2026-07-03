@@ -13,7 +13,7 @@ Helps amateur/hobby musicians in Korea find people to play with — hosting or j
 [![React](https://img.shields.io/badge/React-19_RC-149eca?logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-3ecf8e?logo=supabase&logoColor=white)](https://supabase.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![License: All Rights Reserved](https://img.shields.io/badge/License-All%20Rights%20Reserved-red.svg)](./LICENSE)
 
 </div>
 
@@ -157,4 +157,6 @@ Detailed design docs live in [`docs/`](./docs).
 
 ## 📄 License
 
-Distributed under the [MIT License](./LICENSE).
+© 2026 bswebdevlpr. All rights reserved. See [LICENSE](./LICENSE).
+
+This repository is public for **portfolio viewing only** — reuse, copying, or redistribution of the code is not permitted.
