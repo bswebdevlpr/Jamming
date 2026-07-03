@@ -9,6 +9,7 @@ import {
   MapDataToPosition,
 } from "@/app/lib/maps/jam";
 import { ZodSchema_Post, ZodType_Post, ZodType_Song } from "@/app/lib/zod";
+import { logFormError } from "@/app/lib/functions/form";
 import { FormFieldRow } from "@/app/ui/rows/form-field-row";
 import X from "@/app/ui/images/common/x";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -296,11 +297,7 @@ export default function UpdateJam({
       }}
     >
       <form
-        onSubmit={handleSubmit(onSubmit, (e) => {
-          if (process.env.NODE_ENV === "development") {
-            console.error("[update-jam] validation failed", e);
-          }
-        })}
+        onSubmit={handleSubmit(onSubmit, (e) => logFormError("update-jam", e))}
         className="h-full flex flex-col"
       >
         <div

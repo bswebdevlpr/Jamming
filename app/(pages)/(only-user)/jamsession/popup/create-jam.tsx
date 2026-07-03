@@ -17,6 +17,7 @@ import SearchSongPopup from "./search-song";
 import RegisterOpenchatPopup from "./register-openchat";
 import SearchLocationPopup from "./search-location";
 import { MapDataToGenre, MapDataToLevel, MapDataToPosition } from "@/app/lib/maps/jam";
+import { logFormError } from "@/app/lib/functions/form";
 import LocationPopup from "@/app/ui/popup/location";
 import { useBottomSheetStore } from "@/app/stores";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -247,11 +248,7 @@ export default function CreateJam({
           exit="exit"
         >
       <form
-        onSubmit={handleSubmit(onSubmit, (e) => {
-          if (process.env.NODE_ENV === "development") {
-            console.error("[create-jam] validation failed", e);
-          }
-        })}
+        onSubmit={handleSubmit(onSubmit, (e) => logFormError("create-jam", e))}
         className="h-full flex flex-col"
       >
         <div

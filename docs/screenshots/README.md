@@ -4,16 +4,12 @@ Drop product screenshots here, then uncomment the gallery table in the root [REA
 
 ## Naming convention
 
-Use lowercase, hyphenated names that match the gallery in the README:
+Use lowercase names that match the gallery in the README:
 
 | File | Screen |
 | --- | --- |
 | `home.png` | Home / session list |
-| `jam-detail.png` | Jam session detail |
-| `create-jam.png` | Create session form |
-| `mypage.png` | My page |
-| `notification.png` | Notifications |
-| `profile.png` | Profile setup |
+| `about.png` | About |
 
 ## Tips
 

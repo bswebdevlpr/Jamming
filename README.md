@@ -34,14 +34,8 @@ Helps amateur/hobby musicians in Korea find people to play with — hosting or j
 <div align="center">
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/home.png" width="220"/><br/><sub>Home</sub></td>
-    <td align="center"><img src="docs/screenshots/jam-detail.png" width="220"/><br/><sub>Jam Session Detail</sub></td>
-    <td align="center"><img src="docs/screenshots/create-jam.png" width="220"/><br/><sub>Create Session</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="docs/screenshots/mypage.png" width="220"/><br/><sub>My Page</sub></td>
-    <td align="center"><img src="docs/screenshots/notification.png" width="220"/><br/><sub>Notifications</sub></td>
-    <td align="center"><img src="docs/screenshots/profile.png" width="220"/><br/><sub>Profile Setup</sub></td>
+    <td align="center"><img src="docs/screenshots/home.png" width="240"/><br/><sub>Home</sub></td>
+    <td align="center"><img src="docs/screenshots/about.png" width="240"/><br/><sub>About</sub></td>
   </tr>
 </table>
 </div>
@@ -130,6 +124,8 @@ cp .env.example .env
 # 3. Start the dev server (http://localhost:3038)
 pnpm dev
 ```
+
+> `NEXT_PUBLIC_SUPABASE_URL` must be set — it drives Supabase auth/storage and the `next/image` allow-list. If it's missing, Supabase-hosted images (e.g. profile photos) won't load.
 
 ### Scripts
 

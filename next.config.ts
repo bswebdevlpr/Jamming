@@ -1,9 +1,19 @@
 import type { NextConfig } from "next";
 
 // Supabase 스토리지 호스트는 환경변수에서 파생 (인스턴스 주소 하드코딩 방지)
-const supabaseHostname = process.env.NEXT_PUBLIC_SUPABASE_URL
-  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
-  : undefined;
+function resolveSupabaseHostname(): string | undefined {
+  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!raw) return undefined;
+  try {
+    return new URL(raw).hostname;
+  } catch {
+    throw new Error(
+      `Invalid NEXT_PUBLIC_SUPABASE_URL: "${raw}". Expected e.g. https://<project-ref>.supabase.co`
+    );
+  }
+}
+
+const supabaseHostname = resolveSupabaseHostname();
 
 const nextConfig: NextConfig = {
   experimental: {

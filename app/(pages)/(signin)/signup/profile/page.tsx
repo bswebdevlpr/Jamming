@@ -15,6 +15,7 @@ import BottomSheetContent from "./(bottom-sheet)/content";
 import { isNicknameUnique } from "@/app/api/functions/validation";
 import { CustomErrMsg } from "@/app/lib/errors/custom-error";
 import { FormData_User, ZodSchema_User, ZodType_Image } from "@/app/lib/zod";
+import { logFormError } from "@/app/lib/functions/form";
 import { useBottomSheetStore, useSessionStore } from "@/app/stores";
 import ButtonTemplate from "@/app/ui/templates/buttons";
 import { motion } from "framer-motion";
@@ -332,9 +333,7 @@ export default function SignUp_Profile() {
         name="profile_form"
         className="grow flex flex-col"
         onSubmit={handleSubmit(onSubmit, (e) => {
-          if (process.env.NODE_ENV === "development") {
-            console.error("[signup-profile] validation failed", e);
-          }
+          logFormError("signup-profile", e);
           // TODO: validation FAIL popup
         })}
       >
