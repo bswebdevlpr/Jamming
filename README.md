@@ -2,10 +2,13 @@
 
 # 🎸 JAMMING
 
-**음악인을 위한 합주 · 잼 세션 매칭 모바일 웹 플랫폼**
+**A mobile-web platform for matching musicians for jam sessions & band practice**
 
-지역·장르·실력대 기반으로 함께 연주할 파트너를 찾고, 잼 세션을 개최하거나 참여하는 과정을 간편하게 만드는 서비스입니다.
+Helps amateur/hobby musicians in Korea find people to play with — hosting or joining jam sessions based on region, genre, and skill level.
 
+[**🌐 Live Demo → jamming.co.kr**](https://jamming.co.kr)
+
+[![Test](https://github.com/bswebdevlpr/Jamming/actions/workflows/test.yml/badge.svg)](https://github.com/bswebdevlpr/Jamming/actions/workflows/test.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19_RC-149eca?logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript)](https://www.typescriptlang.org/)
@@ -16,28 +19,51 @@
 
 ---
 
-## 📖 소개
+## 📖 Overview
 
-**JAMMING**은 한국의 아마추어/취미 음악인을 대상으로 한 모바일 전용(PWA) 웹 서비스입니다.
-호스트가 합주 모임(잼 세션)을 개최하면, 다른 음악인들이 자신의 포지션으로 참가를 신청하고, 호스트가 승인하는 방식으로 매칭이 이루어집니다.
+**JAMMING** is a mobile-only (PWA) web service for amateur and hobbyist musicians in Korea. A host opens a jam session, other musicians apply with their instrument/position, and the host approves applicants — completing the match.
 
-> ⚠️ 본 저장소는 **포트폴리오 목적**으로 공개되었습니다. 실제 운영 인프라(Supabase 인스턴스, API 키 등)는 포함되어 있지 않으며, 모든 시크릿은 환경변수로 분리되어 있습니다.
+> ⚠️ This repository is public **for portfolio purposes**. No production infrastructure (Supabase instance, API keys, etc.) is included; all secrets are kept in environment variables.
 
-## ✨ 주요 기능
+## 📱 Screenshots
 
-| 기능 | 설명 |
+<!--
+  Add product screenshots to docs/screenshots/ (see docs/screenshots/README.md for naming),
+  then uncomment the table below. Recommended: portrait mobile shots (~390px wide).
+
+<div align="center">
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/home.png" width="220"/><br/><sub>Home</sub></td>
+    <td align="center"><img src="docs/screenshots/jam-detail.png" width="220"/><br/><sub>Jam Session Detail</sub></td>
+    <td align="center"><img src="docs/screenshots/create-jam.png" width="220"/><br/><sub>Create Session</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/mypage.png" width="220"/><br/><sub>My Page</sub></td>
+    <td align="center"><img src="docs/screenshots/notification.png" width="220"/><br/><sub>Notifications</sub></td>
+    <td align="center"><img src="docs/screenshots/profile.png" width="220"/><br/><sub>Profile Setup</sub></td>
+  </tr>
+</table>
+</div>
+-->
+
+_Screenshots coming soon — drop images into [`docs/screenshots/`](./docs/screenshots) and uncomment the gallery in this section._
+
+## ✨ Features
+
+| Feature | Description |
 | --- | --- |
-| 🎵 **잼 세션 CRUD** | 일시·장소·장르·실력대·포지션별 모집 인원·합주 곡 목록을 포함한 세션 개최/수정/삭제 |
-| 🙋 **참가 신청 & 승인** | 포지션별 참가 신청, 호스트의 승인/거절, 재신청(re-jam) 플로우 |
-| 🔔 **실시간 알림** | 신청·승인·거절 이벤트에 대한 알림, 승인 시 오픈채팅 링크 노출 |
-| 🗺️ **지역 필터** | 19개 지역 기반 세션 탐색 및 필터링 |
-| 🔍 **곡 · 장소 검색** | ManiaDB(곡), Naver Map(장소) 외부 API 연동 |
-| 👤 **프로필 · 마이페이지** | 포지션·장르·실력·태그·플레이리스트 관리 |
-| 🔐 **Kakao OAuth** | 카카오 소셜 로그인 기반 인증 |
+| 🎵 **Jam Session CRUD** | Create/edit/delete sessions with date, venue, genre, skill level, per-position headcount, and a setlist |
+| 🙋 **Apply & Approve** | Apply by position, host approval/rejection, and re-application (re-jam) flow |
+| 🔔 **Notifications** | Alerts for apply/approve/reject events; open-chat link revealed on approval |
+| 🗺️ **Region Filter** | Browse and filter sessions across 19 regions |
+| 🔍 **Song & Venue Search** | Integrations with ManiaDB (songs) and Naver Map (venues) |
+| 👤 **Profile & My Page** | Manage position, genre, skill level, tags, and playlist |
+| 🔐 **Kakao OAuth** | Authentication via Kakao social login |
 
-## 🛠️ 기술 스택
+## 🛠️ Tech Stack
 
-| 분류 | 기술 |
+| Category | Technology |
 | --- | --- |
 | **Framework** | Next.js 16 (App Router, Server Actions) |
 | **Language** | TypeScript |
@@ -45,94 +71,101 @@
 | **State** | Zustand · TanStack React Query 5 |
 | **Form / Validation** | React Hook Form · Zod |
 | **Backend** | Supabase (Auth · Postgres · Storage) |
-| **Infra** | Vercel · Upstash Redis (Rate Limiting) |
-| **External API** | ManiaDB(곡) · Naver Map(장소) · Kakao(OAuth) |
+| **Infra** | Vercel · Upstash Redis (rate limiting) |
+| **External APIs** | ManiaDB (songs) · Naver Map (venues) · Kakao (OAuth) |
 | **Testing** | Vitest · React Testing Library · Playwright · MSW |
 
-## 🏗️ 아키텍처 & 설계 특징
+## 🏗️ Architecture
 
-- **모바일 퍼스트**: `375px ~ 600px` 고정 뷰포트, Bottom Sheet·스와이프 등 터치 최적화 UI
-- **iOS Safari 대응**: `--vh` 동적 뷰포트 변수, 자동 확대 방지, 키보드 입력 시 레이아웃 제어
-- **Server Actions 기반 CRUD**: 클라이언트 번들 최소화 및 서버 사이드 데이터 처리
-- **도메인 중심 폴더 구조**: 페이지별 `functions/` 로 데이터 접근 로직 분리
-- **타입 안정성**: Zod 스키마 ↔ TypeScript 인터페이스 일원화
-- **테스트 커버리지**: unit · integration · component · e2e 4계층 테스트
+- **Mobile-first**: fixed `375px ~ 600px` viewport with touch-optimized UI (bottom sheets, swipe gestures)
+- **Server Actions–based CRUD**: minimizes client bundle and handles data server-side
+- **Domain-oriented structure**: per-page `functions/` directories isolate data-access logic
+- **Type safety**: single source of truth between Zod schemas and TypeScript interfaces
+- **Test coverage**: four layers — unit · integration · component · e2e
 
 ```
 app/
 ├── (pages)/
-│   ├── (signin)/          # 비회원 영역 (로그인, 가입)
-│   ├── (only-user)/       # 인증 필수 영역 (잼 세션, 마이페이지)
+│   ├── (signin)/          # Public area (login, sign-up)
+│   ├── (only-user)/       # Auth-required area (jam sessions, my page)
 │   └── layout.tsx         # Global providers
 ├── api/                   # Server Actions & Route Handlers
-│   ├── functions/         # CRUD 서버 함수
-│   ├── maniadb/ · naver/  # 외부 API 프록시
-│   └── auth/              # OAuth 콜백
+│   ├── functions/         # CRUD server functions
+│   ├── maniadb/ · naver/  # External API proxies
+│   └── auth/              # OAuth callback
 ├── lib/                   # enums, interfaces, zod schemas, utils
 ├── stores/                # Zustand stores
-├── ui/                    # 디자인 시스템, 공통 컴포넌트
+├── ui/                    # design system, shared components
 └── util/supabase/         # Supabase client/server helpers
 __tests__/                 # unit · integration · component · e2e
-docs/                      # 아키텍처 · 패턴 · 디자인 · 레퍼런스 문서
+docs/                      # architecture · patterns · design · reference docs
 ```
 
-## 🚀 시작하기
+## 💡 Engineering Highlights
 
-### 사전 요구사항
+- **iOS Safari compatibility** — the most heavily debugged area of the project: a dynamic `--vh` CSS variable to handle the changing address-bar height, auto-zoom prevention (`maximum-scale=1`), and layout stabilization during keyboard input.
+- **Server Actions for all mutations** — CRUD runs server-side to keep the client bundle lean and secrets off the client.
+- **Rate limiting** — Upstash Redis guards write-heavy endpoints against abuse.
+- **End-to-end type safety** — Zod schemas double as runtime validators and the source of TypeScript types, eliminating drift between validation and types.
+- **Four-layer testing** — unit, integration, component, and Playwright e2e, with external APIs mocked via MSW for deterministic runs.
+
+## 🚀 Getting Started
+
+### Prerequisites
 
 - Node.js 20+
-- **pnpm** (필수 — npm/yarn 사용 금지)
-- Supabase 프로젝트 (Auth · DB · Storage)
+- **pnpm** (required — do not use npm/yarn)
+- A Supabase project (Auth · DB · Storage)
 
-### 설치 및 실행
+### Installation & Run
 
 ```bash
-# 1. 의존성 설치
+# 1. Install dependencies
 pnpm install
 
-# 2. 환경변수 설정 (.env.example 참고)
+# 2. Configure environment variables (see .env.example)
 cp .env.example .env
-#    → .env 파일에 실제 값 입력
+#    → fill in real values in .env
 
-# 3. 개발 서버 실행 (http://localhost:3038)
+# 3. Start the dev server (http://localhost:3038)
 pnpm dev
 ```
 
-### 주요 스크립트
+### Scripts
 
-| 명령어 | 설명 |
+| Command | Description |
 | --- | --- |
-| `pnpm dev` | 개발 서버 (`:3038`) |
-| `pnpm build` | 프로덕션 빌드 |
-| `pnpm start` | 프로덕션 서버 |
-| `pnpm lint` | ESLint 검사 |
-| `pnpm test` | 유닛/통합 테스트 (watch) |
-| `pnpm test:run` | 테스트 1회 실행 |
-| `pnpm test:coverage` | 커버리지 리포트 |
-| `pnpm test:e2e` | Playwright E2E 테스트 |
+| `pnpm dev` | Dev server (`:3038`) |
+| `pnpm build` | Production build |
+| `pnpm start` | Production server |
+| `pnpm lint` | Run ESLint |
+| `pnpm test` | Unit/integration tests (watch) |
+| `pnpm test:run` | Run tests once |
+| `pnpm test:coverage` | Coverage report |
+| `pnpm test:e2e` | Playwright E2E tests |
 
-## 🧪 테스트
+## 🧪 Testing
 
-Vitest 기반 유닛/통합/컴포넌트 테스트와 Playwright E2E 테스트로 구성되어 있으며,
-외부 API 호출은 **MSW**로 모킹합니다.
+Unit/integration/component tests run on Vitest, with end-to-end tests on Playwright.
+External API calls are mocked with **MSW**.
 
 ```bash
-pnpm test:run        # 유닛 · 통합 · 컴포넌트
-pnpm test:e2e        # E2E
+pnpm test:run        # unit · integration · component
+pnpm test:e2e        # e2e
 ```
 
-## 📚 문서
+## 📚 Documentation
 
-프로젝트 상세 설계 문서는 [`docs/`](./docs) 에서 확인할 수 있습니다.
+Detailed design docs live in [`docs/`](./docs) (written in Korean).
 
-| 문서 | 내용 |
+| Doc | Contents |
 | --- | --- |
-| [Context](./docs/context/README.md) | 프로젝트 개요 · 도메인 모델 |
-| [Architecture](./docs/architecture/README.md) | 시스템 구조 |
-| [Patterns](./docs/patterns/README.md) | 코드 패턴 |
-| [Design](./docs/design/README.md) | 디자인 시스템 가이드 |
-| [Reference](./docs/reference/README.md) | API · 스키마 레퍼런스 |
+| [Context](./docs/context/README.md) | Project overview · domain model |
+| [Architecture](./docs/architecture/README.md) | System structure |
+| [Patterns](./docs/patterns/README.md) | Code patterns |
+| [Design](./docs/design/README.md) | Design system guide |
+| [Reference](./docs/reference/README.md) | API · schema reference |
 
-## 📄 라이선스
+## 📄 License
 
-이 프로젝트는 [MIT License](./LICENSE) 하에 배포됩니다.
+Distributed under the [MIT License](./LICENSE).
