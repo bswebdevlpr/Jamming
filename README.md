@@ -27,10 +27,6 @@ Helps amateur/hobby musicians in Korea find people to play with — hosting or j
 
 ## 📱 Screenshots
 
-<!--
-  Add product screenshots to docs/screenshots/ (see docs/screenshots/README.md for naming),
-  then uncomment the table below. Recommended: portrait mobile shots (~390px wide).
-
 <div align="center">
 <table>
   <tr>
@@ -39,9 +35,6 @@ Helps amateur/hobby musicians in Korea find people to play with — hosting or j
   </tr>
 </table>
 </div>
--->
-
-_Screenshots coming soon — drop images into [`docs/screenshots/`](./docs/screenshots) and uncomment the gallery in this section._
 
 ## ✨ Features
 
