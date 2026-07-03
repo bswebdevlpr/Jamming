@@ -159,7 +159,6 @@ export default function SignUp_Profile() {
     formState,
     watch,
     setValue,
-    getValues,
     setError,
     clearErrors,
   } = useForm<FormData_User>({
@@ -333,8 +332,9 @@ export default function SignUp_Profile() {
         name="profile_form"
         className="grow flex flex-col"
         onSubmit={handleSubmit(onSubmit, (e) => {
-          console.log(e, getValues());
-          console.error("validation failed");
+          if (process.env.NODE_ENV === "development") {
+            console.error("[signup-profile] validation failed", e);
+          }
           // TODO: validation FAIL popup
         })}
       >

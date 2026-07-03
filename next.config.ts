@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 
+// Supabase 스토리지 호스트는 환경변수에서 파생 (인스턴스 주소 하드코딩 방지)
+const supabaseHostname = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+  : undefined;
+
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
@@ -16,10 +21,9 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "i.maniadb.com",
       },
-      {
-        protocol: "https",
-        hostname: "niiidqqsxsiowmzumcgw.supabase.co",
-      },
+      ...(supabaseHostname
+        ? [{ protocol: "https" as const, hostname: supabaseHostname }]
+        : []),
     ],
     formats: ["image/avif", "image/webp"],
     deviceSizes: [480, 600, 750, 828, 1024],

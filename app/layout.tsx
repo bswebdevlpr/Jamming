@@ -71,14 +71,18 @@ export default function RootLayout({
           content="width=device-width, initial-scale=1.0, maximum-scale=1"
         />
         <meta name="theme-color" content="#111113" />
-        <link
-          rel="preconnect"
-          href="https://niiidqqsxsiowmzumcgw.supabase.co"
-        />
-        <link
-          rel="dns-prefetch"
-          href="https://niiidqqsxsiowmzumcgw.supabase.co"
-        />
+        {process.env.NEXT_PUBLIC_SUPABASE_URL && (
+          <>
+            <link
+              rel="preconnect"
+              href={process.env.NEXT_PUBLIC_SUPABASE_URL}
+            />
+            <link
+              rel="dns-prefetch"
+              href={process.env.NEXT_PUBLIC_SUPABASE_URL}
+            />
+          </>
+        )}
         {/* 폰트 CDN 최적화 */}
         <link rel="preconnect" href="https://fastly.jsdelivr.net" />
         <link rel="dns-prefetch" href="https://fastly.jsdelivr.net" />

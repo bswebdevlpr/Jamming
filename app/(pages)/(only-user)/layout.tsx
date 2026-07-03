@@ -55,14 +55,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             return;
           }
 
-          if (process.env.NODE_ENV === "development") {
-            console.log("[layout] User data fetched:", {
-              userId: data.id,
-              playlistCount: data.playlist?.length ?? "null/undefined",
-              hasPlaylist: !!data.playlist,
-            });
-          }
-
           setUserProfile({ ...data, isLoaded: true });
         }
 
@@ -100,10 +92,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         if (event === "SIGNED_OUT") {
           resetUserProfile();
           router.replace("/signin");
-        }
-        // 토큰 갱신 성공 시 (로깅만)
-        if (event === "TOKEN_REFRESHED" && process.env.NODE_ENV === "development") {
-          console.log("[Auth] Session refreshed successfully");
         }
       }
     );

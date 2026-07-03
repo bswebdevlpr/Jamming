@@ -84,7 +84,6 @@ export default function UpdateJam({
     formState,
     watch,
     setValue,
-    getValues,
     setError,
     clearErrors,
     reset,
@@ -299,8 +298,7 @@ export default function UpdateJam({
       <form
         onSubmit={handleSubmit(onSubmit, (e) => {
           if (process.env.NODE_ENV === "development") {
-            console.log(e);
-            console.log(getValues());
+            console.error("[update-jam] validation failed", e);
           }
         })}
         className="h-full flex flex-col"

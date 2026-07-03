@@ -38,13 +38,6 @@ export const initialize = async (): Promise<ActionResult<any>> => {
       });
     }
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("[mypage.initialize] Playlist data fetched:", {
-        playlistCount: data.playlist?.length ?? "null/undefined",
-        hasPlaylist: !!data.playlist,
-      });
-    }
-
     return data;
   });
 };

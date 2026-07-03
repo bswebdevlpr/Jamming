@@ -71,7 +71,6 @@ export default function CreateJam({
     formState,
     watch,
     setValue,
-    getValues,
     setError,
     clearErrors,
     reset,
@@ -250,8 +249,7 @@ export default function CreateJam({
       <form
         onSubmit={handleSubmit(onSubmit, (e) => {
           if (process.env.NODE_ENV === "development") {
-            console.log(e);
-            console.log(getValues());
+            console.error("[create-jam] validation failed", e);
           }
         })}
         className="h-full flex flex-col"
