@@ -6,7 +6,7 @@
 
 Helps amateur/hobby musicians in Korea find people to play with — hosting or joining jam sessions based on region, genre, and skill level.
 
-[**🌐 Live Demo → jamming.co.kr**](https://jamming.co.kr)
+[**🌐 Live Demo → jamming.co.kr**](https://jamming.co.kr) <sub>(UI demo · database disconnected)</sub>
 
 [![Test](https://github.com/bswebdevlpr/Jamming/actions/workflows/test.yml/badge.svg)](https://github.com/bswebdevlpr/Jamming/actions/workflows/test.yml)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
